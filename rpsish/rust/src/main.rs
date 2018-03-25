@@ -1,4 +1,5 @@
 mod rpsish;
+mod players;
 
 use std::cmp::Ordering;
 
@@ -11,7 +12,6 @@ trait GameState<'a> {
 
   fn done(&self) -> bool;
   fn apply_action(&mut self, &Self::Action);
-  fn moves(&self) -> Vec<Self::Action>;
   fn to_view(&self, usize) -> Self::View;
 }
 
@@ -44,8 +44,8 @@ fn main() {
     private_symbols: [Vec::new(), Vec::new()],
   };
   let players: Vec<Box<Player<Game=rpsish::RpsishState>>> = vec![
-    Box::new(rpsish::SimpletonPlayer),
-    Box::new(rpsish::ConstantPlayer { public_symbol: 0, private_symbol: 1 }),
+    Box::new(players::SimpletonPlayer),
+    Box::new(players::ConstantPlayer { public_symbol: 0, private_symbol: 1 }),
   ];
   while !state.done() {
     let view = state.to_view(state.player);
