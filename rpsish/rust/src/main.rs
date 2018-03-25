@@ -22,46 +22,59 @@ trait Player<'a> {
   /* Note: We have to explicitly annotate Self::Game as GameState<'a> in this signature because
    * https://github.com/rust-lang/rust/issues/38078 ... and we can't define a type alias for it
    * because https://github.com/rust-lang/rust/issues/29661 -- but trust me guys, Rust is good */
-  fn make_move(&self, usize, &<Self::Game as GameState<'a>>::View)
+  fn pick_move(&self, usize, &<Self::Game as GameState<'a>>::View)
     -> <Self::Game as GameState<'a>>::Action;
 }
 
 fn main() {
-  let config = rpsish::RpsishConfig {
-    num_symbols: 3,
-    /* 0 beats 1 beats 2 beats 0 */
-    payoffs: vec![
-      vec![0, 1, -1],
-      vec![-1, 0, 1],
-      vec![1, -1, 0],
-    ],
-    num_rounds: 5,
-  };
-  let mut state = rpsish::RpsishState {
-    config: &config,
+  let mut game = rpsish::RpsishState {
+    config: &rpsish::RpsishConfig {
+      num_symbols: 5,
+      num_rounds: 8,
+      /* 0 beats 1 beats 2 beats 0 */
+      payoffs: vec![
+        vec![ 0, -6,  2,  8, -3],
+        vec![ 6,  0, -1, -8,  5],
+        vec![-2,  1,  0,  3,  0],
+        vec![-8,  8, -3,  0,  7],
+        vec![ 3, -5,  0, -7,  0],
+      ],
+    },
     player: 0,
-    public_symbols:  [Vec::new(), Vec::new()],
-    private_symbols: [Vec::new(), Vec::new()],
+    public_moves:  [Vec::new(), Vec::new()],
+    private_moves: [Vec::new(), Vec::new()],
   };
-  let players: Vec<Box<Player<Game=rpsish::RpsishState>>> = vec![
+  let players: [Box<Player<Game=rpsish::RpsishState>>; 2] = [
+    //Box::new(players::ConstantPlayer { public: 0, private: 1 }),
     Box::new(players::SimpletonPlayer),
-    Box::new(players::ConstantPlayer { public_symbol: 0, private_symbol: 1 }),
+    Box::new(players::RandomPlayer),
   ];
-  while !state.done() {
-    let view = state.to_view(state.player);
-    let action = players[state.player].make_move(state.player, &view);
-    state.apply_action(&action);
+
+  while !game.done() {
+    let player = game.player;
+    let view = game.to_view(player);
+    let action = players[player].pick_move(player, &view);
+
+    println!("=== Player {} ===", player);
+    println!("State:  {}", game);
+    println!("View:   {}", view);
+    println!("Action: {:?}", action);
+    println!();
+
+    game.apply_action(&action);
   }
 
-  println!("Player 0's public symbols:  {:?}", state.public_symbols [0]);
-  println!("Player 0's private symbols: {:?}", state.private_symbols[0]);
-  println!("Player 1's public symbols:  {:?}", state.public_symbols [1]);
-  println!("Player 1's private symbols: {:?}", state.private_symbols[1]);
+  println!("=== Results ===");
+  println!("Player 0's public symbols:  {:?}", game.public_moves [0]);
+  println!("Player 0's private symbols: {:?}", game.private_moves[0]);
+  println!("Player 1's public symbols:  {:?}", game.public_moves [1]);
+  println!("Player 1's private symbols: {:?}", game.private_moves[1]);
 
-  let score = state.calc_score(0);
-  println!("Final score: {:?}", score);
+  let p0_score = game.calc_score(0);
+  println!("Player 0's score: {}", p0_score);
+  println!("Player 1's score: {}", game.calc_score(1));
 
-  match score.cmp(&0) {
+  match p0_score.cmp(&0) {
     Ordering::Greater => println!("Player 0 wins!"),
     Ordering::Less    => println!("Player 1 wins!"),
     Ordering::Equal   => println!("It is a tie!"),
