@@ -1,16 +1,15 @@
 """The test game."""
 
 
-PAYOFF_TABLE = [[2, 3],  # payoff_table[my_move][their_move]
-                [-3, 1]
+PAYOFF_TABLE = [[0, 3],  # payoff_table[my_move][their_move]
+                [-3, 0]
                ]
 PLAYER_NUMBER = 2
 ROUND_NUMBER = 5
 
 
 class MoveInfo:
-    """@brief A class containing all information about a player's turn.
-    Used for information transfer and storage."""
+    """@brief A player's turn."""
     public_symbol = 0
     private_symbol = 0
 
@@ -20,8 +19,7 @@ class MoveInfo:
 
 
 class ShroudedMoveInfo:
-    """@brief A class containing all information about a player's turn, as visible to some player.
-    Used for information transfer and storage.
+    """@brief A player's turn, as it appears to some other player.
 
     Note that this class contains all information that MoveInfo does, but everything starts as None - None elements
         represent elements that are shrouded from the intended recipient of this class."""
@@ -87,8 +85,6 @@ class TestGame:
 
                 player.be_advised(last_shroud)
 
-
-
         self.conclude()  # End game
 
 
@@ -126,16 +122,13 @@ class TestGame:
                         add_score = PAYOFF_TABLE[private_symbol][enemy_move.private_symbol]
                         print("    ...priv-priv gets {add_score}...".format(add_score=add_score))
                         scores[player_number] += add_score
-        max_score = 0
-        winner = 0
+
+        max_score = max(scores)
+
+        print("Winners are:")
         for player_number, score in enumerate(scores):
-            print("Player {player_number} got score {score}.".format(player_number=player_number, score=score))
-            if score > max_score:
-                max_score = score
-                winner = player_number
-
-        print("A WINNER IS |{winner}|!".format(winner=winner))
-
+            if score == max_score:
+                print("    Player |{winner}|".format(winner=player_number))
 
 def main():
     players = []
