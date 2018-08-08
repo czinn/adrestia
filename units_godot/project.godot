@@ -18,7 +18,6 @@ config/quit_on_go_back=false
 
 [autoload]
 
-UnitKinds="*res://lib/unit_kinds.gd"
 global="*res://global.gd"
 
 [debug]

@@ -6,6 +6,7 @@ using namespace godot;
 namespace godot {
   void GameState::_register_methods() {
     register_method("init", &GameState::init);
+    register_method("perform_action", &GameState::perform_action);
     register_method("as_json", &GameState::as_json);
   }
 
