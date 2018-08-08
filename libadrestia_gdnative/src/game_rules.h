@@ -10,6 +10,8 @@ namespace godot {
     static void _register_methods();
     ::GameRules _game_rules;
 
+    void load_json_string(String str);
+
     String get_id() const;
     Variant as_json();
   };
