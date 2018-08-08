@@ -8,6 +8,7 @@
 #include "player.h"
 #include "player_view.h"
 #include "battle.h"
+#include "tech.h"
 #include "json.h"
 
 using json = nlohmann::json;
@@ -17,6 +18,7 @@ class GameState {
   GameState(const GameRules &rules, int num_players);
   GameState(const GameRules &rules, const json &j);
   GameState(const GameState &game_state);
+  GameState(const GameView &view, const std::vector<Tech> &techs); // Determinization with the given hidden information
   bool perform_action(int player, const Action &action);
   void get_view(GameView &view, int player) const;
   std::vector<int> get_winners() const; // Empty list indicates that game is still in progress

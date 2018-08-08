@@ -27,6 +27,12 @@ void Tech::add(const Tech &t) {
   blue += t.blue;
 }
 
+void Tech::max(const Tech &t) {
+  red = std::max(red, t.red);
+  green = std::max(green, t.green);
+  blue = std::max(blue, t.blue);
+}
+
 void Tech::increment(Colour colour) {
   switch (colour) {
     case RED: red++; break;

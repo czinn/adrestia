@@ -43,7 +43,30 @@ GameState::GameState(const GameState &game_state)
     , players(game_state.players)
     , action_log(game_state.action_log)
     , battles(game_state.battles)
-    , turn(game_state.turn) {}
+    , turn(game_state.turn)
+    , players_ready(game_state.players_ready) {}
+
+GameState::GameState(const GameView &view, const std::vector<Tech> &techs)
+    : rules(*view.rules)
+    , action_log(view.action_log)
+    , battles(*view.battles)
+    , turn(view.turn)
+    , players_ready(0) {
+  int i = 0;
+  for (auto &player : view.players) {
+    if (i == view.view_index) {
+      players.push_back(view.view_player);
+    } else {
+      players.push_back(Player());
+      players[i].units = std::map<int, Unit>(player.units);
+      players[i].alive = player.alive;
+      players[i].coins = player.coins;
+      players[i].next_unit = player.units.rbegin()->first + 1;
+    }
+    players[i].tech = techs[i];
+    i++;
+  }
+}
 
 void to_json(json &j, const GameState &game_state) {
   j["players"] = game_state.players;
@@ -110,9 +133,15 @@ bool GameState::perform_action(int player, const Action &action) {
     p.tech.increment(colour);
     return true;
   } else if (action.get_type() == BUILD_UNITS) {
-    if (total_tech < turn) return false; // Haven't selected resources yet this turn
-    if (action_log[turn - 1][player].size() >= 2) return false; // Already built units this turn
-    if (action.get_units().size() + p.units.size() > (size_t)rules.get_unit_cap()) return false;
+    if (total_tech < turn) {
+      return false; // Haven't selected resources yet this turn
+    }
+    if (action_log[turn - 1][player].size() >= 2) {
+      return false; // Already built units this turn
+    }
+    if (action.get_units().size() + p.units.size() > (size_t)rules.get_unit_cap()) {
+      return false;
+    }
     int total_cost = 0;
     std::vector<const UnitKind*> build_order;
     for (auto &name : action.get_units()) {
@@ -151,12 +180,17 @@ void GameState::get_view(GameView &view, int player) const {
   }
   view.action_log = action_log;
   // Remove non-visible actions
-  for (auto &turn : view.action_log) {
-    for (int i = 0; i < players.size(); i++) {
-      if (i == player) continue;
-      turn[i].erase(std::remove_if(turn[i].begin(), turn[i].end(),
-            [](const Action &a) { return a.get_type() == CHOOSE_TECH; }),
-          turn[i].end());
+  for (int i = 0; i < action_log.size(); i++) {
+    for (int j = 0; j < players.size(); j++) {
+      if (j == player) continue;
+      if (i == action_log.size() - 1) {
+        view.action_log[i][j].clear();
+      } else {
+        auto &actions = view.action_log[i][j];
+        actions.erase(std::remove_if(actions.begin(), actions.end(),
+              [](const Action &a) { return a.get_type() == CHOOSE_TECH; }),
+            actions.end());
+      }
     }
   }
   view.battles = &battles;
