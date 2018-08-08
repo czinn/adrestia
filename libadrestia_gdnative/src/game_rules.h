@@ -2,6 +2,7 @@
 #include <Godot.hpp>
 #include <Reference.hpp>
 #include <game_rules.h>
+#include "macros.h"
 
 namespace godot {
   class GameRules : public godot::GodotScript<Reference> {
@@ -10,9 +11,8 @@ namespace godot {
     static void _register_methods();
     ::GameRules _game_rules;
 
-    void load_json_string(String str);
-
     String get_id() const;
-    Variant as_json();
+
+    INTF_JSONABLE
   };
 }

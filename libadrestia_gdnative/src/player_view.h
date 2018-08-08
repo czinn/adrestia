@@ -3,6 +3,8 @@
 #include <Reference.hpp>
 #include <player_view.h>
 
+#include "macros.h"
+
 namespace godot {
   class PlayerView : public godot::GodotScript<Reference> {
     GODOT_CLASS(PlayerView)
@@ -11,6 +13,6 @@ namespace godot {
     ::PlayerView _player_view;
 
     String get_id() const;
-    Variant as_json();
+    INTF_TO_JSONABLE
   };
 }

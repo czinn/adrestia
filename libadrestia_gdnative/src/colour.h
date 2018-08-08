@@ -3,12 +3,16 @@
 #include <Reference.hpp>
 #include <colour.h>
 
+#include "macros.h"
+
 namespace godot {
   class Colour : public godot::GodotScript<Reference> {
     GODOT_CLASS(Colour)
    public:
-    static void _register_methods();
     ::Colour _colour;
-    Variant as_json();
+
+    static void _register_methods();
+
+    INTF_JSONABLE
   };
 }

@@ -1,14 +1,11 @@
 #include "battle.h"
-#include "macros.h"
 
 using namespace godot;
 
 namespace godot {
   void Battle::_register_methods() {
-    register_method("as_json", &Battle::as_json);
+    REGISTER_TO_JSONABLE(Battle)
   }
 
-  Variant Battle::as_json() {
-    return to_godot_json(_battle);
-  }
+  IMPL_TO_JSONABLE(Battle, _battle)
 }

@@ -7,8 +7,8 @@ using namespace godot;
 namespace godot {
   void Tech::_register_methods() {
     register_method("add", &godot::Tech::add);
-    register_method("as_json", &godot::Tech::as_json);
     register_method("init", &godot::Tech::init);
+    REGISTER_JSONABLE(Tech)
   }
 
   void Tech::init(int vr, int vg, int vb) {
@@ -23,7 +23,5 @@ namespace godot {
     _tech.add(v->_tech);
   }
 
-  Variant Tech::as_json() {
-    return to_godot_json(_tech);
-  }
+  IMPL_JSONABLE(Tech, _tech)
 }

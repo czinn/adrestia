@@ -3,6 +3,8 @@
 #include <Reference.hpp>
 #include <unit_kind.h>
 
+#include "macros.h"
+
 namespace godot {
   class UnitKind : public godot::GodotScript<Reference> {
     GODOT_CLASS(UnitKind)
@@ -11,6 +13,7 @@ namespace godot {
     ::UnitKind _unit_kind;
 
     String get_id() const;
-    Variant as_json();
+
+    INTF_JSONABLE
   };
 }

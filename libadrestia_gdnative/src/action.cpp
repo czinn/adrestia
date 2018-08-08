@@ -1,14 +1,21 @@
 #include "action.h"
-#include "macros.h"
 
 using namespace godot;
 
 namespace godot {
   void Action::_register_methods() {
-    register_method("as_json", &Action::as_json);
+    register_method("init_tech_colour", &Action::init_tech_colour);
+    register_method("init_units", &Action::init_units);
+    REGISTER_JSONABLE(Action)
   }
 
-  Variant Action::as_json() {
-    return to_godot_json(_action);
+  void Action::init_tech_colour(Colour *colour) {
+    _action = std::make_shared<::Action>(colour->_colour);
   }
+
+  void Action::init_units(Variant units) {
+    // TODO(jim): Implement.
+  }
+
+  IMPL_JSONABLE(Action, *_action)
 }

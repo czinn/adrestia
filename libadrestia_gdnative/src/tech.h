@@ -18,6 +18,7 @@ namespace godot {
     void init(int r, int g, int b);
     void increment(Colour *c);
     void add(Tech *v);
-    Variant as_json();
+
+    INTF_JSONABLE
   };
 }

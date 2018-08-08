@@ -1,7 +1,4 @@
 #include "unit.h"
-#include "macros.h"
-
-#include <unit_kind.h>
 
 using namespace godot;
 
@@ -14,10 +11,8 @@ namespace godot {
   Unit::~Unit() { }
 
   void Unit::_register_methods() {
-    register_method("as_json", &Unit::as_json);
+    REGISTER_TO_JSONABLE(Unit)
   }
 
-  Variant Unit::as_json() {
-    return to_godot_json(_unit);
-  }
+  IMPL_TO_JSONABLE(Unit, _unit)
 }

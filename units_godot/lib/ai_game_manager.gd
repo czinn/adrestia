@@ -10,8 +10,7 @@ func _ready():
   game_state = GameState.new()
 
 func perform_action(action):
-  action.player = 0
-  gs.perform_action(action)
+  game_state.perform_action(action)
 
 func start_game(callback_obj, callback):
   # AI resource selection
