@@ -1,6 +1,6 @@
 extends Reference
 
-# Abstract base class for game managers, which accept actions and produce views.
+# Interface for game managers, which accept actions and produce views.
 
 # Performs an action on the underlying game state
 func perform_action(action):

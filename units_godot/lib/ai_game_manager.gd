@@ -1,16 +1,13 @@
-extends "game_manager.gd"
+extends 'game_manager.gd'
 
-const GameState = preload("res://lib/game_state.gd")
-const ChooseResources = preload("res://lib/actions/choose_resources.gd")
-const BuildUnit = preload("res://lib/actions/build_unit.gd")
-const Resources = preload("res://lib/resources.gd")
+const GameState = preload('res://native/game_state.gdns')
+const Tech = preload('res://native/tech.gdns')
 
-var gs
+var game_state
 var units
 
-func _init(units):
-  self.units = units
-  gs = GameState.new(units, 2)
+func _ready():
+  game_state = GameState.new()
 
 func perform_action(action):
   action.player = 0
@@ -30,8 +27,6 @@ func start_game(callback_obj, callback):
   callback_obj.call(callback)
 
 func get_view():
-  # TODO: charles: Return an actual view. Right now we trust the client not to
-  # peek, and to know which player it is.
   return gs
 
 func end_turn(callback_obj, callback):
