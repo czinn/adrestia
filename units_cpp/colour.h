@@ -1,7 +1,12 @@
+/* The Colour class. Really just an enum. */
+
+
 #pragma once
+
 #include "json.h"
 
 using nlohmann::json;
+
 
 enum Colour { BLACK, RED, GREEN, BLUE };
 
