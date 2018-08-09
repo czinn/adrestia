@@ -1,10 +1,9 @@
 extends Node
 
 var unit_buy_bar = preload('res://components/unit_buy_bar.tscn')
-var BuildUnit = preload('res://lib/actions/build_unit.gd')
+var Action = preload('res://native/action.gdns')
 
 onready var g = get_node("/root/global")
-onready var units = get_node("/root/UnitKinds").units
 
 onready var r_label = $MarginContainer/VBoxContainer/Toolbar/R
 onready var g_label = $MarginContainer/VBoxContainer/Toolbar/G
@@ -131,9 +130,5 @@ func _on_simulate_battle_complete(result):
     update_ui()
 
 func _on_buy_unit(unit):
-  # TODO: charles: Don't actually make moves until the end of the turn;
-  # instead, keep local list of units and draw army with [current units] plus
-  # [queued units]. This will allow us to implement undo, and potentially
-  # display queued units in a different way (e.g. faded)
-  g.man.perform_action(BuildUnit.new(0, units[unit]))
+  # TODO(jim): implement
   update_ui()

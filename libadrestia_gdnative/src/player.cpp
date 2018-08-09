@@ -7,5 +7,9 @@ namespace godot {
     REGISTER_TO_JSONABLE(Player)
   }
 
+  void Player::set(::Player *p) {
+    _player = *p;
+  }
+
   IMPL_TO_JSONABLE(Player, _player)
 }

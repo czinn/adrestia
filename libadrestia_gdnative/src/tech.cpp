@@ -19,8 +19,12 @@ namespace godot {
     _tech.increment(c->_colour);
   }
 
-  void Tech::add(Tech *v) {
-    _tech.add(v->_tech);
+  void Tech::add(Tech *other) {
+    _tech.add(other->_tech);
+  }
+
+  bool Tech::includes(Tech *other) {
+    return _tech.includes(other->_tech);
   }
 
   IMPL_JSONABLE(Tech, _tech)

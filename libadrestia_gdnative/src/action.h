@@ -14,7 +14,7 @@ namespace godot {
     std::shared_ptr<::Action> _action;
 
     void init_tech_colour(Colour *colour);
-    void init_units(Variant units);
+    void init_units(Array units);
     String get_id() const;
 
     INTF_JSONABLE

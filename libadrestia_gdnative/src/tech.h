@@ -17,7 +17,8 @@ namespace godot {
     // in Godot.hpp).
     void init(int r, int g, int b);
     void increment(Colour *c);
-    void add(Tech *v);
+    void add(Tech *other);
+    bool includes(Tech *other);
 
     INTF_JSONABLE
   };

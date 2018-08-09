@@ -12,6 +12,7 @@ namespace godot {
     static void _register_methods();
     ::Player _player;
 
+    void set(::Player *p);
     String get_id() const;
     INTF_TO_JSONABLE
   };

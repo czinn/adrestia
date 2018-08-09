@@ -15,7 +15,6 @@ func _init():
 
   var state = GameState.new();
   state.init(rules, 2)
-  print(state.as_json().result)
 
   var colour = Colour.new();
   colour.load_json_string('"RED"')
@@ -23,6 +22,15 @@ func _init():
   action.init_tech_colour(colour)
 
   state.perform_action(0, action)
+
+  colour.load_json_string('"GREEN"')
+  action.init_tech_colour(colour)
+  state.perform_action(1, action)
+
+  action.init_units(['grunt', 'grunt'])
+  state.perform_action(0, action)
+  state.perform_action(1, action)
+
   print(state.as_json().result)
 
   quit()
