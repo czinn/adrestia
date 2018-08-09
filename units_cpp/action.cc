@@ -6,8 +6,6 @@
 // CONSTRUCTORS
 //----------------------------------------------------------------------------------------------------------------------
 Action::Action() {
-    /*! \brief Action's default constructor. This, alone, initializes nothing!
-     */
 }
 
 
@@ -29,26 +27,19 @@ Action::Action(std::vector<std::string> units) : type(BUILD_UNITS), units(units)
 // GETTERS AND SETTERS
 //----------------------------------------------------------------------------------------------------------------------
 ActionType Action::get_type() const {
-    /*! \brief Returns the ActionType of this action. */
-
     return type;
 }
 
 
 Colour Action::get_colour() const {
-    /*! \brief Returns the selected Colour (tech) of this CHOOSE_TECH action. Behaviour is undefined if this is not
-     *         a CHOOSE_TECH action!
-     */
-
+    /*! \brief Gets the colour of this action. Behaviour is undefined if this is not a CHOOSE_TECH action! */
     return colour;
 }
 
 
 const std::vector<std::string> &Action::get_units() const {
-    /*! \brief Returns the units built as part of this BUILD_UNITS action. Behaviour is undefined if this is not a
+    /*! \brief Returns the unit ids built as part of this BUILD_UNITS action. Behaviour is undefined if this is not a
      *         BUILD_UNITS action!
-     *
-     *  \returns A vector of the unit ids of the units built as part of this action.
      */
 
     return units;
@@ -59,8 +50,6 @@ const std::vector<std::string> &Action::get_units() const {
 // OTHER METHODS
 //----------------------------------------------------------------------------------------------------------------------
 void to_json(json &j, const Action &a) {
-    /*! \brief Converts the given Action a into JSON, which goes into j. */
-
     if (a.type == CHOOSE_TECH) {
         j["type"] = "CHOOSE_TECH";
         j["colour"] = a.colour;
@@ -73,8 +62,6 @@ void to_json(json &j, const Action &a) {
 
 
 void from_json(const json &j, Action &a) {
-    /*! \brief Edits Action a to be the Action stored in j. */
-
     if (j["type"] == "CHOOSE_TECH") {
         a.type = CHOOSE_TECH;
         a.colour = j["colour"];
@@ -89,7 +76,10 @@ void from_json(const json &j, Action &a) {
 
 
 bool operator==(const Action &a1, const Action &a2) {
-    /*! \brief Checks whether both Actions represent the same "action." */
+    /*! \brief Checks whether both Actions represent the same "action."
+     *         CHOOSE_TECH actions are equal if the colour they chose is the same.
+     *         BUILD_UNITS actions are equal if the units they built are the same.
+     */
 
     if (a1.get_type() != a2.get_type()) {
         return false;

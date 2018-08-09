@@ -88,8 +88,6 @@ const std::vector<Attack> &Battle::get_attacks() const {
 // OTHER METHODS
 //----------------------------------------------------------------------------------------------------------------------
 void to_json(json &j, const Battle &battle) {
-    /* \brief Given JSON j, converts the Battle battle to be a clone of the data stored in the json. */
-
     // Copy the players involved in the battle
     for (const auto &player : battle.players) {
         j["players"].push_back(player);

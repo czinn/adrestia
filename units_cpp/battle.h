@@ -30,7 +30,7 @@ class Battle {
         const std::vector<PlayerView> &get_players() const;
         const std::vector<Attack> &get_attacks() const;
 
-        friend void to_json(json &j, const Battle &battle); // Converts the given Battle into JSON j
+        friend void to_json(json &j, const Battle &battle);
 
     private:
         std::vector<PlayerView> players;
