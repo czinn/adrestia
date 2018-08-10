@@ -10,14 +10,12 @@
 
 using json = nlohmann::json;
 
-const int PLAYERS = 2;
-
 int main() {
   GameRules rules("rules.json");
-  GameState game(rules, PLAYERS);
+  GameState game(rules, 2);
   std::vector<Strategy*> strategies;
   strategies.push_back(new MonteStrategy());
-  strategies.push_back(new TurretStrategy());
+  strategies.push_back(new MonteStrategy());
   GameView view;
 
   while (game.get_winners().size() == 0) {
