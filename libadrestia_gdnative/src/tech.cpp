@@ -1,17 +1,29 @@
+#include <sstream>
 #include "tech.h"
+#include "macros.h"
 
 using namespace godot;
 
-void godot::Tech::_register_methods() {
-  register_method((char*)"_process", &godot::Tech::_process);
-}
+namespace godot {
+  void Tech::_register_methods() {
+    register_method("add", &godot::Tech::add);
+    register_method("as_json", &godot::Tech::as_json);
+    register_method("init", &godot::Tech::init);
+  }
 
-godot::Tech::Tech() {
-}
+  void Tech::init(int vr, int vg, int vb) {
+    _tech = ::Tech(vr, vg, vb);
+  }
 
-godot::Tech::~Tech() {
-}
+  void Tech::increment(Colour *c) {
+    _tech.increment(c->_colour);
+  }
 
-void godot::Tech::_process(float delta) {
-  Godot::print("WAAAH");
+  void Tech::add(Tech *v) {
+    _tech.add(v->_tech);
+  }
+
+  Variant Tech::as_json() {
+    return to_godot_json(_tech);
+  }
 }

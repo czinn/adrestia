@@ -24,8 +24,10 @@ class Battle {
 	/* Struct represnting a single battle. */
 	public:
 		// Constructor constructs all attacks as part of the battle, but does not actually edit players' unit lists.
+		Battle();
 		Battle(const std::vector<Player> &players);
 		static void set_seed(long seed);
+		Battle(const GameRules &rules, const json &j);
 
 		const std::vector<PlayerView> &get_players() const;
 		const std::vector<Attack> &get_attacks() const;

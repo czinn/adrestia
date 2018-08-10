@@ -9,6 +9,7 @@ onready var units = get_node("/root/UnitKinds").units
 onready var r_label = $MarginContainer/VBoxContainer/Toolbar/R
 onready var g_label = $MarginContainer/VBoxContainer/Toolbar/G
 onready var b_label = $MarginContainer/VBoxContainer/Toolbar/B
+onready var c_label = $MarginContainer/VBoxContainer/Toolbar/Coins
 onready var end_turn_button = $MarginContainer/VBoxContainer/Toolbar/EndTurnButton
 onready var unit_list = $MarginContainer/VBoxContainer/ScrollContainer/UnitList
 onready var armies = $MarginContainer/VBoxContainer/ArmiesBox/Armies
@@ -22,6 +23,7 @@ func update_ui():
   r_label.text = str(view.players[0].resources.r)
   g_label.text = str(view.players[0].resources.g)
   b_label.text = str(view.players[0].resources.b)
+  c_label.text = "0"
   for unit in unit_bars:
     unit_bars[unit].buy_button.disabled = !view.players[0].resources.subsumes(units[unit].cost)
   

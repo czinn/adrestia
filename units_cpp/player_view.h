@@ -4,12 +4,13 @@
 
 class PlayerView {
  public:
+  PlayerView();
   PlayerView(const Player &player);
+  PlayerView(const GameRules &rules, const json &j);
 
   friend void to_json(json &j, const PlayerView &view);
 
   std::map<int, Unit> units;
   bool alive;
-  std::vector<std::shared_ptr<const std::vector<const UnitKind*>>> build_order;
+  int coins;
 };
-

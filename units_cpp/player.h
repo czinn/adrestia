@@ -12,19 +12,17 @@ class Player {
   Player();
   Player(const GameRules &rules);
   Player(const Player &player);
+  Player(const GameRules &rules, const json &j);
   Player &operator=(Player &player);
 
   void build_unit(const UnitKind &kind);
   void begin_turn();
-  void execute_build(std::vector<const UnitKind*> builds);
 
   friend void to_json(json &j, const Player &player);
 
   std::map<int, Unit> units;
   bool alive;
-  Tech tech;
-  std::vector<std::shared_ptr<const std::vector<const UnitKind*>>> build_order;
   int coins;
- private:
+  Tech tech;
   int next_unit;
 };

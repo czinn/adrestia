@@ -14,7 +14,11 @@ CLI_EXEC = units_cli
 CLI_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard cli/*.cc))
 CLI_DEPS = ${CLI_OBJS:.o=.d}
 
-EXECS = ${MAIN_EXEC} ${TEST_EXEC} ${CLI_EXEC}
+AI_EXEC = units_ai
+AI_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard ai/*.cc))
+AI_DEPS = ${AI_OBJS:.o=.d}
+
+EXECS = ${MAIN_EXEC} ${TEST_EXEC} ${CLI_EXEC} ${AI_EXEC}
 
 all: ${EXECS}
 
@@ -27,7 +31,10 @@ ${TEST_EXEC}: ${TEST_OBJS}
 ${CLI_EXEC}: ${CLI_OBJS}
 	${CXX} ${CXXFLAGS} $^ -o $@
 
--include ${MAIN_DEPS} ${TEST_DEPS} ${CLI_DEPS}
+${AI_EXEC}: ${AI_OBJS}
+	${CXX} ${CXXFLAGS} $^ -o $@
+
+-include ${MAIN_DEPS} ${TEST_DEPS} ${CLI_DEPS} ${AI_DEPS}
 
 clean:
-	rm -f {.,tests,cli}/*.{o,d} ${EXECS}
+	rm -f {.,tests,cli,ai}/*.{o,d} ${EXECS}

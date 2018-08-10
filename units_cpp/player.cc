@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "unit_kind.h"
 #include "game_rules.h"
+#include "json.h"
 
 Player::Player() : alive(true), coins(0), next_unit(0) {}
 
@@ -15,17 +16,26 @@ Player::Player(const GameRules &rules) : alive(true), coins(0), next_unit(0) {
 Player::Player(const Player &player)
     : units(player.units)
     , alive(player.alive)
-    , tech(player.tech)
-    , build_order(player.build_order)
     , coins(player.coins)
+    , tech(player.tech)
     , next_unit(player.next_unit) {}
+
+Player::Player(const GameRules &rules, const json &j)
+    : alive(j["alive"])
+    , coins(j["coins"])
+    , tech(j["tech"])
+    , next_unit(j["next_unit"]) {
+  for (auto it = j["units"].begin(); it != j["units"].end(); it++) {
+    const UnitKind &kind = rules.get_unit_kind(it.value()["kind"]);
+    units.emplace(std::stoi(it.key()), Unit(kind, it.value()));
+  }
+}
 
 Player &Player::operator=(Player &player) {
   std::swap(units, player.units);
   std::swap(alive, player.alive);
-  std::swap(tech, player.tech);
-  std::swap(build_order, player.build_order);
   std::swap(coins, player.coins);
+  std::swap(tech, player.tech);
   std::swap(next_unit, player.next_unit);
   return *this;
 }
@@ -44,19 +54,12 @@ void Player::begin_turn() {
   }
 }
 
-void Player::execute_build(std::vector<const UnitKind*> builds) {
-  for (auto it = builds.begin(); it != builds.end(); it++) {
-    build_unit(**it);
-  }
-  build_order.push_back(std::shared_ptr<std::vector<const UnitKind*>>(
-        new std::vector<const UnitKind*>(builds)));
-}
-
 void to_json(json &j, const Player &player) {
-  j["units"] = player.units;
+  for (auto &&[unit_id, unit] : player.units) {
+    j["units"][std::to_string(unit_id)] = unit;
+  }
   j["alive"] = player.alive;
   j["coins"] = player.coins;
   j["tech"] = player.tech;
   j["next_unit"] = player.next_unit;
-  // TODO: charles: Save build_order
 }

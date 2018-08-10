@@ -12,8 +12,8 @@ onready var man = AiGameManager.new(units) # Game manager
 # Global values for testing individual scenes.
 # Should be overridden when playing the actual game.
 func _ready():
-  man.gs.players[0].resource_gain = Resources.new(20,20,20)
+  man.gs.players[0].resource_gain = Resources.new(20, 20, 20)
 
 func new_ai_game():
   man = AiGameManager.new(units)
-  get_tree().change_scene("res://scenes/resource_select.tscn")
+  get_tree().change_scene("res://scenes/game.tscn")

@@ -3,4 +3,5 @@
 test
 main
 units_cli
+units_ai
 *.os

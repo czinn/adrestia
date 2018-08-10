@@ -38,5 +38,5 @@ window/stretch/shrink="1"
 
 [rendering]
 
-environment/default_clear_color=Color( 0, 0, 0, 1 )
+environment/default_clear_color=Color( 0.492188, 0.492188, 0.492188, 1 )
 environment/default_environment="res://default_env.tres"

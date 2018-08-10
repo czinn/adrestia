@@ -9,6 +9,9 @@ std::mt19937 Battle::gen;  // The random number generator
 //----------------------------------------------------------------------------------------------------------------------
 // CONSTRUCTORS
 //----------------------------------------------------------------------------------------------------------------------
+Battle::Battle() {}
+
+
 Battle::Battle(const std::vector<Player> &players) {
 	/*! \brief Constructs the Battle object, including all attacks. Does not actually edit players' units lists. */
 
@@ -62,6 +65,15 @@ Battle::Battle(const std::vector<Player> &players) {
 	}
 }
 
+Battle::Battle(const GameRules &rules, const json &j) {
+	/* Construct a battle from JSON; the GameRules reference is necessary to use the units within. */
+	for (auto &p : j["players"]) {
+		players.push_back(PlayerView(rules, p));
+	}
+	for (auto &a : j["attacks"]) {
+		attacks.push_back(Attack{ a[0], a[1], a[2], a[3], a[4] });
+	}
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 // GETTERS AND SETTERS
