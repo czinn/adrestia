@@ -8,12 +8,10 @@
 // so maybe we should change it.
 
 namespace godot {
-  class Tech : public godot::GodotScript<Reference> {
+  class Tech : public godot::GodotScript<Reference>, OwnerOrPointer<::Tech> {
     GODOT_CLASS(Tech)
    public:
     static void _register_methods();
-    ::Tech _tech;
-    Ref<Reference> _owner;
     // jim: This works because of some incredible C++ templating magic (ArgCast
     // in Godot.hpp).
     void init(int r, int g, int b);

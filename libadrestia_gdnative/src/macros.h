@@ -10,6 +10,56 @@ godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
   return godot::JSON::parse(str);
 }
 
+// An OwnerOrPointer<T> holds a pointer _ptr that it may own, or that may be
+// owned by some other Godot object _owner.
+// If the _owner is null, we know that we ourselves own _ptr and must free it.
+// Otherwise, another Godot object owns it and we hold the _owner Ref to them
+// to make sure they don't free it.
+template<typename T>
+class OwnerOrPointer {
+ private:
+  godot::Ref<godot::Reference> _owner;
+ public:
+  T *_ptr;
+  inline void del_ptr() {
+    if (_ptr != nullptr && _owner.is_null()) {
+      delete _ptr;
+    }
+  }
+
+  OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {}
+  ~OwnerOrPointer() { del_ptr(); }
+
+  OwnerOrPointer &operator=(const OwnerOrPointer &other) {
+    // jim: Extremely fast failure if the copy assignment operator is ever
+    // called. If we decide we actually do want to use it, uncomment the
+    // following line and it should work.
+    abort();
+    assert(false);
+    _owner = other._owner;
+    if (other._ptr != nullptr && _owner.is_null()) {
+      _ptr = new T();
+      *_ptr = *other._ptr;
+    } else {
+      _ptr = other._ptr;
+    }
+  }
+
+  // Own it.
+  void set_ptr(T *u) {
+    del_ptr();
+    _ptr = u;
+    _owner.unref();
+  }
+
+  // Don't own it.
+  void set_ptr(T *u, godot::Reference *r) {
+    del_ptr();
+    _ptr = u;
+    _owner = r;
+  }
+};
+
 // TO_JSONABLE:
 // JSONParseResult as_json()
 
@@ -39,6 +89,8 @@ godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
 #define IMPL_JSONABLE(Thing, thing)\
   void Thing::load_json_string(String str) {\
     std::string s(str.ascii().get_data());\
-    thing = nlohmann::json::parse(s);\
+    ::Thing *tmp = new ::Thing();\
+    *tmp = nlohmann::json::parse(s);\
+    set_ptr(tmp);\
   }\
   IMPL_TO_JSONABLE(Thing, thing)

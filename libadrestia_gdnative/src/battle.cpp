@@ -7,5 +7,5 @@ namespace godot {
     REGISTER_TO_JSONABLE(Battle)
   }
 
-  IMPL_TO_JSONABLE(Battle, _battle)
+  IMPL_TO_JSONABLE(Battle, *_ptr)
 }

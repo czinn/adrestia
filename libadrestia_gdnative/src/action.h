@@ -7,11 +7,10 @@
 #include "colour.h"
 
 namespace godot {
-  class Action : public godot::GodotScript<Reference> {
+  class Action : public godot::GodotScript<Reference>, public OwnerOrPointer<::Action> {
     GODOT_CLASS(Action)
    public:
     static void _register_methods();
-    std::shared_ptr<::Action> _action;
 
     void init_tech_colour(Colour *colour);
     void init_units(Array units);

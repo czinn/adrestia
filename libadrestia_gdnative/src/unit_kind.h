@@ -6,11 +6,10 @@
 #include "macros.h"
 
 namespace godot {
-  class UnitKind : public godot::GodotScript<Reference> {
+  class UnitKind : public godot::GodotScript<Reference>, public OwnerOrPointer<::UnitKind> {
     GODOT_CLASS(UnitKind)
    public:
     static void _register_methods();
-    ::UnitKind _unit_kind;
 
     String get_id() const;
 

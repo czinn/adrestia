@@ -6,11 +6,10 @@
 #include "macros.h"
 
 namespace godot {
-  class Battle : public godot::GodotScript<Reference> {
+  class Battle : public godot::GodotScript<Reference>, public OwnerOrPointer<::Battle> {
     GODOT_CLASS(Battle)
    public:
     static void _register_methods();
-    ::Battle _battle;
 
     String get_id() const;
     INTF_TO_JSONABLE

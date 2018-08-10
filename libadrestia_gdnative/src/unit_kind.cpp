@@ -9,8 +9,8 @@ namespace godot {
   }
 
   String UnitKind::get_id() const {
-    return String(_unit_kind.get_id().c_str());
+    return String(_ptr->get_id().c_str());
   }
 
-  IMPL_JSONABLE(UnitKind, _unit_kind)
+  IMPL_JSONABLE(UnitKind, *_ptr)
 }

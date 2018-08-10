@@ -6,11 +6,9 @@
 #include "macros.h"
 
 namespace godot {
-  class Colour : public godot::GodotScript<Reference> {
+  class Colour : public godot::GodotScript<Reference>, public OwnerOrPointer<::Colour> {
     GODOT_CLASS(Colour)
    public:
-    ::Colour _colour;
-
     static void _register_methods();
 
     INTF_JSONABLE

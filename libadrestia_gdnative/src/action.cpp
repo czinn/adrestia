@@ -10,7 +10,7 @@ namespace godot {
   }
 
   void Action::init_tech_colour(Colour *colour) {
-    _action = std::make_shared<::Action>(colour->_colour);
+    set_ptr(new ::Action(*colour->_ptr));
   }
 
   void Action::init_units(Array units) {
@@ -19,8 +19,8 @@ namespace godot {
       String s = units[i];
       units_.push_back(std::string(s.ascii().get_data()));
     }
-    _action = std::make_shared<::Action>(units_);
+    set_ptr(new ::Action(units_));
   }
 
-  IMPL_JSONABLE(Action, *_action)
+  IMPL_JSONABLE(Action, *_ptr)
 }

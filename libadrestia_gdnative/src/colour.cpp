@@ -7,5 +7,5 @@ namespace godot {
     REGISTER_JSONABLE(Colour)
   }
 
-  IMPL_JSONABLE(Colour, _colour)
+  IMPL_JSONABLE(Colour, *_ptr)
 }

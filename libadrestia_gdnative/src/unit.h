@@ -7,13 +7,10 @@
 #include "macros.h"
 
 namespace godot {
-  class Unit : public godot::GodotScript<Reference> {
+  class Unit : public godot::GodotScript<Reference>, OwnerOrPointer<::Unit> {
     GODOT_CLASS(Unit)
    public:
-    Unit();
-    ~Unit();
     static void _register_methods();
-    ::Unit _unit;
 
     String get_id() const;
     INTF_TO_JSONABLE

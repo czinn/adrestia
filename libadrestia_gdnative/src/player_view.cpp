@@ -7,5 +7,5 @@ namespace godot {
     REGISTER_TO_JSONABLE(PlayerView)
   }
 
-  IMPL_TO_JSONABLE(PlayerView, _player_view)
+  IMPL_TO_JSONABLE(PlayerView, *_ptr)
 }

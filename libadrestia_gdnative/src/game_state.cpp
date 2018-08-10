@@ -11,14 +11,14 @@ namespace godot {
   }
 
   void GameState::init(GameRules *rules, int num_players) {
-    _game_state = std::make_shared<::GameState>(rules->_game_rules, num_players);
+    set_ptr(new ::GameState(*rules->_ptr, num_players));
   }
 
   bool GameState::perform_action(int pid, Action *action) {
-    return _game_state->perform_action(pid, *action->_action);
+    return _ptr->perform_action(pid, *action->_ptr);
   }
 
-  IMPL_TO_JSONABLE(GameState, *_game_state)
+  IMPL_TO_JSONABLE(GameState, *_ptr)
 
   Array GameState::players() const {
     // TODO(jim): implement

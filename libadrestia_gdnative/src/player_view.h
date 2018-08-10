@@ -6,13 +6,11 @@
 #include "macros.h"
 
 namespace godot {
-  class PlayerView : public godot::GodotScript<Reference> {
+  class PlayerView : public godot::GodotScript<Reference>, public OwnerOrPointer<::PlayerView> {
     GODOT_CLASS(PlayerView)
    public:
     static void _register_methods();
-    ::PlayerView _player_view;
 
-    String get_id() const;
     INTF_TO_JSONABLE
   };
 }

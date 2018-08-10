@@ -7,5 +7,5 @@ namespace godot {
     REGISTER_JSONABLE(GameRules)
   }
 
-  IMPL_JSONABLE(GameRules, _game_rules)
+  IMPL_JSONABLE(GameRules, *_ptr)
 }
