@@ -7,7 +7,7 @@ namespace godot {
   void GameState::_register_methods() {
     register_method("init", &GameState::init);
     register_method("perform_action", &GameState::perform_action);
-    register_method("as_json", &GameState::as_json);
+    REGISTER_TO_JSONABLE(GameState)
   }
 
   void GameState::init(GameRules *rules, int num_players) {
@@ -18,7 +18,10 @@ namespace godot {
     return _game_state->perform_action(pid, *action->_action);
   }
 
-  Variant GameState::as_json() const {
-    return to_godot_json(*_game_state);
+  IMPL_TO_JSONABLE(GameState, *_game_state)
+
+  Array GameState::players() const {
+    // TODO(jim): implement
+    return Array();
   }
 }

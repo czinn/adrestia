@@ -10,9 +10,10 @@ namespace godot {
     GODOT_CLASS(Player)
    public:
     static void _register_methods();
-    ::Player _player;
+    ::Player *_player;
+    Ref<Reference> _owner;
 
-    void set(::Player *p);
+    void set(::Player *p, Reference *o);
     String get_id() const;
     INTF_TO_JSONABLE
   };

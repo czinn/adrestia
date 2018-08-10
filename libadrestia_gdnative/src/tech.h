@@ -13,6 +13,7 @@ namespace godot {
    public:
     static void _register_methods();
     ::Tech _tech;
+    Ref<Reference> _owner;
     // jim: This works because of some incredible C++ templating magic (ArgCast
     // in Godot.hpp).
     void init(int r, int g, int b);
