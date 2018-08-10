@@ -108,6 +108,7 @@ int main() {
       }
     }
     
+    // Print attacks made in the previous battle
     const shared_ptr<Battle> last_battle = *game.get_battles().rbegin();
     const vector<PlayerView> &player_views = last_battle->get_players();
     const vector<Attack> &attacks = last_battle->get_attacks();

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "tech.h"
 #include "json.h"
 
