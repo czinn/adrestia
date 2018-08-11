@@ -12,5 +12,5 @@ class PlayerView {
 
   std::map<int, Unit> units;
   bool alive;
-  std::vector<std::shared_ptr<const std::vector<const UnitKind*>>> build_order;
+  int coins;
 };

@@ -16,14 +16,14 @@ Player::Player(const GameRules &rules) : alive(true), coins(0), next_unit(0) {
 Player::Player(const Player &player)
     : units(player.units)
     , alive(player.alive)
-    , tech(player.tech)
     , coins(player.coins)
+    , tech(player.tech)
     , next_unit(player.next_unit) {}
 
 Player::Player(const GameRules &rules, const json &j)
     : alive(j["alive"])
-    , tech(j["tech"])
     , coins(j["coins"])
+    , tech(j["tech"])
     , next_unit(j["next_unit"]) {
   for (auto it = j["units"].begin(); it != j["units"].end(); it++) {
     const UnitKind &kind = rules.get_unit_kind(it.value()["kind"]);
@@ -34,8 +34,8 @@ Player::Player(const GameRules &rules, const json &j)
 Player &Player::operator=(Player &player) {
   std::swap(units, player.units);
   std::swap(alive, player.alive);
-  std::swap(tech, player.tech);
   std::swap(coins, player.coins);
+  std::swap(tech, player.tech);
   std::swap(next_unit, player.next_unit);
   return *this;
 }

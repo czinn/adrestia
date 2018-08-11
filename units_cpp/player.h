@@ -22,8 +22,7 @@ class Player {
 
   std::map<int, Unit> units;
   bool alive;
-  Tech tech;
   int coins;
- private:
+  Tech tech;
   int next_unit;
 };

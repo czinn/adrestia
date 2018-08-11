@@ -5,7 +5,8 @@ PlayerView::PlayerView() {}
 
 PlayerView::PlayerView(const Player &player)
     : units(player.units)
-    , alive(player.alive) {}
+    , alive(player.alive)
+    , coins(player.coins) {}
 
 PlayerView::PlayerView(const GameRules &rules, const json &j) : alive(j["alive"]) {
   for (auto it = j["units"].begin(); it != j["units"].end(); it++) {
