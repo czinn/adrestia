@@ -3,6 +3,8 @@
 using namespace godot;
 
 namespace godot {
+  const char *UnitKind::resource_path = "res://native/unit_kind.gdns";
+
   void UnitKind::_register_methods() {
     register_method("get_id", &UnitKind::get_id);
     REGISTER_JSONABLE(UnitKind)

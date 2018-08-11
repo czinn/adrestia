@@ -6,8 +6,10 @@ using namespace godot;
 
 namespace godot {
   void Tech::_register_methods() {
-    register_method("add", &godot::Tech::add);
     register_method("init", &godot::Tech::init);
+    register_method("increment", &godot::Tech::increment);
+    register_method("add", &godot::Tech::add);
+    register_method("includes", &godot::Tech::includes);
     REGISTER_JSONABLE(Tech)
   }
 

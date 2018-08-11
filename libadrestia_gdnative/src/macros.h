@@ -1,5 +1,7 @@
 #pragma once
 #include <Godot.hpp>
+#include <NativeScript.hpp>
+#include <ResourceLoader.hpp>
 #include <JSONParseResult.hpp>
 #include <JSON.hpp>
 
@@ -18,24 +20,33 @@ godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
 template<typename T>
 class OwnerOrPointer {
  private:
+  // Owner of the data. If null, I own the data.
   godot::Ref<godot::Reference> _owner;
  public:
-  T *_ptr;
+  T *_ptr; // Pointer to the underlying data.
+  static const char *resource_path;
   inline void del_ptr() {
     if (_ptr != nullptr && _owner.is_null()) {
+      godot::Godot::print("Pointer deleted");
+      //godot::Godot::print(godot::String(nlohmann::json(*_ptr).dump().c_str()));
       delete _ptr;
     }
   }
 
-  OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {}
-  ~OwnerOrPointer() { del_ptr(); }
+  OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {
+    godot::Godot::print("Thing instantiated");
+  }
+  ~OwnerOrPointer() {
+    godot::Godot::print("Thing deinstantiated");
+    del_ptr();
+  }
 
   OwnerOrPointer &operator=(const OwnerOrPointer &other) {
     // jim: Extremely fast failure if the copy assignment operator is ever
     // called. If we decide we actually do want to use it, uncomment the
-    // following line and it should work.
+    // following line and it should probably work?
     abort();
-    assert(false);
+
     _owner = other._owner;
     if (other._ptr != nullptr && _owner.is_null()) {
       _ptr = new T();
@@ -50,15 +61,33 @@ class OwnerOrPointer {
     del_ptr();
     _ptr = u;
     _owner.unref();
+    godot::Godot::print("Pointer set (owning)");
   }
 
   // Don't own it.
   void set_ptr(T *u, godot::Reference *r) {
     del_ptr();
     _ptr = u;
-    _owner = r;
+    _owner = godot::Ref<godot::Reference>(r);
+    godot::Godot::print("Pointer set (non-owning)");
   }
 };
+
+// jim: So it turns out instantiating other scripts from within a
+// nativescript is kinda hard. Our GodotScripts need owners which have to be
+// created by Godot, so we need a handle to the NativeScript object (the
+// thing we normally call .new() on from gdscript). That means either:
+// - methods that instantiate other scripts need to be passed a NativeScript*
+// for every other thing they instantiate (yuck)
+// OR:
+// - we need to load these NativeScripts through ResourceLoader and make them
+// available to the class somehow (we do this for now)
+template<class T>
+std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_script_) {
+  godot::Variant v = native_script_->call("new");
+  T *t = godot::as<T>(v);
+  return std::make_pair(v, t);
+}
 
 // TO_JSONABLE:
 // JSONParseResult as_json()
@@ -88,9 +117,8 @@ class OwnerOrPointer {
 
 #define IMPL_JSONABLE(Thing, thing)\
   void Thing::load_json_string(String str) {\
-    std::string s(str.ascii().get_data());\
     ::Thing *tmp = new ::Thing();\
-    *tmp = nlohmann::json::parse(s);\
+    *tmp = nlohmann::json::parse(str.ascii().get_data());\
     set_ptr(tmp);\
   }\
   IMPL_TO_JSONABLE(Thing, thing)

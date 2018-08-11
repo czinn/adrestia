@@ -10,9 +10,8 @@ namespace godot {
     GODOT_CLASS(UnitKind)
    public:
     static void _register_methods();
-
     String get_id() const;
-
+    static const char *resource_path;
     INTF_JSONABLE
   };
 }

@@ -4,33 +4,60 @@ const GameRules = preload('res://native/game_rules.gdns')
 const GameState = preload('res://native/game_state.gdns')
 const Colour = preload('res://native/colour.gdns')
 const Action = preload('res://native/action.gdns')
+const Tech = preload('res://native/tech.gdns')
+const UnitKind = preload('res://native/unit_kind.gdns')
 
-func _init():
+func trial():
+  print('BEGIN')
   var file = File.new()
   file.open('res://data/rules.json', file.READ)
-
   var rules = GameRules.new()
   rules.load_json_string(file.get_as_text())
-  print(rules.as_json().result)
+  print('END')
+  #var tech = Tech.new()
 
-  var state = GameState.new();
-  state.init(rules, 2)
+  #print(rules)
+  #print(rules.as_json().result)
+  #print(rules.as_json().result.unit_kinds[0].tech)
+  #print(rules.as_json().result.unit_kinds[0].tech)
 
-  var colour = Colour.new();
-  colour.load_json_string('"RED"')
-  var action = Action.new();
-  action.init_tech_colour(colour)
+  #tech.load_json_string(JSON.print(rules.as_json().result.unit_kinds[0].tech))
+  #JSON.print(rules.as_json().result.unit_kinds[0].tech)
+  ##print(tech)
+  ##print(tech.includes(tech))
 
-  state.perform_action(0, action)
+  #print(rules.get_unit_cap())
 
-  colour.load_json_string('"GREEN"')
-  action.init_tech_colour(colour)
-  state.perform_action(1, action)
+  #var one_kind = rules.get_unit_kind('avatar')
+  #print(one_kind)
+  #print(one_kind.get_id())
 
-  action.init_units(['grunt', 'grunt'])
-  state.perform_action(0, action)
-  state.perform_action(1, action)
+  #var unit_kinds = rules.get_unit_kinds()
+  #print(unit_kinds)
+  #print(unit_kinds['avatar'])
+  #print(unit_kinds['avatar'].get_id())
 
-  print(state.as_json().result)
+  #var state = GameState.new();
+  #state.init(rules, 2)
 
+  #var colour = Colour.new();
+  #colour.load_json_string('"RED"')
+  #var action = Action.new();
+  #action.init_tech_colour(colour)
+
+  #state.perform_action(0, action)
+
+  #colour.load_json_string('"GREEN"')
+  #action.init_tech_colour(colour)
+  #state.perform_action(1, action)
+
+  #action.init_units(['grunt', 'grunt'])
+  #state.perform_action(0, action)
+  #state.perform_action(1, action)
+
+  #print(state.as_json().result)
+
+func _init():
+  while true:
+    trial()
   quit()
