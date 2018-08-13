@@ -7,12 +7,16 @@ const Action = preload('res://native/action.gdns')
 const Tech = preload('res://native/tech.gdns')
 const UnitKind = preload('res://native/unit_kind.gdns')
 
+var rules_file
+var rules_text
+var rules = GameRules.new()
+
 func trial():
   print('BEGIN')
-  var file = File.new()
-  file.open('res://data/rules.json', file.READ)
-  var rules = GameRules.new()
-  rules.load_json_string(file.get_as_text())
+  var game_state = GameState.new()
+  #var colour = Colour.new();
+  #colour.load_json_string('"RED"')
+  #rules.load_json_string(rules_json_text)
   print('END')
   #var tech = Tech.new()
 
@@ -57,7 +61,14 @@ func trial():
 
   #print(state.as_json().result)
 
+#37744
 func _init():
+  print('Begin of all')
+  rules_file = File.new()
+  rules_file.open('res://data/rules.json', File.READ)
+  rules_text = rules_file.get_as_text()
+  rules.load_json_string(rules_text)
+  rules_file.close()
   while true:
     trial()
   quit()

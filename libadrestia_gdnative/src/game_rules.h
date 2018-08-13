@@ -11,7 +11,7 @@ namespace godot {
   class GameRules : public godot::GodotScript<Reference>, public OwnerOrPointer<::GameRules> {
     GODOT_CLASS(GameRules)
    private:
-      godot::Ref<godot::NativeScript> UnitKind_;
+    godot::Ref<godot::NativeScript> UnitKind_;
    public:
     GameRules();
     static void _register_methods();

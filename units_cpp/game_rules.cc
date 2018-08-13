@@ -2,7 +2,6 @@
 
 #include <fstream>
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // CONSTRUCTORS
 //----------------------------------------------------------------------------------------------------------------------
@@ -17,7 +16,6 @@ GameRules::GameRules(std::string rules_filename) {
 	*this = j;
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // GETTERS AND SETTERS
 //----------------------------------------------------------------------------------------------------------------------
@@ -25,21 +23,17 @@ const UnitKind &GameRules::get_unit_kind(std::string id) const {
 	return unit_kinds.at(id);
 }
 
-
 int GameRules::get_unit_cap() const {
 	return unit_cap;
 }
-
 
 const std::map<std::string, UnitKind> &GameRules::get_unit_kinds() const {
 	return unit_kinds;
 }
 
-
 const std::vector<UnitKind*> &GameRules::get_starting_units() const {
 	return starting_units;
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // OTHER METHODS

@@ -118,7 +118,7 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
 #define IMPL_JSONABLE(Thing, thing)\
   void Thing::load_json_string(String str) {\
     ::Thing *tmp = new ::Thing();\
-    *tmp = nlohmann::json::parse(str.ascii().get_data());\
+    *tmp = nlohmann::json::parse(str.utf8().get_data());\
     set_ptr(tmp);\
   }\
   IMPL_TO_JSONABLE(Thing, thing)
