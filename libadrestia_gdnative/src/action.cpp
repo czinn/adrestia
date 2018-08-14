@@ -1,12 +1,14 @@
 #include "action.h"
 
+#define CLASSNAME Action
+
 using namespace godot;
 
 namespace godot {
   void Action::_register_methods() {
     register_method("init_tech_colour", &Action::init_tech_colour);
     register_method("init_units", &Action::init_units);
-    REGISTER_JSONABLE(Action)
+    REGISTER_JSONABLE
   }
 
   void Action::init_tech_colour(Colour *colour) {
@@ -22,5 +24,5 @@ namespace godot {
     set_ptr(new ::Action(units_));
   }
 
-  IMPL_JSONABLE(Action, *_ptr)
+  IMPL_JSONABLE(*_ptr)
 }
