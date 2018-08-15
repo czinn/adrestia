@@ -116,6 +116,26 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
     return v;\
   }
 
+// NULLABLE:
+// bool is_null()
+// bool not_null()
+
+#define REGISTER_NULLABLE\
+  register_method("is_null", &CLASSNAME::is_null);\
+  register_method("not_null", &CLASSNAME::not_null);
+
+#define INTF_NULLABLE\
+  bool is_null() const;\
+  bool not_null() const;
+
+#define IMPL_NULLABLE\
+  bool CLASSNAME::is_null() const {\
+    return _ptr == nullptr;\
+  }\
+  bool CLASSNAME::not_null() const {\
+    return _ptr != nullptr;\
+  }
+
 // TO_JSONABLE:
 // JSONParseResult as_json()
 
@@ -130,8 +150,7 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
     return to_godot_json(*_ptr);\
   }
 
-// JSONABLE:
-// TO_JSONABLE
+// JSONABLE: JSONABLE and
 // void load_json_string(String)
 
 #define REGISTER_JSONABLE\

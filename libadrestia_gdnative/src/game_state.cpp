@@ -9,6 +9,7 @@ namespace godot {
   void GameState::_register_methods() {
     register_method("init", &GameState::init);
     register_method("perform_action", &GameState::perform_action);
+    REGISTER_NULLABLE
     REGISTER_TO_JSONABLE
   }
 
@@ -25,5 +26,6 @@ namespace godot {
     return Array();
   }
 
+  IMPL_NULLABLE
   IMPL_TO_JSONABLE
 }

@@ -13,6 +13,7 @@ namespace godot {
     static void _register_methods();
 
     String get_id() const;
+    INTF_NULLABLE
     INTF_TO_JSONABLE
   };
 }

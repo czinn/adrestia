@@ -16,6 +16,8 @@ namespace godot {
     bool perform_action(int pid, Action *action);
     String get_id() const;
     Array players() const;
+
+    INTF_NULLABLE
     INTF_TO_JSONABLE
   };
 }

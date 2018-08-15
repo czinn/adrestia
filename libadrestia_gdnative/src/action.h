@@ -16,6 +16,7 @@ namespace godot {
     void init_units(Array units);
     String get_id() const;
 
+    INTF_NULLABLE
     INTF_JSONABLE
   };
 }

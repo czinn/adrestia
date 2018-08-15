@@ -13,6 +13,7 @@ namespace godot {
     register_method("get_unit_cap", &GameRules::get_unit_cap);
     register_method("get_unit_kinds", &GameRules::get_unit_kinds);
     register_method("get_unit_kind", &GameRules::get_unit_kind);
+    REGISTER_NULLABLE
     REGISTER_JSONABLE
   }
 
@@ -38,5 +39,6 @@ namespace godot {
     return v;
   }
 
+  IMPL_NULLABLE
   IMPL_JSONABLE
 }

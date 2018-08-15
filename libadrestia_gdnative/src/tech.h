@@ -16,12 +16,12 @@ namespace godot {
     // jim: This works because of some incredible C++ templating magic (ArgCast
     // in Godot.hpp).
 
-    bool good() const;
     void init(int r, int g, int b);
     void increment(Colour *c);
     void add(Tech *other);
     bool includes(Tech *other);
 
+    INTF_NULLABLE
     INTF_JSONABLE
   };
 }

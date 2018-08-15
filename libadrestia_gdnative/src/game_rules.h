@@ -20,6 +20,7 @@ namespace godot {
     godot::Dictionary get_unit_kinds();
     godot::Variant get_unit_kind(godot::String id);
 
+    INTF_NULLABLE
     INTF_JSONABLE
   };
 }

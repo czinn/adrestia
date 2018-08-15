@@ -25,6 +25,7 @@ namespace godot {
     register_method("get_font", &UnitKind::get_font);
     register_method("get_image", &UnitKind::get_image);
     register_method("get_tiles", &UnitKind::get_tiles);
+    REGISTER_NULLABLE
     REGISTER_JSONABLE
   }
 
@@ -41,5 +42,6 @@ namespace godot {
   FORWARD_STRING_GETTER(get_image)
   FORWARD_ARRAY_GETTER(get_tiles)
 
+  IMPL_NULLABLE
   IMPL_JSONABLE
 }

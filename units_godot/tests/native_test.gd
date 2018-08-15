@@ -19,7 +19,7 @@ func trial():
   for unit_name in unit_kinds:
     var unit_kind = unit_kinds[unit_name]
     var tech = unit_kind.get_tech()
-    if tech.good():
+    if tech.not_null():
       print(tech.as_json().result)
   print('END')
   #var tech = Tech.new()

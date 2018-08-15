@@ -11,6 +11,7 @@ namespace godot {
    public:
     static void _register_methods();
 
+    INTF_NULLABLE
     INTF_TO_JSONABLE
   };
 }

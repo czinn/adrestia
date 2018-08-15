@@ -31,6 +31,7 @@ namespace godot {
     Array get_tiles() const;
     String get_label() const;
 
+    INTF_NULLABLE
     INTF_JSONABLE
   };
 }
