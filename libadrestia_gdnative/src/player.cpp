@@ -2,10 +2,12 @@
 
 using namespace godot;
 
+#define CLASSNAME Player
+
 namespace godot {
   void Player::_register_methods() {
-    REGISTER_TO_JSONABLE(Player)
+    REGISTER_TO_JSONABLE
   }
 
-  IMPL_TO_JSONABLE(Player, *_ptr)
+  IMPL_TO_JSONABLE
 }

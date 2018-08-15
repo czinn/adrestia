@@ -3,11 +3,13 @@
 
 using namespace godot;
 
+#define CLASSNAME GameState
+
 namespace godot {
   void GameState::_register_methods() {
     register_method("init", &GameState::init);
     register_method("perform_action", &GameState::perform_action);
-    REGISTER_TO_JSONABLE(GameState)
+    REGISTER_TO_JSONABLE
   }
 
   void GameState::init(GameRules *rules, int num_players) {
@@ -18,10 +20,10 @@ namespace godot {
     return _ptr->perform_action(pid, *action->_ptr);
   }
 
-  IMPL_TO_JSONABLE(GameState, *_ptr)
-
   Array GameState::players() const {
     // TODO(jim): implement
     return Array();
   }
+
+  IMPL_TO_JSONABLE
 }

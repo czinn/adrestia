@@ -10,17 +10,20 @@ const UnitKind = preload('res://native/unit_kind.gdns')
 var rules_file
 var rules_text
 var rules = GameRules.new()
+var game_state = GameState.new()
 
 func trial():
   print('BEGIN')
-  var game_state = GameState.new()
-  #var colour = Colour.new();
-  #colour.load_json_string('"RED"')
-  #rules.load_json_string(rules_json_text)
+  game_state.init(rules, 2)
+  var unit_kinds = rules.get_unit_kinds()
+  for unit_name in unit_kinds:
+    var unit_kind = unit_kinds[unit_name]
+    var tech = unit_kind.get_tech()
+    if tech.good():
+      print(tech.as_json().result)
   print('END')
   #var tech = Tech.new()
 
-  #print(rules)
   #print(rules.as_json().result)
   #print(rules.as_json().result.unit_kinds[0].tech)
   #print(rules.as_json().result.unit_kinds[0].tech)
@@ -69,6 +72,6 @@ func _init():
   rules_text = rules_file.get_as_text()
   rules.load_json_string(rules_text)
   rules_file.close()
-  while true:
+  for i in range(5):
     trial()
   quit()

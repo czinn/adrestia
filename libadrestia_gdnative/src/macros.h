@@ -24,20 +24,19 @@ class OwnerOrPointer {
   godot::Ref<godot::Reference> _owner;
  public:
   T *_ptr; // Pointer to the underlying data.
-  static const char *resource_path;
   inline void del_ptr() {
     if (_ptr != nullptr && _owner.is_null()) {
-      godot::Godot::print("Pointer deleted");
+      //godot::Godot::print("Pointer deleted");
       //godot::Godot::print(godot::String(nlohmann::json(*_ptr).dump().c_str()));
       delete _ptr;
     }
   }
 
   OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {
-    godot::Godot::print("Thing instantiated");
+    //godot::Godot::print("Thing instantiated");
   }
   ~OwnerOrPointer() {
-    godot::Godot::print("Thing deinstantiated");
+    //godot::Godot::print("Thing deinstantiated");
     del_ptr();
   }
 
@@ -61,7 +60,7 @@ class OwnerOrPointer {
     del_ptr();
     _ptr = u;
     _owner.unref();
-    godot::Godot::print("Pointer set (owning)");
+    //godot::Godot::print("Pointer set (owning)");
   }
 
   // Don't own it.
@@ -69,7 +68,7 @@ class OwnerOrPointer {
     del_ptr();
     _ptr = u;
     _owner = godot::Ref<godot::Reference>(r);
-    godot::Godot::print("Pointer set (non-owning)");
+    //godot::Godot::print("Pointer set (non-owning)");
   }
 };
 
@@ -81,7 +80,7 @@ class OwnerOrPointer {
 // for every other thing they instantiate (yuck)
 // OR:
 // - we need to load these NativeScripts through ResourceLoader and make them
-// available to the class somehow (we do this for now)
+// available to the class as a member (we do this for now)
 template<class T>
 std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_script_) {
   godot::Variant v = native_script_->call("new");
@@ -89,36 +88,64 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
   return std::make_pair(v, t);
 }
 
+#define FORWARD_STRING_GETTER(getter)\
+  String CLASSNAME::getter() const {\
+    return String(_ptr->getter().c_str());\
+  }
+
+#define FORWARD_GETTER(type, getter)\
+  type CLASSNAME::getter() const {\
+    return _ptr->getter();\
+  }
+
+#define FORWARD_ARRAY_GETTER(getter)\
+  Array CLASSNAME::getter() const {\
+    Array result;\
+    for (const auto &x : _ptr->getter()) {\
+      result.append(x);\
+    }\
+    return result;\
+  }
+
+// Implied naming convention:
+// Member handles to Ref<NativeScript> for Kind are named Kind_
+#define FORWARD_SMART_PTR(Kind, getter)\
+  Variant CLASSNAME::getter() const {\
+    auto [v, kind] = instance<Kind>(Kind ## _);\
+    kind->set_ptr(_ptr->getter().get(), owner);\
+    return v;\
+  }
+
 // TO_JSONABLE:
 // JSONParseResult as_json()
 
-#define REGISTER_TO_JSONABLE(Thing)\
-  register_method("as_json", &Thing::as_json);
+#define REGISTER_TO_JSONABLE\
+  register_method("as_json", &CLASSNAME::as_json);
 
 #define INTF_TO_JSONABLE\
   Variant as_json() const;
 
-#define IMPL_TO_JSONABLE(Thing, thing)\
-  Variant Thing::as_json() const {\
-    return to_godot_json(thing);\
+#define IMPL_TO_JSONABLE\
+  Variant CLASSNAME::as_json() const {\
+    return to_godot_json(*_ptr);\
   }
 
 // JSONABLE:
 // TO_JSONABLE
 // void load_json_string(String)
 
-#define REGISTER_JSONABLE(Thing)\
-  register_method("load_json_string", &Thing::load_json_string);\
-  REGISTER_TO_JSONABLE(Thing)
+#define REGISTER_JSONABLE\
+  register_method("load_json_string", &CLASSNAME::load_json_string);\
+  REGISTER_TO_JSONABLE
 
 #define INTF_JSONABLE\
   void load_json_string(String str);\
   INTF_TO_JSONABLE
 
-#define IMPL_JSONABLE(Thing, thing)\
-  void Thing::load_json_string(String str) {\
-    ::Thing *tmp = new ::Thing();\
+#define IMPL_JSONABLE\
+  void CLASSNAME::load_json_string(String str) {\
+    ::CLASSNAME *tmp = new ::CLASSNAME();\
     *tmp = nlohmann::json::parse(str.utf8().get_data());\
     set_ptr(tmp);\
   }\
-  IMPL_TO_JSONABLE(Thing, thing)
+  IMPL_TO_JSONABLE

@@ -2,6 +2,8 @@
 
 using namespace godot;
 
+#define CLASSNAME GameRules
+
 namespace godot {
   GameRules::GameRules() {
     UnitKind_ = ResourceLoader::load(UnitKind::resource_path);
@@ -11,7 +13,7 @@ namespace godot {
     register_method("get_unit_cap", &GameRules::get_unit_cap);
     register_method("get_unit_kinds", &GameRules::get_unit_kinds);
     register_method("get_unit_kind", &GameRules::get_unit_kind);
-    REGISTER_JSONABLE(GameRules)
+    REGISTER_JSONABLE
   }
 
   int GameRules::get_unit_cap() const {
@@ -36,5 +38,5 @@ namespace godot {
     return v;
   }
 
-  IMPL_JSONABLE(GameRules, *_ptr)
+  IMPL_JSONABLE
 }
