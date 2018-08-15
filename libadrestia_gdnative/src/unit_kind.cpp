@@ -12,19 +12,19 @@ namespace godot {
   }
 
   void UnitKind::_register_methods() {
-    register_method("get_id", &UnitKind::get_id);
-    register_method("get_name", &UnitKind::get_name);
-    register_method("get_image", &UnitKind::get_image);
-    register_method("get_health", &UnitKind::get_health);
-    register_method("get_shields", &UnitKind::get_shields);
-    register_method("get_width", &UnitKind::get_width);
-    register_method("get_build_time", &UnitKind::get_build_time);
-    register_method("get_attack", &UnitKind::get_attack);
-    register_method("get_cost", &UnitKind::get_cost);
-    register_method("get_tech", &UnitKind::get_tech);
-    register_method("get_font", &UnitKind::get_font);
-    register_method("get_image", &UnitKind::get_image);
-    register_method("get_tiles", &UnitKind::get_tiles);
+    REGISTER_METHOD(get_id)
+    REGISTER_METHOD(get_name)
+    REGISTER_METHOD(get_image)
+    REGISTER_METHOD(get_health)
+    REGISTER_METHOD(get_shields)
+    REGISTER_METHOD(get_width)
+    REGISTER_METHOD(get_build_time)
+    REGISTER_METHOD(get_attack)
+    REGISTER_METHOD(get_cost)
+    REGISTER_METHOD(get_tech)
+    REGISTER_METHOD(get_font)
+    REGISTER_METHOD(get_image)
+    REGISTER_METHOD(get_tiles)
     REGISTER_NULLABLE
     REGISTER_JSONABLE
   }

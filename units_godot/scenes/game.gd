@@ -1,6 +1,6 @@
 extends Node
 
-var unit_buy_bar = preload('res://components/unit_buy_bar.tscn')
+var Unit_buy_bar = preload('res://components/unit_buy_bar.tscn')
 var Action = preload('res://native/action.gdns')
 
 onready var g = get_node("/root/global")
@@ -24,7 +24,8 @@ func update_ui():
   b_label.text = str(view.players[0].resources.b)
   c_label.text = "0"
   for unit in unit_bars:
-    unit_bars[unit].buy_button.disabled = !view.players[0].resources.subsumes(units[unit].cost)
+    # TODO jim: player coins less than unit cost
+    unit_bars[unit].buy_button.disabled = !view.players[0].coins < g.rules.get_unit_kind(unit).get_cost()
   
   for pid in range(view.players.size()):
     var player = view.players[pid]
@@ -34,12 +35,16 @@ func update_ui():
     armies.get_child(1 - pid).data = player.units.duplicate()
 
 func _ready():
-  for unit in units:
-    if units[unit].cost != null:
-      var bar = unit_buy_bar.instance()
-      bar.init(units[unit]);
-      unit_bars[unit] = bar
-      bar.connect("buy_unit", self, "_on_buy_unit", [unit])
+  # Add units in rules to unit buy bar.
+  var unit_kinds = g.rules.get_unit_kinds()
+  for unit_id in unit_kinds:
+    var unit_kind = unit_kinds[unit_id]
+    var tech = unit_kind.get_tech()
+    if tech.not_null():
+      var bar = Unit_buy_bar.instance()
+      bar.init(unit_kind);
+      unit_bars[unit_id] = bar
+      bar.connect("buy_unit", self, "_on_buy_unit", [unit_id])
       unit_list.add_child(bar)
   end_turn_button.connect("pressed", self, "_on_end_turn_button_pressed")
   animation_player.play('particle')

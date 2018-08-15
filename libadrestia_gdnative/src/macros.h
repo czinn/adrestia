@@ -88,6 +88,9 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
   return std::make_pair(v, t);
 }
 
+#define REGISTER_METHOD(method)\
+  register_method(#method, &CLASSNAME::method);
+
 #define FORWARD_STRING_GETTER(getter)\
   String CLASSNAME::getter() const {\
     return String(_ptr->getter().c_str());\
