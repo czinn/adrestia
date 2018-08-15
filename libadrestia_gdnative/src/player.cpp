@@ -1,13 +1,11 @@
 #include "player.h"
 
-#define CLASSNAME Player
-
 using namespace godot;
 
 namespace godot {
   void Player::_register_methods() {
-    REGISTER_TO_JSONABLE
+    REGISTER_TO_JSONABLE(Player)
   }
 
-  IMPL_TO_JSONABLE(*_ptr)
+  IMPL_TO_JSONABLE(Player, *_ptr)
 }

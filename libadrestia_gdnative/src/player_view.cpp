@@ -1,13 +1,11 @@
 #include "player_view.h"
 
-#define CLASSNAME PlayerView
-
 using namespace godot;
 
 namespace godot {
   void PlayerView::_register_methods() {
-    REGISTER_TO_JSONABLE
+    REGISTER_TO_JSONABLE(PlayerView)
   }
 
-  IMPL_TO_JSONABLE(*_ptr)
+  IMPL_TO_JSONABLE(PlayerView, *_ptr)
 }

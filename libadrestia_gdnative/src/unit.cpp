@@ -1,13 +1,11 @@
 #include "unit.h"
 
-#define CLASSNAME Unit
-
 using namespace godot;
 
 namespace godot {
   void Unit::_register_methods() {
-    REGISTER_TO_JSONABLE
+    REGISTER_TO_JSONABLE(Unit)
   }
 
-  IMPL_TO_JSONABLE(*_ptr)
+  IMPL_TO_JSONABLE(Unit, *_ptr)
 }

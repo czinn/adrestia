@@ -1,7 +1,5 @@
 #include "game_rules.h"
 
-#define CLASSNAME GameRules
-
 using namespace godot;
 
 namespace godot {
@@ -13,7 +11,7 @@ namespace godot {
     register_method("get_unit_cap", &GameRules::get_unit_cap);
     register_method("get_unit_kinds", &GameRules::get_unit_kinds);
     register_method("get_unit_kind", &GameRules::get_unit_kind);
-    REGISTER_JSONABLE
+    REGISTER_JSONABLE(GameRules)
   }
 
   int GameRules::get_unit_cap() const {
@@ -38,5 +36,5 @@ namespace godot {
     return v;
   }
 
-  IMPL_JSONABLE(*_ptr)
+  IMPL_JSONABLE(GameRules, *_ptr)
 }

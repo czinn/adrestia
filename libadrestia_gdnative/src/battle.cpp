@@ -1,13 +1,11 @@
 #include "battle.h"
 
-#define CLASSNAME Battle
-
 using namespace godot;
 
 namespace godot {
   void Battle::_register_methods() {
-    REGISTER_TO_JSONABLE
+    REGISTER_TO_JSONABLE(Battle)
   }
 
-  IMPL_TO_JSONABLE(*_ptr)
+  IMPL_TO_JSONABLE(Battle, *_ptr)
 }
