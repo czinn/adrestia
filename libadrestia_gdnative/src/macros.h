@@ -25,11 +25,12 @@ godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
 // If the _owner is null, we know that we ourselves own _ptr and must free it.
 // Otherwise, another Godot object owns it and we hold the _owner Ref to them
 // to make sure they don't free it.
-template<typename T>
+template<class T>
 class OwnerOrPointer {
  private:
   // Owner of the data. If null, I own the data.
   godot::Ref<godot::Reference> _owner;
+
  public:
   T *_ptr; // Pointer to the underlying data.
   inline void del_ptr() {
@@ -78,6 +79,15 @@ class OwnerOrPointer {
     _owner = godot::Ref<godot::Reference>(r);
     //godot::Godot::print("Pointer set (non-owning)");
   }
+
+  //static const char *resource_path;
+  //godot::Ref<godot::NativeScript> native_script;
+
+  //static std::pair<godot::Variant, T*> instance() {
+  //  godot::Variant v = native_script->call("new");
+  //  T *t = godot::as<T>(v);
+  //  return std::make_pair(v, t);
+  //}
 };
 
 // jim: So it turns out instantiating other scripts from within a
@@ -96,17 +106,51 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
   return std::make_pair(v, t);
 }
 
+// TODO: jim: Can we instance our classes by storing a single static
+// Ref<NativeScript> for each class instead of holding Ref<NativeScript> in
+// every instance that needs one? The answer seems to be "yes, but you'll get
+// ugly warning because those refs stop the NativeScripts from ever being
+// collected". Also, instead of the following approach we would probably have
+// to use macros, because you can't instantiate a class's parent's template
+// with the class itself.
+// FOLLOWING CODE IS NOT USED
+template<class T>
+class Instanceable {
+  static const char *resource_path;
+  static godot::Ref<godot::NativeScript> native_script;
+  std::pair<godot::Variant, T*> instance() {
+    if (native_script.is_null()) {
+      native_script = godot::ResourceLoader::load(resource_path);
+    }
+    godot::Variant v = native_script->call("new");
+    T *t = godot::as<T>(v);
+    return std::make_pair(v, t);
+  }
+  ~Instanceable() {
+    // jim: We don't actually need to dereference the NativeScript whenever an
+    // instance of it is destroyed. But without this, we get the following ugly
+    // Godot error in the logs when exiting the game:
+    //   WARNING: cleanup: ObjectDB Instances still exist!
+    //   At: core/object.cpp:1989.
+    //   ERROR: clear: Resources Still in use at Exit!
+    //   At: core/resource.cpp:418.
+    // i.e. holding a static reference to the NativeScript prevents it from
+    // being destroyed when godot exits. So for now, we dereference the nativescript.
+    native_script.unref();
+  }
+};
+
 #define REGISTER_METHOD(method)\
   register_method(#method, &CLASSNAME::method);
-
-#define FORWARD_STRING_GETTER(getter)\
-  String CLASSNAME::getter() const {\
-    return String(_ptr->getter().c_str());\
-  }
 
 #define FORWARD_GETTER(type, getter)\
   type CLASSNAME::getter() const {\
     return _ptr->getter();\
+  }
+
+#define FORWARD_STRING_GETTER(getter)\
+  String CLASSNAME::getter() const {\
+    return String(_ptr->getter().c_str());\
   }
 
 #define FORWARD_ARRAY_GETTER(getter)\
