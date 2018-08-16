@@ -5,6 +5,8 @@ using namespace godot;
 #define CLASSNAME Action
 
 namespace godot {
+  const char *Action::resource_path = "res://native/action.gdns";
+
   void Action::_register_methods() {
     register_method("init_tech_colour", &Action::init_tech_colour);
     register_method("init_units", &Action::init_units);

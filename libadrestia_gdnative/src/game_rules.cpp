@@ -5,6 +5,8 @@ using namespace godot;
 #define CLASSNAME GameRules
 
 namespace godot {
+  const char *GameRules::resource_path = "res://native/game_rules.gdns";
+
   GameRules::GameRules() {
     UnitKind_ = ResourceLoader::load(UnitKind::resource_path);
   }
@@ -17,18 +19,16 @@ namespace godot {
     REGISTER_JSONABLE
   }
 
-  int GameRules::get_unit_cap() const {
-    return _ptr->get_unit_cap();
-  }
+  FORWARD_GETTER(int, get_unit_cap)
 
   Dictionary GameRules::get_unit_kinds() {
-    Dictionary d;
+    Dictionary result;
     for (auto &[kind_id, kind] : _ptr->get_unit_kinds()) {
       auto [v, uk] = instance<UnitKind>(UnitKind_);
       uk->set_ptr(const_cast<::UnitKind*>(&kind), owner);
-      d[String(kind_id.c_str())] = v;
+      result[String(kind_id.c_str())] = v;
     }
-    return d;
+    return result;
   }
 
   Variant GameRules::get_unit_kind(String id) {

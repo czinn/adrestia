@@ -5,6 +5,14 @@
 #include <JSONParseResult.hpp>
 #include <JSON.hpp>
 
+// Some metaprogramming magic to allow arity overloading macros.
+// From https://stackoverflow.com/questions/16683146/can-macros-be-overloaded-by-number-of-arguments
+#define CAT( A, B ) A ## B
+#define SELECT( NAME, NUM ) CAT( NAME ## _, NUM )
+#define GET_COUNT( _1, _2, _3, _4, _5, _6 /* ad nauseam */, COUNT, ... ) COUNT
+#define VA_SIZE( ... ) GET_COUNT( __VA_ARGS__, 6, 5, 4, 3, 2, 1 )
+#define VA_SELECT( NAME, ... ) SELECT( NAME, VA_SIZE(__VA_ARGS__) )(__VA_ARGS__)
+
 template<typename T>
 godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
   nlohmann::json j = t;
@@ -112,11 +120,47 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
 
 // Implied naming convention:
 // Member handles to Ref<NativeScript> for Kind are named Kind_
-#define FORWARD_SMART_PTR(Kind, getter)\
+#define FORWARD_SMART_PTR_GETTER(Kind, getter)\
   Variant CLASSNAME::getter() const {\
     auto [v, kind] = instance<Kind>(Kind ## _);\
     kind->set_ptr(_ptr->getter().get(), owner);\
     return v;\
+  }
+
+#define FORWARD_REF_GETTER(Kind, getter)\
+  Variant CLASSNAME::getter() const {\
+    auto [v, kind] = instance<Kind>(Kind ## _);\
+    kind->set_ptr(const_cast<::Kind*>(&_ptr->getter()));\
+    return v;\
+  }
+
+#define FORWARD_REF_ARRAY_GETTER(Kind, getter)\
+  Array CLASSNAME::getter() const {\
+    Array result;\
+    for (const auto &x : _ptr->getter()) {\
+      auto [v, thing] = instance<Kind>(Kind ## _);\
+      thing->set_ptr(const_cast<::Kind*>(&x));\
+      result.append(v);\
+    }\
+    return result;\
+  }
+
+// SETGET(Type, member):
+// Type get_member()
+// void set_member(Type x)
+#define REGISTER_SETGET(member, default_value)\
+  register_property(#member, &CLASSNAME::set_ ## member, &CLASSNAME::get_ ## member, default_value);
+
+#define INTF_SETGET(Type, member)\
+  Type get_ ## member() const;\
+  void set_ ## member(Type value);
+
+#define IMPL_SETGET(Type, member)\
+  Type CLASSNAME::get_ ## member() const {\
+    return _ptr->member;\
+  }\
+  void CLASSNAME::set_ ## member(Type x) {\
+    _ptr->member = x;\
   }
 
 // NULLABLE:

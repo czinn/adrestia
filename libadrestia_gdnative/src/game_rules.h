@@ -14,6 +14,7 @@ namespace godot {
     godot::Ref<godot::NativeScript> UnitKind_;
    public:
     GameRules();
+    static const char *resource_path;
     static void _register_methods();
 
     int get_unit_cap() const;

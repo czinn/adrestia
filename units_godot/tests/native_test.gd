@@ -15,56 +15,33 @@ var game_state = GameState.new()
 func trial():
   print('BEGIN')
   game_state.init(rules, 2)
-  var unit_kinds = rules.get_unit_kinds()
-  for unit_name in unit_kinds:
-    var unit_kind = unit_kinds[unit_name]
-    var tech = unit_kind.get_tech()
-    if tech.not_null():
-      print(tech.as_json().result)
+  print('Welcome to Adrestia!')
+  print('Unit cap is %d' % [rules.get_unit_cap()])
+  print('Units are: %s' % PoolStringArray(rules.get_unit_kinds().keys()).join(','))
+
+  print('P1 Grunt Rush v. P2 Turret Rush.')
+
+  # TODO(jim): Better way to create instances of enums.
+  var red = Colour.new(); red.load_json_string('"RED"')
+  var green = Colour.new(); green.load_json_string('"GREEN"')
+
+  var action = Action.new()
+  action.init_tech_colour(red)
+  game_state.perform_action(0, action)
+  action.init_tech_colour(green)
+  game_state.perform_action(1, action)
+  action.init_units(['grunt', 'grunt'])
+  game_state.perform_action(0, action)
+  action.init_units(['turret', 'turret'])
+  game_state.perform_action(1, action)
+
+  var last_battle = game_state.get_battles()[-1]
+  print(last_battle)
+
+  print(game_state.as_json().result)
+
   print('END')
-  #var tech = Tech.new()
 
-  #print(rules.as_json().result)
-  #print(rules.as_json().result.unit_kinds[0].tech)
-  #print(rules.as_json().result.unit_kinds[0].tech)
-
-  #tech.load_json_string(JSON.print(rules.as_json().result.unit_kinds[0].tech))
-  #JSON.print(rules.as_json().result.unit_kinds[0].tech)
-  ##print(tech)
-  ##print(tech.includes(tech))
-
-  #print(rules.get_unit_cap())
-
-  #var one_kind = rules.get_unit_kind('avatar')
-  #print(one_kind)
-  #print(one_kind.get_id())
-
-  #var unit_kinds = rules.get_unit_kinds()
-  #print(unit_kinds)
-  #print(unit_kinds['avatar'])
-  #print(unit_kinds['avatar'].get_id())
-
-  #var state = GameState.new();
-  #state.init(rules, 2)
-
-  #var colour = Colour.new();
-  #colour.load_json_string('"RED"')
-  #var action = Action.new();
-  #action.init_tech_colour(colour)
-
-  #state.perform_action(0, action)
-
-  #colour.load_json_string('"GREEN"')
-  #action.init_tech_colour(colour)
-  #state.perform_action(1, action)
-
-  #action.init_units(['grunt', 'grunt'])
-  #state.perform_action(0, action)
-  #state.perform_action(1, action)
-
-  #print(state.as_json().result)
-
-#37744
 func _init():
   print('Begin of all')
   rules_file = File.new()
@@ -72,6 +49,6 @@ func _init():
   rules_text = rules_file.get_as_text()
   rules.load_json_string(rules_text)
   rules_file.close()
-  for i in range(5):
+  for i in range(100):
     trial()
   quit()

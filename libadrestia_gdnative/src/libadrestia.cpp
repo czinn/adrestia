@@ -23,6 +23,7 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
   godot::Godot::nativescript_init(handle);
   godot::register_class<godot::gdexample>();
   godot::register_class<godot::Action>();
+  godot::register_class<godot::Attack>();
   godot::register_class<godot::Battle>();
   godot::register_class<godot::Colour>();
   godot::register_class<godot::GameRules>();

@@ -10,6 +10,7 @@ namespace godot {
   class Action : public godot::GodotScript<Reference>, public OwnerOrPointer<::Action> {
     GODOT_CLASS(Action)
    public:
+    static const char *resource_path;
     static void _register_methods();
 
     void init_tech_colour(Colour *colour);
