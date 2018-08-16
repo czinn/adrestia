@@ -130,7 +130,7 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
 #define FORWARD_REF_GETTER(Kind, getter)\
   Variant CLASSNAME::getter() const {\
     auto [v, kind] = instance<Kind>(Kind ## _);\
-    kind->set_ptr(const_cast<::Kind*>(&_ptr->getter()));\
+    kind->set_ptr(const_cast<::Kind*>(&_ptr->getter()), owner);\
     return v;\
   }
 
@@ -139,7 +139,7 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
     Array result;\
     for (const auto &x : _ptr->getter()) {\
       auto [v, thing] = instance<Kind>(Kind ## _);\
-      thing->set_ptr(const_cast<::Kind*>(&x));\
+      thing->set_ptr(const_cast<::Kind*>(&x), owner);\
       result.append(v);\
     }\
     return result;\

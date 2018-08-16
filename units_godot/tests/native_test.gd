@@ -37,8 +37,10 @@ func trial():
 
   var last_battle = game_state.get_battles()[-1]
   print(last_battle)
-
-  print(game_state.as_json().result)
+  var attacks = last_battle.get_attacks()
+  print(attacks)
+  var attack = attacks[0]
+  print(attack.from_player)
 
   print('END')
 
