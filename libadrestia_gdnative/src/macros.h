@@ -135,7 +135,8 @@ class Instanceable {
     //   ERROR: clear: Resources Still in use at Exit!
     //   At: core/resource.cpp:418.
     // i.e. holding a static reference to the NativeScript prevents it from
-    // being destroyed when godot exits. So for now, we dereference the nativescript.
+    // being destroyed when godot exits. So for now, we dereference the
+    // nativescript.
     native_script.unref();
   }
 };
@@ -205,6 +206,18 @@ class Instanceable {
   }\
   void CLASSNAME::set_ ## member(Type x) {\
     _ptr->member = x;\
+  }
+
+// SETGET_OBJ
+#define IMPL_SETGET_REF(Type, member)\
+  Variant CLASSNAME::get_ ## member() {\
+    auto [v, thing] = instance<Type>(Type ## _);\
+    thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
+    return v;\
+  }\
+  void CLASSNAME::set_tech(Variant value) {\
+    Tech *thing = godot::as<Type>(value);\
+    _ptr->tech = *thing->_ptr;\
   }
 
 // NULLABLE:

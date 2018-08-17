@@ -19,7 +19,9 @@ func start_game(callback_obj, callback):
   callback_obj.call(callback)
 
 func get_view():
-  # TODO(jim): Return and use a PlayerView instead.
+  # TODO(jim): Return and use a PlayerView instead. We currently use GameState
+  # because we don't have a holistic structure for a player's information in
+  # the game (GameView doesn't contain the current player's tech).
   return game_state
 
 func end_turn(callback_obj, callback):
