@@ -14,7 +14,7 @@ func _init(unit_):
   unit = unit_
 
 func _ready():
-  color = Colour.to_color(unit.kind.colour).lightened(0.6)
+  color = unit.kind.get_colour().to_color().lightened(0.6)
 
 func _draw():
     var poly = get_polygon()

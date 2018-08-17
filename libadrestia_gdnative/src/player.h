@@ -4,6 +4,7 @@
 #include <player.h>
 
 #include "tech.h"
+#include "unit.h"
 #include "macros.h"
 
 namespace godot {
@@ -11,15 +12,16 @@ namespace godot {
     GODOT_CLASS(Player)
    private:
     godot::Ref<godot::NativeScript> Tech_;
+    godot::Ref<godot::NativeScript> Unit_;
    public:
     Player();
     static const char *resource_path;
     static void _register_methods();
 
+    INTF_SETGET(Variant, units);
     INTF_SETGET(bool, alive);
     INTF_SETGET(int, coins);
-    Variant get_tech();
-    void set_tech(Variant value);
+    INTF_SETGET(Variant, tech);
     INTF_SETGET(int, next_unit);
 
     INTF_NULLABLE;

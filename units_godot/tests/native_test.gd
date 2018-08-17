@@ -1,5 +1,7 @@
 extends SceneTree
 
+# Integration test for pretty much all the gdnative modules.
+
 const GameRules = preload('res://native/game_rules.gdns')
 const GameState = preload('res://native/game_state.gdns')
 const Colour = preload('res://native/colour.gdns')
@@ -36,11 +38,15 @@ func trial():
   game_state.perform_action(1, action)
 
   var last_battle = game_state.get_battles()[-1]
-  print(last_battle)
-  var attacks = last_battle.get_attacks()
-  print(attacks)
-  var attack = attacks[0]
-  print(attack.from_player)
+  var last_player_views = last_battle.get_players()
+
+  for attack in last_battle.get_attacks():
+    print("Player %d's %s hits Player %d's %s for %d" % [
+      attack.from_player,
+      last_player_views[attack.from_player].units[attack.from_unit].kind.get_name(),
+      attack.to_player,
+      last_player_views[attack.to_player].units[attack.to_unit].kind.get_name(),
+      attack.damage])
 
   print('END')
 

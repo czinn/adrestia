@@ -2,6 +2,8 @@
 #include <Godot.hpp>
 #include <Reference.hpp>
 #include <unit_kind.h>
+
+#include "colour.h"
 #include "tech.h"
 #include "macros.h"
 
@@ -9,6 +11,7 @@ namespace godot {
   class UnitKind : public godot::GodotScript<Reference>, public OwnerOrPointer<::UnitKind> {
     GODOT_CLASS(UnitKind)
    private:
+    godot::Ref<godot::NativeScript> Colour_;
     godot::Ref<godot::NativeScript> Tech_;
 
    public:
@@ -18,7 +21,7 @@ namespace godot {
 
     String get_id() const;
     String get_name() const;
-    Colour get_colour() const;
+    Variant get_colour() const;
     int get_health() const;
     int get_shields() const;
     int get_width() const;

@@ -18,21 +18,22 @@ var unit_bars = {}
 
 func update_ui():
   var view = g.man.get_view()
+  var players = view.get_players()
+  var me = players[0]
 
-  r_label.text = str(view.players[0].resources.r)
-  g_label.text = str(view.players[0].resources.g)
-  b_label.text = str(view.players[0].resources.b)
-  c_label.text = "0"
+  r_label.text = str(me.tech.red)
+  g_label.text = str(me.tech.green)
+  b_label.text = str(me.tech.blue)
+  c_label.text = str(me.coins)
+
   for unit in unit_bars:
     # TODO jim: player coins less than unit cost
-    unit_bars[unit].buy_button.disabled = !view.players[0].coins < g.rules.get_unit_kind(unit).get_cost()
+    unit_bars[unit].buy_button.disabled = me.coins < g.rules.get_unit_kind(unit).get_cost()
   
-  for pid in range(view.players.size()):
-    var player = view.players[pid]
-    # jim: This triggers the redraw. duplicate() is needed because when drawing
-    # attack particles, we need access to what is CURRENTLY drawn on the
-    # screen, even if the actual game state has changed in the meantime.
-    armies.get_child(1 - pid).data = player.units.duplicate()
+  for pid in range(players.size()):
+    var player = players[pid]
+    # jim: This triggers the redraw.
+    armies.get_child(1 - pid).data = player.units
 
 func _ready():
   # Add units in rules to unit buy bar.

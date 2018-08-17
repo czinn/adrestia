@@ -11,7 +11,7 @@ namespace godot {
     Action_ = ResourceLoader::load(Action::resource_path);
     Battle_ = ResourceLoader::load(Battle::resource_path);
     GameRules_ = ResourceLoader::load(GameRules::resource_path);
-    Player_ = ResourceLoader::load(Tech::resource_path);
+    Player_ = ResourceLoader::load(Player::resource_path);
   }
 
   void GameState::_register_methods() {

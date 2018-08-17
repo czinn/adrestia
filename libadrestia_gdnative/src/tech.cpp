@@ -10,10 +10,15 @@ namespace godot {
   const char *Tech::resource_path = "res://native/tech.gdns";
 
   void Tech::_register_methods() {
-    register_method("init", &godot::Tech::init);
-    register_method("increment", &godot::Tech::increment);
-    register_method("add", &godot::Tech::add);
-    register_method("includes", &godot::Tech::includes);
+    REGISTER_METHOD(init)
+    REGISTER_METHOD(increment)
+    REGISTER_METHOD(add)
+    REGISTER_METHOD(includes)
+
+    REGISTER_SETGET(red, -1)
+    REGISTER_SETGET(green, -1)
+    REGISTER_SETGET(blue, -1)
+
     REGISTER_NULLABLE
     REGISTER_JSONABLE
   }
@@ -33,6 +38,10 @@ namespace godot {
   bool Tech::includes(Tech *other) {
     return _ptr->includes(*other->_ptr);
   }
+
+  IMPL_SETGET(int, red);
+  IMPL_SETGET(int, green);
+  IMPL_SETGET(int, blue);
 
   IMPL_NULLABLE
   IMPL_JSONABLE

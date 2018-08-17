@@ -13,6 +13,11 @@
 #define VA_SIZE( ... ) GET_COUNT( __VA_ARGS__, 6, 5, 4, 3, 2, 1 )
 #define VA_SELECT( NAME, ... ) SELECT( NAME, VA_SIZE(__VA_ARGS__) )(__VA_ARGS__)
 
+// Work around a peculiarity in the macro replacement algorithm.
+// https://stackoverflow.com/questions/12648988/converting-a-defined-constant-number-to-a-string
+#define STRINGIZE_(x) #x
+#define STRINGIZE(x) STRINGIZE_(x)
+
 template<typename T>
 godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
   nlohmann::json j = t;
@@ -208,16 +213,52 @@ class Instanceable {
     _ptr->member = x;\
   }
 
-// SETGET_OBJ
+// SETGET_REF:
+// Implements SETGET for a mutable class member.
+// Requires INTF_SETGET(Variant, ...)
 #define IMPL_SETGET_REF(Type, member)\
-  Variant CLASSNAME::get_ ## member() {\
+  Variant CLASSNAME::get_ ## member() const {\
     auto [v, thing] = instance<Type>(Type ## _);\
     thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
     return v;\
   }\
-  void CLASSNAME::set_tech(Variant value) {\
+  void CLASSNAME::set_ ## member(Variant value) {\
     Tech *thing = godot::as<Type>(value);\
     _ptr->tech = *thing->_ptr;\
+  }
+
+// SETGET_CONST_REF:
+// Implements SETGET for an immutable class member.
+// Requires INTF_SETGET(Variant, ...)
+#define IMPL_SETGET_CONST_REF(Type, member)\
+  Variant CLASSNAME::get_ ## member() const {\
+    auto [v, thing] = instance<Type>(Type ## _);\
+    thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
+    return v;\
+  }\
+  void CLASSNAME::set_ ## member(Variant value) {\
+    Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a const member)");\
+    assert(false);\
+  }
+
+// SETGET_REF_DICT:
+// Implements SETGET for an std::map-like class member. Only implements the
+// getter; the setter is left undefined because why would you ever want to set
+// a dict from gdscript. Key type must be implicitly convertible to Variant
+// (string won't work).
+#define IMPL_SETGET_REF_DICT(Type, member)\
+  Variant CLASSNAME::get_ ## member() const {\
+    Dictionary d;\
+    for (const auto &[k, x] : _ptr->member) {\
+      auto [v, thing] = instance<Type>(Type ## _);\
+      thing->set_ptr(const_cast<::Type*>(&x), owner);\
+      d[k] = v;\
+    }\
+    return d;\
+  }\
+  void CLASSNAME::set_ ## member(Variant v) {\
+    Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a dict member)");\
+    assert(false);\
   }
 
 // NULLABLE:

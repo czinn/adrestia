@@ -62,7 +62,7 @@ static func unit_fits(occupied, blocks, x, y):
 
 class SortUnitsByWidth:
   static func sort(a, b):
-    return (a.kind.width > b.kind.width)
+    return (a.kind.get_width() > b.kind.get_width())
 
 # Given a list of units, returns a list of [unit, x, y].
 static func position_units(orig_units):
@@ -73,7 +73,7 @@ static func position_units(orig_units):
   units.sort_custom(SortUnitsByWidth, "sort")
 
   for unit in units:
-    var flat_blocks = unit.kind.tiles
+    var flat_blocks = unit.kind.get_tiles()
     var blocks = []
     for i in range(flat_blocks.size() / 2):
       blocks.append([flat_blocks[2 * i], flat_blocks[2 * i + 1]])
@@ -140,7 +140,7 @@ func redraw():
     var polygon = UnitPolygon.new(unit)
     var vertices = PoolVector2Array()
 
-    var poly_coords = squares_to_polygon(unit.kind.tiles)
+    var poly_coords = squares_to_polygon(unit.kind.get_tiles())
 
     var unit_info_pos = null
     var x_ofs = unit_x * 50
@@ -160,7 +160,7 @@ func redraw():
     var unit_info = Node2D.new()
     
     var unit_sprite = Sprite.new()
-    unit_sprite.texture = unit.kind.image
+    unit_sprite.texture = load('res://art/%s' % unit.kind.get_image())
     unit_sprite.centered = false
     unit_sprite.region_enabled = true
     unit_sprite.region_rect = Rect2(0, 0, 256, 256)
@@ -169,14 +169,14 @@ func redraw():
     unit_info.add_child(unit_sprite)
     
     var label = Label.new()
-    label.text = "%s" % [unit.kind.label]
+    label.text = "%s" % [unit.kind.get_label()]
     unit_info.add_child(label)
 
     var health_icons = Node2D.new()
     health_icons.name = 'HealthIcons'
     unit_info.add_child(health_icons)
     
-    for i in range(unit.kind.health):
+    for i in range(unit.kind.get_health()):
       var health_sprite = Sprite.new()
       # load() should be memoized, so no leak here probably
       if i < unit.health:

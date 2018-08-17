@@ -21,6 +21,10 @@ namespace godot {
     void add(Tech *other);
     bool includes(Tech *other);
 
+    INTF_SETGET(int, red);
+    INTF_SETGET(int, green);
+    INTF_SETGET(int, blue);
+
     INTF_NULLABLE
     INTF_JSONABLE
   };

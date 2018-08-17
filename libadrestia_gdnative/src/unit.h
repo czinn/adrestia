@@ -4,16 +4,26 @@
 #include <unit.h>
 #include <unit_kind.h>
 
+#include "unit_kind.h"
 #include "macros.h"
 
 namespace godot {
-  class Unit : public godot::GodotScript<Reference>, OwnerOrPointer<::Unit> {
+  class Unit : public godot::GodotScript<Reference>, public OwnerOrPointer<::Unit> {
     GODOT_CLASS(Unit)
+   private:
+    godot::Ref<godot::NativeScript> UnitKind_;
+    godot::Variant polygon;
    public:
+    static const char *resource_path;
+    Unit();
     static void _register_methods();
 
-    String get_id() const;
-    INTF_NULLABLE
-    INTF_TO_JSONABLE
+    INTF_SETGET(Variant, kind);
+    INTF_SETGET(int, health);
+    INTF_SETGET(int, shields);
+    INTF_SETGET(int, build_time);
+
+    INTF_NULLABLE;
+    INTF_TO_JSONABLE;
   };
 }

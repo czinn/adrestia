@@ -3,14 +3,12 @@ extends 'game_manager.gd'
 const GameState = preload('res://native/game_state.gdns')
 const Tech = preload('res://native/tech.gdns')
 
-var game_state
+var game_state = GameState.new()
 var rules
 
 func _init(rules_):
   rules = rules_
-
-func _ready():
-  game_state = GameState.new()
+  game_state.init(rules, 2)
 
 func perform_action(action):
   game_state.perform_action(action)
