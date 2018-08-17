@@ -178,7 +178,6 @@ func redraw():
     
     for i in range(unit.kind.get_health()):
       var health_sprite = Sprite.new()
-      # load() should be memoized, so no leak here probably
       if i < unit.health:
         health_sprite.texture = load('res://art/heart.png')
       else:
@@ -187,8 +186,6 @@ func redraw():
       health_sprite.scale = Vector2(0.5, 0.5)
       health_sprite.position = Vector2(50-18, i*5)
       health_icons.add_child(health_sprite)
-
-    unit_info.add_child(health_icons)
 
     unit_info.position = unit_info_pos
     unit_info.name = 'UnitInfo'
