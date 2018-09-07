@@ -92,7 +92,7 @@
       "font": 1,
       "image": "font_b.png",
       "tiles": [0, 0],
-      "label": "b"
+      "label": "w"
     },
     {
       "id": "paragon",

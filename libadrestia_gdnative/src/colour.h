@@ -18,5 +18,11 @@ namespace godot {
 
     INTF_NULLABLE
     INTF_JSONABLE
+
+    void set_RED();
+    void set_GREEN();
+    void set_BLUE();
+
+    void set_char(String c);
   };
 }

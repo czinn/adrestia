@@ -9,6 +9,10 @@ namespace godot {
 
   void Colour::_register_methods() {
     REGISTER_METHOD(to_color)
+    REGISTER_METHOD(set_RED)
+    REGISTER_METHOD(set_GREEN)
+    REGISTER_METHOD(set_BLUE)
+    REGISTER_METHOD(set_char)
     REGISTER_NULLABLE
     REGISTER_JSONABLE
   }
@@ -25,6 +29,26 @@ namespace godot {
       case GREEN: return Color(0.2, 0.66, 0.35);
       case BLUE : return Color(0.2, 0.6, 0.85);
       default: return Color(1, 0, 0);
+    }
+  }
+
+  void Colour::set_RED() {
+    set(::RED);
+  }
+
+  void Colour::set_GREEN() {
+    set(::GREEN);
+  }
+
+  void Colour::set_BLUE() {
+    set(::BLUE);
+  }
+
+  void Colour::set_char(String c) {
+    switch (c[0]) {
+      case 'r': set_RED();
+      case 'g': set_GREEN();
+      case 'b': set_BLUE();
     }
   }
 

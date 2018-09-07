@@ -12,7 +12,6 @@ namespace godot {
   }
 
   void Unit::_register_methods() {
-    register_property("polygon", &Unit::polygon, Variant());
     REGISTER_SETGET(kind, Variant())
     REGISTER_SETGET(health, -1)
     REGISTER_SETGET(shields, -1)

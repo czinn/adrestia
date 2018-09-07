@@ -25,7 +25,7 @@ namespace godot {
 
     void init(GameRules *rules, int num_players);
     bool perform_action(int pid, Action *action);
-
+    Array get_winners() const;
     Variant get_rules() const;
     int get_turn() const;
     Array get_players() const;

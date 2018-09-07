@@ -12,7 +12,6 @@ namespace godot {
     GODOT_CLASS(Unit)
    private:
     godot::Ref<godot::NativeScript> UnitKind_;
-    godot::Variant polygon;
    public:
     static const char *resource_path;
     Unit();

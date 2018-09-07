@@ -1,6 +1,13 @@
 extends SceneTree
 
-# Integration test for pretty much all the gdnative modules.
+# Tests the integration of gdnative modules.
+
+# Also serves as an example of how exactly to use them. Notably,
+# "GameRules.new()" should not be considered an instance of GameRules, but a
+# reference-counted POINTER to an instance of GameRules where most operations
+# implicitly dereference the pointer. This leads to a bit of verbosity around
+# creating and deleting the underlying object, as well as checking whether it
+# actually exists (with .is_null() or .not_null()).
 
 const GameRules = preload('res://native/game_rules.gdns')
 const GameState = preload('res://native/game_state.gdns')

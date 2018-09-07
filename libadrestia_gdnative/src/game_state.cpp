@@ -17,6 +17,7 @@ namespace godot {
   void GameState::_register_methods() {
     REGISTER_METHOD(init)
     REGISTER_METHOD(perform_action)
+    REGISTER_METHOD(get_winners)
     REGISTER_METHOD(get_rules)
     REGISTER_METHOD(get_turn)
     REGISTER_METHOD(get_players)
@@ -34,8 +35,9 @@ namespace godot {
     return _ptr->perform_action(pid, *action->_ptr);
   }
 
+  FORWARD_ARRAY_GETTER(get_winners)
   FORWARD_REF_GETTER(GameRules, get_rules)
-  FORWARD_GETTER(int, get_turn);
+  FORWARD_GETTER(int, get_turn)
   FORWARD_REF_ARRAY_GETTER(Player, get_players)
 
   Array CLASSNAME::get_action_log() const {

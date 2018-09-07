@@ -1,4 +1,4 @@
-extends Reference
+extends Node
 
 # Interface for game managers, which accept actions and produce views.
 
@@ -17,8 +17,4 @@ func get_view():
 
 # Ends the turn for the user. Callback is called when the other player is done their turn.
 func end_turn(callback_obj, callback):
-  pass
-
-# Ends the turn. callback is called with the BattleResult.
-func simulate_battle(callback_obj, callback):
   pass

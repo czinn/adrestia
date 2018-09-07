@@ -15,7 +15,6 @@ namespace godot {
 
     void init_tech_colour(Colour *colour);
     void init_units(Array units);
-    String get_id() const;
 
     INTF_NULLABLE
     INTF_JSONABLE
