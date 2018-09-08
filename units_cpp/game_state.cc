@@ -99,6 +99,7 @@ void GameState::execute_battle() {
       unit.shields = 0;
     }
   }
+  b->set_players_after(players);
   // Kill dead units, restore shields for alive units
   for (auto &player : players) {
     for (auto it = player.units.begin(); it != player.units.end();) {

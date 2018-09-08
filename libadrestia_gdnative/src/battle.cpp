@@ -36,12 +36,14 @@ namespace godot {
 
   void Battle::_register_methods() {
     REGISTER_METHOD(get_players);
+    REGISTER_METHOD(get_players_after);
     REGISTER_METHOD(get_attacks);
     REGISTER_NULLABLE;
     REGISTER_TO_JSONABLE;
   }
 
   FORWARD_REF_ARRAY_GETTER(PlayerView, get_players)
+  FORWARD_REF_ARRAY_GETTER(PlayerView, get_players_after)
   FORWARD_REF_ARRAY_GETTER(Attack, get_attacks)
 
   IMPL_NULLABLE

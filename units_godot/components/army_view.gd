@@ -195,12 +195,18 @@ func redraw():
     health_icons.name = 'HealthIcons'
     unit_info.add_child(health_icons)
     
-    for i in range(unit.kind.get_health()):
+    var max_health = unit.kind.get_health()
+    var max_shield = unit.kind.get_shields()
+    for i in range(max_health + max_shield):
       var health_sprite = Sprite.new()
       if i < unit.health:
         health_sprite.texture = load('res://art/heart.png')
-      else:
+      elif i < max_health:
         health_sprite.texture = load('res://art/heart-empty.png')
+      elif i < max_health + unit.shields:
+        health_sprite.texture = load('res://art/shield.png')
+      else:
+        health_sprite.texture = load('res://art/shield-broken.png')
       health_sprite.centered = false
       health_sprite.scale = Vector2(0.5, 0.5)
       health_sprite.position = Vector2(50-18, i*5)

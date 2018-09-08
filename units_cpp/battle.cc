@@ -15,7 +15,7 @@ Battle::Battle() {}
 Battle::Battle(const std::vector<Player> &players) {
 	/*! \brief Constructs the Battle object, including all attacks. Does not actually edit players' units lists. */
 
-	// Record the PlayerViews from each player
+	// Record the initial PlayerViews from each player
 	for (auto &&player : players) {
 		this->players.push_back(PlayerView(player));
 	}
@@ -87,6 +87,17 @@ void Battle::set_seed(long seed) {
 const std::vector<PlayerView> &Battle::get_players() const {
 	/*! \brief Return the PlayerViews of all the players in this battle. */
 	return players;
+}
+
+void Battle::set_players_after(const std::vector<Player> &players) {
+  players_after.clear();
+	for (auto &&player : players) {
+		players_after.push_back(PlayerView(player));
+	}
+}
+
+const std::vector<PlayerView> &Battle::get_players_after() const {
+  return players_after;
 }
 
 

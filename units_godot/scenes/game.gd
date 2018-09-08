@@ -162,25 +162,30 @@ func _on_enemy_turn_done(battle):
     spark.queue_free()
 
   # Update hearts immediately, so that it looks like the spark "took away" the heart.
-  var new_players = g.man.get_view().get_players()
+  var players_after = battle.get_players_after()
   for attack in attacks:
     var def_poly = armies.get_child(1 - attack.to_player).polygons[attack.to_unit]
     var def_unit = armies.get_child(1 - attack.to_player).data[attack.to_unit]
     var health_icons = def_poly.get_node('UnitInfo/HealthIcons')
 
     # Determine new health of unit, if it still exists
-    var new_units = new_players[attack.to_player].units
-    var new_health = 0
-    if new_units.has(attack.to_unit):
-      new_health = new_units[attack.to_unit].health
+    var new_units = players_after[attack.to_player].units
+    var new_healthiness = 0
+    var unit = new_units[attack.to_unit]
 
     for i in range(health_icons.get_child_count()):
       var icon = health_icons.get_child(i)
-      if i >= new_health:
+      if i < unit.health:
+        icon.texture = load('res://art/heart.png')
+      elif i < unit.kind.get_health():
         icon.texture = load('res://art/heart-empty.png')
+      elif i < unit.kind.get_health() + unit.shields:
+        icon.texture = load('res://art/shield.png')
+      else:
+        icon.texture = load('res://art/shield-broken.png')
 
   t = Timer.new()
-  t.set_wait_time(0.5)
+  t.set_wait_time(1.0)
   self.add_child(t)
   t.set_paused(false)
   t.start()

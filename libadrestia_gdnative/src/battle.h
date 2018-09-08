@@ -36,6 +36,7 @@ namespace godot {
     static void _register_methods();
 
     Array get_players() const;
+    Array get_players_after() const;
     Array get_attacks() const;
 
     INTF_NULLABLE
