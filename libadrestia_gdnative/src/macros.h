@@ -40,17 +40,13 @@ class OwnerOrPointer {
   T *_ptr; // Pointer to the underlying data.
   inline void del_ptr() {
     if (_ptr != nullptr && _owner.is_null()) {
-      //godot::Godot::print("Pointer deleted");
-      //godot::Godot::print(godot::String(nlohmann::json(*_ptr).dump().c_str()));
       delete _ptr;
     }
   }
 
   OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {
-    //godot::Godot::print("Thing instantiated");
   }
   ~OwnerOrPointer() {
-    //godot::Godot::print("Thing deinstantiated");
     del_ptr();
   }
 
@@ -74,7 +70,6 @@ class OwnerOrPointer {
     del_ptr();
     _ptr = u;
     _owner.unref();
-    //godot::Godot::print("Pointer set (owning)");
   }
 
   // Don't own it.
@@ -82,17 +77,7 @@ class OwnerOrPointer {
     del_ptr();
     _ptr = u;
     _owner = godot::Ref<godot::Reference>(r);
-    //godot::Godot::print("Pointer set (non-owning)");
   }
-
-  //static const char *resource_path;
-  //godot::Ref<godot::NativeScript> native_script;
-
-  //static std::pair<godot::Variant, T*> instance() {
-  //  godot::Variant v = native_script->call("new");
-  //  T *t = godot::as<T>(v);
-  //  return std::make_pair(v, t);
-  //}
 };
 
 // jim: So it turns out instantiating other scripts from within a
@@ -264,7 +249,6 @@ class Instanceable {
 // NULLABLE:
 // bool is_null()
 // bool not_null()
-
 #define REGISTER_NULLABLE\
   register_method("is_null", &CLASSNAME::is_null);\
   register_method("not_null", &CLASSNAME::not_null);
@@ -283,7 +267,6 @@ class Instanceable {
 
 // TO_JSONABLE:
 // JSONParseResult as_json()
-
 #define REGISTER_TO_JSONABLE\
   register_method("as_json", &CLASSNAME::as_json);
 
@@ -297,7 +280,6 @@ class Instanceable {
 
 // JSONABLE: JSONABLE and
 // void load_json_string(String)
-
 #define REGISTER_JSONABLE\
   register_method("load_json_string", &CLASSNAME::load_json_string);\
   REGISTER_TO_JSONABLE

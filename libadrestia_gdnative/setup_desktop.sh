@@ -13,7 +13,6 @@ git submodule update --init
 # godot-cpp uses a JSON description of the godot API to generate a bunch of
 # header files and implementations. Use the local godot executable to generate
 # it.
-#godot.built --gdnative-generate-json-api godot-cpp/godot_api.json
 godot --gdnative-generate-json-api godot-cpp/godot_api.json
 
 # Build it! The resulting static library will be put in godot-cpp/bin/, and
