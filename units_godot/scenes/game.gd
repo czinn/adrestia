@@ -103,6 +103,8 @@ func on_end_turn_button_pressed():
   g.man.perform_action(action)
   g.man.end_turn(self, '_on_enemy_turn_done')
 
+# Pauses everything for [sec].
+# (simply placing it in global doesn't work EVEN IF you pass self??)
 func _on_enemy_turn_done(battle):
   var animation = animation_player.get_animation('particle')
 
@@ -110,6 +112,16 @@ func _on_enemy_turn_done(battle):
   var attacks = battle.get_attacks()
 
   update_armies(players)
+
+  # TODO jim: Figure out how to write this just once
+  # - putting it in a function doesn't work ?!?!
+  var t = Timer.new()
+  t.set_wait_time(1.0)
+  self.add_child(t)
+  t.set_paused(false)
+  t.start()
+  yield(t, 'timeout')
+  t.queue_free()
   
   # TODO jim: Stagger attacks for effect.
   for attack in attacks:
@@ -149,7 +161,7 @@ func _on_enemy_turn_done(battle):
 
   animation_player.play('particle')
 
-  var t = Timer.new()
+  t = Timer.new()
   t.set_wait_time(1.0)
   t.set_one_shot(true)
   self.add_child(t)

@@ -7,7 +7,7 @@ onready var label = $Label
 
 func _ready():
   timer.connect("timeout", self, "timeout")
-  if g.man.get_view().get_players()[0].alive:
+  if 0 in g.man.get_view().get_winners():
     label.text = 'Victory!'
   else:
     label.text = 'Defeat!'
