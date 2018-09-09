@@ -19,6 +19,7 @@ namespace godot {
     INTF_NULLABLE
     INTF_JSONABLE
 
+    // TODO: jim: Is there a better way to forward enums?
     void set_RED();
     void set_GREEN();
     void set_BLUE();
