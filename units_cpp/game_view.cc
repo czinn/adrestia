@@ -29,7 +29,7 @@ void GameView::generate_build_units_actions(std::vector<Action> &actions,
       view_player.tech.includes(*begin->second.get_tech()) &&
       begin->second.get_cost() <= coins) {
     units.push_back(begin->first);
-    generate_build_units_actions(actions, units, coins - begin->second.get_cost(), max_units - 1, next_it, end);
+    generate_build_units_actions(actions, units, coins - begin->second.get_cost(), max_units - 1, begin, end);
     units.pop_back();
   }
   generate_build_units_actions(actions, units, coins, max_units, next_it, end);
