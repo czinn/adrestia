@@ -84,20 +84,22 @@ void Battle::set_seed(long seed) {
 }
 
 
-const std::vector<PlayerView> &Battle::get_players() const {
-	/*! \brief Return the PlayerViews of all the players in this battle. */
-	return players;
-}
-
 void Battle::set_players_after(const std::vector<Player> &players) {
-  players_after.clear();
+	players_after.clear();
 	for (auto &&player : players) {
 		players_after.push_back(PlayerView(player));
 	}
 }
 
+
+const std::vector<PlayerView> &Battle::get_players() const {
+	/*! \brief Return the PlayerViews of all the players in this battle. */
+	return players;
+}
+
+
 const std::vector<PlayerView> &Battle::get_players_after() const {
-  return players_after;
+	return players_after;
 }
 
 
