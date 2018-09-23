@@ -7,11 +7,7 @@
 #include "unit_kind.h"
 
 
-Player::Player():
-		alive(true),
-		coins(0),
-		next_unit(0)
-{}
+Player::Player() : alive(true), coins(0), next_unit(0) {}
 
 Player::Player(const GameRules &rules) : alive(true), coins(0), next_unit(0) {
 	std::vector<UnitKind*> starting_units = rules.get_starting_units();
@@ -20,18 +16,18 @@ Player::Player(const GameRules &rules) : alive(true), coins(0), next_unit(0) {
 	}
 }
 
-Player::Player(const Player &player):
-		units(player.units),
-		alive(player.alive),
-		coins(player.coins),
-		tech(player.tech),
-		next_unit(player.next_unit)
-{}
+Player::Player(const Player &player)
+	: units(player.units)
+	, alive(player.alive)
+	, coins(player.coins)
+	, tech(player.tech)
+	, next_unit(player.next_unit) {}
 
-Player::Player(const GameRules &rules, const json &j): alive(j["alive"]),
-                                                       coins(j["coins"]),
-                                                       tech(j["tech"]),
-                                                       next_unit(j["next_unit"]) {
+Player::Player(const GameRules &rules, const json &j)
+	: alive(j["alive"])
+	, coins(j["coins"])
+	, tech(j["tech"])
+	, next_unit(j["next_unit"]) {
 	for (auto it = j["units"].begin(); it != j["units"].end(); it++) {
 		const UnitKind &kind = rules.get_unit_kind(it.value()["kind"]);
 		units.emplace(std::stoi(it.key()), Unit(kind, it.value()));

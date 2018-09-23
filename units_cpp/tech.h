@@ -19,9 +19,12 @@ class Tech {
 		Tech();
 		Tech(int red, int green, int blue);
 		void add(const Tech &t);
-		void max(const Tech &t);  // Sets all values of this tech to the max of (this tech, the given tech)
-		void increment(Colour colour);  // Increment this colour by one. Will not increment BLACK.
-		bool includes(const Tech &t) const;  // Check if this tech is a proper superset of the given one.
+		// Sets all values of this tech to the max of (this tech, the given tech)
+		void max(const Tech &t);  
+		// Increment this colour by one. Will not increment BLACK.
+		void increment(Colour colour);
+		// Check if this tech is a proper superset of the given one.
+		bool includes(const Tech &t) const;
 
 		Tech operator+(const Tech &t);
 

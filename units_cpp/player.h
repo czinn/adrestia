@@ -1,4 +1,5 @@
-/* Contains the class Player, which represents a single Adrestia player (along with all their units and resources). */
+/* Contains the class Player, which represents a single Adrestia player (along
+ * with all their units and resources). */
 
 #pragma once
 

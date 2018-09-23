@@ -1,4 +1,5 @@
-/* Contains the class UnitKind, which defines a unit in general (an uninstantiated unit) */
+/* Contains the class UnitKind, which defines a unit in general (an
+ * uninstantiated unit) */
 
 #pragma once
 

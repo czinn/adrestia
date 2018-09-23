@@ -17,25 +17,36 @@ void to_json(json &j, const GameView &view) {
 }
 
 
-void GameView::generate_build_units_actions(std::vector<Action> &actions,  // Possible actions (accumulator)
-                                            std::vector<std::string> &units,
-                                            int coins,
-                                            int max_units,
-                                            std::map<std::string, UnitKind>::const_iterator begin,
-                                            std::map<std::string, UnitKind>::const_iterator end
-                                           ) const {
+void GameView::generate_build_units_actions(
+	std::vector<Action> &actions,  // Possible actions (accumulator)
+	std::vector<std::string> &units,
+	int coins,
+	int max_units,
+	std::map<std::string, UnitKind>::const_iterator begin,
+	std::map<std::string, UnitKind>::const_iterator end
+) const {
 	if (begin == end || coins == 0 || max_units == 0) {
 		actions.push_back(Action(units));
 		return;
 	}
 
-	// TODO: Dmitri doesn't understand this function
+	// XTODO: dmitri: I don't understand this function
+	// jim: After reading, I believe this code produces all possible BUILD_UNITS
+	// actions that build at most [max_units] units, cost at most [coins] coins,
+	// and use unit kinds that come from [begin, end]. It does it in a clever way
+	// that avoids duplicates by making all generated sequences of units of
+	// non-descending UnitKind (order determined by begin and end).
 
 	auto next_it = begin;
 	next_it++;
-	if (begin->second.get_tech() != nullptr && view_player.tech.includes(*begin->second.get_tech()) && begin->second.get_cost() <= coins) {
+	if (begin->second.get_tech() != nullptr
+			&& view_player.tech.includes(*begin->second.get_tech())
+			&& begin->second.get_cost() <= coins) {
 		units.push_back(begin->first);
-		generate_build_units_actions(actions, units, coins - begin->second.get_cost(), max_units - 1, next_it, end);
+		generate_build_units_actions(
+			actions, units, coins - begin->second.get_cost(),
+			max_units - 1, next_it, end
+		);
 		units.pop_back();
 	}
 	generate_build_units_actions(actions, units, coins, max_units, next_it, end);
@@ -43,9 +54,9 @@ void GameView::generate_build_units_actions(std::vector<Action> &actions,  // Po
 
 
 std::vector<Action> GameView::legal_actions() const {
-	/* Generate a list of ALL legal actions for this View's Player.
-	 *     The result will be empty if the game is over, but also if we are waiting for other players to make their
-	 *     moves.
+	/* Generate all legal actions for this View's Player.
+	 * The result will be empty if the game is over or we are waiting for other
+	 * players to make their moves.
 	 * Note that ALL players will have no moves iff the game is over.
 	 */
 
@@ -58,8 +69,11 @@ std::vector<Action> GameView::legal_actions() const {
 		// The player must select actions.
 		std::vector<Action> actions;
 		std::vector<std::string> units;
-		generate_build_units_actions(actions, units, view_player.coins, rules->get_unit_cap() - view_player.units.size(),
-				rules->get_unit_kinds().begin(), rules->get_unit_kinds().end());
+		generate_build_units_actions(
+			actions, units, view_player.coins,
+			rules->get_unit_cap() - view_player.units.size(),
+			rules->get_unit_kinds().begin(), rules->get_unit_kinds().end()
+		);
 		return actions;
 	}
 	else {

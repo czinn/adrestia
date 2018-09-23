@@ -5,19 +5,10 @@
 #include "tech.h"
 
 
-Tech::Tech():
-		red(0),
-		green(0),
-		blue(0)
-{}
+Tech::Tech() : red(0), green(0), blue(0) {}
 
-
-Tech::Tech(int red, int green, int blue):
-		red(red),
-		green(green),
-		blue(blue)
-{}
-
+Tech::Tech(int red, int green, int blue)
+	: red(red), green(green), blue(blue) {}
 
 void from_json(const json &j, Tech &t) {
 	t.red = j.find("red") != j.end() ? j["red"].get<int>() : 0;
@@ -71,7 +62,7 @@ bool Tech::includes(const Tech &t) const {
 			red >= t.red &&
 			green >= t.green &&
 			blue >= t.blue
-	       );
+	);
 }
 
 

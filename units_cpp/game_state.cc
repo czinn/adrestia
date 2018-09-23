@@ -92,7 +92,8 @@ GameState::GameState(const GameView &view, const std::vector<Tech> &techs):
 // GETTERS AND SETTERS
 //------------------------------------------------------------------------------
 void GameState::get_view(GameView &view, int player) const {
-	/* Returns the GameView form of this GameState, geared for the requested player. */
+	/* Returns the GameView form of this GameState, geared for the requested
+	 * player. */
 
 	view.rules = &rules;
 	// TODO: charles: What the hell C++?? Why do I have to do this?
@@ -117,7 +118,8 @@ void GameState::get_view(GameView &view, int player) const {
 
 			// If the currently-scanned turn is the last one
 			if (scanned_turn == action_log.size() - 1) {
-				// This last turn contains an enemy's current move orders, and should be removed entirely.
+				// This last turn contains an enemy's current move orders, and should
+				// be removed entirely.
 				view.action_log[scanned_turn][scanned_player].clear();
 			}
 			else {
@@ -140,9 +142,9 @@ void GameState::get_view(GameView &view, int player) const {
 
 std::vector<int> GameState::get_winners() const {
 	/* Returns the player number of all winners. More specifically:
-	 *      Returns the player number of any single winner.
-	 *      Returns all players' numbers in case of a draw.
-	 *      Returns no players' numbers in case of the game still being ongoing.
+	 * - Returns the player number of any single winner.
+	 * - Returns all players' numbers in case of a draw.
+	 * - Returns no players' numbers in case of the game still being ongoing.
 	 */
 
 	std::vector<int> winners;
@@ -168,35 +170,22 @@ std::vector<int> GameState::get_winners() const {
 		}
 		return winners;
 	} else {
-		// More than one general still remains - the game is still ongoing. Return an empty vector.
+		// More than one general still remains - the game is still ongoing. Return
+		// an empty vector.
 		return std::vector<int>();
 	}
 }
 
 
-const GameRules &GameState::get_rules() const {
-	return rules;
-}
-
-
-const std::vector<Player> &GameState::get_players() const {
-	return players;
-}
-
-
+const GameRules &GameState::get_rules() const { return rules; }
+const std::vector<Player> &GameState::get_players() const { return players; }
 const std::vector<std::vector<std::vector<Action>>> &GameState::get_action_log() const {
 	return action_log;
 }
-
-
 const std::vector<std::shared_ptr<Battle>> &GameState::get_battles() const {
 	return battles;
 }
-
-
-int GameState::get_turn() const {
-	return turn;
-}
+int GameState::get_turn() const { return turn; }
 
 
 //------------------------------------------------------------------------------
@@ -267,48 +256,32 @@ void GameState::execute_battle() {
 
 
 bool GameState::perform_action(int player, const Action &action) {
-	if (get_winners().size() > 0) {
-		// Game is already over - all actions illegal
-		return false;
-	}
-	if ((size_t)player >= players.size()) {
-		// Nonexistent player
-		return false;
-	}
-
+	// Game is already over - all actions illegal
+	if (get_winners().size() > 0) return false;
+	// Nonexistent player
+	if ((size_t)player >= players.size()) return false;
 	Player &p = players[player];
-	if (!p.alive) {
-		// Dead player
-		return false;
-	}
+	// Dead player
+	if (!p.alive) return false;
 
 	int total_tech = p.tech.red + p.tech.green + p.tech.blue;
 	if (action.get_type() == CHOOSE_TECH) {
-		if (total_tech >= turn) {
-			// The player should have no more tech increases this turn
-			return false;
-		}
+		// The player should have no more tech increases this turn
+		if (total_tech >= turn) return false;
 		Colour colour = action.get_colour();
-		if (colour == BLACK) {
-			return false;
-		}
+		if (colour == BLACK) return false;
 
 		// At this point, the action is valid
 		action_log[turn - 1][player].push_back(action);
 		p.tech.increment(colour);
 		return true;
-	}
-	else if (action.get_type() == BUILD_UNITS) {
-		if (total_tech < turn) {
-			// Haven't selected resources yet this turn
-			return false;
-		}
-		if (action_log[turn - 1][player].size() >= 2) {
-			// Already built units this turn
-			return false;
-		}
+	} else if (action.get_type() == BUILD_UNITS) {
+		// Haven't selected resources yet this turn
+		if (total_tech < turn) return false;
+		// Already built units this turn
+		if (action_log[turn - 1][player].size() >= 2) return false;
+		// Past unit cap
 		if (action.get_units().size() + p.units.size() > (size_t)rules.get_unit_cap()) {
-			// Past unit cap
 			return false;
 		}
 
@@ -316,21 +289,15 @@ bool GameState::perform_action(int player, const Action &action) {
 		std::vector<const UnitKind*> build_order;  // The UnitKinds the player wants to build
 		for (auto &name : action.get_units()) {
 			const UnitKind &kind = rules.get_unit_kind(name);
-			if (kind.get_tech() == nullptr) {
-				// Unit is unbuyable
-				return false;
-			}
-			if (!p.tech.includes(*kind.get_tech())) {
-				// Player does not have the correct tech
-				return false;
-			}
+			// Unit is unbuyable
+			if (kind.get_tech() == nullptr) return false;
+			// Player does not have the correct tech
+			if (!p.tech.includes(*kind.get_tech())) return false;
 			total_cost += kind.get_cost();
 			build_order.push_back(&kind);
 		}
 
-		if (p.coins < total_cost) {
-			return false;
-		}
+		if (p.coins < total_cost) return false;
 
 		// Action is valid
 		action_log[turn - 1][player].push_back(action);

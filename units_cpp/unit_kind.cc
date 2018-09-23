@@ -8,82 +8,26 @@
 // CONSTRUCTORS
 //------------------------------------------------------------------------------
 UnitKind::UnitKind() {}
-
-
 UnitKind::~UnitKind() {}
 
 
 //------------------------------------------------------------------------------
 // GETTERS AND SETTERS
 //------------------------------------------------------------------------------
-std::string UnitKind::get_id() const {
-	return id;
-}
-
-
-std::string UnitKind::get_name() const {
-	return name;
-}
-
-
-Colour UnitKind::get_colour() const {
-	return colour;
-}
-
-
-int UnitKind::get_health() const {
-	return health;
-}
-
-
-int UnitKind::get_shields() const {
-	return shields;
-}
-
-
-int UnitKind::get_width() const {
-	return width;
-}
-
-
-int UnitKind::get_build_time() const {
-	return build_time;
-}
-
-
-const std::vector<int> UnitKind::get_attack() const {
-	return attack;
-}
-
-
-int UnitKind::get_cost() const {
-	return cost;
-}
-
-
-const std::shared_ptr<Tech> UnitKind::get_tech() const {
-	return tech;
-}
-
-
-int UnitKind::get_font() const {
-	return font;
-}
-
-
-std::string UnitKind::get_image() const {
-	return image;
-}
-
-
-const std::vector<int> UnitKind::get_tiles() const {
-	return tiles;
-}
-
-
-char UnitKind::get_label() const {
-	return label;
-}
+std::string UnitKind::get_id() const { return id; }
+std::string UnitKind::get_name() const { return name; }
+Colour UnitKind::get_colour() const { return colour; }
+int UnitKind::get_health() const { return health; }
+int UnitKind::get_shields() const { return shields; }
+int UnitKind::get_width() const { return width; }
+int UnitKind::get_build_time() const { return build_time; }
+const std::vector<int> UnitKind::get_attack() const { return attack; }
+int UnitKind::get_cost() const { return cost; }
+const std::shared_ptr<Tech> UnitKind::get_tech() const { return tech; }
+int UnitKind::get_font() const { return font; }
+std::string UnitKind::get_image() const { return image; }
+const std::vector<int> UnitKind::get_tiles() const { return tiles; }
+char UnitKind::get_label() const { return label; }
 
 
 //------------------------------------------------------------------------------

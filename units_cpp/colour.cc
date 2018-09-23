@@ -12,14 +12,11 @@ void to_json(json& j, const Colour& colour) {
 void from_json(const json& j, Colour& colour) {
 	if (j == "BLACK") {
 		colour = BLACK;
-	}
-	else if (j == "RED") {
+	} else if (j == "RED") {
 		colour = RED;
-	}
-	else if (j == "GREEN") {
+	} else if (j == "GREEN") {
 		colour = GREEN;
-	}
-	else if (j == "BLUE") {
+	} else if (j == "BLUE") {
 		colour = BLUE;
 	}
 }

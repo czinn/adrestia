@@ -1,4 +1,5 @@
-/* Contains the class GameView, which contains all data about an Adrestia game as visible to a particular player. */
+/* Contains the class GameView, which contains all data about an Adrestia game
+ * as visible to a particular player. */
 
 #pragma once
 
@@ -22,7 +23,8 @@ class GameView {
 	public:
 		GameView();
 
-		// What actions are CURRENTLY legal for this player? Empty if waiting for other players, or the game is over.
+		// What actions are CURRENTLY legal for this player? Empty if waiting for
+		// other players, or the game is over.
 		std::vector<Action> legal_actions() const;
 
 		const GameRules *rules;  // The rules of the game this view reprsents
@@ -36,13 +38,14 @@ class GameView {
 		friend void to_json(json &j, const GameView &view);
 
 	private:
-		// Generate all build unit actions that this player can perform this turn
-		//     This function is recursive.
-		void generate_build_units_actions(std::vector<Action> &actions,  // The list of actions (an accumulator)
-		                                  std::vector<std::string> &units,
-		                                  int coins,  // List of coins remaining to allocate.
-		                                  int max_units,
-		                                  std::map<std::string, UnitKind>::const_iterator begin,
-		                                  std::map<std::string, UnitKind>::const_iterator end
-		                                ) const;
+		// Recursively generate all BUILD_UNIT actions that this player can perform
+		// this turn.
+		void generate_build_units_actions(
+				std::vector<Action> &actions,  // The list of actions (an accumulator)
+				std::vector<std::string> &units,
+				int coins,  // List of coins remaining to allocate.
+				int max_units,
+				std::map<std::string, UnitKind>::const_iterator begin,
+				std::map<std::string, UnitKind>::const_iterator end
+		) const;
 };
