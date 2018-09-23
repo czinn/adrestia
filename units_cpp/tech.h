@@ -23,7 +23,7 @@ class Tech {
 		void max(const Tech &t);  
 		// Increment this colour by one. Will not increment BLACK.
 		void increment(Colour colour);
-		// Check if this tech is a proper superset of the given one.
+		// Check if this tech is a superset of the given one.
 		bool includes(const Tech &t) const;
 
 		Tech operator+(const Tech &t);
