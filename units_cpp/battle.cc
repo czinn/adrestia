@@ -52,8 +52,8 @@ Battle::Battle(const std::vector<Player> &players) {
 			}
 
 			// For each of this unit's attacks, assign a target from targets and
-			// create an appropriate Attack instance Store the attack instance in
-			// attacks
+			// create an appropriate Attack instance. Store the attack instance in
+			// [attacks].
 			const auto &unit_attacks = unit.kind.get_attack();
 			for (int dmg : unit_attacks) {
 				int target_index = Battle::gen() % targets.size();
