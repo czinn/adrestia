@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/default_red.png-622264fc0878587624427f470e71e870.stex"
+path="res://.import/font_b.png-488af082ff1a1533f7fb678ccc36507f.stex"
 
 [deps]
 
-source_file="res://art/default_red.png"
-dest_files=[ "res://.import/default_red.png-622264fc0878587624427f470e71e870.stex" ]
+source_file="res://art/units/font_b.png"
+dest_files=[ "res://.import/font_b.png-488af082ff1a1533f7fb678ccc36507f.stex" ]
 
 [params]
 

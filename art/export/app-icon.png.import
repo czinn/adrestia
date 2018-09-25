@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/font_g.png-ec1a1e12526294bb49e1a4b1a25dd5e1.stex"
+path="res://.import/app-icon.png-109d37bd235ec2150fe59f79f2dddec5.stex"
 
 [deps]
 
-source_file="res://art/font_g.png"
-dest_files=[ "res://.import/font_g.png-ec1a1e12526294bb49e1a4b1a25dd5e1.stex" ]
+source_file="res://art/app-icon.png"
+dest_files=[ "res://.import/app-icon.png-109d37bd235ec2150fe59f79f2dddec5.stex" ]
 
 [params]
 

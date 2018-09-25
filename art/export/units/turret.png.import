@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/default_blue.png-552ef16518cd3a2cc4a359ef5a2e52bc.stex"
+path="res://.import/turret.png-55d4116d8f8aec97588b686ba71b83d6.stex"
 
 [deps]
 
-source_file="res://art/default_blue.png"
-dest_files=[ "res://.import/default_blue.png-552ef16518cd3a2cc4a359ef5a2e52bc.stex" ]
+source_file="res://art/units/turret.png"
+dest_files=[ "res://.import/turret.png-55d4116d8f8aec97588b686ba71b83d6.stex" ]
 
 [params]
 

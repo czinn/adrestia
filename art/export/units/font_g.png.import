@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tank.png-9090b66c0c9fe8a8190a4916fc4a3b6e.stex"
+path="res://.import/font_g.png-418ee68c0dcdfc8c0b36bead50fcf575.stex"
 
 [deps]
 
-source_file="res://art/tank.png"
-dest_files=[ "res://.import/tank.png-9090b66c0c9fe8a8190a4916fc4a3b6e.stex" ]
+source_file="res://art/units/font_g.png"
+dest_files=[ "res://.import/font_g.png-418ee68c0dcdfc8c0b36bead50fcf575.stex" ]
 
 [params]
 

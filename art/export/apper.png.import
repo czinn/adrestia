@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/wide_wall.png-6190c5c23155cb9cbc9d0b27a63f5eee.stex"
+path="res://.import/apper.png-3e93eac125b0a1e81d518b7097b1d121.stex"
 
 [deps]
 
-source_file="res://art/wide_wall.png"
-dest_files=[ "res://.import/wide_wall.png-6190c5c23155cb9cbc9d0b27a63f5eee.stex" ]
+source_file="res://art/apper.png"
+dest_files=[ "res://.import/apper.png-3e93eac125b0a1e81d518b7097b1d121.stex" ]
 
 [params]
 

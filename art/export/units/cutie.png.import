@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/font_r.png-dbf3ceff18077e10079ddf438c054047.stex"
+path="res://.import/cutie.png-74cf22bc1a5baedf9498f002b4befe49.stex"
 
 [deps]
 
-source_file="res://art/font_r.png"
-dest_files=[ "res://.import/font_r.png-dbf3ceff18077e10079ddf438c054047.stex" ]
+source_file="res://art/units/cutie.png"
+dest_files=[ "res://.import/cutie.png-74cf22bc1a5baedf9498f002b4befe49.stex" ]
 
 [params]
 

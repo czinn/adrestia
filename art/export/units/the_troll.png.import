@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/insurgent.png-ef22110e155cf397ab4dd4ed30c746d4.stex"
+path="res://.import/the_troll.png-22b27ae878bae9b694d2c5f27f293672.stex"
 
 [deps]
 
-source_file="res://art/insurgent.png"
-dest_files=[ "res://.import/insurgent.png-ef22110e155cf397ab4dd4ed30c746d4.stex" ]
+source_file="res://art/units/the_troll.png"
+dest_files=[ "res://.import/the_troll.png-22b27ae878bae9b694d2c5f27f293672.stex" ]
 
 [params]
 

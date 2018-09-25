@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/the_grunt.png-ae64311a9c581d344ef0af0bdc855fd2.stex"
+path="res://.import/check_box_checked.png-84881362cee6517e7c8cd1b47be8fe60.stex"
 
 [deps]
 
-source_file="res://art/the_grunt.png"
-dest_files=[ "res://.import/the_grunt.png-ae64311a9c581d344ef0af0bdc855fd2.stex" ]
+source_file="res://art/check_box_checked.png"
+dest_files=[ "res://.import/check_box_checked.png-84881362cee6517e7c8cd1b47be8fe60.stex" ]
 
 [params]
 

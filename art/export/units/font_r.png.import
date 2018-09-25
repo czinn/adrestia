@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/shrek.png-861a84dfbc154961eabc3ef57d6e1a92.stex"
+path="res://.import/font_r.png-345cc037b0927704872425b08d1065d7.stex"
 
 [deps]
 
-source_file="res://art/shrek.png"
-dest_files=[ "res://.import/shrek.png-861a84dfbc154961eabc3ef57d6e1a92.stex" ]
+source_file="res://art/units/font_r.png"
+dest_files=[ "res://.import/font_r.png-345cc037b0927704872425b08d1065d7.stex" ]
 
 [params]
 

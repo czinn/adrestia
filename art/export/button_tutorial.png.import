@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/the_troll.png-2e9fe36e1fac98472c13c70a10ccdbdf.stex"
+path="res://.import/button_tutorial.png-7eed4495a4fa9b5c84c4869e209bb14f.stex"
 
 [deps]
 
-source_file="res://art/the_troll.png"
-dest_files=[ "res://.import/the_troll.png-2e9fe36e1fac98472c13c70a10ccdbdf.stex" ]
+source_file="res://art/button_tutorial.png"
+dest_files=[ "res://.import/button_tutorial.png-7eed4495a4fa9b5c84c4869e209bb14f.stex" ]
 
 [params]
 

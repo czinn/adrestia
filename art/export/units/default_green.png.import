@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/turret.png-e703afe25546c992e28e40ff14b25cc1.stex"
+path="res://.import/default_green.png-4dcd044714e0aab360f06cda91825ecc.stex"
 
 [deps]
 
-source_file="res://art/turret.png"
-dest_files=[ "res://.import/turret.png-e703afe25546c992e28e40ff14b25cc1.stex" ]
+source_file="res://art/units/default_green.png"
+dest_files=[ "res://.import/default_green.png-4dcd044714e0aab360f06cda91825ecc.stex" ]
 
 [params]
 

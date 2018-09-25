@@ -2,7 +2,7 @@
 
 [ext_resource path="res://themes/general_ui.theme" type="Theme" id=1]
 [ext_resource path="res://components/unit_buy_bar.gd" type="Script" id=2]
-[ext_resource path="res://art/unknown_unit.png" type="Texture" id=3]
+[ext_resource path="res://art/units/unknown_unit.png" type="Texture" id=3]
 [ext_resource path="res://signika.tres" type="DynamicFont" id=4]
 [ext_resource path="res://art/width.png" type="Texture" id=5]
 [ext_resource path="res://art/heart.png" type="Texture" id=6]
@@ -33,7 +33,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 540.0
-margin_bottom = 100.0
+margin_bottom = 135.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -51,7 +51,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 100.0
-margin_bottom = 100.0
+margin_bottom = 135.0
 rect_min_size = Vector2( 100, 100 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -71,8 +71,8 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 110.0
-margin_right = 438.0
-margin_bottom = 100.0
+margin_right = 422.0
+margin_bottom = 135.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -88,8 +88,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 328.0
-margin_bottom = 50.0
+margin_right = 312.0
+margin_bottom = 85.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -110,9 +110,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 54.0
-margin_right = 328.0
-margin_bottom = 100.0
+margin_top = 89.0
+margin_right = 312.0
+margin_bottom = 135.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -244,7 +244,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 160.0
-margin_right = 328.0
+margin_right = 312.0
 margin_bottom = 46.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -302,9 +302,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 448.0
+margin_left = 432.0
 margin_right = 540.0
-margin_bottom = 100.0
+margin_bottom = 135.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2

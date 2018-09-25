@@ -179,7 +179,7 @@ func redraw():
     var unit_info = Node2D.new()
     
     var unit_sprite = Sprite.new()
-    unit_sprite.texture = load('res://art/%s' % unit.kind.get_image())
+    unit_sprite.texture = load('res://art/units/%s' % unit.kind.get_image())
     unit_sprite.centered = false
     unit_sprite.region_enabled = true
     unit_sprite.region_rect = Rect2(0, 0, 256, 256)

@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/unknown_unit.png-8ff18abcf5701983b8498dfc50ca4012.stex"
+path="res://.import/unknown_unit.png-b162697713a4605628d5351b0d849419.stex"
 
 [deps]
 
-source_file="res://art/unknown_unit.png"
-dest_files=[ "res://.import/unknown_unit.png-8ff18abcf5701983b8498dfc50ca4012.stex" ]
+source_file="res://art/units/unknown_unit.png"
+dest_files=[ "res://.import/unknown_unit.png-b162697713a4605628d5351b0d849419.stex" ]
 
 [params]
 

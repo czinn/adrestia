@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/the_ogre.png-8a8808985e594ceade4b7f15f4944253.stex"
+path="res://.import/default_red.png-e73571016592f95fe2a526d0e4550204.stex"
 
 [deps]
 
-source_file="res://art/the_ogre.png"
-dest_files=[ "res://.import/the_ogre.png-8a8808985e594ceade4b7f15f4944253.stex" ]
+source_file="res://art/units/default_red.png"
+dest_files=[ "res://.import/default_red.png-e73571016592f95fe2a526d0e4550204.stex" ]
 
 [params]
 

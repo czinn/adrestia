@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/cutie.png-6c1eac3cadfadae3b9e318e3fcc62429.stex"
+path="res://.import/check_box.png-3c0113247f20399dd86a4c94cfb94d2d.stex"
 
 [deps]
 
-source_file="res://art/cutie.png"
-dest_files=[ "res://.import/cutie.png-6c1eac3cadfadae3b9e318e3fcc62429.stex" ]
+source_file="res://art/check_box.png"
+dest_files=[ "res://.import/check_box.png-3c0113247f20399dd86a4c94cfb94d2d.stex" ]
 
 [params]
 

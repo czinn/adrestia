@@ -16,7 +16,7 @@ func init(unit_kind_):
   unit_kind = unit_kind_
 
 func _ready():
-  image.texture = load('res://art/' + unit_kind.get_image())
+  image.texture = load('res://art/units/' + unit_kind.get_image())
   var unit_text = unit_kind.get_name()
   unit_name.text = "%s (%d)" % [unit_kind.get_name(), unit_kind.get_cost()]
   

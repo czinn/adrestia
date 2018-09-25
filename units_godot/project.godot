@@ -12,7 +12,8 @@ config_version=3
 
 config/name="Adrestia"
 run/main_scene="res://scenes/title.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://art/apper.png"
+config/icon="res://art/apper.png"
 config/auto_accept_quit=false
 config/quit_on_go_back=false
 
@@ -37,5 +38,5 @@ window/stretch/shrink="1"
 
 [rendering]
 
-environment/default_clear_color=Color( 0.492188, 0.492188, 0.492188, 1 )
+environment/default_clear_color=Color( 1, 1, 1, 1 )
 environment/default_environment="res://default_env.tres"
