@@ -1,0 +1,159 @@
+#include <iostream>
+#include <sstream>
+#include <map>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include <cerrno>
+#include <fstream>
+#include <sstream>
+using namespace std;
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/time.h>
+#include <wait.h>
+#include <unistd.h>
+
+#include "crypto.h"
+using namespace cgipp;
+
+#define SERVER_IP 127.0.0.1
+#define SERVER_PORT 18677
+
+class connection_closed {};
+class socket_error {};
+
+string hex_urandom(unsigned int number_of_characters) {
+    // Creates random hexadecimal string of requested length
+    char proto_output[number_of_characters + 1];
+
+    ifstream urandom("/dev/urandom", ios::in|ios::binary);
+
+    if (!urandom) {
+        cerr << "Failed to open urandom!\n";
+        throw;
+    }
+
+    for (int i = 0; i < number_of_characters; i = i + 1) {
+        char next_number = 0;
+
+        urandom.read((char*)(&next_number), sizeof(char));
+        next_number &= 0x0F;  // Ensure we generate only one character at a time.
+
+        if (!urandom) {
+            cerr << "Failed to read from urandom!\n";
+            throw;
+        }
+
+        if (next_number < 10) {  // 0-10
+            proto_output[i] = (char)(next_number + 48);
+        }
+        else {  // A-F
+            proto_output[i] = (char)(next_number + 87);
+        }
+    }
+
+    proto_output[number_of_characters] = '\0';
+
+    string returnVar(proto_output);
+    return returnVar;
+}
+
+
+string read_packet (int client_socket)
+{
+    // Reads a string sent from the target.
+    // The string should end with a newline, although this newline is not returned by this function.
+    string msg;
+
+    const int size = 8192;
+    char buffer[size];
+
+    while (true)
+    {
+        int bytes_read = recv (client_socket, buffer, sizeof(buffer) - 2, 0);
+            // Though extremely unlikely in our setting --- connection from 
+            // localhost, transmitting a small packet at a time --- this code 
+            // takes care of fragmentation  (one packet arriving could have 
+            // just one fragment of the transmitted message)
+
+        if (bytes_read > 0)
+        {
+            buffer[bytes_read] = '\0';
+            buffer[bytes_read + 1] = '\0';
+
+            const char * packet = buffer;
+            while (*packet != '\0')
+            {
+                msg += packet;
+                packet += strlen(packet) + 1;
+
+                if (msg.length() > 1 && msg[msg.length() - 1] == '\n')
+                {
+                    return msg.substr(0, msg.length()-1);
+                }
+            }
+        }
+
+        else if (bytes_read == 0)
+        {
+            close (client_socket);
+            throw connection_closed();
+        }
+
+        else
+        {
+            cerr << "Error " << errno << "(" << strerror(errno) << ")" << endl;
+            throw socket_error();
+        }
+    }
+
+    throw connection_closed();
+}
+
+
+int socket_to_target(const char* IP, int port) {
+    // Creates and connects socket to target IP/port
+    struct sockaddr_in target_address;
+
+    target_address.sin_family = AF_INET;
+    target_address.sin_addr.s_addr = inet_addr(IP);
+    target_address.sin_port = htons(port);
+
+    int my_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (connect(my_socket, (struct sockaddr*)&target_address, sizeof(target_address)) == -1) {
+        cout << "Error establishing connection: |" << strerror(errno) << "|.\n";
+        return -1;
+    }
+
+    return my_socket;
+}
+
+
+int main(int argc, char* argv[]) {
+    cout << "Initiating connection." << endl;
+    int my_socket = socket_to_target("127.0.0.1", 18677);
+
+    if (my_socket != -1) {
+        string server_call = read_packet(my_socket);
+        cout << "[Client] Server greets us: |" << server_call << "|." << endl;
+
+        string server_send_string = "...it'll do what they thought.\n";
+        cout << "[Client] sending... |" << server_send_string << "|" << endl;
+
+        send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
+        cout << "[Client] Server replies: |" << read_packet(my_socket) << "|.\n";
+    }
+    else {
+        cout << "Failed to connect." << endl;
+        return 1;
+    }
+
+    
+    return 0;
+}
