@@ -18,9 +18,6 @@ using namespace std;
 #include <wait.h>
 #include <unistd.h>
 
-#include "crypto.h"
-using namespace cgipp;
-
 #define SERVER_IP 127.0.0.1
 #define SERVER_PORT 18677
 

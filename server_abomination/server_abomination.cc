@@ -19,9 +19,6 @@ using namespace std;
 #include <unistd.h>
 #include <time.h>
 
-#include "crypto.h"
-using namespace cgipp;
-
 #define SERVER_PORT 18677
 
 class connection_closed {};
