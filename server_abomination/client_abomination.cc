@@ -137,12 +137,13 @@ int main(int argc, char* argv[]) {
     int my_socket = socket_to_target("127.0.0.1", 18677);
 
     if (my_socket != -1) {
-        string server_call = read_packet(my_socket);
-        cout << "[Client] Server greets us: |" << server_call << "|." << endl;
+        cout << "[Client] Testing z_default...";
+        string server_send_string = "This is not a real call.\n";
+        send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
+        cout << "[Client] Server replies: |" << read_packet(my_socket) << "|.\n";
 
-        string server_send_string = "...it'll do what they thought.\n";
-        cout << "[Client] sending... |" << server_send_string << "|" << endl;
-
+        cout << "[CLient] Testing floop...";
+        server_send_string = "000000000000000000000000000floopA floop message\n";
         send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
         cout << "[Client] Server replies: |" << read_packet(my_socket) << "|.\n";
     }
