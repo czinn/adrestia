@@ -18,6 +18,9 @@ using namespace std;
 #include <wait.h>
 #include <unistd.h>
 
+#include "../units_cpp/json.h"
+using json = nlohmann::json;
+
 #define SERVER_IP 127.0.0.1
 #define SERVER_PORT 18677
 
@@ -132,26 +135,37 @@ int socket_to_target(const char* IP, int port) {
 }
 
 
-int main(int argc, char* argv[]) {
-    cout << "Initiating connection." << endl;
+// ACTUAL API STARTS HERE
+int register_new_account(const string& account_name, const string& password) {
+    cout << "register_new_account outbound with:" << endl;
+    cout << "    account_name: |" << account_name << "|" << endl;
+    cout << "    password: |" << password << "|" << endl;
+
+
     int my_socket = socket_to_target("127.0.0.1", 18677);
-
     if (my_socket != -1) {
-        cout << "[Client] Testing z_default...";
-        string server_send_string = "This is not a real call.\n";
+        string server_send_string("000000000000register_new_account");
+        json new_account;
+        new_account["account_name"] = account_name;
+        new_account["password"] = password;
+        server_send_string += new_account.dump();
+        server_send_string += '\n';
         send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-        cout << "[Client] Server replies: |" << read_packet(my_socket) << "|.\n";
-
-        cout << "[CLient] Testing floop...";
-        server_send_string = "000000000000000000000000000floopA floop message\n";
-        send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-        cout << "[Client] Server replies: |" << read_packet(my_socket) << "|.\n";
     }
     else {
-        cout << "Failed to connect." << endl;
+        cerr << "register_new_account failed to connect." << endl;
         return 1;
     }
 
-    
+    cout << "register_new_account has concluded successfully." << endl;
     return 0;
+}
+
+// ACTUAL API ENDS HERE
+
+
+int main(int argc, char* argv[]) {
+    string account_name("blop");
+    string password("blop");
+    return register_new_account(account_name, password);
 }
