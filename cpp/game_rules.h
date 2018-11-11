@@ -15,6 +15,8 @@ using json = nlohmann::json;
 class GameRules {
 	public:
 		GameRules();
+		bool operator==(const GameRules &) const;
+
 		// Initializes rules from json file.
 		GameRules(std::string rules_filename);
 		const Spell &get_spell(std::string id) const;
@@ -26,7 +28,6 @@ class GameRules {
 
 		friend void from_json(const json &j, GameRules &rules);
 		friend void to_json(json &j, const GameRules &rules);
-		friend bool operator==(const GameRules &, const GameRules &);
 
 	private:
 		// Note that there is no way to access the list of spells directly. If you
@@ -38,5 +39,3 @@ class GameRules {
 		int initial_health;
 		int initial_mana_regen;
 };
-
-bool operator==(const GameRules &, const GameRules &);

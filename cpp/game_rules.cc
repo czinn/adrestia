@@ -3,7 +3,7 @@
 #include <fstream>
 
 //------------------------------------------------------------------------------
-// CONSTRUCTORS
+// C++ SEMANTICS
 //------------------------------------------------------------------------------
 GameRules::GameRules() {}
 GameRules::GameRules(std::string rules_filename) {
@@ -11,6 +11,16 @@ GameRules::GameRules(std::string rules_filename) {
 	std::ifstream in(rules_filename);
 	in >> j;
 	*this = j;
+}
+
+bool GameRules::operator==(const GameRules &other) const {
+	return (
+		this->spells == other.spells &&
+		this->books == other.books &&
+		this->mana_cap == other.mana_cap &&
+		this->initial_health == other.initial_health &&
+		this->initial_mana_regen == other.initial_mana_regen
+	);
 }
 
 //------------------------------------------------------------------------------
@@ -48,14 +58,4 @@ void to_json(json &j, const GameRules &rules) {
 	j["mana_cap"] = rules.mana_cap;
 	j["initial_health"] = rules.initial_health;
 	j["initial_mana_regen"] = rules.initial_mana_regen;
-}
-
-bool operator==(const GameRules &r1, const GameRules &r2) {
-	return (
-		r1.spells == r2.spells &&
-		r1.books == r2.books &&
-		r1.mana_cap == r2.mana_cap &&
-		r1.initial_health == r2.initial_health &&
-		r1.initial_mana_regen == r2.initial_mana_regen
-	);
 }
