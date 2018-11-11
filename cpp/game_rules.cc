@@ -49,3 +49,13 @@ void to_json(json &j, const GameRules &rules) {
 	j["initial_health"] = rules.initial_health;
 	j["initial_mana_regen"] = rules.initial_mana_regen;
 }
+
+bool operator==(const GameRules &r1, const GameRules &r2) {
+	return (
+		r1.spells == r2.spells &&
+		r1.books == r2.books &&
+		r1.mana_cap == r2.mana_cap &&
+		r1.initial_health == r2.initial_health &&
+		r1.initial_mana_regen == r2.initial_mana_regen
+	);
+}

@@ -4,9 +4,18 @@
 #include <algorithm>
 
 //------------------------------------------------------------------------------
-// CONSTRUCTORS
+// C++ SEMANTICS
 //------------------------------------------------------------------------------
 Selector::Selector() : valid(false) {}
+
+bool Selector::operator==(const Selector &other) const {
+	return (
+		this->valid == other.valid &&
+		this->book_ids == other.book_ids &&
+		this->spell_ids == other.spell_ids &&
+		this->effect_types == other.effect_types
+	);
+};
 
 //------------------------------------------------------------------------------
 // GETTERS

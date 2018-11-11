@@ -45,6 +45,8 @@ class Spell;
 class Sticky {
 	public:
 		Sticky();
+		bool operator==(const Sticky &) const;
+
 		StickyKind get_kind() const;
 		int get_amount() const;
 		const std::vector<Effect> get_effects() const;
@@ -71,3 +73,4 @@ class Sticky {
 		// for inbound effects (versus outbound effects).
 		bool trigger_inbound;
 };
+

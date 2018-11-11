@@ -15,6 +15,8 @@ using json = nlohmann::json;
 class Spell {
 	public:
 		Spell();
+		bool operator==(const Spell &) const;
+
 		std::string get_id() const;
 		std::string get_name() const;
 		std::string get_book() const;

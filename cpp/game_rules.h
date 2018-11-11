@@ -26,6 +26,7 @@ class GameRules {
 
 		friend void from_json(const json &j, GameRules &rules);
 		friend void to_json(json &j, const GameRules &rules);
+		friend bool operator==(const GameRules &, const GameRules &);
 
 	private:
 		// Note that there is no way to access the list of spells directly. If you
@@ -37,3 +38,5 @@ class GameRules {
 		int initial_health;
 		int initial_mana_regen;
 };
+
+bool operator==(const GameRules &, const GameRules &);

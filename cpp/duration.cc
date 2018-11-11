@@ -1,9 +1,16 @@
 #include "duration.h"
 
 //------------------------------------------------------------------------------
-// CONSTRUCTORS
+// C++ SEMANTICS
 //------------------------------------------------------------------------------
 Duration::Duration() {}
+
+bool Duration::operator==(const Duration &other) const {
+	return (
+		this->unit == other.unit &&
+		this->value == other.value
+	);
+}
 
 //------------------------------------------------------------------------------
 // GETTERS

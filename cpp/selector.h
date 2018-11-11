@@ -19,6 +19,7 @@ class Spell;
 class Selector {
 	public:
 		Selector();
+		bool operator==(const Selector &) const;
 
 		bool is_valid() const;
 

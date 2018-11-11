@@ -16,6 +16,8 @@ enum DurationUnit {
 class Duration {
 	public:
 		Duration();
+		bool operator==(const Duration &) const;
+
 		bool is_active() const;
 		DurationUnit get_unit() const;
 		int get_value() const;

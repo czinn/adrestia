@@ -3,9 +3,19 @@
 #include <iostream>
 
 //------------------------------------------------------------------------------
-// CONSTRUCTORS
+// C++ SEMANTICS
 //------------------------------------------------------------------------------
 Effect::Effect() {}
+
+bool Effect::operator==(const Effect &other) const {
+	return (
+		this->kind == other.kind &&
+		this->targets_self == other.targets_self &&
+		this->effect_type == other.effect_type &&
+		this->amount == other.amount &&
+		this->sticky == other.sticky
+	);
+}
 
 //------------------------------------------------------------------------------
 // GETTERS

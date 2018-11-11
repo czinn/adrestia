@@ -13,6 +13,8 @@ using json = nlohmann::json;
 class Book {
 	public:
 		Book();
+		bool operator==(const Book &) const;
+
 		std::string get_id() const;
 		std::string get_name() const;
 		const std::vector<std::string> get_spells() const;

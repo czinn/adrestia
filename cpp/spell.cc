@@ -5,6 +5,20 @@
 //------------------------------------------------------------------------------
 Spell::Spell() {}
 
+bool Spell::operator==(const Spell &other) const {
+	return (
+		this->id == other.id &&
+		this->name == other.name &&
+		this->book == other.book &&
+		this->tech == other.tech &&
+		this->level == other.level &&
+		this->cost == other.cost &&
+		this->text == other.text &&
+		this->effects == other.effects &&
+		this->counterspell_selector == other.counterspell_selector
+	);
+}
+
 //------------------------------------------------------------------------------
 // GETTERS
 //------------------------------------------------------------------------------

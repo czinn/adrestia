@@ -34,6 +34,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EffectKind, {
 class Effect {
 	public:
 		Effect();
+		bool operator==(const Effect &) const;
 
 		EffectKind get_kind() const;
 		bool get_targets_self() const;
