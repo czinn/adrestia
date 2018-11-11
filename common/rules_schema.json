@@ -17,6 +17,7 @@
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
         "name": {"type": "string"},
+        "book": {"type": "string", "pattern": "^[a-z0-9_]+$"},
         "tech": {"type": "integer", "minimum": 0},
         "level": {"type": "integer", "minimum": 0},
         "cost": {"type": "integer", "minimum": 0},
@@ -25,7 +26,7 @@
         "counterspell": {"$ref": "#/definitions/spell_selector"}
       },
       "additionalProperties": false,
-      "required": ["id", "name", "tech", "level", "cost", "text", "effects"]
+      "required": ["id", "name", "book", "tech", "level", "cost", "text", "effects"]
     },
     "book": {
       "type": "object",
