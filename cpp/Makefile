@@ -10,11 +10,11 @@ TEST_EXEC = test
 TEST_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard tests/*.cc))
 TEST_DEPS = ${TEST_OBJS:.o=.d}
 
-CLI_EXEC = units_cli
+CLI_EXEC = spells_cli
 CLI_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard cli/*.cc))
 CLI_DEPS = ${CLI_OBJS:.o=.d}
 
-AI_EXEC = units_ai
+AI_EXEC = spells_ai
 AI_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard ai/*.cc))
 AI_DEPS = ${AI_OBJS:.o=.d}
 
