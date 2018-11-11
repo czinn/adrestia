@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "duration.h"
+#include "selector.h"
 #include "json.h"
 
 using json = nlohmann::json;
@@ -29,7 +30,17 @@ NLOHMANN_JSON_SERIALIZE_ENUM(StickyKind, {
 	{ SK_ID, "id" },
 });
 
+enum TriggerType {
+	// Triggers when a spell matching trigger_selector is cast.
+	TRIGGER_SPELL,
+	// Triggers when an effect is inbound/outbound (see inbound field).
+	TRIGGER_EFFECT,
+	// Triggers at the end of the turn. 
+	TRIGGER_TURN,
+};
+
 class Effect;
+class Spell;
 
 class Sticky {
 	public:
@@ -39,6 +50,11 @@ class Sticky {
 		const std::vector<Effect> get_effects() const;
 		Duration get_duration() const;
 
+		// EffectInstance is not yet implemented.
+		// bool triggers_for_effect(const EffectInstance &effect, bool inbound) const;
+		bool triggers_for_spell(const Spell &spell) const;
+		bool triggers_at_end_of_turn() const;
+
 		friend void from_json(const json &j, Sticky &sticky);
 		friend void to_json(json &j, const Sticky &sticky);
 
@@ -47,4 +63,11 @@ class Sticky {
 		int amount;
 		std::vector<Effect> effects;
 		Duration duration;
+		TriggerType trigger_type;
+		// If trigger_type is not TRIGGER_TURN, used to determine whether the
+		// Sticky triggers in response to a given spell/effect.
+		Selector trigger_selector;
+		// If trigger_type is TRIGGER_EFFECT, indicates whether the Sticky triggers
+		// for inbound effects (versus outbound effects).
+		bool trigger_inbound;
 };

@@ -5,6 +5,7 @@
 #pragma once
 
 #include "sticky.h"
+#include "effect_type.h"
 #include "json.h"
 
 using json = nlohmann::json;
@@ -28,28 +29,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EffectKind, {
 	{ EK_MANA, "mana" },
 	{ EK_REGEN, "mana_regen" },
 	{ EK_STICKY, "sticky" },
-});
-
-enum EffectType {
-	ET_ATTACK,
-	ET_SHIELD,
-	ET_SPECIAL,
-	ET_POISON,
-	ET_CONSTANT,
-	ET_COUNTER,
-	ET_TECH,
-	ET_HEAL,
-};
-
-NLOHMANN_JSON_SERIALIZE_ENUM(EffectType, {
-	{ ET_ATTACK, "attack" },
-	{ ET_SHIELD, "shield" },
-	{ ET_SPECIAL, "special" },
-	{ ET_POISON, "poison" },
-	{ ET_CONSTANT, "constant" },
-	{ ET_COUNTER, "counter" },
-	{ ET_TECH, "tech" },
-	{ ET_HEAL, "heal" },
 });
 
 class Effect {

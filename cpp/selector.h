@@ -1,11 +1,15 @@
 /* Boolean predicate on a spell/effect. Used to determine whether a Sticky
- * should trigger. */
+ * should trigger. The interpretation of a Selector is that it matches
+ * a spell/effect if its book appears in book_ids, AND its spell (source spell
+ * for effects) appears in spell_ids, AND its effect_type (any component
+ * effect_type) appears in effect_types. For each of the things, an empty list
+ * matches anything. */
 
 #pragma once
 
 #include <vector>
 
-#include "effect.h"
+#include "effect_type.h"
 #include "json.h"
 
 using json = nlohmann::json;
