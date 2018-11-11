@@ -20,12 +20,12 @@ const Sticky &Effect::get_sticky() const { return sticky; }
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, Effect &effect) {
-	effect.kind = j["kind"];
-	effect.targets_self = j["self"];
-	effect.effect_type = j["effect_type"];
-	effect.amount = j.find("amount") != j.end() ? j["amount"].get<int>() : 0;
+	effect.kind = j.at("kind");
+	effect.targets_self = j.at("self");
+	effect.effect_type = j.at("effect_type");
+	effect.amount = j.find("amount") != j.end() ? j.at("amount").get<int>() : 0;
 	if (j.find("sticky") != j.end()) {
-		effect.sticky = j["sticky"];
+		effect.sticky = j.at("sticky");
 	}
 }
 

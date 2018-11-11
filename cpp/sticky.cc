@@ -37,11 +37,11 @@ bool Sticky::triggers_at_end_of_turn() const {
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, Sticky &sticky) {
-	sticky.kind = j["kind"];
-	sticky.amount = j.find("amount") != j.end() ? j["amount"].get<int>() : 0;
+	sticky.kind = j.at("kind");
+	sticky.amount = j.find("amount") != j.end() ? j.at("amount").get<int>() : 0;
 	sticky.duration = j.at("duration");
 	if (j.find("effects") != j.end()) {
-		for (auto it = j["effects"].begin(), end = j["effects"].end(); it != end; it++) {
+		for (auto it = j.at("effects").begin(), end = j.at("effects").end(); it != end; it++) {
 			sticky.effects.push_back(*it);
 		}
 	}

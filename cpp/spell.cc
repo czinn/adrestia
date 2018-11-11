@@ -25,18 +25,18 @@ const Selector &Spell::get_counterspell_selector() const {
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, Spell &spell) {
-	spell.id = j["id"];
-	spell.name = j["name"];
-	spell.book = j["book"];
-	spell.tech = j["tech"];
-	spell.level = j["level"];
-	spell.cost = j["cost"];
-	spell.text = j["text"];
-	for (auto it = j["effects"].begin(), end = j["effects"].end(); it != end; it++) {
+	spell.id = j.at("id");
+	spell.name = j.at("name");
+	spell.book = j.at("book");
+	spell.tech = j.at("tech");
+	spell.level = j.at("level");
+	spell.cost = j.at("cost");
+	spell.text = j.at("text");
+	for (auto it = j.at("effects").begin(), end = j.at("effects").end(); it != end; it++) {
 		spell.effects.push_back(*it);
 	}
 	if (j.find("counterspell") != j.end()) {
-		spell.counterspell_selector = j["counterspell"];
+		spell.counterspell_selector = j.at("counterspell");
 	}
 }
 

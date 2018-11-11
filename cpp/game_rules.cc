@@ -27,15 +27,15 @@ int GameRules::get_initial_mana_regen() const { return initial_mana_regen; }
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, GameRules &rules) {
-	for (auto it = j["spells"].begin(), end = j["spells"].end(); it != end; it++) {
+	for (auto it = j.at("spells").begin(), end = j.at("spells").end(); it != end; it++) {
 		rules.spells.emplace((*it)["id"].get<std::string>(), *it);
 	}
-	for (auto it = j["books"].begin(), end = j["books"].end(); it != end; it++) {
+	for (auto it = j.at("books").begin(), end = j.at("books").end(); it != end; it++) {
 		rules.books.emplace((*it)["id"].get<std::string>(), *it);
 	}
-	rules.mana_cap = j["mana_cap"];
-	rules.initial_health = j["initial_health"];
-	rules.initial_mana_regen = j["initial_mana_regen"];
+	rules.mana_cap = j.at("mana_cap");
+	rules.initial_health = j.at("initial_health");
+	rules.initial_mana_regen = j.at("initial_mana_regen");
 }
 
 void to_json(json &j, const GameRules &rules) {

@@ -31,7 +31,7 @@ class GameRules {
 		// Note that there is no way to access the list of spells directly. If you
 		// want to do this, you probably want to get the list of books and iterate
 		// through that instead.
-    std::map<std::string, Spell> spells;
+		std::map<std::string, Spell> spells;
 		std::map<std::string, Book> books;
 		int mana_cap;
 		int initial_health;

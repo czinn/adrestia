@@ -16,9 +16,9 @@ const std::vector<std::string> Book::get_spells() const { return spells; }
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, Book &book) {
-	book.id = j["id"];
-	book.name = j["name"];
-	for (auto it = j["spells"].begin(), end = j["spells"].end(); it != end; it++) {
+	book.id = j.at("id");
+	book.name = j.at("name");
+	for (auto it = j.at("spells").begin(), end = j.at("spells").end(); it != end; it++) {
 		book.spells.push_back(*it);
 	}
 }

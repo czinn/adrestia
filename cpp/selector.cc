@@ -53,17 +53,17 @@ bool selects_effect(const EffectInstance &effect) const {
 //------------------------------------------------------------------------------
 void from_json(const json &j, Selector &selector) {
 	if (j.find("book_id") != j.end()) {
-		for (auto it = j["book_id"].begin(), end = j["book_id"].end(); it != end; it++) {
+		for (auto it = j.at("book_id").begin(), end = j.at("book_id").end(); it != end; it++) {
 			selector.book_ids.push_back(*it);
 		}
 	}
 	if (j.find("spell_id") != j.end()) {
-		for (auto it = j["spell_id"].begin(), end = j["spell_id"].end(); it != end; it++) {
+		for (auto it = j.at("spell_id").begin(), end = j.at("spell_id").end(); it != end; it++) {
 			selector.spell_ids.push_back(*it);
 		}
 	}
 	if (j.find("effect_type") != j.end()) {
-		for (auto it = j["effect_type"].begin(), end = j["effect_type"].end(); it != end; it++) {
+		for (auto it = j.at("effect_type").begin(), end = j.at("effect_type").end(); it != end; it++) {
 			selector.effect_types.push_back(*it);
 		}
 	}
