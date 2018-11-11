@@ -19,7 +19,7 @@ void from_json(const json &j, Book &book) {
 	book.id = j["id"];
 	book.name = j["name"];
 	for (auto it = j["spells"].begin(), end = j["spells"].end(); it != end; it++) {
-		book.spells.push_back(it->get<std::string>());
+		book.spells.push_back(*it);
 	}
 }
 

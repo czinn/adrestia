@@ -16,6 +16,10 @@ int Spell::get_level() const { return level; }
 int Spell::get_cost() const { return cost; }
 std::string Spell::get_text() const { return text; }
 const std::vector<Effect> Spell::get_effects() const { return effects; }
+bool Spell::is_counterspell() const { return counterspell_selector.is_valid(); }
+const Selector &Spell::get_counterspell_selector() const {
+	return counterspell_selector;
+}
 
 //------------------------------------------------------------------------------
 // SERIALIZATION
@@ -31,6 +35,9 @@ void from_json(const json &j, Spell &spell) {
 	for (auto it = j["effects"].begin(), end = j["effects"].end(); it != end; it++) {
 		spell.effects.push_back(*it);
 	}
+	if (j.find("counterspell") != j.end()) {
+		spell.counterspell_selector = j["counterspell"];
+	}
 }
 
 void to_json(json &j, const Spell &spell) {
@@ -43,5 +50,8 @@ void to_json(json &j, const Spell &spell) {
 	j["text"] = spell.text;
 	for (auto it = spell.effects.begin(); it != spell.effects.end(); it++) {
 		j["effects"].push_back(*it);
+	}
+	if (spell.is_counterspell()) {
+		j["counterspell"] = spell.counterspell_selector;
 	}
 }

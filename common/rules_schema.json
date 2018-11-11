@@ -23,7 +23,7 @@
         "cost": {"type": "integer", "minimum": 0},
         "text": {"type": "string"},
         "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
-        "counterspell": {"$ref": "#/definitions/spell_selector"}
+        "counterspell": {"$ref": "#/definitions/selector"}
       },
       "additionalProperties": false,
       "required": ["id", "name", "book", "tech", "level", "cost", "text", "effects"]
@@ -61,9 +61,9 @@
         "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
         "trigger": {"oneOf":
           [{"type": "object", "additionalProperties": false, "required": ["spell"],
-            "properties": {"spell": {"$ref": "#/definitions/spell_selector"}}},
+            "properties": {"spell": {"$ref": "#/definitions/selector"}}},
            {"type": "object", "additionalProperties": false, "required": ["effect","inbound"],
-            "properties": {"effect": {"$ref": "#/definitions/effect_selector"}, "inbound": {"type": "boolean"}}},
+            "properties": {"effect": {"$ref": "#/definitions/selector"}, "inbound": {"type": "boolean"}}},
            {"type": "object", "additionalProperties": false, "required": ["turn"],
             "properties": {"turn": {"const": true}}}
           ]}
@@ -83,16 +83,7 @@
       "minProperties": 1,
       "maxProperties": 1
     },
-    "spell_selector": {
-      "type": "object",
-      "properties": {
-        "book_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "spell_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "effect_type": {"type": "array", "items": {"$ref": "#/definitions/effect_type"}}
-      },
-      "additionalProperties": false
-    },
-    "effect_selector": {
+    "selector": {
       "type": "object",
       "properties": {
         "book_id": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},

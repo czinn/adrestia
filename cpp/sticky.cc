@@ -21,9 +21,11 @@ void from_json(const json &j, Sticky &sticky) {
 	sticky.kind = j["kind"];
 	sticky.amount = j.find("amount") != j.end() ? j["amount"].get<int>() : 0;
 	sticky.duration = j.at("duration");
-	/*for (auto it = j["effects"].begin(), end = j["effects"].end(); it != end; it++) {
-		sticky.effects.push_back(*it);
-	}*/
+	if (j.find("effects") != j.end()) {
+		for (auto it = j["effects"].begin(), end = j["effects"].end(); it != end; it++) {
+			sticky.effects.push_back(*it);
+		}
+	}
 }
 
 void to_json(json &j, const Sticky &sticky) {
@@ -32,7 +34,7 @@ void to_json(json &j, const Sticky &sticky) {
 		j["amount"] = sticky.amount;
 	}
 	j["duration"] = sticky.duration;
-	/*for (auto it = sticky.effects.begin(); it != sticky.effects.end(); it++) {
+	for (auto it = sticky.effects.begin(); it != sticky.effects.end(); it++) {
 		j["effects"].push_back(*it);
-	}*/
+	}
 }
