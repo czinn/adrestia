@@ -17,8 +17,8 @@ class Book {
 		std::string get_name() const;
 		const std::vector<std::string> get_spells() const;
 
-		friend void to_json(json &j, const Book &rules);
-		friend void from_json(const json &j, Book &rules);
+		friend void from_json(const json &j, Book &book);
+		friend void to_json(json &j, const Book &book);
 
 	private:
 		std::string id;

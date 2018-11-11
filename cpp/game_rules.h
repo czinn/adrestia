@@ -24,8 +24,8 @@ class GameRules {
 		int get_initial_health() const;
 		int get_initial_mana_regen() const;
 
-		friend void to_json(json &j, const GameRules &rules);
 		friend void from_json(const json &j, GameRules &rules);
+		friend void to_json(json &j, const GameRules &rules);
 
 	private:
 		// Note that there is no way to access the list of spells directly. If you
