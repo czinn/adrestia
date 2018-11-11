@@ -1,9 +1,9 @@
 [submodule "libadrestia_gdnative/godot_headers"]
-	path = libadrestia_gdnative/godot_headers
+	path = cpp_gdnative/godot_headers
 	url = https://github.com/GodotNativeTools/godot_headers.git
 	ignore = dirty
 
 [submodule "libadrestia_gdnative/godot-cpp"]
-	path = libadrestia_gdnative/godot-cpp
+	path = cpp_gdnative/godot-cpp
 	url = https://github.com/GodotNativeTools/godot-cpp.git
 	ignore = dirty
