@@ -111,7 +111,7 @@
         {
           "kind": "sticky", "self": true, "effect_type": "special",
           "sticky": {
-            "kind": "damage", "duration": { "game": true }, "amount": -1,
+            "kind": "delta", "duration": { "game": true }, "amount": -1,
             "trigger": { "inbound": false, "effect": { "spell_id": [ "chain_1" ] } }
           }
         }

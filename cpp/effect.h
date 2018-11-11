@@ -4,18 +4,23 @@
 
 #pragma once
 
-#include <vector>
+#include "sticky.h"
 
 #include "json.h"
 
 using json = nlohmann::json;
 
 enum EffectKind {
+	// Applies delta to target's health.
 	EK_HEALTH,
+	// Applies delta to target's tech.
 	EK_TECH,
+	// Applies delta to target's mana.
 	EK_MANA,
+	// Applies delta to target's mana regeneration.
 	EK_REGEN,
-	EK_STICKY
+	// Adds a sticky to the target.
+	EK_STICKY,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EffectKind, {
@@ -34,7 +39,7 @@ enum EffectType {
 	ET_CONSTANT,
 	ET_COUNTER,
 	ET_TECH,
-	ET_HEAL
+	ET_HEAL,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EffectType, {
@@ -51,10 +56,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EffectType, {
 class Effect {
 	public:
 		Effect();
+
 		EffectKind get_kind() const;
 		bool get_targets_self() const;
 		EffectType get_effect_type() const;
 		int get_amount() const;
+		const Sticky &get_sticky() const;
 
 		friend void from_json(const json &j, Effect &effect);
 		friend void to_json(json &j, const Effect &effect);
@@ -69,4 +76,6 @@ class Effect {
 		// For EffectKinds other thank EK_STICKY, the delta to apply to the
 		// corresponding attribute of the target Player.
 		int amount;
+		// The Sticky that this Effect creates, if any.
+		Sticky sticky;
 };

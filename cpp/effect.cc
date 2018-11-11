@@ -1,5 +1,7 @@
 #include "effect.h"
 
+#include <iostream>
+
 //------------------------------------------------------------------------------
 // CONSTRUCTORS
 //------------------------------------------------------------------------------
@@ -12,6 +14,7 @@ EffectKind Effect::get_kind() const { return kind; }
 bool Effect::get_targets_self() const { return targets_self; }
 EffectType Effect::get_effect_type() const { return effect_type; }
 int Effect::get_amount() const { return amount; }
+const Sticky &Effect::get_sticky() const { return sticky; }
 
 //------------------------------------------------------------------------------
 // SERIALIZATION
@@ -21,6 +24,9 @@ void from_json(const json &j, Effect &effect) {
 	effect.targets_self = j["self"];
 	effect.effect_type = j["effect_type"];
 	effect.amount = j.find("amount") != j.end() ? j["amount"].get<int>() : 0;
+	if (j.find("sticky") != j.end()) {
+		effect.sticky = j["sticky"];
+	}
 }
 
 void to_json(json &j, const Effect &effect) {
@@ -29,5 +35,8 @@ void to_json(json &j, const Effect &effect) {
 	j["effect_type"] = effect.effect_type;
 	if (effect.amount != 0) {
 		j["amount"] = effect.amount;
+	}
+	if (effect.kind == EK_STICKY) {
+		j["sticky"] = effect.sticky;
 	}
 }

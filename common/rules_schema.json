@@ -71,7 +71,7 @@
       "additionalProperties": false,
       "required": ["kind", "duration", "trigger"]
     },
-    "sticky_kind": {"enum": ["damage", "shield", "id"]},
+    "sticky_kind": {"enum": ["delta", "shield", "id"]},
     "duration": {
       "type": "object",
       "properties": {
