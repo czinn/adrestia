@@ -6,17 +6,17 @@
 Spell::Spell() {}
 
 bool Spell::operator==(const Spell &other) const {
-	return (
-		this->id == other.id &&
-		this->name == other.name &&
-		this->book == other.book &&
-		this->tech == other.tech &&
-		this->level == other.level &&
-		this->cost == other.cost &&
-		this->text == other.text &&
-		this->effects == other.effects &&
-		this->counterspell_selector == other.counterspell_selector
-	);
+	return
+		(  this->id == other.id
+		&& this->name == other.name
+		&& this->book == other.book
+		&& this->tech == other.tech
+		&& this->level == other.level
+		&& this->cost == other.cost
+		&& this->text == other.text
+		&& this->effects == other.effects
+		&& this->counterspell_selector == other.counterspell_selector
+		);
 }
 
 //------------------------------------------------------------------------------
@@ -46,8 +46,8 @@ void from_json(const json &j, Spell &spell) {
 	spell.level = j.at("level");
 	spell.cost = j.at("cost");
 	spell.text = j.at("text");
-	for (auto it = j.at("effects").begin(), end = j.at("effects").end(); it != end; it++) {
-		spell.effects.push_back(*it);
+	for (const auto &it : j.at("effects")) {
+		spell.effects.push_back(it);
 	}
 	if (j.find("counterspell") != j.end()) {
 		spell.counterspell_selector = j.at("counterspell");
@@ -62,9 +62,7 @@ void to_json(json &j, const Spell &spell) {
 	j["level"] = spell.level;
 	j["cost"] = spell.cost;
 	j["text"] = spell.text;
-	for (auto it = spell.effects.begin(); it != spell.effects.end(); it++) {
-		j["effects"].push_back(*it);
-	}
+	j["effects"] = spell.effects;
 	if (spell.is_counterspell()) {
 		j["counterspell"] = spell.counterspell_selector;
 	}

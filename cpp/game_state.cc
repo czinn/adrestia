@@ -20,7 +20,5 @@ bool GameState::operator==(const GameState &other) const {
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void to_json(json &j, const GameState &state) {
-	for (auto p : state.players) {
-		j["players"].push_back(p);
-	}
+	j["players"] = state.players;
 }

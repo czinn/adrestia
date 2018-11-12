@@ -37,11 +37,11 @@ int GameRules::get_initial_mana_regen() const { return initial_mana_regen; }
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, GameRules &rules) {
-	for (auto it = j.at("spells").begin(), end = j.at("spells").end(); it != end; it++) {
-		rules.spells.emplace((*it)["id"].get<std::string>(), *it);
+	for (const auto &it : j.at("spells")) {
+		rules.spells.emplace(it["id"].get<std::string>(), it);
 	}
-	for (auto it = j.at("books").begin(), end = j.at("books").end(); it != end; it++) {
-		rules.books.emplace((*it)["id"].get<std::string>(), *it);
+	for (const auto &it : j.at("books")) {
+		rules.books.emplace(it["id"].get<std::string>(), it);
 	}
 	rules.mana_cap = j.at("mana_cap");
 	rules.initial_health = j.at("initial_health");
@@ -49,11 +49,11 @@ void from_json(const json &j, GameRules &rules) {
 }
 
 void to_json(json &j, const GameRules &rules) {
-	for (auto it = rules.spells.begin(); it != rules.spells.end(); it++) {
-		j["spells"].push_back(it->second);
+	for (const auto &[k, v] : rules.spells) {
+		j["spells"].push_back(v);
 	}
-	for (auto it = rules.books.begin(); it != rules.books.end(); it++) {
-		j["books"].push_back(it->second);
+	for (const auto &[k, v] : rules.books) {
+		j["books"].push_back(v);
 	}
 	j["mana_cap"] = rules.mana_cap;
 	j["initial_health"] = rules.initial_health;

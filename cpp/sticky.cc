@@ -9,14 +9,14 @@
 Sticky::Sticky() {}
 
 bool Sticky::operator==(const Sticky &other) const {
-	return (
-		this->kind == other.kind &&
-		this->effects == other.effects &&
-		this->duration == other.duration &&
-		this->trigger_type == other.trigger_type &&
-		this->trigger_selector == other.trigger_selector &&
-		this->trigger_inbound == other.trigger_inbound
-	);
+	return
+		(  this->kind == other.kind
+		&& this->effects == other.effects
+		&& this->duration == other.duration
+		&& this->trigger_type == other.trigger_type
+		&& this->trigger_selector == other.trigger_selector
+		&& this->trigger_inbound == other.trigger_inbound
+		);
 }
 
 //------------------------------------------------------------------------------
