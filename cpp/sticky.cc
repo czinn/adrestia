@@ -25,6 +25,7 @@ bool Sticky::operator==(const Sticky &other) const {
 //------------------------------------------------------------------------------
 StickyKind Sticky::get_kind() const { return kind; }
 int Sticky::get_amount() const { return amount; }
+Duration Sticky::get_duration() const { return duration; }
 const std::vector<Effect> Sticky::get_effects() const { return effects; }
 
 //------------------------------------------------------------------------------
