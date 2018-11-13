@@ -15,6 +15,7 @@
 using json = nlohmann::json;
 
 class Spell;
+class EffectInstance;
 
 class Selector {
 	public:
@@ -24,7 +25,7 @@ class Selector {
 		bool is_valid() const;
 
 		bool selects_spell(const Spell &spell) const;
-		// bool selects_effect(const EffectInstance &effect) const;
+		bool selects_effect(const EffectInstance &effect) const;
 
 		friend void from_json(const json &j, Selector &selector);
 		friend void to_json(json &j, const Selector &selector);

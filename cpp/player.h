@@ -17,6 +17,7 @@ class Player {
 		// Returns (Spell, book_idx).
 		// first is [nullptr] if spell is not in any of the player's books.
 		std::pair<const Spell*, size_t> find_spell(const std::string &spell_id) const;
+		size_t find_book_idx(const std::string &book_id) const;
 		int level() const;
 
 		friend void to_json(json &, const Player &);

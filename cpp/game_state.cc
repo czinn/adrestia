@@ -1,4 +1,5 @@
 #include "game_state.h"
+#include "effect_instance.h"
 
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
@@ -81,27 +82,10 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 			// TODO: Counterspells.
 			caster.mp -= spell->get_cost();
 			for (const auto &effect : spell->get_effects()) {
-				// TODO: Pipe effect through stickies.
-				const auto amount = effect.get_amount();
 				auto &target = effect.get_targets_self() ? caster : natural_target;
-				switch (effect.get_kind()) {
-					case EK_TECH:
-						// Ignores targets_self.
-						caster.tech[book_idx] += amount;
-						break;
-					case EK_HEALTH:
-						target.hp += amount;
-						break;
-					case EK_MANA:
-						target.mp += amount;
-						break;
-					case EK_REGEN:
-						target.mp_regen += amount;
-						break;
-					case EK_STICKY:
-						// TODO: Stickies should exist.
-						break;
-				}
+				EffectInstance effect_instance(*spell, effect);
+				// TODO: Pipe effect through stickies.
+				effect_instance.apply(target);
 			}
 		}
 	}

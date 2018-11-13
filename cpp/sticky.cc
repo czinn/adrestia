@@ -2,6 +2,7 @@
 
 #include "effect.h"
 #include "spell.h"
+#include "effect_instance.h"
 
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
@@ -29,12 +30,10 @@ const std::vector<Effect> Sticky::get_effects() const { return effects; }
 //------------------------------------------------------------------------------
 // PREDICATES
 //------------------------------------------------------------------------------
-/* EffectInstance is not yet implemented
 bool Sticky::triggers_for_effect(const EffectInstance &effect, bool inbound) const {
 	return trigger_type == TRIGGER_EFFECT && trigger_inbound == inbound &&
 		trigger_selector.selects_effect(effect);
 }
-*/
 
 bool Sticky::triggers_for_spell(const Spell &spell) const {
 	return trigger_type == TRIGGER_SPELL && trigger_selector.selects_spell(spell);

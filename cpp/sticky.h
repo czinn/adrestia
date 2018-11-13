@@ -41,6 +41,7 @@ enum TriggerType {
 
 class Effect;
 class Spell;
+class EffectInstance;
 
 class Sticky {
 	public:
@@ -54,7 +55,7 @@ class Sticky {
 		bool get_trigger_inbound() const;
 
 		// EffectInstance is not yet implemented.
-		// bool triggers_for_effect(const EffectInstance &effect, bool inbound) const;
+		bool triggers_for_effect(const EffectInstance &effect, bool inbound) const;
 		bool triggers_for_spell(const Spell &spell) const;
 		bool triggers_at_end_of_turn() const;
 

@@ -41,6 +41,15 @@ int Player::level() const {
 	return result;
 }
 
+size_t Player::find_book_idx(const std::string &book_id) const {
+	for (size_t book_idx = 0; book_idx < books.size(); book_idx++) {
+		if (books[book_idx]->get_id() == book_id) {
+			return book_idx;
+		}
+	}
+	return size_t(-1);
+}
+
 //------------------------------------------------------------------------------
 // SERIALIZATION
 //------------------------------------------------------------------------------

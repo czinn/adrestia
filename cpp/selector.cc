@@ -1,5 +1,6 @@
 #include "selector.h"
 #include "spell.h"
+#include "effect_instance.h"
 
 #include <algorithm>
 
@@ -42,20 +43,18 @@ bool Selector::selects_spell(const Spell &spell) const {
 				std::find(spell_ids.begin(), spell_ids.end(), spell.get_id()) != spell_ids.end());
 }
 
-/* EffectInstance is not yet implemented.
-bool selects_effect(const EffectInstance &effect) const {
+bool Selector::selects_effect(const EffectInstance &effect) const {
 	return
 		(book_ids.size() == 0 ||
-				std::find(book_ids.begin(), book_ids.end(),
-						effect.get_spell().get_book()) != book_ids.end()) &&
+			std::find(book_ids.begin(), book_ids.end(),
+				effect.spell.get_book()) != book_ids.end()) &&
 		(spell_ids.size() == 0 ||
-				std::find(spell_ids.begin(), spell_ids.end(),
-						effect.get_spell().get_id()) != spell_ids.end()) &&
+			std::find(spell_ids.begin(), spell_ids.end(),
+				effect.spell.get_id()) != spell_ids.end()) &&
 		(effect_types.size() == 0 ||
-				std::find(effect_types.begin(), effect_types.end(),
-						effect.get_effect_type()) != effect_types.end());
+			std::find(effect_types.begin(), effect_types.end(),
+				effect.effect_type) != effect_types.end());
 }
-*/
 
 //------------------------------------------------------------------------------
 // SERIALIZATION
