@@ -34,6 +34,7 @@ bool Spell::is_counterspell() const { return counterspell_selector.is_valid(); }
 const Selector &Spell::get_counterspell_selector() const {
 	return counterspell_selector;
 }
+bool Spell::is_tech_spell() const { return tech_spell; }
 
 //------------------------------------------------------------------------------
 // SERIALIZATION
@@ -46,8 +47,13 @@ void from_json(const json &j, Spell &spell) {
 	spell.level = j.at("level");
 	spell.cost = j.at("cost");
 	spell.text = j.at("text");
+	spell.tech_spell = false;
 	for (const auto &it : j.at("effects")) {
-		spell.effects.push_back(it);
+		Effect e = it;
+		if (e.get_effect_type() == ET_TECH) {
+			spell.tech_spell = true;
+		}
+		spell.effects.push_back(e);
 	}
 	if (j.find("counterspell") != j.end()) {
 		spell.counterspell_selector = j.at("counterspell");

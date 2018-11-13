@@ -32,7 +32,6 @@ int main() {
 	print_game(state);
 
 	const std::vector<std::vector<GameAction>> turns {
-		{{"tech_conjuration"}, {"tech_conjuration"}},
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},

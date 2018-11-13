@@ -26,6 +26,7 @@ class Spell {
 		std::string get_text() const;
 		const std::vector<Effect> &get_effects() const;
 		bool is_counterspell() const;
+		bool is_tech_spell() const;
 		const Selector &get_counterspell_selector() const;
 
 		friend void from_json(const json &j, Spell &spell);
@@ -41,4 +42,5 @@ class Spell {
 		std::string text; // Human-readable description of the spell's effects.
 		std::vector<Effect> effects;
 		Selector counterspell_selector;
+		bool tech_spell; // Whether this spell has an Effect of type ET_TECH.
 };

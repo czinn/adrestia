@@ -17,25 +17,40 @@ bool GameState::operator==(const GameState &other) const {
 }
 
 //------------------------------------------------------------------------------
+// GETTERS
+//------------------------------------------------------------------------------
+const std::vector<Player> &GameState::get_players() const { return players; }
+
+//------------------------------------------------------------------------------
 // BUSINESS LOGIC
 //------------------------------------------------------------------------------
 bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	// TODO: Return code or list of codes for why action isn't valid.
 	const Player &player = players[player_id];
 	int mp_left = player.mp;
+	// After the player has a cast a tech spell this turn, this is set to the
+	// tech they increased. This prevents the player from casting multiple tech
+	// spells in a turn, and allows them to use the tech immediately.
+	int turn_tech = -1;
 	for (const auto &spell_id : action) {
 		auto [spell, book_idx] = player.find_spell(spell_id);
 		if (spell == nullptr) {
 			return false;
 		}
-		if (player.tech[book_idx] < spell->get_tech()) {
+		if (player.tech[book_idx] + (turn_tech == book_idx ? 1 : 0) < spell->get_tech()) {
 			return false;
 		}
-		if (player.level() < spell->get_level()) {
+		if (spell->is_tech_spell() && turn_tech != -1) {
+			return false;
+		}
+		if (player.level() + (turn_tech != -1 ? 1 : 0) < spell->get_level()) {
 			return false;
 		}
 		mp_left -= spell->get_cost();
 		if (mp_left < 0) return false;
+		if (spell->is_tech_spell()) {
+			turn_tech = book_idx;
+		}
 	}
 	return true;
 }
@@ -95,6 +110,7 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		auto &player = players[player_id];
 		player.mp += player.mp_regen;
+		player.mp = std::min(player.mp, rules.get_mana_cap());
 	}
 
 	// TODO: Effects produced by god-stickies should fire.
