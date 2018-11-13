@@ -23,7 +23,8 @@ TEST_CASE("GameRules") {
 		// jim: So defining operator=='s was more of a challenge than I thought
 		// (you'd think that C++ defines a default just like it defines a default
 		// copy constructor...) but this is done now. If we want an isomorphism we
-		// can define another test.
+		// can define another test, and possibly store the original ordering
+		// somewhere (using std::map only as an index).
 		json j = json(rules);
 		GameRules rules2;
 		from_json(j, rules2);

@@ -29,7 +29,7 @@ int Spell::get_tech() const { return tech; }
 int Spell::get_level() const { return level; }
 int Spell::get_cost() const { return cost; }
 std::string Spell::get_text() const { return text; }
-const std::vector<Effect> Spell::get_effects() const { return effects; }
+const std::vector<Effect> &Spell::get_effects() const { return effects; }
 bool Spell::is_counterspell() const { return counterspell_selector.is_valid(); }
 const Selector &Spell::get_counterspell_selector() const {
 	return counterspell_selector;

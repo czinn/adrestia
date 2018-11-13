@@ -51,6 +51,7 @@ class Sticky {
 		int get_amount() const;
 		const std::vector<Effect> get_effects() const;
 		Duration get_duration() const;
+		bool get_trigger_inbound() const;
 
 		// EffectInstance is not yet implemented.
 		// bool triggers_for_effect(const EffectInstance &effect, bool inbound) const;

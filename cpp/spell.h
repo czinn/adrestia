@@ -24,7 +24,7 @@ class Spell {
 		int get_level() const;
 		int get_cost() const;
 		std::string get_text() const;
-		const std::vector<Effect> get_effects() const;
+		const std::vector<Effect> &get_effects() const;
 		bool is_counterspell() const;
 		const Selector &get_counterspell_selector() const;
 
