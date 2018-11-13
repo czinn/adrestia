@@ -3,12 +3,14 @@
 
 #pragma once
 
-#include "spell.h"
-#include "sticky.h"
-#include "effect_instance.h"
+#include "duration.h"
 #include "json.h"
 
 using json = nlohmann::json;
+
+class Spell;
+class Sticky;
+class EffectInstance;
 
 class StickyInstance {
 	public:
@@ -18,7 +20,8 @@ class StickyInstance {
 		// Applies the sticky to the effect and possibly generates additional
 		// effects. Only effects that trigger the sticky should be passed to this
 		// function.
-		std::vector<EffectInstance> apply(EffectInstance &effect);
+		// player_id is the id of the player to whom the sticky is attached.
+		std::vector<EffectInstance> apply(size_t player_id, EffectInstance &effect);
 
 		// state is used differently depending on the kind of sticky. For shields,
 		// it is the remaining shield strength.

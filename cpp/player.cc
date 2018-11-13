@@ -1,5 +1,6 @@
 #include "player.h"
 
+#include "effect_instance.h"
 #include "util.h"
 
 //------------------------------------------------------------------------------
@@ -48,6 +49,19 @@ size_t Player::find_book_idx(const std::string &book_id) const {
 		}
 	}
 	return size_t(-1);
+}
+
+std::vector<EffectInstance> Player::pipe_effect(size_t player_id, EffectInstance &effect,
+		bool inbound) {
+	std::vector<EffectInstance> generated_effects;
+	for (auto &sticky : stickies) {
+		if (sticky.sticky.triggers_for_effect(effect, inbound)) {
+			std::vector<EffectInstance> new_effects = sticky.apply(player_id, effect);
+			std::copy(new_effects.begin(), new_effects.end(),
+					std::back_inserter(generated_effects));
+		}
+	}
+	return generated_effects;
 }
 
 //------------------------------------------------------------------------------

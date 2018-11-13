@@ -1,6 +1,8 @@
 #include "game_state.h"
 #include "effect_instance.h"
 
+#include <deque>
+
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
 //------------------------------------------------------------------------------
@@ -67,40 +69,74 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 		if (!is_valid_action(player_id, actions[player_id])) return false;
 	}
 
+	// history has its eyes on you
+	history.push_back(actions);
+
 	size_t max_action_length = 0;
 	for (const auto &action : actions) {
 		max_action_length = std::max(max_action_length, action.size());
 	}
 
 	// Cast spells.
+	std::deque<EffectInstance> queue1;
+	std::deque<EffectInstance> queue2;
+	std::deque<EffectInstance> *effect_queue = &queue1;
+	std::deque<EffectInstance> *next_effect_queue = &queue2;
 	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
-			auto &natural_target = players[(player_id + 1) % players.size()];
 			if (spell_idx >= actions[player_id].size()) continue;
 			const auto [spell, book_idx] = caster.find_spell(actions[player_id][spell_idx]);
-			// TODO: Counterspells.
+			// TODO: Pipe spell through player's stickies.
 			caster.mp -= spell->get_cost();
+			// TODO: Counterspells.
 			for (const auto &effect : spell->get_effects()) {
-				auto &target = effect.get_targets_self() ? caster : natural_target;
-				EffectInstance effect_instance(*spell, effect);
-				// TODO: Pipe effect through stickies.
-				effect_instance.apply(target);
+				EffectInstance effect_instance(player_id, *spell, effect);
+				std::vector<EffectInstance> generated_effects =
+					caster.pipe_effect(player_id, effect_instance, false);
+				for (const auto &e : generated_effects) {
+					if (e.targets_self) {
+						next_effect_queue->push_front(e);
+					} else {
+						next_effect_queue->push_back(e);
+					}
+				}
+				if (effect_instance.targets_self) {
+					effect_queue->push_front(effect_instance);
+				} else {
+					effect_queue->push_back(effect_instance);
+				}
 			}
 		}
 	}
 
-	// TODO: Stickies should take effect.
+	// Process the effect queue.
+	while (effect_queue->size() != 0) {
+		for (auto &effect_instance : *effect_queue) {
+			auto &target = players[effect_instance.target_player];
+			std::vector<EffectInstance> generated_effects =
+				target.pipe_effect(effect_instance.target_player, effect_instance, true);
+			for (const auto &e : generated_effects) {
+				if (e.targets_self) {
+					next_effect_queue->push_front(e);
+				} else {
+					next_effect_queue->push_back(e);
+				}
+			}
+			effect_instance.apply(target);
+		}
+		std::swap(effect_queue, next_effect_queue);
+		next_effect_queue->clear();
+	}
+
+	// TODO: Do end-of-turn stickies and repeat the effect queue processing.
+
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		auto &player = players[player_id];
 		player.mp += player.mp_regen;
 		player.mp = std::min(player.mp, rules.get_mana_cap());
 	}
 
-	// TODO: Effects produced by god-stickies should fire.
-
-	// history has its eyes on you
-	history.push_back(actions);
 	return true;
 }
 

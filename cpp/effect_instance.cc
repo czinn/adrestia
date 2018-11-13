@@ -1,22 +1,40 @@
 #include "effect_instance.h"
 
+#include "sticky_instance.h"
+#include "spell.h"
+#include "effect.h"
+#include "player.h"
+
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
 //------------------------------------------------------------------------------
-EffectInstance::EffectInstance(const Spell &spell, const Effect &effect)
+EffectInstance::EffectInstance(size_t caster, const Spell &spell, const Effect &effect)
 	: kind(effect.get_kind())
+	, targets_self(effect.get_targets_self())
 	, effect_type(effect.get_effect_type())
 	, amount(effect.get_amount())
 	, sticky(effect.get_sticky())
-	, spell(spell) {}
+	, spell(spell)
+	, target_player(effect.get_targets_self() ? caster : 1 - caster) {}
+
+EffectInstance::EffectInstance(const EffectInstance &effect)
+	: kind(effect.kind)
+	, targets_self(effect.targets_self)
+	, effect_type(effect.effect_type)
+	, amount(effect.amount)
+	, sticky(effect.sticky)
+	, spell(effect.spell)
+	, target_player(effect.target_player) {}
 
 bool EffectInstance::operator==(const EffectInstance &other) const {
 	return (
 		this->kind == other.kind &&
+		this->targets_self == other.targets_self &&
 		this->effect_type == other.effect_type &&
 		this->amount == other.amount &&
 		this->sticky == other.sticky &&
-		this->spell == other.spell
+		this->spell == other.spell &&
+		this->target_player == other.target_player
 	);
 }
 
@@ -38,7 +56,7 @@ void EffectInstance::apply(Player &player) const {
 			player.mp_regen += amount;
 			break;
 		case EK_STICKY:
-			// TODO: Stickies should exist.
+			player.stickies.push_back(StickyInstance(spell, sticky));
 			break;
 	}
 }

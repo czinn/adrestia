@@ -1,5 +1,9 @@
 #include "sticky_instance.h"
 
+#include "effect_instance.h"
+#include "spell.h"
+#include "sticky.h"
+
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
 //------------------------------------------------------------------------------
@@ -28,7 +32,7 @@ bool StickyInstance::operator==(const StickyInstance &other) const {
 //------------------------------------------------------------------------------
 // BUSINESS LOGIC
 //------------------------------------------------------------------------------
-std::vector<EffectInstance> StickyInstance::apply(EffectInstance &effect) {
+std::vector<EffectInstance> StickyInstance::apply(size_t player_id, EffectInstance &effect) {
 	switch (sticky.get_kind()) {
 		case SK_DELTA:
 			effect.amount += sticky.get_amount();
@@ -56,7 +60,7 @@ std::vector<EffectInstance> StickyInstance::apply(EffectInstance &effect) {
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : sticky.get_effects()) {
-		effects.push_back(EffectInstance(spell, e));
+		effects.push_back(EffectInstance(player_id, spell, e));
 	}
 	return effects;
 }
