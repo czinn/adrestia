@@ -56,7 +56,7 @@
           "sticky": {
             "kind": "id", "duration": { "game": true }, "trigger": { "turn": true },
             "effects": [
-              { "kind": "health", "self": true, "effect_type": "poison", "amount": 1 }
+              { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
             ]
           }
         }

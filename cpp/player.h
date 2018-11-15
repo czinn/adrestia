@@ -23,6 +23,17 @@ class Player {
 		int level() const;
 		// Applies all triggered stickies to the effect.
 		std::vector<EffectInstance> pipe_effect(size_t player_id, EffectInstance &effect, bool inbound);
+    // Gets effects from stickies triggered by the spell.
+		std::vector<EffectInstance> pipe_spell(size_t player_id, const Spell &spell);
+    // Gets effects from stickies that trigger at end of turn. This isn't
+    // really piping anything, but it's called pipe_turn for consistency with
+    // pipe_effect and pipe_spell.
+		std::vector<EffectInstance> pipe_turn(size_t player_id);
+
+    // These functions subtract a step or turn from all stickies, removing them
+    // if they are no longer active.
+    void subtract_step();
+    void subtract_turn();
 
 		friend void to_json(json &, const Player &);
 

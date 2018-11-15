@@ -21,6 +21,7 @@ void print_game(const GameState &state) {
 			std::cout << " (" << book->get_name() << ": " << tech << ")";
 		}
 		std::cout << ")";
+    std::cout << " (stickies: " << player.stickies.size() << ")";
 		std::cout << std::endl;
 	}
 }
@@ -32,13 +33,13 @@ int main() {
 	print_game(state);
 
 	const std::vector<std::vector<GameAction>> turns {
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "shield_1"}},
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1", "poison_1"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
 	};
 	for (const auto &turn : turns) {
 		state.simulate(turn);

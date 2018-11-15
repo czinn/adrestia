@@ -58,6 +58,42 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	return true;
 }
 
+void append_to_effect_queue(
+    std::deque<EffectInstance> *effect_queue,
+    const EffectInstance &effect_instance) {
+  if (effect_instance.targets_self) {
+    effect_queue->push_front(effect_instance);
+  } else {
+    effect_queue->push_back(effect_instance);
+  }
+}
+
+void append_to_effect_queue(
+    std::deque<EffectInstance> *effect_queue,
+    std::vector<EffectInstance> &effects) {
+  for (const auto &effect_instance : effects) {
+    append_to_effect_queue(effect_queue, effect_instance);
+  }
+}
+
+void GameState::process_effect_queue(
+    std::deque<EffectInstance> *effect_queue,
+	  std::deque<EffectInstance> *next_effect_queue) {
+	while (effect_queue->size() != 0) {
+		for (auto &effect_instance : *effect_queue) {
+			auto &target = players[effect_instance.target_player];
+			std::vector<EffectInstance> generated_effects =
+				target.pipe_effect(effect_instance.target_player, effect_instance, true);
+			for (const auto &e : generated_effects) {
+        append_to_effect_queue(next_effect_queue, e);
+			}
+			effect_instance.apply(target);
+		}
+		std::swap(effect_queue, next_effect_queue);
+		next_effect_queue->clear();
+	}
+}
+
 bool GameState::simulate(const std::vector<GameAction> actions) {
 	if (winners().size() > 0) {
 		return false;
@@ -85,54 +121,49 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
+
+      // Tick down stickies that last for some number of steps.
+      caster.subtract_step();
+
+			if (spell_idx >= actions[player_id].size()) continue;
+
+			const auto [spell, book_idx] = caster.find_spell(actions[player_id][spell_idx]);
+      std::vector<EffectInstance> generated_effects =
+        caster.pipe_spell(player_id, *spell);
+      append_to_effect_queue(effect_queue, generated_effects);
+			caster.mp -= spell->get_cost();
+    }
+
+    // Process effects triggered by spells.
+    process_effect_queue(effect_queue, next_effect_queue);
+
+		for (size_t player_id = 0; player_id < players.size(); player_id++) {
+			auto &caster = players[player_id];
 			if (spell_idx >= actions[player_id].size()) continue;
 			const auto [spell, book_idx] = caster.find_spell(actions[player_id][spell_idx]);
-			// TODO: Pipe spell through player's stickies.
-			caster.mp -= spell->get_cost();
 			// TODO: Counterspells.
 			for (const auto &effect : spell->get_effects()) {
 				EffectInstance effect_instance(player_id, *spell, effect);
 				std::vector<EffectInstance> generated_effects =
 					caster.pipe_effect(player_id, effect_instance, false);
-				for (const auto &e : generated_effects) {
-					if (e.targets_self) {
-						next_effect_queue->push_front(e);
-					} else {
-						next_effect_queue->push_back(e);
-					}
-				}
-				if (effect_instance.targets_self) {
-					effect_queue->push_front(effect_instance);
-				} else {
-					effect_queue->push_back(effect_instance);
-				}
+        append_to_effect_queue(next_effect_queue, generated_effects);
+        append_to_effect_queue(effect_queue, effect_instance);
 			}
 		}
+
+    // Process effects created by spells.
+    process_effect_queue(effect_queue, next_effect_queue);
 	}
 
-	// Process the effect queue.
-	while (effect_queue->size() != 0) {
-		for (auto &effect_instance : *effect_queue) {
-			auto &target = players[effect_instance.target_player];
-			std::vector<EffectInstance> generated_effects =
-				target.pipe_effect(effect_instance.target_player, effect_instance, true);
-			for (const auto &e : generated_effects) {
-				if (e.targets_self) {
-					next_effect_queue->push_front(e);
-				} else {
-					next_effect_queue->push_back(e);
-				}
-			}
-			effect_instance.apply(target);
-		}
-		std::swap(effect_queue, next_effect_queue);
-		next_effect_queue->clear();
-	}
-
-	// TODO: Do end-of-turn stickies and repeat the effect queue processing.
+  for (size_t player_id = 0; player_id < players.size(); player_id++) {
+    std::vector<EffectInstance> generated_effects = players[player_id].pipe_turn(player_id);
+    append_to_effect_queue(effect_queue, generated_effects);
+  }
+  process_effect_queue(effect_queue, next_effect_queue);
 
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		auto &player = players[player_id];
+    player.subtract_turn();
 		player.mp += player.mp_regen;
 		player.mp = std::min(player.mp, rules.get_mana_cap());
 	}

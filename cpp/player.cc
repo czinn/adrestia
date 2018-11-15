@@ -64,6 +64,54 @@ std::vector<EffectInstance> Player::pipe_effect(size_t player_id, EffectInstance
 	return generated_effects;
 }
 
+std::vector<EffectInstance> Player::pipe_spell(size_t player_id, const Spell &spell) {
+	std::vector<EffectInstance> generated_effects;
+	for (auto &sticky : stickies) {
+		if (sticky.sticky.triggers_for_spell(spell)) {
+			std::vector<EffectInstance> new_effects = sticky.apply(player_id, spell);
+			std::copy(new_effects.begin(), new_effects.end(),
+					std::back_inserter(generated_effects));
+		}
+	}
+	return generated_effects;
+}
+
+std::vector<EffectInstance> Player::pipe_turn(size_t player_id) {
+	std::vector<EffectInstance> generated_effects;
+	for (auto &sticky : stickies) {
+		if (sticky.sticky.triggers_at_end_of_turn()) {
+			std::vector<EffectInstance> new_effects = sticky.apply(player_id);
+			std::copy(new_effects.begin(), new_effects.end(),
+					std::back_inserter(generated_effects));
+		}
+	}
+	return generated_effects;
+}
+
+void Player::subtract_step() {
+  auto sticky = stickies.begin();
+  while (sticky != stickies.end()) {
+    sticky->remaining_duration.subtract_step();
+    if (!sticky->remaining_duration.is_active()) {
+      sticky = stickies.erase(sticky);
+    } else {
+      sticky++;
+    }
+  }
+}
+
+void Player::subtract_turn() {
+  auto sticky = stickies.begin();
+  while (sticky != stickies.end()) {
+    sticky->remaining_duration.subtract_turn();
+    if (!sticky->remaining_duration.is_active()) {
+      sticky = stickies.erase(sticky);
+    } else {
+      sticky++;
+    }
+  }
+}
+
 //------------------------------------------------------------------------------
 // SERIALIZATION
 //------------------------------------------------------------------------------

@@ -64,3 +64,45 @@ std::vector<EffectInstance> StickyInstance::apply(size_t player_id, EffectInstan
 	}
 	return effects;
 }
+
+std::vector<EffectInstance> StickyInstance::apply(size_t player_id, const Spell &spell) {
+	switch (sticky.get_kind()) {
+    case SK_DELTA:
+    case SK_SHIELD:
+    case SK_ID:
+			// Do nothing!
+      break;
+  }
+	// Generate additional effects
+	std::vector<EffectInstance> effects;
+	for (const auto &e : sticky.get_effects()) {
+		effects.push_back(EffectInstance(player_id, this->spell, e));
+	}
+	return effects;
+}
+
+std::vector<EffectInstance> StickyInstance::apply(size_t player_id) {
+	switch (sticky.get_kind()) {
+    case SK_DELTA:
+    case SK_SHIELD:
+    case SK_ID:
+			// Do nothing!
+      break;
+  }
+	// Generate additional effects
+	std::vector<EffectInstance> effects;
+	for (const auto &e : sticky.get_effects()) {
+		effects.push_back(EffectInstance(player_id, spell, e));
+	}
+	return effects;
+}
+
+//------------------------------------------------------------------------------
+// SERIALIZATION
+//------------------------------------------------------------------------------
+void to_json(json &j, const StickyInstance &sticky) {
+  j["state"] = sticky.state;
+  j["remaining_duration"] = sticky.remaining_duration;
+  j["spell"] = sticky.spell.get_id();
+  j["sticky"] = sticky.sticky;
+}

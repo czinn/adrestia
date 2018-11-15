@@ -31,7 +31,7 @@ class EffectInstance {
 		bool targets_self;
 		EffectType effect_type;
 		int amount;
-		Sticky sticky;
+		const Sticky &sticky;
 		const Spell &spell;
 		size_t target_player;
 };

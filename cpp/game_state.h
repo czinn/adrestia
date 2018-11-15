@@ -3,6 +3,7 @@
 #pragma once
 
 #include <vector>
+#include <deque>
 
 #include "player.h"
 #include "spell.h"
@@ -30,4 +31,8 @@ class GameState {
 
 	private:
 		const GameRules &rules;
+
+    void process_effect_queue(
+        std::deque<EffectInstance> *effect_queue,
+        std::deque<EffectInstance> *next_effect_queue);
 };

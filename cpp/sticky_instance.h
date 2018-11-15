@@ -23,6 +23,19 @@ class StickyInstance {
 		// player_id is the id of the player to whom the sticky is attached.
 		std::vector<EffectInstance> apply(size_t player_id, EffectInstance &effect);
 
+		// Applies the sticky to the spell and possibly generates additional
+		// effects. Only spells that trigger the sticky should be passed to this
+		// function.
+		// player_id is the id of the player to whom the sticky is attached.
+		std::vector<EffectInstance> apply(size_t player_id, const Spell &spell);
+
+    // Generates any per-turn effects. This function should only be called if
+    // this sticky triggers on turns.
+		// player_id is the id of the player to whom the sticky is attached.
+		std::vector<EffectInstance> apply(size_t player_id);
+
+		friend void to_json(json &j, const StickyInstance &sticky);
+
 		// state is used differently depending on the kind of sticky. For shields,
 		// it is the remaining shield strength.
 		int state;

@@ -2,7 +2,6 @@
 #include "../json.h"
 #include "catch.hpp"
 
-#include <iostream>
 #include <fstream>
 
 using json = nlohmann::json;
