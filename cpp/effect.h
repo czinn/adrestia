@@ -32,7 +32,7 @@ class Effect {
 		bool targets_self;
 		// The type of effect for the purposes of effect classification.
 		EffectType effect_type;
-		// For EffectKinds other thank EK_STICKY, the delta to apply to the
+		// For EffectKinds other than EK_STICKY, the delta to apply to the
 		// corresponding attribute of the target Player.
 		int amount;
 		// The Sticky that this Effect creates, if any.
