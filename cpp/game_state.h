@@ -23,6 +23,7 @@ class GameState {
 		std::vector<size_t> winners() const; // empty: Game still in progress.
 
 		const std::vector<Player> &get_players() const;
+		std::vector<Player> &get_players_for_test();
 
 		friend void to_json(json &, const GameState &);
 

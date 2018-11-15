@@ -23,6 +23,7 @@ bool GameState::operator==(const GameState &other) const {
 // GETTERS
 //------------------------------------------------------------------------------
 const std::vector<Player> &GameState::get_players() const { return players; }
+std::vector<Player> &GameState::get_players_for_test() { return players; }
 
 //------------------------------------------------------------------------------
 // BUSINESS LOGIC

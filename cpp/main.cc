@@ -37,9 +37,11 @@ int main() {
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1", "poison_1"}},
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
 		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
-		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration", "damage_1", "damage_1", "damage_1", "damage_1"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration"}, {"tech_conjuration", "poison_1"}},
+		{{"tech_conjuration"}, {"tech_conjuration", "poison_1"}},
 	};
 	for (const auto &turn : turns) {
 		state.simulate(turn);

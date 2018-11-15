@@ -107,7 +107,7 @@
       "tech": 3, "level": 4, "cost": 4,
       "text": "Deal 3 damage, plus 1 for each time you previously cast this spell.",
       "effects": [
-        { "kind": "health", "self": false, "effect_type": "attack", "amount": -2 },
+        { "kind": "health", "self": false, "effect_type": "attack", "amount": -3 },
         {
           "kind": "sticky", "self": true, "effect_type": "special",
           "sticky": {
@@ -129,7 +129,7 @@
     {
       "id": "endgame_1", "name": "Catalyst Cannon",
       "book": "conjuration",
-      "tech": 4, "level": 5, "cost": 4,
+      "tech": 5, "level": 7, "cost": 4,
       "text": "Deal 4 damage. Enemy takes 1 damage for each additional spell they cast this turn.",
       "effects": [
         { "kind": "health", "self": false, "effect_type": "constant", "amount": -4 },
