@@ -53,6 +53,19 @@ std::vector<EffectInstance> StickyInstance::apply(size_t player_id, EffectInstan
 				state = 0;
 			}
 			break;
+    case SK_DAMPER:
+      if (sticky.get_amount() >= std::abs(effect.amount)) {
+        effect.amount = 0;
+			} else if (effect.amount > 0) {
+				effect.amount -= sticky.get_amount();
+			} else {
+				effect.amount += sticky.get_amount();
+			}
+      break;
+    case SK_SUPER_SHIELD:
+      effect.amount = 0;
+      remaining_duration.set_to_zero();
+      break;
 		case SK_ID:
 			// Do nothing!
 			break;
@@ -67,9 +80,7 @@ std::vector<EffectInstance> StickyInstance::apply(size_t player_id, EffectInstan
 
 std::vector<EffectInstance> StickyInstance::apply(size_t player_id, const Spell &spell) {
 	switch (sticky.get_kind()) {
-    case SK_DELTA:
-    case SK_SHIELD:
-    case SK_ID:
+    default:
 			// Do nothing!
       break;
   }
@@ -83,9 +94,7 @@ std::vector<EffectInstance> StickyInstance::apply(size_t player_id, const Spell 
 
 std::vector<EffectInstance> StickyInstance::apply(size_t player_id) {
 	switch (sticky.get_kind()) {
-    case SK_DELTA:
-    case SK_SHIELD:
-    case SK_ID:
+    default:
 			// Do nothing!
       break;
   }

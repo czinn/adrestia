@@ -19,6 +19,10 @@ enum StickyKind {
 	// Reduces the amount field of the effect, up to a maximum that is fixed for
 	// the lifetime of the shield.
 	SK_SHIELD,
+  // Reduces the amount field of the effect by a fixed amount.
+  SK_DAMPER,
+  // Reduces the amount field of the effect to zero, and destroys the sticky.
+  SK_SUPER_SHIELD,
 	// Does not affect the effect or spell for which this sticky triggers. The
 	// name comes from the identity function.
 	SK_ID,
@@ -27,6 +31,8 @@ enum StickyKind {
 NLOHMANN_JSON_SERIALIZE_ENUM(StickyKind, {
 	{ SK_DELTA, "delta" },
 	{ SK_SHIELD, "shield" },
+  { SK_DAMPER, "damper" },
+  { SK_SUPER_SHIELD, "super_shield" },
 	{ SK_ID, "id" },
 });
 

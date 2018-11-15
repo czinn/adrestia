@@ -24,6 +24,7 @@ class Duration {
 
 		void subtract_step();
 		void subtract_turn();
+    void set_to_zero();
 
 		friend void from_json(const json &j, Duration &duration);
 		friend void to_json(json &j, const Duration &duration);
