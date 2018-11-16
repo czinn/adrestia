@@ -108,3 +108,33 @@ TEST_CASE("Conjuration spells") {
 		REQUIRE(player1.hp == hp_before - 11);
 	}
 }
+
+TEST_CASE("Regulation spells") {
+	GameRules rules(rules_filename);
+	GameState state(rules, (std::vector<std::vector<std::string>>){{"regulation", "conjuration"}, {"conjuration", "regulation"}});
+
+	for (int i = 0; i < 7; i++) {
+		state.simulate({{"regulation_tech"}, {"tech_conjuration"}});
+	}
+
+	Player &player0 = state.players[0];
+	Player &player1 = state.players[1];
+
+	SECTION("regulation_cancel_1") {
+		int hp0 = player0.hp;
+		int hp1 = player1.hp;
+		REQUIRE(state.simulate({{"regulation_cancel_1", "regulation_cancel_1", "tech_conjuration", "damage_1"}, {"shield_1", "damage_1"}}));
+		REQUIRE(player0.hp == hp0 - 1);
+		REQUIRE(player1.hp == hp1 - 1);
+	}
+
+	SECTION("regulation_cancel_2") {
+		int hp0 = player0.hp;
+		int hp1 = player1.hp;
+		state.simulate({{"regulation_cancel_2", "regulation_cancel_2", "tech_conjuration", "damage_1"}, {"shield_1", "damage_1"}});
+		REQUIRE(player0.hp == hp0);
+		REQUIRE(player1.hp == hp1);
+	}
+
+	// TODO: charles: Test some of the other non-trivial spells in this book.
+}

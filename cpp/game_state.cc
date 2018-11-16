@@ -149,10 +149,16 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
 			if (spell_idx >= actions[player_id].size()) continue;
-			const auto [spell, book_idx] = caster.find_spell(actions[player_id][spell_idx]);
-			// TODO: Counterspells.
-			for (const auto &effect : spell->get_effects()) {
-				EffectInstance effect_instance(player_id, *spell, effect);
+			const auto &spell = rules.get_spell(actions[player_id][spell_idx]);
+			if (spell_idx < actions[1 - player_id].size()) {
+				const auto &other_spell = rules.get_spell(actions[1 - player_id][spell_idx]);
+				if (other_spell.is_counterspell() &&
+						other_spell.get_counterspell_selector().selects_spell(spell)) {
+					continue;
+				}
+			}
+			for (const auto &effect : spell.get_effects()) {
+				EffectInstance effect_instance(player_id, spell, effect);
 				std::vector<EffectInstance> generated_effects =
 					caster.pipe_effect(player_id, effect_instance, false);
 				append_to_effect_queue(next_effect_queue, generated_effects);
