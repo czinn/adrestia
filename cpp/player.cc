@@ -10,8 +10,8 @@ Player::Player(const GameRules &rules, const std::vector<std::string> books)
 	: rules(rules)
 {
 	this->max_hp = rules.get_initial_health();
-	this->hp = this->max_hp;
 	this->mp_regen = rules.get_initial_mana_regen();
+	this->hp = this->max_hp;
 	this->mp = this->mp_regen;
 	for (const auto &book_id : books) {
 		this->books.push_back(&rules.get_book(book_id));

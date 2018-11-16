@@ -35,7 +35,6 @@ bool GameState::operator==(const GameState &other) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const GameState &state) {
-	os << "---" << std::endl;
 	os << "Turn " << state.turn_number() << std::endl;
 	for (size_t player_id = 0; player_id < state.players.size(); player_id++) {
 		const auto &player = state.players[player_id];
