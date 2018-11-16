@@ -17,7 +17,7 @@ class StickyInvoker {
 		StickyInvoker();
 		bool operator==(const StickyInvoker &) const;
 
-    std::string get_sticky_id() const;
+		std::string get_sticky_id() const;
 		int get_amount() const;
 		Duration get_duration() const;
 
@@ -25,7 +25,7 @@ class StickyInvoker {
 		friend void to_json(json &j, const StickyInvoker &sticky_invoker);
 
 	private:
-    std::string sticky_id;
+		std::string sticky_id;
 		int amount;
 		Duration duration;
 };

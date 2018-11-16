@@ -32,8 +32,8 @@ class StickyInstance {
 		// player_id is the id of the player to whom the sticky is attached.
 		std::vector<EffectInstance> apply(size_t player_id, const Spell &spell);
 
-    // Generates any per-turn effects. This function should only be called if
-    // this sticky triggers on turns.
+		// Generates any per-turn effects. This function should only be called if
+		// this sticky triggers on turns.
 		// player_id is the id of the player to whom the sticky is attached.
 		std::vector<EffectInstance> apply(size_t player_id);
 
@@ -41,7 +41,7 @@ class StickyInstance {
 
 		// amount is used differently depending on the kind of sticky. For shields,
 		// it is the remaining shield strength.
-    int amount;
+		int amount;
 		Duration remaining_duration;
 		const Spell &spell;
 		const Sticky &sticky;

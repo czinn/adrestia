@@ -21,7 +21,7 @@ void print_game(const GameState &state) {
 			std::cout << " (" << book->get_name() << ": " << tech << ")";
 		}
 		std::cout << ")";
-    std::cout << " (stickies: " << player.stickies.size() << ")";
+		std::cout << " (stickies: " << player.stickies.size() << ")";
 		std::cout << std::endl;
 	}
 }

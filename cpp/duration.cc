@@ -37,7 +37,7 @@ void Duration::subtract_turn() {
 }
 
 void Duration::set_to_zero() {
-  value = 0;
+	value = 0;
 }
 
 //------------------------------------------------------------------------------
