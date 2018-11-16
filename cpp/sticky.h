@@ -19,10 +19,10 @@ enum StickyKind {
 	// Reduces the amount field of the effect, up to a maximum that is fixed for
 	// the lifetime of the shield.
 	SK_SHIELD,
-  // Reduces the amount field of the effect by a fixed amount.
-  SK_DAMPER,
-  // Reduces the amount field of the effect to zero, and destroys the sticky.
-  SK_SUPER_SHIELD,
+	// Reduces the amount field of the effect by a fixed amount.
+	SK_DAMPER,
+	// Reduces the amount field of the effect to zero, and destroys the sticky.
+	SK_SUPER_SHIELD,
 	// Does not affect the effect or spell for which this sticky triggers. The
 	// name comes from the identity function.
 	SK_ID,
@@ -31,8 +31,8 @@ enum StickyKind {
 NLOHMANN_JSON_SERIALIZE_ENUM(StickyKind, {
 	{ SK_DELTA, "delta" },
 	{ SK_SHIELD, "shield" },
-  { SK_DAMPER, "damper" },
-  { SK_SUPER_SHIELD, "super_shield" },
+	{ SK_DAMPER, "damper" },
+	{ SK_SUPER_SHIELD, "super_shield" },
 	{ SK_ID, "id" },
 });
 
@@ -54,10 +54,11 @@ class Sticky {
 		Sticky();
 		bool operator==(const Sticky &) const;
 
+		std::string get_id() const;
+		std::string get_name() const;
+		std::string get_text() const;
 		StickyKind get_kind() const;
-		int get_amount() const;
 		const std::vector<Effect> get_effects() const;
-		Duration get_duration() const;
 		bool get_trigger_inbound() const;
 
 		// EffectInstance is not yet implemented.
@@ -69,10 +70,11 @@ class Sticky {
 		friend void to_json(json &j, const Sticky &sticky);
 
 	private:
+		std::string id;
+		std::string name;
+		std::string text;
 		StickyKind kind;
-		int amount;
 		std::vector<Effect> effects;
-		Duration duration;
 		TriggerType trigger_type;
 		// If trigger_type is not TRIGGER_TURN, used to determine whether the
 		// Sticky triggers in response to a given spell/effect.

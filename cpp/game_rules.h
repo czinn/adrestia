@@ -19,6 +19,7 @@ class GameRules {
 
 		// Initializes rules from json file.
 		GameRules(std::string rules_filename);
+		const Sticky &get_sticky(std::string id) const;
 		const Spell &get_spell(std::string id) const;
 		const Book &get_book(std::string id) const;
 		const std::map<std::string, Book> &get_books() const;
@@ -30,6 +31,7 @@ class GameRules {
 		friend void to_json(json &j, const GameRules &rules);
 
 	private:
+		std::map<std::string, Sticky> stickies;
 		// Note that there is no way to access the list of spells directly. If you
 		// want to do this, you probably want to get the list of books and iterate
 		// through that instead.

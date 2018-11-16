@@ -11,9 +11,11 @@ Sticky::Sticky() {}
 
 bool Sticky::operator==(const Sticky &other) const {
 	return
-		(  this->kind == other.kind
+		(  this->id == other.id
+		&& this->name == other.name
+		&& this->text == other.text
+		&& this->kind == other.kind
 		&& this->effects == other.effects
-		&& this->duration == other.duration
 		&& this->trigger_type == other.trigger_type
 		&& this->trigger_selector == other.trigger_selector
 		&& this->trigger_inbound == other.trigger_inbound
@@ -24,8 +26,6 @@ bool Sticky::operator==(const Sticky &other) const {
 // GETTERS
 //------------------------------------------------------------------------------
 StickyKind Sticky::get_kind() const { return kind; }
-int Sticky::get_amount() const { return amount; }
-Duration Sticky::get_duration() const { return duration; }
 const std::vector<Effect> Sticky::get_effects() const { return effects; }
 
 //------------------------------------------------------------------------------
@@ -48,15 +48,17 @@ bool Sticky::triggers_at_end_of_turn() const {
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, Sticky &sticky) {
+	sticky.id = j.at("id");
+	sticky.name = j.at("name");
+	sticky.text = j.at("text");
 	sticky.kind = j.at("kind");
-	sticky.amount = j.find("amount") != j.end() ? j.at("amount").get<int>() : 0;
-	sticky.duration = j.at("duration");
 	if (j.find("effects") != j.end()) {
 		for (auto it = j.at("effects").begin(), end = j.at("effects").end(); it != end; it++) {
 			sticky.effects.push_back(*it);
 		}
 	}
 	json t = j.at("trigger");
+	sticky.trigger_inbound = false;
 	if (t.find("spell") != t.end()) {
 		sticky.trigger_type = TRIGGER_SPELL;
 		sticky.trigger_selector = t.at("spell");
@@ -70,13 +72,12 @@ void from_json(const json &j, Sticky &sticky) {
 }
 
 void to_json(json &j, const Sticky &sticky) {
+	j["id"] = sticky.id;
+	j["name"] = sticky.name;
+	j["text"] = sticky.text;
 	j["kind"] = sticky.kind;
-	if (sticky.amount != 0) {
-		j["amount"] = sticky.amount;
-	}
-	j["duration"] = sticky.duration;
-	for (auto it = sticky.effects.begin(); it != sticky.effects.end(); it++) {
-		j["effects"].push_back(*it);
+	if (sticky.effects.size() != 0) {
+		j["effects"] = sticky.effects;
 	}
 	json t;
 	if (sticky.trigger_type == TRIGGER_SPELL) {

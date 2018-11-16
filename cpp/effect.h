@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "sticky.h"
+#include "sticky_invoker.h"
 #include "effect_kind.h"
 #include "effect_type.h"
 #include "json.h"
@@ -20,7 +20,7 @@ class Effect {
 		bool get_targets_self() const;
 		EffectType get_effect_type() const;
 		int get_amount() const;
-		const Sticky &get_sticky() const;
+		const StickyInvoker &get_sticky_invoker() const;
 
 		friend void from_json(const json &j, Effect &effect);
 		friend void to_json(json &j, const Effect &effect);
@@ -36,5 +36,5 @@ class Effect {
 		// corresponding attribute of the target Player.
 		int amount;
 		// The Sticky that this Effect creates, if any.
-		Sticky sticky;
+		StickyInvoker sticky_invoker;
 };

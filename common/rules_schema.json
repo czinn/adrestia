@@ -5,11 +5,12 @@
   "properties": {
     "spells": {"type": "array", "items": {"$ref": "#/definitions/spell"}},
     "books": {"type": "array", "items": {"$ref": "#/definitions/book"}},
+    "stickies": {"type": "array", "items": {"$ref": "#/definitions/sticky"}},
     "mana_cap": {"type": "integer", "minimum": 1},
     "initial_mana_regen": {"type": "integer", "minimum": 1},
     "initial_health": {"type": "integer", "minimum": 1}
   },
-  "required": ["spells", "books", "mana_cap", "initial_mana_regen", "initial_health"],
+  "required": ["spells", "books", "stickies", "mana_cap", "initial_mana_regen", "initial_health"],
   "additionalProperties": false,
   "definitions": {
     "spell": {
@@ -17,11 +18,11 @@
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
         "name": {"type": "string"},
+        "text": {"type": "string"},
         "book": {"type": "string", "pattern": "^[a-z0-9_]+$"},
         "tech": {"type": "integer", "minimum": 0},
         "level": {"type": "integer", "minimum": 0},
         "cost": {"type": "integer", "minimum": 0},
-        "text": {"type": "string"},
         "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
         "counterspell": {"$ref": "#/definitions/selector"}
       },
@@ -45,7 +46,7 @@
         "self": {"type": "boolean"},
         "effect_type": {"$ref": "#/definitions/effect_type"},
         "amount": {"type": "integer"},
-        "sticky": {"$ref": "#/definitions/sticky"}
+        "sticky": {"$ref": "#/definitions/sticky_invoker"}
       },
       "additionalProperties": false,
       "required": ["kind", "self", "effect_type"]
@@ -55,9 +56,10 @@
     "sticky": {
       "type": "object",
       "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "name": {"type": "string"},
+        "text": {"type": "string"},
         "kind": {"$ref": "#/definitions/sticky_kind"},
-        "duration": {"$ref": "#/definitions/duration"},
-        "amount": {"type": "integer"},
         "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
         "trigger": {"oneOf":
           [{"type": "object", "additionalProperties": false, "required": ["spell"],
@@ -69,9 +71,19 @@
           ]}
       },
       "additionalProperties": false,
-      "required": ["kind", "duration", "trigger"]
+      "required": ["id", "name", "text", "kind", "trigger"]
     },
     "sticky_kind": {"enum": ["delta", "shield", "damper", "super_shield", "id"]},
+    "sticky_invoker": {
+      "type": "object",
+      "properties": {
+        "sticky_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "duration": {"$ref": "#/definitions/duration"},
+        "amount": {"type": "integer"}
+      },
+      "additionalProperties": false,
+      "required": ["sticky_id", "duration"]
+    },
     "duration": {
       "type": "object",
       "properties": {

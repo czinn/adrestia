@@ -2,6 +2,66 @@
   "mana_cap": 20,
   "initial_mana_regen": 5,
   "initial_health": 25,
+  "stickies": [
+    {
+      "id": "shield", "name": "Shield",
+      "text": "Blocks damage from attacks.",
+      "kind": "shield",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
+    },
+    {
+      "id": "poison", "name": "Poison",
+      "text": "Deals 1 damage each turn.",
+      "kind": "id", "trigger": { "turn": true },
+      "effects": [
+        { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
+      ]
+    },
+    {
+      "id": "storm", "name": "Storm",
+      "text": "Increases Gathering Storm's damage by 1.",
+      "kind": "delta",
+      "trigger": { "inbound": false, "effect": { "spell_id": [ "chain_1" ] } }
+    },
+    {
+      "id": "spell_poison", "name": "Fatigue",
+      "text": "Casting spells deals 1 poison damage.",
+      "kind": "id", "trigger": { "spell": {} },
+      "effects": [
+        { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
+      ]
+    },
+    {
+      "id": "damper", "name": "Damper",
+      "text": "Decreases the strength of incoming attacks.",
+      "kind": "damper",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
+    },
+    {
+      "id": "poison_shield", "name": "Antidote",
+      "text": "Blocks damage from poison.",
+      "kind": "shield",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "poison" ] } }
+    },
+    {
+      "id": "shields_from_spells", "name": "Fortress",
+      "text": "When you cast a spell, gain a shield that blocks 2 damage.",
+      "kind": "id",
+      "trigger": { "spell": {} },
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shield", "amount": 2, "duration": { "turns": 2 } }
+        }
+      ]
+    },
+    {
+      "id": "super_shield", "name": "Crystal Shield",
+      "text": "Blocks all damage from the next attack.",
+      "kind": "super_shield",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
+    }
+  ],
   "spells": [
     {
       "id": "tech_conjuration", "name": "Learn Conjuration",
@@ -29,10 +89,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "shield",
-          "sticky": {
-            "kind": "shield", "amount": 3, "duration": { "turns": 1 },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-          }
+          "sticky": { "sticky_id": "shield", "amount": 3, "duration": { "turns": 1 } }
         }
       ]
     },
@@ -53,12 +110,7 @@
       "effects": [
         {
           "kind": "sticky", "self": false, "effect_type": "poison",
-          "sticky": {
-            "kind": "id", "duration": { "game": true }, "trigger": { "turn": true },
-            "effects": [
-              { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
-            ]
-          }
+          "sticky": { "sticky_id": "poison", "duration": { "game": true } }
         }
       ]
     },
@@ -70,10 +122,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "shield",
-          "sticky": {
-            "kind": "shield", "amount": 4, "duration": { "turns": 2 },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-          }
+          "sticky": { "sticky_id": "shield", "amount": 4, "duration": { "turns": 2 } }
         }
       ]
     },
@@ -85,10 +134,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "shield",
-          "sticky": {
-            "kind": "shield", "amount": 8, "duration": { "turns": 1 },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-          }
+          "sticky": { "sticky_id": "shield", "amount": 8, "duration": { "turns": 1 } }
         }
       ]
     },
@@ -110,10 +156,7 @@
         { "kind": "health", "self": false, "effect_type": "attack", "amount": -3 },
         {
           "kind": "sticky", "self": true, "effect_type": "special",
-          "sticky": {
-            "kind": "delta", "duration": { "game": true }, "amount": -1,
-            "trigger": { "inbound": false, "effect": { "spell_id": [ "chain_1" ] } }
-          }
+          "sticky": { "sticky_id": "storm", "duration": { "game": true }, "amount": -1 }
         }
       ]
     },
@@ -135,12 +178,7 @@
         { "kind": "health", "self": false, "effect_type": "constant", "amount": -4 },
         {
           "kind": "sticky", "self": false, "effect_type": "special",
-          "sticky": {
-            "kind": "id", "duration": { "turns": 1 }, "trigger": { "spell": {} },
-            "effects": [
-              { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
-            ]
-          }
+          "sticky": { "sticky_id": "spell_poison", "duration": { "turns": 1 } }
         }
       ]
     },
@@ -170,10 +208,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "shield",
-          "sticky": {
-            "kind": "shield", "amount": 6, "duration": { "turns": 1 },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-          }
+          "sticky": { "sticky_id": "shield", "amount": 6, "duration": { "turns": 1 } }
         }
       ]
     },
@@ -210,10 +245,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "special",
-          "sticky": {
-            "kind": "damper", "amount": 2, "duration": { "turns": 1 },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-          }
+          "sticky": { "sticky_id": "damper", "amount": 2, "duration": { "turns": 1 } }
         }
       ]
     },
@@ -225,10 +257,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "shield",
-          "sticky": {
-            "kind": "shield", "amount": 3, "duration": { "turns": 2 },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "poison" ] } }
-          }
+          "sticky": { "sticky_id": "poison_shield", "amount": 3, "duration": { "turns": 2 } }
         }
       ]
     },
@@ -240,18 +269,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "shield",
-          "sticky": {
-            "kind": "id", "duration": { "turns": 1 }, "trigger": { "spell": {} },
-            "effects": [
-              {
-                "kind": "sticky", "self": true, "effect_type": "shield",
-                "sticky": {
-                  "kind": "shield", "amount": 2, "duration": { "turns": 2 },
-                  "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-                }
-              }
-            ]
-          }
+          "sticky": { "sticky_id": "shields_from_spells", "duration": { "turns": 1 } }
         }
       ]
     },
@@ -263,10 +281,7 @@
       "effects": [
         {
           "kind": "sticky", "self": true, "effect_type": "attack",
-          "sticky": {
-            "kind": "super_shield", "duration": { "game": true },
-            "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
-          }
+          "sticky": { "sticky_id": "super_shield", "duration": { "game": true } }
         }
       ]
     }

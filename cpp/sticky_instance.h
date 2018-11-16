@@ -10,11 +10,12 @@ using json = nlohmann::json;
 
 class Spell;
 class Sticky;
+class StickyInvoker;
 class EffectInstance;
 
 class StickyInstance {
 	public:
-		StickyInstance(const Spell &spell, const Sticky &sticky);
+		StickyInstance(const Spell &spell, const Sticky &sticky, const StickyInvoker &invoker);
 		bool operator==(const StickyInstance &) const;
 
 		// Applies the sticky to the effect and possibly generates additional
@@ -36,9 +37,9 @@ class StickyInstance {
 
 		friend void to_json(json &j, const StickyInstance &sticky);
 
-		// state is used differently depending on the kind of sticky. For shields,
+		// amount is used differently depending on the kind of sticky. For shields,
 		// it is the remaining shield strength.
-		int state;
+    int amount;
 		Duration remaining_duration;
 		const Spell &spell;
 		const Sticky &sticky;

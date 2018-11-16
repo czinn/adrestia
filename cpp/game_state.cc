@@ -88,7 +88,7 @@ void GameState::process_effect_queue(
 			for (const auto &e : generated_effects) {
         append_to_effect_queue(next_effect_queue, e);
 			}
-			effect_instance.apply(target);
+			effect_instance.apply(rules, target);
 		}
 		std::swap(effect_queue, next_effect_queue);
 		next_effect_queue->clear();

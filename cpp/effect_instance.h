@@ -5,8 +5,9 @@
 
 #include "effect_kind.h"
 #include "effect_type.h"
-#include "sticky.h"
+#include "sticky_invoker.h"
 #include "json.h"
+#include "game_rules.h"
 
 using json = nlohmann::json;
 
@@ -21,7 +22,7 @@ class EffectInstance {
 		bool operator==(const EffectInstance &) const;
 
 		// Applies the effect to the given player.
-		void apply(Player &player) const;
+		void apply(const GameRules &rules, Player &player) const;
 
 		// A from_json method is not needed because this type is never serialized;
 		// to_json is provided for debugging purposes.
@@ -31,7 +32,7 @@ class EffectInstance {
 		bool targets_self;
 		EffectType effect_type;
 		int amount;
-		const Sticky &sticky;
+		const StickyInvoker &sticky_invoker;
 		const Spell &spell;
 		size_t target_player;
 };
