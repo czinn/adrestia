@@ -16,6 +16,8 @@ class GameState {
 			const std::vector<std::vector<std::string>> &player_books);
 		GameState(const GameRules &rules, const json &j);
 		bool operator==(const GameState &) const;
+		// Pretty print for debugging purposes.
+		friend std::ostream &operator<<(std::ostream &os, const GameState &);
 
 		bool is_valid_action(size_t player_id, GameAction action) const;
 		bool simulate(std::vector<GameAction> actions);

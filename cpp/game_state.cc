@@ -3,6 +3,7 @@
 #include "spell.h"
 
 #include <deque>
+#include <ostream>
 
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
@@ -31,6 +32,27 @@ bool GameState::operator==(const GameState &other) const {
 			this->players == other.players &&
 			this->history == other.history
 			);
+}
+
+std::ostream &operator<<(std::ostream &os, const GameState &state) {
+	os << "---" << std::endl;
+	os << "Turn " << state.turn_number() << std::endl;
+	for (size_t player_id = 0; player_id < state.players.size(); player_id++) {
+		const auto &player = state.players[player_id];
+		os << "Player " << player_id;
+		os << " (hp: " << player.hp << "/" << player.max_hp << ")";
+		os << " (mp: " << player.mp << " (+" << player.mp_regen << "))";
+		os << " (books:";
+		for (size_t i = 0; i < player.books.size(); i++) {
+			const auto tech = player.tech[i];
+			const auto *book = player.books[i];
+			os << " (" << book->get_name() << ": " << tech << ")";
+		}
+		os << ")";
+		os << " (stickies: " << player.stickies.size() << ")";
+		os << std::endl;
+	}
+	return os;
 }
 
 //------------------------------------------------------------------------------
@@ -128,6 +150,9 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 	std::deque<EffectInstance> *effect_queue = &queue1;
 	std::deque<EffectInstance> *next_effect_queue = &queue2;
 	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
+		std::vector<const Spell *> spells_in_flight(players.size(), nullptr);
+		
+		// Fire spells, putting them in flight.
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
 
@@ -136,20 +161,27 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 
 			if (spell_idx >= actions[player_id].size()) continue;
 
-			const auto [spell, book_idx] = caster.find_spell(actions[player_id][spell_idx]);
-			std::vector<EffectInstance> generated_effects =
-				caster.pipe_spell(player_id, *spell);
-			append_to_effect_queue(effect_queue, generated_effects);
-			caster.mp -= spell->get_cost();
+			const auto &spell = rules.get_spell(actions[player_id][spell_idx]);
+			if (caster.mp >= spell.get_cost()) {
+				caster.mp -= spell.get_cost();
+				spells_in_flight[player_id] = &spell;
+				std::vector<EffectInstance> generated_effects =
+					caster.pipe_spell(player_id, spell);
+				append_to_effect_queue(effect_queue, generated_effects);
+			}
 		}
 
 		// Process effects triggered by spells.
 		process_effect_queue(effect_queue, next_effect_queue);
 
+		// Resolve effects of in-flight spells.
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
-			if (spell_idx >= actions[player_id].size()) continue;
-			const auto &spell = rules.get_spell(actions[player_id][spell_idx]);
+			const auto *spell_ptr = spells_in_flight[player_id];
+			if (spell_ptr == nullptr) continue;
+			const auto &spell = *spell_ptr;
+
+			// Check for counterspells.
 			if (spell_idx < actions[1 - player_id].size()) {
 				const auto &other_spell = rules.get_spell(actions[1 - player_id][spell_idx]);
 				if (other_spell.is_counterspell() &&
@@ -157,6 +189,7 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 					continue;
 				}
 			}
+
 			for (const auto &effect : spell.get_effects()) {
 				EffectInstance effect_instance(player_id, spell, effect);
 				std::vector<EffectInstance> generated_effects =
@@ -174,6 +207,8 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 		std::vector<EffectInstance> generated_effects = players[player_id].pipe_turn(player_id);
 		append_to_effect_queue(effect_queue, generated_effects);
 	}
+
+	// Process effects created by god.
 	process_effect_queue(effect_queue, next_effect_queue);
 
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {

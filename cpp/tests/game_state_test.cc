@@ -4,6 +4,7 @@
 #include "catch.hpp"
 
 #include <fstream>
+#include <iostream>
 
 using json = nlohmann::json;
 
@@ -32,7 +33,49 @@ TEST_CASE("GameState") {
 		GameState state2(rules, json(state));
 		REQUIRE(state == state2);
 	}
+}
 
+TEST_CASE("Mana drains") {
+	GameRules rules(rules_filename);
+	GameState state(rules,
+			std::vector<std::vector<std::string>>
+			{{"conjuration", "testing"}, {"conjuration", "testing"}});
+
+	auto &p0 = state.players[0];
+	auto &p1 = state.players[1];
+	const int p0_starting_hp = p0.hp;
+	const int p1_starting_hp = p1.hp;
+	p0.mp = 10;
+	p0.mp_regen = 3;
+	p1.mp = 10;
+	p1.mp_regen = 3;
+
+	state.simulate({{
+		"tech_conjuration",
+		"damage_1", "damage_1", "damage_1", "damage_1", "damage_1",
+		"damage_1", "damage_1", "damage_1", "damage_1", "damage_1",
+	}, {
+		"tech_conjuration",
+		"burn_mana_1", "burn_mana_1", "burn_mana_1", "burn_mana_1", "burn_mana_1",
+		"damage_1", "damage_1"
+	}});
+
+	SECTION("mana cannot go below 0") {
+		REQUIRE(p0.mp >= 0);
+	}
+
+	SECTION("mana regen happens after burns") {
+		REQUIRE(p0.mp == p0.mp_regen);
+	}
+
+	SECTION("correct number of fizzles") {
+		// p0.mp   p1 health loss
+		// 0       0
+		// 1-4     1
+		// 5-8     2
+		// 9-12    3
+		REQUIRE(p1_starting_hp - p1.hp == 3);
+	}
 }
 
 TEST_CASE("Conjuration spells") {

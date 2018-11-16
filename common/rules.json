@@ -284,6 +284,15 @@
           "sticky": { "sticky_id": "super_shield", "duration": { "game": true } }
         }
       ]
+    },
+    {
+      "id": "burn_mana_1", "name": "Mana Burn",
+      "book": "testing",
+      "tech": 0, "level": 0, "cost": 1,
+      "text": "Reduce opponent's mana by 3.",
+      "effects": [
+        { "kind": "mana", "self": false, "effect_type": "special", "amount": -3 }
+      ]
     }
   ],
   "books": [
@@ -301,6 +310,12 @@
         "regulation_cancel_1", "regulation_mana_2", "regulation_cancel_2",
         "regulation_damper", "regulation_shield_2", "regulation_shield_3",
         "regulation_shield_4"
+      ]
+    },
+    {
+      "id": "testing", "name": "Past AP Exams Collection",
+      "spells": [
+        "burn_mana_1"
       ]
     }
   ]

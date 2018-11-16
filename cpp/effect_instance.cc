@@ -48,9 +48,11 @@ void EffectInstance::apply(const GameRules &rules, Player &player) const {
 			break;
 		case EK_HEALTH:
 			player.hp += amount;
+			player.hp = std::min(player.hp, player.max_hp);
 			break;
 		case EK_MANA:
 			player.mp += amount;
+			player.mp = std::max(0, player.mp);
 			break;
 		case EK_REGEN:
 			player.mp_regen += amount;
