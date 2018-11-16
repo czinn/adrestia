@@ -12,10 +12,12 @@ class Spell;
 class Sticky;
 class StickyInvoker;
 class EffectInstance;
+class GameRules;
 
 class StickyInstance {
 	public:
 		StickyInstance(const Spell &spell, const Sticky &sticky, const StickyInvoker &invoker);
+		StickyInstance(const GameRules &rules, const json &j);
 		bool operator==(const StickyInstance &) const;
 
 		// Applies the sticky to the effect and possibly generates additional

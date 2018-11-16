@@ -25,6 +25,9 @@ bool Sticky::operator==(const Sticky &other) const {
 //------------------------------------------------------------------------------
 // GETTERS
 //------------------------------------------------------------------------------
+std::string Sticky::get_id() const { return id; }
+std::string Sticky::get_name() const { return name; }
+std::string Sticky::get_text() const { return text; }
 StickyKind Sticky::get_kind() const { return kind; }
 const std::vector<Effect> Sticky::get_effects() const { return effects; }
 

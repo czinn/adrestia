@@ -15,6 +15,7 @@ class GameState {
 		GameState(
 			const GameRules &rules,
 			const std::vector<std::vector<std::string>> &player_books);
+		GameState(const GameRules &rules, const json &j);
 		bool operator==(const GameState &) const;
 
 		bool is_valid_action(size_t player_id, GameAction action) const;
@@ -33,7 +34,7 @@ class GameState {
 	private:
 		const GameRules &rules;
 
-    void process_effect_queue(
-        std::deque<EffectInstance> *effect_queue,
-        std::deque<EffectInstance> *next_effect_queue);
+		void process_effect_queue(
+				std::deque<EffectInstance> *effect_queue,
+				std::deque<EffectInstance> *next_effect_queue);
 };

@@ -29,7 +29,7 @@ void print_game(const GameState &state) {
 int main() {
 	GameRules rules("rules.json");
 
-	GameState state(rules, {{"conjuration"}, {"conjuration"}});
+	GameState state(rules, (std::vector<std::vector<std::string>>){{"conjuration"}, {"conjuration"}});
 	print_game(state);
 
 	const std::vector<std::vector<GameAction>> turns {

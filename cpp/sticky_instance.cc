@@ -1,5 +1,6 @@
 #include "sticky_instance.h"
 
+#include "game_rules.h"
 #include "effect_instance.h"
 #include "spell.h"
 #include "sticky.h"
@@ -16,6 +17,12 @@ StickyInstance::StickyInstance(
 	, remaining_duration(invoker.get_duration())
 	, spell(spell)
 	, sticky(sticky) {}
+
+StickyInstance::StickyInstance(const GameRules &rules, const json &j)
+	: amount(j.at("amount"))
+	, remaining_duration(j.at("remaining_duration"))
+	, spell(rules.get_spell(j.at("spell_id")))
+	, sticky(rules.get_sticky(j.at("sticky_id"))) {}
 
 bool StickyInstance::operator==(const StickyInstance &other) const {
 	return
@@ -109,6 +116,6 @@ std::vector<EffectInstance> StickyInstance::apply(size_t player_id) {
 void to_json(json &j, const StickyInstance &sticky) {
 	j["amount"] = sticky.amount;
 	j["remaining_duration"] = sticky.remaining_duration;
-	j["spell"] = sticky.spell.get_id();
-	j["sticky"] = sticky.sticky;
+	j["spell_id"] = sticky.spell.get_id();
+	j["sticky_id"] = sticky.sticky.get_id();
 }

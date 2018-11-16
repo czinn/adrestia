@@ -2,7 +2,6 @@
 #include "../json.h"
 #include "catch.hpp"
 
-#include <iostream>
 #include <fstream>
 
 using json = nlohmann::json;
@@ -13,7 +12,6 @@ TEST_CASE("GameRules") {
 	GameRules rules(rules_filename);
 
 	SECTION("GameRules round trips to itself") {
-		std::cout << json(rules) << std::endl;
 		GameRules rules2 = json(rules);
 		REQUIRE(rules == rules2);
 	}

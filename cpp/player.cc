@@ -19,8 +19,33 @@ Player::Player(const GameRules &rules, const std::vector<std::string> books)
 	}
 }
 
+Player::Player(const GameRules &rules, const json &j) 
+	: hp(j.at("hp"))
+	, max_hp(j.at("max_hp"))
+	, mp(j.at("mp"))
+	, mp_regen(j.at("mp_regen"))
+	, rules(rules) {
+	for (const auto &it : j.at("tech")) {
+		tech.push_back(it);
+	}
+	for (const auto &it : j.at("books")) {
+		books.push_back(&rules.get_book(it.get<std::string>()));
+	}
+	for (const auto &it : j.at("stickies")) {
+		stickies.push_back(StickyInstance(rules, it));
+	}
+}
+
 bool Player::operator==(const Player &other) const {
-	return this == &other;
+	return (
+			this->hp == other.hp &&
+			this->max_hp == other.max_hp &&
+			this->mp == other.mp &&
+			this->mp_regen == other.mp_regen &&
+			this->tech == other.tech &&
+			this->books == other.books &&
+			this->stickies == other.stickies
+			);
 }
 
 //------------------------------------------------------------------------------
@@ -89,27 +114,27 @@ std::vector<EffectInstance> Player::pipe_turn(size_t player_id) {
 }
 
 void Player::subtract_step() {
-  auto sticky = stickies.begin();
-  while (sticky != stickies.end()) {
-    sticky->remaining_duration.subtract_step();
-    if (!sticky->remaining_duration.is_active()) {
-      sticky = stickies.erase(sticky);
-    } else {
-      sticky++;
-    }
-  }
+	auto sticky = stickies.begin();
+	while (sticky != stickies.end()) {
+		sticky->remaining_duration.subtract_step();
+		if (!sticky->remaining_duration.is_active()) {
+			sticky = stickies.erase(sticky);
+		} else {
+			sticky++;
+		}
+	}
 }
 
 void Player::subtract_turn() {
-  auto sticky = stickies.begin();
-  while (sticky != stickies.end()) {
-    sticky->remaining_duration.subtract_turn();
-    if (!sticky->remaining_duration.is_active()) {
-      sticky = stickies.erase(sticky);
-    } else {
-      sticky++;
-    }
-  }
+	auto sticky = stickies.begin();
+	while (sticky != stickies.end()) {
+		sticky->remaining_duration.subtract_turn();
+		if (!sticky->remaining_duration.is_active()) {
+			sticky = stickies.erase(sticky);
+		} else {
+			sticky++;
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -120,10 +145,9 @@ void to_json(json &j, const Player &player) {
 	j["max_hp"] = player.max_hp;
 	j["mp"] = player.mp;
 	j["mp_regen"] = player.mp_regen;
-	for (auto t : player.tech) {
-		j["tech"].push_back(t);
-	}
+	j["tech"] = player.tech;
 	for (auto *b : player.books) {
 		j["books"].push_back(b->get_id());
 	}
+	j["stickies"] = player.stickies;
 }
