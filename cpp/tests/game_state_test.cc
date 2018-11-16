@@ -22,7 +22,7 @@ TEST_CASE("GameState") {
 		for (int i = 0; i < 10; i++) {
 			state.simulate({{}, {}});
 		}
-		REQUIRE(state.get_players()[0].mp <= rules.get_mana_cap());
+		REQUIRE(state.players[0].mp <= rules.get_mana_cap());
 	}
 
 	SECTION("GameState round trips to itself") {
@@ -43,8 +43,8 @@ TEST_CASE("Conjuration spells") {
 		state.simulate({{"tech_conjuration"}, {"tech_conjuration"}});
 	}
 
-	Player &player0 = state.get_players_for_test()[0];
-	Player &player1 = state.get_players_for_test()[1];
+	Player &player0 = state.players[0];
+	Player &player1 = state.players[1];
 
 	SECTION("damage_1") {
 		int hp_before = player1.hp;

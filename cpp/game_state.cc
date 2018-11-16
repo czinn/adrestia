@@ -1,5 +1,6 @@
 #include "game_state.h"
 #include "effect_instance.h"
+#include "spell.h"
 
 #include <deque>
 
@@ -31,12 +32,6 @@ bool GameState::operator==(const GameState &other) const {
 			this->history == other.history
 			);
 }
-
-//------------------------------------------------------------------------------
-// GETTERS
-//------------------------------------------------------------------------------
-const std::vector<Player> &GameState::get_players() const { return players; }
-std::vector<Player> &GameState::get_players_for_test() { return players; }
 
 //------------------------------------------------------------------------------
 // BUSINESS LOGIC

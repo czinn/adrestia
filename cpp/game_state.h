@@ -6,7 +6,6 @@
 #include <deque>
 
 #include "player.h"
-#include "spell.h"
 #include "game_rules.h"
 #include "game_action.h"
 
@@ -23,17 +22,13 @@ class GameState {
 		int turn_number() const; // First turn is 1.
 		std::vector<size_t> winners() const; // empty: Game still in progress.
 
-		const std::vector<Player> &get_players() const;
-		std::vector<Player> &get_players_for_test();
-
 		friend void to_json(json &, const GameState &);
 
 		std::vector<std::vector<GameAction>> history;
 		std::vector<Player> players;
-
-	private:
 		const GameRules &rules;
 
+	private:
 		void process_effect_queue(
 				std::deque<EffectInstance> *effect_queue,
 				std::deque<EffectInstance> *next_effect_queue);
