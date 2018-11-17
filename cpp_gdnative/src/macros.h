@@ -145,6 +145,15 @@ class Instanceable {
     return result;\
   }
 
+#define FORWARD_STRING_ARRAY_GETTER(getter)\
+	Array CLASSNAME::getter() const {\
+		Array result;\
+		for (const auto &x : _ptr->getter()) {\
+			result.append(String(x.c_str()));\
+		}\
+		return result;\
+	}
+
 // Implied naming convention:
 // Member handles to Ref<NativeScript> for Kind are named Kind_
 #define FORWARD_SMART_PTR_GETTER(Kind, getter)\
