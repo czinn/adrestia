@@ -8,14 +8,14 @@
 using json = nlohmann::json;
 
 enum EffectType {
-	ET_ATTACK,
-	ET_SHIELD,
-	ET_SPECIAL,
-	ET_POISON,
-	ET_CONSTANT,
-	ET_COUNTER,
-	ET_TECH,
-	ET_HEAL,
+	ET_ATTACK = 0,
+	ET_SHIELD = 1,
+	ET_SPECIAL = 2,
+	ET_POISON = 3,
+	ET_CONSTANT = 4,
+	ET_COUNTER = 5,
+	ET_TECH = 6,
+	ET_HEAL = 7,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EffectType, {

@@ -14,35 +14,35 @@
 using json = nlohmann::json;
 
 enum StickyKind {
-	// Modifies the amount field of the effect.
-	SK_DELTA,
-	// Reduces the amount field of the effect, up to a maximum that is fixed for
-	// the lifetime of the shield.
-	SK_SHIELD,
-	// Reduces the amount field of the effect by a fixed amount.
-	SK_DAMPER,
-	// Reduces the amount field of the effect to zero, and destroys the sticky.
-	SK_SUPER_SHIELD,
 	// Does not affect the effect or spell for which this sticky triggers. The
 	// name comes from the identity function.
-	SK_ID,
+	SK_ID = 0,
+	// Modifies the amount field of the effect.
+	SK_DELTA = 1,
+	// Reduces the amount field of the effect, up to a maximum that is fixed for
+	// the lifetime of the shield.
+	SK_SHIELD = 2,
+	// Reduces the amount field of the effect by a fixed amount.
+	SK_DAMPER = 3,
+	// Reduces the amount field of the effect to zero, and destroys the sticky.
+	SK_SUPER_SHIELD = 4,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(StickyKind, {
+	{ SK_ID, "id" },
 	{ SK_DELTA, "delta" },
 	{ SK_SHIELD, "shield" },
 	{ SK_DAMPER, "damper" },
 	{ SK_SUPER_SHIELD, "super_shield" },
-	{ SK_ID, "id" },
 });
 
 enum TriggerType {
 	// Triggers when a spell matching trigger_selector is cast.
-	TRIGGER_SPELL,
+	TRIGGER_SPELL = 0,
 	// Triggers when an effect is inbound/outbound (see inbound field).
-	TRIGGER_EFFECT,
+	TRIGGER_EFFECT = 1,
 	// Triggers at the end of the turn. 
-	TRIGGER_TURN,
+	TRIGGER_TURN = 2,
 };
 
 class Effect;

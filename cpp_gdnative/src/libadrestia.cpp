@@ -1,6 +1,7 @@
 #include "gdexample.h"
 #include "book.h"
 #include "duration.h"
+#include "sticky_invoker.h"
 
 extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *o) {
   godot::Godot::gdnative_init(o);
@@ -15,4 +16,5 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
   godot::register_class<godot::gdexample>();
   godot::register_class<godot::Book>();
   godot::register_class<godot::Duration>();
+  godot::register_class<godot::StickyInvoker>();
 }
