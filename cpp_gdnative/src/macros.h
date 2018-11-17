@@ -126,6 +126,11 @@ class Instanceable {
 #define REGISTER_METHOD(method)\
   register_method(#method, &CLASSNAME::method);
 
+#define FORWARD_VOID(method)\
+	void CLASSNAME::method() {\
+		_ptr->method();\
+	}
+
 #define FORWARD_GETTER(type, getter)\
   type CLASSNAME::getter() const {\
     return _ptr->getter();\
