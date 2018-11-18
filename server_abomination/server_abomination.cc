@@ -146,24 +146,12 @@ void register_new_account_in_database(pqxx::connection* psql_connection, const s
 	// Insert into table
 	psql_connection[0].prepare("insert_new_account_into_database_command", insert_new_account_into_database_command);
 	pqxx::work insertion_transaction(psql_connection[0]);
-	pqxx::binarystring bstring((void*)(&hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+	pqxx::binarystring bstring(good_string);
 	pqxx::result statement_result = insertion_transaction.prepared("insert_new_account_into_database_command")(account_name)(bstring)(salt).exec();
 	insertion_transaction.commit();
 
 	delete hash_of_salt_and_password;
-
-	cout << "Q Password entered: |" << password << "|" << endl;
-	cout << "Q Salt used: |" << salt << "|" << endl;
-	cout << "Q Salt and password: |" << salt_and_password << "|" << endl;
-	cout << "Q salt and password c_str: |" << salt_and_password_c_str << "|" << endl;
-	cout << "Q salt and password c_str length: |" << salt_and_password.length() << "|" << endl;
-	cout << "Q Digested message: ";
-	print_hexy((const char*)hash_of_salt_and_password, hash_of_salt_and_password_length);
-	cout << endl;
-	cout << "Bstring of digested message: ";
-	print_hexy(bstring.get(), bstring.size());
-	cout << endl;
-
 	cout << "Finished insertion of new account into database." << endl;
 }
 
@@ -189,7 +177,6 @@ bool verify_existing_account_in_database(pqxx::connection* psql_connection, cons
 
 	string database_account(search_result[0]["account_name"].c_str());
 	pqxx::binarystring database_hash_of_salt_and_password(search_result[0]["hash_of_salt_and_password"]);
-	//pqxx::binarystring bsmsg(r[0]["message"]);
 	string database_salt(search_result[0]["salt"].c_str());
 
 	// Get expected hashed password.
@@ -199,22 +186,15 @@ bool verify_existing_account_in_database(pqxx::connection* psql_connection, cons
 	unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
 	unsigned int hash_of_salt_and_password_length;
 	digest_message(salt_and_password_c_str, salt_and_password.length(), &hash_of_salt_and_password, &hash_of_salt_and_password_length);
-	pqxx::binarystring expected_hash_of_salt_and_password((void*)(&hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+	pqxx::binarystring expected_hash_of_salt_and_password(good_string);
 
 	if (expected_hash_of_salt_and_password == database_hash_of_salt_and_password) {
-		cout << "This account and password have been verified.";
+		cout << "This account and password have been verified." << endl;
 		return true;
 	}
 
-	cout << "R Recieved an incorrect password for this known account." << endl;
-	cout << "R Password entered: |" << password << "|" << endl;
-	cout << "R Salt used: |" << database_salt << "|" << endl;
-	cout << "R Salt and password: |" << salt_and_password << "|" << endl;
-	cout << "R salt and password c_str: |" << salt_and_password_c_str << "|" << endl;
-	cout << "R salt and password c_str length: |" << salt_and_password.length() << "|" << endl;
-	cout << "R Digested message: ";
-	print_hexy((const char*)hash_of_salt_and_password, hash_of_salt_and_password_length);
-	cout << endl;
+	cout << "Recieved an incorrect password for this known account." << endl;
 	return false;
 }
 
@@ -269,15 +249,15 @@ int verify_account(int client_socket, string recieved_message) {
 	bool valid = verify_existing_account_in_database(psql_connection, account_name, password);
 	delete psql_connection;
 
+	string message = "500\n";
 	if (valid) {
 		cout << "Authorization OK. Reporting 200...\n";
-		string message = "201\n";
+		message = "200\n";
 	}
 	else {
 		cout << "Authorization NOT OK. Reporting 401...\n";
-		string message = "401\n";
+		message = "401\n";
 	}
-	string message = "201\n";
 	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
 
 	cout << "verify_account concluded." << endl;

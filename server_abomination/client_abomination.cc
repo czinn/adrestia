@@ -159,7 +159,7 @@ int register_new_account(const string& account_name, const string& password) {
         return 503;
     }
 
-    cout << "register_new_account recieved response: |" << server_response << "|";
+    cout << "register_new_account recieved response: |" << server_response << "|" << endl;
     return atoi(server_response.c_str());
 }
 
