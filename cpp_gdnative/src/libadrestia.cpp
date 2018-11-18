@@ -2,6 +2,10 @@
 #include "book.h"
 #include "duration.h"
 #include "sticky_invoker.h"
+#include "effect.h"
+#include "spell.h"
+#include "selector.h"
+#include "effect_instance.h"
 
 extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *o) {
   godot::Godot::gdnative_init(o);
@@ -17,4 +21,8 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
   godot::register_class<godot::Book>();
   godot::register_class<godot::Duration>();
   godot::register_class<godot::StickyInvoker>();
+  godot::register_class<godot::Effect>();
+  godot::register_class<godot::Spell>();
+  godot::register_class<godot::Selector>();
+  godot::register_class<godot::EffectInstance>();
 }

@@ -204,6 +204,14 @@ class Instanceable {
 		_ptr->member = x;\
 	}
 
+#define IMPL_SETGET_ENUM(Type, member)\
+	int CLASSNAME::get_ ## member() const {\
+		return _ptr->member;\
+	}\
+	void CLASSNAME::set_ ## member(int x) {\
+		_ptr->member = (Type)x;\
+	}
+
 // SETGET_REF:
 // Implements SETGET for a mutable class member.
 // Requires INTF_SETGET(Variant, ...)

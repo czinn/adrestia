@@ -26,7 +26,7 @@ class EffectInstance {
 
 		// A from_json method is not needed because this type is never serialized;
 		// to_json is provided for debugging purposes.
-		friend void to_json(json &j, const Effect &effect);
+		friend void to_json(json &j, const EffectInstance &effect);
 
 		EffectKind kind;
 		bool targets_self;
