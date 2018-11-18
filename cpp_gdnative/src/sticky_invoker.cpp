@@ -1,5 +1,7 @@
 #include "sticky_invoker.h"
 
+#include "duration.h"
+
 #define CLASSNAME StickyInvoker
 
 using namespace godot;

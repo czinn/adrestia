@@ -230,8 +230,8 @@ class Instanceable {
 		return v;\
 	}\
 	void CLASSNAME::set_ ## member(Variant value) {\
-		Tech *thing = godot::as<Type>(value);\
-		_ptr->tech = *thing->_ptr;\
+		Type *thing = godot::as<Type>(value);\
+		_ptr->member = *thing->_ptr;\
 	}
 
 // SETGET_CONST_REF:
@@ -245,6 +245,42 @@ class Instanceable {
 	}\
 	void CLASSNAME::set_ ## member(Variant value) {\
 		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a const member)");\
+		assert(false);\
+	}
+
+// SETGET_ARRAY:
+// Implements SETGET for an std::vector-like class member with basic contents.
+// Only implements the getter; the setter is left undefined because why would
+// you ever want to set an array from gdscript.
+#define IMPL_SETGET_ARRAY(member)\
+	Array CLASSNAME::get_ ## member() const {\
+		Array result;\
+		for (const auto &x : _ptr->member) {\
+			result.append(x);\
+		}\
+		return result;\
+	}\
+	void CLASSNAME::set_ ## member(Array v) {\
+		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for an array member)");\
+		assert(false);\
+	}
+
+// SETGET_REF_ARRAY:
+// Implements SETGET for an std::vector-like class member. Only implements the
+// getter; the setter is left undefined because why would you ever want to set
+// an array from gdscript.
+#define IMPL_SETGET_REF_ARRAY(Type, member)\
+	Array CLASSNAME::get_ ## member() const {\
+		Array result;\
+		for (const auto &x : _ptr->member) {\
+			auto [v, thing] = instance<Type>(Type ## _);\
+			thing->set_ptr(const_cast<::Type*>(&x), owner);\
+			result.append(v);\
+		}\
+		return result;\
+	}\
+	void CLASSNAME::set_ ## member(Array v) {\
+		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for an array member)");\
 		assert(false);\
 	}
 

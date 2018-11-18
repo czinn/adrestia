@@ -8,6 +8,8 @@
 #include "effect_instance.h"
 #include "sticky.h"
 #include "game_rules.h"
+#include "sticky_instance.h"
+#include "player.h"
 
 extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *o) {
   godot::Godot::gdnative_init(o);
@@ -29,4 +31,6 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
   godot::register_class<godot::EffectInstance>();
   godot::register_class<godot::Sticky>();
   godot::register_class<godot::GameRules>();
+  godot::register_class<godot::StickyInstance>();
+  godot::register_class<godot::Player>();
 }

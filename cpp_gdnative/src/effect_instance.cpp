@@ -1,5 +1,7 @@
 #include "effect_instance.h"
 
+#include "game_rules.h"
+#include "player.h"
 #include "spell.h"
 #include "sticky_invoker.h"
 
@@ -16,6 +18,7 @@ namespace godot {
 	}
 
 	void EffectInstance::_register_methods() {
+		REGISTER_METHOD(apply)
 		REGISTER_SETGET(kind, -1)
 		REGISTER_SETGET(targets_self, false)
 		REGISTER_SETGET(effect_type, -1)
@@ -23,9 +26,12 @@ namespace godot {
 		REGISTER_SETGET(sticky_invoker, Variant())
 		REGISTER_SETGET(spell, Variant())
 		REGISTER_SETGET(target_player, -1)
-
 		REGISTER_NULLABLE
 		REGISTER_TO_JSONABLE
+	}
+
+	void EffectInstance::apply(GameRules *rules, Player *player) const {
+		_ptr->apply(*rules->_ptr, *player->_ptr);
 	}
 
 	IMPL_SETGET_ENUM(EffectKind, kind)

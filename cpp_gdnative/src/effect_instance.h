@@ -6,6 +6,9 @@
 #include "macros.h"
 
 namespace godot {
+	class GameRules;
+	class Player;
+
 	class EffectInstance : public godot::GodotScript<Reference>,
 			public OwnerOrPointer<::EffectInstance> {
 			GODOT_CLASS(EffectInstance)
@@ -17,8 +20,7 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			// TODO: charles: Implement this
-			// apply(GameRules *rules, Player *player)
+			void apply(GameRules *rules, Player *player) const;
 
 			INTF_SETGET(int, kind)
 			INTF_SETGET(bool, targets_self)

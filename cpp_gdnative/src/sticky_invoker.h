@@ -3,10 +3,11 @@
 #include <Reference.hpp>
 #include <sticky_invoker.h>
 
-#include "duration.h"
 #include "macros.h"
 
 namespace godot {
+	class Duration;
+
 	class StickyInvoker : public godot::GodotScript<Reference>,
 			public OwnerOrPointer<::StickyInvoker> {
 			GODOT_CLASS(StickyInvoker)
