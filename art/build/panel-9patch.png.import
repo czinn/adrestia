@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/panel-transparent-9patch.png-653ba0699a29b98b7ad394eff2d9cfd7.stex"
+path="res://.import/panel-9patch.png-6f7ef6805064a7d75c9c7822a390a92c.stex"
 
 [deps]
 
-source_file="res://art/panel-transparent-9patch.png"
-dest_files=[ "res://.import/panel-transparent-9patch.png-653ba0699a29b98b7ad394eff2d9cfd7.stex" ]
+source_file="res://art-built/panel-9patch.png"
+dest_files=[ "res://.import/panel-9patch.png-6f7ef6805064a7d75c9c7822a390a92c.stex" ]
 
 [params]
 

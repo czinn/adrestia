@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/button-play.png-6ad506a5c01694627b4120cc97e519e6.stex"
+path="res://.import/button-play.png-79cbe2f279eb1e0eeddd776493427d77.stex"
 
 [deps]
 
-source_file="res://art/button-play.png"
-dest_files=[ "res://.import/button-play.png-6ad506a5c01694627b4120cc97e519e6.stex" ]
+source_file="res://art-built/button-play.png"
+dest_files=[ "res://.import/button-play.png-79cbe2f279eb1e0eeddd776493427d77.stex" ]
 
 [params]
 
