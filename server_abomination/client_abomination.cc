@@ -21,8 +21,8 @@ using namespace std;
 #include "../units_cpp/json.h"
 using json = nlohmann::json;
 
-#define SERVER_IP 127.0.0.1
-#define SERVER_PORT 18677
+string SERVER_IP("127.0.0.1");
+int SERVER_PORT = 18677;
 
 class connection_closed {};
 class socket_error {};
@@ -142,7 +142,7 @@ int register_new_account(const string& account_name, const string& password) {
     cout << "    password: |" << password << "|" << endl;
 
 
-    int my_socket = socket_to_target("127.0.0.1", 18677);
+    int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
     if (my_socket != -1) {
         string server_send_string("000000000000register_new_account");
         json new_account;
@@ -154,11 +154,39 @@ int register_new_account(const string& account_name, const string& password) {
     }
     else {
         cerr << "register_new_account failed to connect." << endl;
-        return 1;
+        return 503;
     }
 
     cout << "register_new_account has concluded successfully." << endl;
-    return 0;
+    return 201;
+}
+
+int verify_existing_account(const string& account_name, const string& password) {
+    cout << "verify_existing_account outbound with:" << endl;
+    cout << "    account_name: |" << account_name << "|" << endl;
+    cout << "    password: |" << password << "|" << endl;
+
+    int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
+    if (my_socket != -1) {
+        string server_send_string("000000000000000000verify_account");
+        json credentials;
+        credentials["account_name"] = account_name;
+        credentials["password"] = password;
+        server_send_string += credentials.dump();
+        server_send_string += '\n';
+        send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
+        string server_response = read_packet(my_socket);
+
+        if (server_response.compare("200") == 0) {
+            cout << "verify_existing_account confirms credentials are valid." << endl;
+            return 200;
+        }
+
+        cout << "verify_existing_account confirms credentials are invalid." << endl;
+        return 401;
+    }
+    cerr << "verify_existing_account failed to connect." << endl;
+    return 503;
 }
 
 // ACTUAL API ENDS HERE
@@ -167,5 +195,8 @@ int register_new_account(const string& account_name, const string& password) {
 int main(int argc, char* argv[]) {
     string account_name("blop");
     string password("blop");
-    return register_new_account(account_name, password);
+    int account_registration = register_new_account(account_name, password);
+    int account_verification = verify_existing_account(account_name, password);
+
+    cout << "Reg: |" << account_registration << "|; Ver: |" << account_verification << "|." << endl;
 }

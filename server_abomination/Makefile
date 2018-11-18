@@ -1,3 +1,3 @@
 all:
-	g++ -o server_abomination server_abomination.cc
-	g++ -o client_abomination client_abomination.cc
+	g++ -std=c++11 -o server_abomination server_abomination.cc -lpqxx -lssl -lcrypto
+	g++ -std=c++11 -o client_abomination client_abomination.cc -lpqxx -lssl -lcrypto

@@ -34,9 +34,11 @@ using json = nlohmann::json;
 #define MESSAGE_HANDLER_NAME_LENGTH 32
 
 // AAHOLAGF:DSJKHFG
-string Z_DEFAULT_FUNCTION_NAME("z_default");
-string FLOOP_FUNCTION_NAME("000000000000000000000000000floop");
+string Z_DEFAULT_FUNCTION_NAME           ("z_default");
+string FLOOP_FUNCTION_NAME               ("000000000000000000000000000floop");
 string REGISTER_NEW_ACCOUNT_FUNCTION_NAME("000000000000register_new_account");
+string VERIFY_ACCOUNT_FUNCTION_NAME      ("000000000000000000verify_account");
+string DELETE_ACCOUNT_FUNCTION_NAME      ("000000000000000000delete_account");
 
 #define ENV_FILE_PATH ".env"
 
@@ -111,9 +113,21 @@ void digest_message(const char* message, size_t message_length, unsigned char** 
 // CRYPTO STUFF ENDS
 
 // DATABASE STUFF BEGINS -- Put this in another file!
+void print_hexy(const char* not_hexy, int length) {
+	stringstream ss;
+	ss << "HEXY: |";
+	for (int i = 0; i < length; i += 1) {
+		ss << ":";
+		ss << hex << (int)not_hexy[i];
+		ss << ";";
+	}
+	ss << "|";
+	cout << ss.str();
+}
+
+
 void register_new_account_in_database(pqxx::connection* psql_connection, const string& account_name, const string& password) {
 	cout << "Inserting new account |" << account_name << "|:|" << password << "| into database..." << endl;
-
 
 	const string insert_new_account_into_database_command = ""
 	"INSERT INTO adrestia_accounts (account_name, hash_of_salt_and_password, salt)"
@@ -138,7 +152,70 @@ void register_new_account_in_database(pqxx::connection* psql_connection, const s
 
 	delete hash_of_salt_and_password;
 
+	cout << "Q Password entered: |" << password << "|" << endl;
+	cout << "Q Salt used: |" << salt << "|" << endl;
+	cout << "Q Salt and password: |" << salt_and_password << "|" << endl;
+	cout << "Q salt and password c_str: |" << salt_and_password_c_str << "|" << endl;
+	cout << "Q salt and password c_str length: |" << salt_and_password.length() << "|" << endl;
+	cout << "Q Digested message: ";
+	print_hexy((const char*)hash_of_salt_and_password, hash_of_salt_and_password_length);
+	cout << endl;
+	cout << "Bstring of digested message: ";
+	print_hexy(bstring.get(), bstring.size());
+	cout << endl;
+
 	cout << "Finished insertion of new account into database." << endl;
+}
+
+bool verify_existing_account_in_database(pqxx::connection* psql_connection, const string& account_name, const string& password) {
+	cout << "Verifying account |" << account_name << "|:|" << password << "| in database..." << endl;
+
+	const string select_account_from_database_command = ""
+	"SELECT account_name, hash_of_salt_and_password, salt"
+	"    FROM adrestia_accounts"
+	"    WHERE account_name = $1"
+	";";
+
+	// Find account of given name
+	psql_connection[0].prepare("select_account_from_database_command", select_account_from_database_command);
+	pqxx::work select_transaction(psql_connection[0]);
+	pqxx::result search_result = select_transaction.prepared("select_account_from_database_command")(account_name).exec();
+	select_transaction.commit();
+
+	if (search_result.size() == 0) {
+		cout << "No accounts of this name in database.";
+		return false;
+	}
+
+	string database_account(search_result[0]["account_name"].c_str());
+	pqxx::binarystring database_hash_of_salt_and_password(search_result[0]["hash_of_salt_and_password"]);
+	//pqxx::binarystring bsmsg(r[0]["message"]);
+	string database_salt(search_result[0]["salt"].c_str());
+
+	// Get expected hashed password.
+	// The hashing of the password only in the case that the account exists is bad for security, but good for speed!
+	string salt_and_password = database_salt + password;
+	const char* salt_and_password_c_str = salt_and_password.c_str();
+	unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
+	unsigned int hash_of_salt_and_password_length;
+	digest_message(salt_and_password_c_str, salt_and_password.length(), &hash_of_salt_and_password, &hash_of_salt_and_password_length);
+	pqxx::binarystring expected_hash_of_salt_and_password((void*)(&hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+
+	if (expected_hash_of_salt_and_password == database_hash_of_salt_and_password) {
+		cout << "This account and password have been verified.";
+		return true;
+	}
+
+	cout << "R Recieved an incorrect password for this known account." << endl;
+	cout << "R Password entered: |" << password << "|" << endl;
+	cout << "R Salt used: |" << database_salt << "|" << endl;
+	cout << "R Salt and password: |" << salt_and_password << "|" << endl;
+	cout << "R salt and password c_str: |" << salt_and_password_c_str << "|" << endl;
+	cout << "R salt and password c_str length: |" << salt_and_password.length() << "|" << endl;
+	cout << "R Digested message: ";
+	print_hexy((const char*)hash_of_salt_and_password, hash_of_salt_and_password_length);
+	cout << endl;
+	return false;
 }
 
 pqxx::connection* establish_psql_connection(const string& connection_config_string) {
@@ -162,7 +239,7 @@ string get_database_connection_config_string() {
 }
 
 int register_new_account(int client_socket, string recieved_message) {
-	cout << "Triggered register_new_account..." << endl;
+	cout << "Triggered register_new_account, message: |" << recieved_message << "|" << endl;
 	auto message_json = json::parse(recieved_message.substr(MESSAGE_HANDLER_NAME_LENGTH, string::npos));
 	string account_name = message_json["account_name"];
 	string password = message_json["password"];
@@ -172,8 +249,38 @@ int register_new_account(int client_socket, string recieved_message) {
 	register_new_account_in_database(psql_connection, account_name, password);
 	delete psql_connection;
 
+	cout << "Reporting 201..." << endl;
+	string message = "201\n";
+	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
+
 	cout << "register_new_account concluded." << endl;
 
+	return 0;
+}
+
+int verify_account(int client_socket, string recieved_message) {
+	cout << "Triggered verify_account, message: |" << recieved_message << "|" << endl;
+	auto message_json = json::parse(recieved_message.substr(MESSAGE_HANDLER_NAME_LENGTH, string::npos));
+	string account_name = message_json["account_name"];
+	string password = message_json["password"];
+
+	cout << "Checking authentication |" << account_name << "|:|" << password << "|..." << endl;
+	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
+	bool valid = verify_existing_account_in_database(psql_connection, account_name, password);
+	delete psql_connection;
+
+	if (valid) {
+		cout << "Authorization OK. Reporting 200...\n";
+		string message = "201\n";
+	}
+	else {
+		cout << "Authorization NOT OK. Reporting 401...\n";
+		string message = "401\n";
+	}
+	string message = "201\n";
+	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
+
+	cout << "verify_account concluded." << endl;
 	return 0;
 }
 
@@ -351,6 +458,8 @@ int main(int na, char* arg[]) {
 	handler_map[Z_DEFAULT_FUNCTION_NAME] = z_default;
 	handler_map[FLOOP_FUNCTION_NAME] = floop;
 	handler_map[REGISTER_NEW_ACCOUNT_FUNCTION_NAME] = register_new_account;
+	handler_map[VERIFY_ACCOUNT_FUNCTION_NAME] = verify_account;
+	//handler_map[DELETE_ACCOUNT_FUNCTION_NAME] = delete_account;
 
 
 
