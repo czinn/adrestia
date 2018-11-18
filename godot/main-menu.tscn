@@ -1,21 +1,22 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://main-menu.gd" type="Script" id=1]
 [ext_resource path="res://art/unlimited_blades_0001.jpg" type="Texture" id=2]
 [ext_resource path="res://theme-default.tres" type="Theme" id=3]
 [ext_resource path="res://art/button-play.png" type="Texture" id=4]
+[ext_resource path="res://art/panel-transparent-9patch.png" type="Texture" id=5]
 
 [node name="Root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
-[node name="unlimited_blades_0001" type="Sprite" parent="." index="0"]
+[node name="background" type="Sprite" parent="." index="0"]
 
 position = Vector2( 275.99, 466.868 )
 scale = Vector2( 2.26445, 2.26445 )
 texture = ExtResource( 2 )
 
-[node name="UI" type="Control" parent="." index="1"]
+[node name="ui" type="Control" parent="." index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -32,7 +33,22 @@ size_flags_vertical = 1
 theme = ExtResource( 3 )
 _sections_unfolded = [ "Theme" ]
 
-[node name="Label" type="Label" parent="UI" index="0"]
+[node name="button-play" type="TouchScreenButton" parent="ui" index="0"]
+
+position = Vector2( 51.9921, 381.952 )
+scale = Vector2( 0.863128, 0.863128 )
+normal = ExtResource( 4 )
+pressed = null
+bitmask = null
+shape = null
+shape_centered = true
+shape_visible = true
+passby_press = false
+action = ""
+visibility_mode = 0
+_sections_unfolded = [ "Transform" ]
+
+[node name="label" type="Label" parent="ui" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -55,37 +71,57 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Theme" ]
 
-[node name="TextureRect" type="TextureRect" parent="." index="2"]
+[node name="ninepatch" type="NinePatchRect" parent="ui" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 238.0
-margin_top = 416.0
-margin_right = 278.0
-margin_bottom = 456.0
+margin_left = 90.0
+margin_top = 570.0
+margin_right = 430.0
+margin_bottom = 750.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 1
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-stretch_mode = 0
+texture = ExtResource( 5 )
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
 
-[node name="button-play" type="TouchScreenButton" parent="." index="3"]
+[node name="richtext" type="RichTextLabel" parent="ui/ninepatch" index="0"]
 
-position = Vector2( 51.9921, 381.952 )
-scale = Vector2( 0.863128, 0.863128 )
-normal = ExtResource( 4 )
-pressed = null
-bitmask = null
-shape = null
-shape_centered = true
-shape_visible = true
-passby_press = false
-action = ""
-visibility_mode = 0
-_sections_unfolded = [ "Transform" ]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 30.0
+margin_top = 30.0
+margin_right = 310.0
+margin_bottom = 160.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = true
+bbcode_text = "I am a [b]bold[/b] one.
+This text is [i]rich[/i]. Look at it flow! Wooow hahahaha. Desu desu"
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = "I am a bold one.
+This text is rich. Look at it flow! Wooow hahahaha. Desu desu"
+scroll_active = true
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+_sections_unfolded = [ "BBCode", "Theme", "custom_fonts" ]
 
 
