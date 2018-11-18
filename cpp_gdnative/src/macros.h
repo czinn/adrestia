@@ -175,6 +175,14 @@ class Instanceable {
 		return v;\
 	}
 
+#define FORWARD_REF_BY_ID_GETTER(Kind, getter)\
+  Variant CLASSNAME::getter(String id) const {\
+    auto [v, kind] = instance<Kind>(Kind ## _);\
+    const std::string key(id.ascii().get_data());\
+    kind->set_ptr(const_cast<::Kind*>(&_ptr->getter(key)), owner);\
+    return v;\
+  }
+
 #define FORWARD_REF_ARRAY_GETTER(Kind, getter)\
 	Array CLASSNAME::getter() const {\
 		Array result;\
