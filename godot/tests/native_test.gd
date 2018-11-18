@@ -10,6 +10,7 @@ const DurationUnit = preload('res://native/duration_unit.gd')
 # const Effect = preload('res://native/effect.gdns')
 const Spell = preload('res://native/spell.gdns')
 const EffectType = preload('res://native/effect_type.gd')
+const Sticky = preload('res://native/sticky.gdns')
 
 func _init():
 	print('test Book')
@@ -39,4 +40,10 @@ func _init():
 	duration.subtract_step()
 	duration.subtract_turn()
 	assert(duration.get_value() == 1)
+	print('test Sticky')
+	var sticky = Sticky.new()
+	sticky.load_json_string('{ "id": "poison", "name": "Poison", "text": "Deals 1 damage each turn.", "kind": "id", "trigger": { "turn": true }, "effects": [ { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 } ] }')
+	assert(sticky.get_id() == "poison")
+	assert(sticky.get_effects().size() == 1)
+	assert(sticky.triggers_at_end_of_turn())
 	quit()

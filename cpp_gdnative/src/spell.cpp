@@ -16,17 +16,17 @@ namespace godot {
 	}
 
 	void Spell::_register_methods() {
-		REGISTER_METHOD(get_id);
-		REGISTER_METHOD(get_name);
-		REGISTER_METHOD(get_book);
-		REGISTER_METHOD(get_tech);
-		REGISTER_METHOD(get_level);
-		REGISTER_METHOD(get_cost);
-		REGISTER_METHOD(get_text);
-		REGISTER_METHOD(get_effects);
-		REGISTER_METHOD(is_counterspell);
-		REGISTER_METHOD(is_tech_spell);
-		REGISTER_METHOD(get_counterspell_selector);
+		REGISTER_METHOD(get_id)
+		REGISTER_METHOD(get_name)
+		REGISTER_METHOD(get_book)
+		REGISTER_METHOD(get_tech)
+		REGISTER_METHOD(get_level)
+		REGISTER_METHOD(get_cost)
+		REGISTER_METHOD(get_text)
+		REGISTER_METHOD(get_effects)
+		REGISTER_METHOD(is_counterspell)
+		REGISTER_METHOD(is_tech_spell)
+		REGISTER_METHOD(get_counterspell_selector)
 		REGISTER_NULLABLE
 		REGISTER_JSONABLE
 	}

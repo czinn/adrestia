@@ -5,7 +5,6 @@
 
 #include "macros.h"
 
-
 namespace godot {
 	class Spell;
 	class EffectInstance;
