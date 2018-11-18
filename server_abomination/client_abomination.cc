@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 using namespace std;
 
 #include <sys/types.h>
@@ -141,7 +142,7 @@ int register_new_account(const string& account_name, const string& password) {
     cout << "    account_name: |" << account_name << "|" << endl;
     cout << "    password: |" << password << "|" << endl;
 
-
+    string server_response = "[DID NOT RECIEVE RESPONSE]";
     int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
     if (my_socket != -1) {
         string server_send_string("000000000000register_new_account");
@@ -151,14 +152,15 @@ int register_new_account(const string& account_name, const string& password) {
         server_send_string += new_account.dump();
         server_send_string += '\n';
         send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
+        server_response = read_packet(my_socket);
     }
     else {
         cerr << "register_new_account failed to connect." << endl;
         return 503;
     }
 
-    cout << "register_new_account has concluded successfully." << endl;
-    return 201;
+    cout << "register_new_account recieved response: |" << server_response << "|";
+    return atoi(server_response.c_str());
 }
 
 int verify_existing_account(const string& account_name, const string& password) {
