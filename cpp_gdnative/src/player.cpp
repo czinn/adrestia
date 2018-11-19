@@ -13,14 +13,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/player.gdns")
 
-	Player::Player() {
-		Book_ = ResourceLoader::load(Book::resource_path);
-		EffectInstance_ = ResourceLoader::load(EffectInstance::resource_path);
-		GameRules_ = ResourceLoader::load(GameRules::resource_path);
-		Spell_ = ResourceLoader::load(Spell::resource_path);
-		StickyInstance_ = ResourceLoader::load(StickyInstance::resource_path);
-	}
-
 	void Player::_register_methods() {
 		REGISTER_METHOD(find_book_idx);
 		REGISTER_METHOD(level);
@@ -33,9 +25,9 @@ namespace godot {
 		REGISTER_SETGET(max_hp, -1);
 		REGISTER_SETGET(mp, -1);
 		REGISTER_SETGET(mp_regen, -1);
-		REGISTER_SETGET(tech, Array())
-		REGISTER_SETGET(books, Array())
-		REGISTER_SETGET(stickies, Array())
+		REGISTER_SETGET(tech, Variant())
+		REGISTER_SETGET(books, Variant())
+		REGISTER_SETGET(stickies, Variant())
 		REGISTER_NULLABLE
 		REGISTER_TO_JSONABLE
 	}
@@ -46,36 +38,16 @@ namespace godot {
 
 	FORWARD_AUTO_GETTER(level)
 
-	// TODO: charles: These functions and the corresponding ones in
-	// StickyInstance seem like they could be generalized. Maybe do that.
-	Array Player::pipe_effect(int player_id, EffectInstance *effect, bool inbound) {
-		Array result;
-		for (const auto &x : _ptr->pipe_effect(player_id, *effect->_ptr, inbound)) {
-			auto [v, effect] = instance<EffectInstance>(EffectInstance_);
-			effect->set_ptr(const_cast<::EffectInstance*>(&x), owner);
-			result.append(v);
-		}
-		return result;
+	Variant Player::pipe_effect(int player_id, EffectInstance *effect, bool inbound) {
+		return to_godot_variant(_ptr->pipe_effect(player_id, *effect->_ptr, inbound), owner);
 	}
 
-	Array Player::pipe_spell(int player_id, Spell *spell) {
-		Array result;
-		for (const auto &x : _ptr->pipe_spell(player_id, *spell->_ptr)) {
-			auto [v, effect] = instance<EffectInstance>(EffectInstance_);
-			effect->set_ptr(const_cast<::EffectInstance*>(&x), owner);
-			result.append(v);
-		}
-		return result;
+	Variant Player::pipe_spell(int player_id, Spell *spell) {
+		return to_godot_variant(_ptr->pipe_spell(player_id, *spell->_ptr), owner);
 	}
 
-	Array Player::pipe_turn(int player_id) {
-		Array result;
-		for (const auto &x : _ptr->pipe_turn(player_id)) {
-			auto [v, effect] = instance<EffectInstance>(EffectInstance_);
-			effect->set_ptr(const_cast<::EffectInstance*>(&x), owner);
-			result.append(v);
-		}
-		return result;
+	Variant Player::pipe_turn(int player_id) {
+		return to_godot_variant(_ptr->pipe_turn(player_id), owner);
 	}
 
 	FORWARD_VOID(subtract_step)
@@ -85,23 +57,9 @@ namespace godot {
 	IMPL_SETGET(int, max_hp)
 	IMPL_SETGET(int, mp)
 	IMPL_SETGET(int, mp_regen)
-	IMPL_SETGET_ARRAY(tech)
-
-	Array Player::get_books() const {
-		Array result;
-		for (const auto &x : _ptr->books) {
-			auto [v, thing] = instance<Book>(Book_);
-			thing->set_ptr(const_cast<::Book*>(x), owner);
-			result.append(v);
-		}
-		return result;
-	}
-	void CLASSNAME::set_books(Array v) {
-		Godot::print("Error: Called Player::set_books (setter for an array member)");
-		assert(false);
-	}
-
-	IMPL_SETGET_REF_ARRAY(StickyInstance, stickies)
+	IMPL_SETGET_CONST_AUTO(tech)
+	IMPL_SETGET_CONST_AUTO(books)
+	IMPL_SETGET_CONST_AUTO(stickies)
 
 	IMPL_NULLABLE
 	IMPL_TO_JSONABLE

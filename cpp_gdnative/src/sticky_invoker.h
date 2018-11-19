@@ -11,10 +11,7 @@ namespace godot {
 	class StickyInvoker : public godot::GodotScript<Reference>,
 			public Forwarder<::StickyInvoker, StickyInvoker> {
 			GODOT_CLASS(StickyInvoker)
-		private:
-			godot::Ref<godot::NativeScript> Duration_;
 		public:
-			StickyInvoker();
 			static const char *resource_path;
 			static void _register_methods();
 
@@ -26,3 +23,5 @@ namespace godot {
 			INTF_JSONABLE
 	};
 }
+
+MAKE_INSTANCEABLE(StickyInvoker)

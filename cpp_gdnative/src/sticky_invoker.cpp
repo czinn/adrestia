@@ -9,10 +9,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/sticky_invoker.gdns")
 
-	StickyInvoker::StickyInvoker() {
-		Duration_ = ResourceLoader::load(Duration::resource_path);
-	}
-
 	void StickyInvoker::_register_methods() {
 		REGISTER_METHOD(get_sticky_id);
 		REGISTER_METHOD(get_amount);
@@ -23,12 +19,7 @@ namespace godot {
 
 	FORWARD_AUTO_GETTER(get_sticky_id)
 	FORWARD_AUTO_GETTER(get_amount)
-
-	Variant StickyInvoker::get_duration() const {
-		auto [v, thing] = instance<Duration>(Duration_);
-		thing->set_ptr(new ::Duration(_ptr->get_duration()));
-		return v;
-	}
+	FORWARD_AUTO_GETTER(get_duration)
 
 	IMPL_NULLABLE
 	IMPL_JSONABLE

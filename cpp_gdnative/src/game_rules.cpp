@@ -11,12 +11,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/game_rules.gdns")
 
-	GameRules::GameRules() {
-		Book_ = ResourceLoader::load(Book::resource_path);
-		Spell_ = ResourceLoader::load(Spell::resource_path);
-		Sticky_ = ResourceLoader::load(Sticky::resource_path);
-	}
-
 	void GameRules::_register_methods() {
 		REGISTER_METHOD(get_sticky)
 		REGISTER_METHOD(get_spell)
@@ -32,15 +26,7 @@ namespace godot {
 	FORWARD_REF_BY_ID_GETTER(Sticky, get_sticky)
 	FORWARD_REF_BY_ID_GETTER(Spell, get_spell)
 	FORWARD_REF_BY_ID_GETTER(Book, get_book)
-	Dictionary GameRules::get_books() {
-		Dictionary result;
-		for (auto &[book_id, book] : _ptr->get_books()) {
-			auto [v, b] = instance<Book>(Book_);
-			b->set_ptr(const_cast<::Book*>(&book), owner);
-			result[String(book_id.c_str())] = v;
-		}
-		return result;
-	}
+	FORWARD_AUTO_GETTER(get_books)
 	FORWARD_AUTO_GETTER(get_mana_cap)
 	FORWARD_AUTO_GETTER(get_initial_health)
 	FORWARD_AUTO_GETTER(get_initial_mana_regen)

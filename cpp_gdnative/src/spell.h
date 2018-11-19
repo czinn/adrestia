@@ -8,11 +8,7 @@
 namespace godot {
 	class Spell : public godot::GodotScript<Reference>, public Forwarder<::Spell, Spell> {
 			GODOT_CLASS(Spell)
-		private:
-			godot::Ref<godot::NativeScript> Selector_;
-			godot::Ref<godot::NativeScript> Effect_;
 		public:
-			Spell();
 			static const char *resource_path;
 			static void _register_methods();
 
@@ -23,7 +19,7 @@ namespace godot {
 			Variant get_level() const;
 			Variant get_cost() const;
 			Variant get_text() const;
-			Array get_effects() const;
+			Variant get_effects() const;
 			Variant is_counterspell() const;
 			Variant is_tech_spell() const;
 			Variant get_counterspell_selector() const;
@@ -32,3 +28,5 @@ namespace godot {
 			INTF_JSONABLE
 	};
 }
+
+MAKE_INSTANCEABLE(Spell)

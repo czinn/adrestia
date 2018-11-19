@@ -11,12 +11,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/sticky.gdns")
 
-	Sticky::Sticky() {
-		Effect_ = ResourceLoader::load(Effect::resource_path);
-		EffectInstance_ = ResourceLoader::load(EffectInstance::resource_path);
-		Spell_ = ResourceLoader::load(Spell::resource_path);
-	}
-
 	void Sticky::_register_methods() {
 		REGISTER_METHOD(get_id)
 		REGISTER_METHOD(get_name)
@@ -35,7 +29,7 @@ namespace godot {
 	FORWARD_AUTO_GETTER(get_name)
 	FORWARD_AUTO_GETTER(get_text)
 	FORWARD_AUTO_GETTER(get_kind)
-	FORWARD_REF_ARRAY_GETTER(Effect, get_effects)
+	FORWARD_AUTO_GETTER(get_effects)
 	FORWARD_AUTO_GETTER(get_trigger_inbound)
 	bool Sticky::triggers_for_effect(EffectInstance *effect, bool inbound) const {
 		return _ptr->triggers_for_effect(*effect->_ptr, inbound);

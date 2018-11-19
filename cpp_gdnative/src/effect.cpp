@@ -9,10 +9,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/effect.gdns")
 
-	Effect::Effect() {
-		StickyInvoker_ = ResourceLoader::load(StickyInvoker::resource_path);
-	}
-
 	void Effect::_register_methods() {
 		REGISTER_METHOD(get_kind)
 		REGISTER_METHOD(get_targets_self)
@@ -26,7 +22,7 @@ namespace godot {
 	FORWARD_AUTO_GETTER(get_targets_self)
 	FORWARD_AUTO_GETTER(get_effect_type)
 	FORWARD_AUTO_GETTER(get_amount)
-	FORWARD_REF_GETTER(StickyInvoker, get_sticky_invoker)
+	FORWARD_AUTO_GETTER(get_sticky_invoker)
 
 	IMPL_NULLABLE
 	IMPL_JSONABLE

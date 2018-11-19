@@ -22,11 +22,16 @@ godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
 	return godot::JSON::parse(str);
 }
 
-// A Forwarder<T, Self> holds a T* _ptr that it may own, or that may be owned
-// by some other Godot object _owner.
-// If the _owner is null, we know that we ourselves own _ptr and must free it.
-// Otherwise, another Godot object owns it and we hold the _owner Ref to them
-// to make sure they don't free it.
+// A Forwarder<T, Self> provides two capabilities:
+// - It holds a T* _ptr that it may own, or that may be owned by some other
+// Godot object _owner. If the _owner is null, we know that we ourselves own
+// _ptr and must free it. Otherwise, another Godot object owns it and we hold
+// the _owner Ref to them to make sure they don't free it.
+// - It allows instantiating itself through the Godot runtime using the static
+// make_instance() method.
+//
+// Yes, classes can inherit from a template superclass instantiated with the
+// class itself. Turns out this is a technique called CRTP.
 template<class T, class Self>
 class Forwarder {
 	private:
@@ -58,7 +63,7 @@ class Forwarder {
 		}
 		~Forwarder() {
 			del_ptr();
-			//_native_script.unref();
+			_native_script.unref();
 		}
 
 		Forwarder &operator=(const Forwarder &other) {
@@ -104,11 +109,21 @@ inline godot::Variant to_godot_variant(T x, godot::Reference *owner) {
 	return x;
 }
 
-template<class V>
-inline godot::Variant to_godot_variant(const std::vector<V> &vec, godot::Reference *owner) {
+// Does std::vector AND std::list LMAO
+template<template<class> class Container, class V>
+inline godot::Variant to_godot_variant(const Container<V> &c, godot::Reference *owner) {
 	godot::Array result;
-	for (const auto &x : vec) {
+	for (const auto &x : c) {
 		result.append(to_godot_variant(x, owner));
+	}
+	return result;
+}
+
+template<class K, class V>
+inline godot::Variant to_godot_variant(const std::map<K, V> &m, godot::Reference *owner) {
+	godot::Dictionary result;
+	for (auto &[k, v] : m) {
+		result[to_godot_variant(k, owner)] = to_godot_variant(v, owner);
 	}
 	return result;
 }
@@ -133,11 +148,20 @@ inline godot::Variant to_godot_variant(const std::string &str, godot::Reference 
 	template<> const char *Forwarder<::CLASSNAME, CLASSNAME>::_resource_path = path;\
 	template<> Ref<NativeScript> Forwarder<::CLASSNAME, CLASSNAME>::_native_script = nullptr;
 
+// TODO: jim: This may do unnecessary copying of things that could be passed as
+// references. See if this is the case and fix it if so.
+// (This can be extended to support wrapping smart pointers.)
 #define MAKE_INSTANCEABLE(CLASSNAME)\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
+		return w;\
+	}\
+	template<>\
+	inline godot::Variant to_godot_variant(const CLASSNAME x, godot::Reference *owner) {\
+		auto [w, o] = godot::CLASSNAME::make_instance();\
+		o->set_ptr(new ::CLASSNAME(x), owner);\
 		return w;\
 	}\
 	template<>\
@@ -160,44 +184,17 @@ inline godot::Variant to_godot_variant(const std::string &str, godot::Reference 
 		return to_godot_variant(_ptr->getter(), owner);\
 	}
 
+// jim: Using this MAY improve performance over the non-_REF version by not
+// using the copying version of the template, but I'm not entirely sure
 #define FORWARD_AUTO_GETTER_REF(getter)\
 	Variant CLASSNAME::getter() const {\
 		return to_godot_variant(&_ptr->getter(), owner);\
 	}
 
-// Implied naming convention:
-// Member handles to Ref<NativeScript> for Kind are named Kind_
-#define FORWARD_SMART_PTR_GETTER(Kind, getter)\
-	Variant CLASSNAME::getter() const {\
-		auto [v, kind] = instance<Kind>(Kind ## _);\
-		kind->set_ptr(const_cast<::Kind*>(_ptr->getter().get()), owner);\
-		return v;\
-	}
-
-#define FORWARD_REF_GETTER(Kind, getter)\
-	Variant CLASSNAME::getter() const {\
-		auto [v, kind] = instance<Kind>(Kind ## _);\
-		kind->set_ptr(const_cast<::Kind*>(&_ptr->getter()), owner);\
-		return v;\
-	}
-
 #define FORWARD_REF_BY_ID_GETTER(Kind, getter)\
 	Variant CLASSNAME::getter(String id) const {\
-		auto [v, kind] = instance<Kind>(Kind ## _);\
 		const std::string key(id.ascii().get_data());\
-		kind->set_ptr(const_cast<::Kind*>(&_ptr->getter(key)), owner);\
-		return v;\
-	}
-
-#define FORWARD_REF_ARRAY_GETTER(Kind, getter)\
-	Array CLASSNAME::getter() const {\
-		Array result;\
-		for (const auto &x : _ptr->getter()) {\
-			auto [v, thing] = instance<Kind>(Kind ## _);\
-			thing->set_ptr(const_cast<::Kind*>(&x), owner);\
-			result.append(v);\
-		}\
-		return result;\
+		return to_godot_variant(&_ptr->getter(key), owner);\
 	}
 
 // SETGET(Type, member):
@@ -226,87 +223,22 @@ inline godot::Variant to_godot_variant(const std::string &str, godot::Reference 
 		_ptr->member = (Type)x;\
 	}
 
-// SETGET_REF:
-// Implements SETGET for a mutable class member.
-// Requires INTF_SETGET(Variant, ...)
-#define IMPL_SETGET_REF(Type, member)\
+// TODO: jim: Can we define a totally automatic mutable version of this?
+#define IMPL_SETGET_CONST_AUTO(member)\
 	Variant CLASSNAME::get_ ## member() const {\
-		auto [v, thing] = instance<Type>(Type ## _);\
-		thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
-		return v;\
-	}\
-	void CLASSNAME::set_ ## member(Variant value) {\
-		Type *thing = godot::as<Type>(value);\
-		_ptr->member = *thing->_ptr;\
-	}
-
-// SETGET_CONST_REF:
-// Implements SETGET for an immutable class member.
-// Requires INTF_SETGET(Variant, ...)
-#define IMPL_SETGET_CONST_REF(Type, member)\
-	Variant CLASSNAME::get_ ## member() const {\
-		auto [v, thing] = instance<Type>(Type ## _);\
-		thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
-		return v;\
-	}\
-	void CLASSNAME::set_ ## member(Variant value) {\
-		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a const member)");\
-		assert(false);\
-	}
-
-// SETGET_ARRAY:
-// Implements SETGET for an std::vector-like class member with basic contents.
-// Only implements the getter; the setter is left undefined because why would
-// you ever want to set an array from gdscript.
-#define IMPL_SETGET_ARRAY(member)\
-	Array CLASSNAME::get_ ## member() const {\
 		return to_godot_variant(_ptr->member, owner);\
 	}\
-	void CLASSNAME::set_ ## member(Array v) {\
-		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for an array member)");\
+	void CLASSNAME::set_ ## member(Variant value) {\
+		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a const auto member)");\
 		assert(false);\
 	}
 
-// SETGET_REF_ARRAY:
-// Implements SETGET for an std::vector-like class member. Only implements the
-// getter; the setter is left undefined because why would you ever want to set
-// an array from gdscript.
-#define IMPL_SETGET_ARRAY_BASE(Type, member, x_)\
-	Array CLASSNAME::get_ ## member() const {\
-		Array result;\
-		for (const auto &x : _ptr->member) {\
-			auto [v, thing] = instance<Type>(Type ## _);\
-			thing->set_ptr(const_cast<::Type*>(x_), owner);\
-			result.append(v);\
-		}\
-		return result;\
+#define IMPL_SETGET_REF(Type, member)\
+	Type CLASSNAME::get_ ## member() const {\
+		return to_godot_variant(_ptr->member, owner);\
 	}\
-	void CLASSNAME::set_ ## member(Array v) {\
-		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for an array member)");\
-		assert(false);\
-	}
-
-#define IMPL_SETGET_REF_ARRAY(Type, member) IMPL_SETGET_ARRAY_BASE(Type, member, &x)
-#define IMPL_SETGET_PTR_ARRAY(Type, member) IMPL_SETGET_ARRAY_BASE(Type, member, x)
-
-// SETGET_REF_DICT:
-// Implements SETGET for an std::map-like class member. Only implements the
-// getter; the setter is left undefined because why would you ever want to set
-// a dict from gdscript. Key type must be implicitly convertible to Variant
-// (string won't work).
-#define IMPL_SETGET_REF_DICT(Type, member)\
-	Variant CLASSNAME::get_ ## member() const {\
-		Dictionary d;\
-		for (const auto &[k, x] : _ptr->member) {\
-			auto [v, thing] = instance<Type>(Type ## _);\
-			thing->set_ptr(const_cast<::Type*>(&x), owner);\
-			d[k] = v;\
-		}\
-		return d;\
-	}\
-	void CLASSNAME::set_ ## member(Variant v) {\
-		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a dict member)");\
-		assert(false);\
+	void CLASSNAME::set_ ## member(Variant value) {\
+		_ptr->member = *thing->_ptr;\
 	}
 
 // NULLABLE:

@@ -11,11 +11,7 @@ namespace godot {
 
 	class EffectInstance : public godot::GodotScript<Reference>, public Forwarder<::EffectInstance, EffectInstance> {
 			GODOT_CLASS(EffectInstance)
-		private:
-			godot::Ref<godot::NativeScript> Spell_;
-			godot::Ref<godot::NativeScript> StickyInvoker_;
 		public:
-			EffectInstance();
 			static const char *resource_path;
 			static void _register_methods();
 
@@ -33,3 +29,5 @@ namespace godot {
 			INTF_TO_JSONABLE
 	};
 }
+
+MAKE_INSTANCEABLE(EffectInstance)

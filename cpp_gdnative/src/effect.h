@@ -8,10 +8,7 @@
 namespace godot {
 	class Effect : public godot::GodotScript<Reference>, public Forwarder<::Effect, Effect> {
 			GODOT_CLASS(Effect)
-		private:
-			godot::Ref<godot::NativeScript> StickyInvoker_;
 		public:
-			Effect();
 			static const char *resource_path;
 			static void _register_methods();
 

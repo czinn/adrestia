@@ -10,11 +10,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/spell.gdns")
 
-	Spell::Spell() {
-		Effect_ = ResourceLoader::load(Effect::resource_path);
-		Selector_ = ResourceLoader::load(Selector::resource_path);
-	}
-
 	void Spell::_register_methods() {
 		REGISTER_METHOD(get_id)
 		REGISTER_METHOD(get_name)
@@ -38,10 +33,10 @@ namespace godot {
 	FORWARD_AUTO_GETTER(get_level)
 	FORWARD_AUTO_GETTER(get_cost)
 	FORWARD_AUTO_GETTER(get_text)
-	FORWARD_REF_ARRAY_GETTER(Effect, get_effects)
+	FORWARD_AUTO_GETTER(get_effects)
 	FORWARD_AUTO_GETTER(is_counterspell)
 	FORWARD_AUTO_GETTER(is_tech_spell)
-	FORWARD_REF_GETTER(Selector, get_counterspell_selector)
+	FORWARD_AUTO_GETTER(get_counterspell_selector)
 
 	IMPL_NULLABLE
 	IMPL_JSONABLE

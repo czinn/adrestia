@@ -13,13 +13,6 @@ using namespace godot;
 namespace godot {
 	SCRIPT_AT("res://native/sticky.gdns");
 
-	StickyInstance::StickyInstance() {
-		Duration_ = ResourceLoader::load(Duration::resource_path);
-		EffectInstance_ = ResourceLoader::load(EffectInstance::resource_path);
-		Spell_ = ResourceLoader::load(Spell::resource_path);
-		Sticky_ = ResourceLoader::load(Sticky::resource_path);
-	}
-
 	void StickyInstance::_register_methods() {
 		REGISTER_METHOD(apply_to_effect)
 		REGISTER_METHOD(apply_to_spell)
@@ -36,40 +29,22 @@ namespace godot {
 		set_ptr(new ::StickyInstance(*rules->_ptr, nlohmann::json::parse(json.utf8().get_data())));
 	}
 
-	Array StickyInstance::apply_to_effect(int player_id, EffectInstance *effect) {
-		Array result;
-		for (const auto &x : _ptr->apply(player_id, *effect->_ptr)) {
-			auto [v, effect] = instance<EffectInstance>(EffectInstance_);
-			effect->set_ptr(const_cast<::EffectInstance*>(&x), owner);
-			result.append(v);
-		}
-		return result;
+	Variant StickyInstance::apply_to_effect(int player_id, EffectInstance *effect) {
+		return to_godot_variant(_ptr->apply(player_id, *effect->_ptr), owner);
 	}
 
-	Array StickyInstance::apply_to_spell(int player_id, Spell *spell) {
-		Array result;
-		for (const auto &x : _ptr->apply(player_id, *spell->_ptr)) {
-			auto [v, effect] = instance<EffectInstance>(EffectInstance_);
-			effect->set_ptr(const_cast<::EffectInstance*>(&x), owner);
-			result.append(v);
-		}
-		return result;
+	Variant StickyInstance::apply_to_spell(int player_id, Spell *spell) {
+		return to_godot_variant(_ptr->apply(player_id, *spell->_ptr), owner);
 	}
 
-	Array StickyInstance::apply_to_turn(int player_id) {
-		Array result;
-		for (const auto &x : _ptr->apply(player_id)) {
-			auto [v, effect] = instance<EffectInstance>(EffectInstance_);
-			effect->set_ptr(const_cast<::EffectInstance*>(&x), owner);
-			result.append(v);
-		}
-		return result;
+	Variant StickyInstance::apply_to_turn(int player_id) {
+		return to_godot_variant(_ptr->apply(player_id), owner);
 	}
 	 
 	IMPL_SETGET(int, amount)
-	IMPL_SETGET_REF(Duration, remaining_duration)
-	IMPL_SETGET_CONST_REF(Spell, spell)
-	IMPL_SETGET_CONST_REF(Sticky, sticky)
+	IMPL_SETGET_CONST_AUTO(remaining_duration)
+	IMPL_SETGET_CONST_AUTO(spell)
+	IMPL_SETGET_CONST_AUTO(sticky)
 
 	IMPL_NULLABLE
 	IMPL_TO_JSONABLE
