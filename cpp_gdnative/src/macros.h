@@ -22,68 +22,18 @@ godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
 	return godot::JSON::parse(str);
 }
 
-// An OwnerOrPointer<T> holds a pointer _ptr that it may own, or that may be
-// owned by some other Godot object _owner.
+// A Forwarder<T, Self> holds a T* _ptr that it may own, or that may be owned
+// by some other Godot object _owner.
 // If the _owner is null, we know that we ourselves own _ptr and must free it.
 // Otherwise, another Godot object owns it and we hold the _owner Ref to them
 // to make sure they don't free it.
-template<class T>
-class OwnerOrPointer {
- private:
-	// Owner of the data. If null, I own the data.
-	godot::Ref<godot::Reference> _owner;
-
- public:
-	T *_ptr; // Pointer to the underlying data.
-	inline void del_ptr() {
-		if (_ptr != nullptr && _owner.is_null()) {
-			delete _ptr;
-		}
-	}
-
-	OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {
-	}
-	~OwnerOrPointer() {
-		del_ptr();
-	}
-
-	OwnerOrPointer &operator=(const OwnerOrPointer &other) {
-		// jim: Extremely fast failure if the copy assignment operator is ever
-		// called. If we decide we actually do want to use it, uncomment the
-		// following line and it should probably work?
-		abort();
-
-		_owner = other._owner;
-		if (other._ptr != nullptr && _owner.is_null()) {
-			_ptr = new T();
-			*_ptr = *other._ptr;
-		} else {
-			_ptr = other._ptr;
-		}
-	}
-
-	// Own it.
-	void set_ptr(T *u) {
-		del_ptr();
-		_ptr = u;
-		_owner.unref();
-	}
-
-	// Don't own it.
-	void set_ptr(T *u, godot::Reference *r) {
-		del_ptr();
-		_ptr = u;
-		_owner = godot::Ref<godot::Reference>(r);
-	}
-};
-
 template<class T, class Self>
 class Forwarder {
 	private:
 		static const char *_resource_path;
 		static godot::Ref<godot::NativeScript> _native_script;
 	public:
-		inline static std::pair<godot::Variant, Self*> instance() {
+		inline static std::pair<godot::Variant, Self*> make_instance() {
 			if (_native_script.is_null()) {
 				_native_script = godot::ResourceLoader::load(_resource_path);
 			}
@@ -108,6 +58,7 @@ class Forwarder {
 		}
 		~Forwarder() {
 			del_ptr();
+			//_native_script.unref();
 		}
 
 		Forwarder &operator=(const Forwarder &other) {
@@ -140,60 +91,13 @@ class Forwarder {
 		}
 };
 
-// jim: So it turns out instantiating other scripts from within a
-// nativescript is kinda hard. Our GodotScripts need owners which have to be
-// created by Godot, so we need a handle to the NativeScript object (the
-// thing we normally call .new() on from gdscript). That means either:
-// - methods that instantiate other scripts need to be passed a NativeScript*
-// for every other thing they instantiate (yuck)
-// OR:
-// - we need to load these NativeScripts through ResourceLoader and make them
-// available to the class as a member (we do this for now)
+// Instantiates a NativeScript.
 template<class T>
 std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_script_) {
 	godot::Variant v = native_script_->call("new");
 	T *t = godot::as<T>(v);
 	return std::make_pair(v, t);
 }
-
-// TODO: jim: Can we instance our classes by storing a single static
-// Ref<NativeScript> for each class instead of holding Ref<NativeScript> in
-// every instance that needs one? The answer seems to be "yes, but you'll get
-// ugly warning because those refs stop the NativeScripts from ever being
-// collected". Also, instead of the following approach we would probably have
-// to use macros, because you can't instantiate a class's parent's template
-// with the class itself.
-// FOLLOWING CODE IS NOT USED
-// jim (months later): Turns out this is actually perfectly fine C++. In
-// fact, it has a name: CRTP. This horrifies me and I will look into it 
-template<class T>
-class Instanceable {
-	private:
-		static const char *_resource_path;
-		static godot::Ref<godot::NativeScript> _native_script;
-	public:
-		~Instanceable() {
-			// jim: We don't actually need to dereference the NativeScript whenever an
-			// instance of it is destroyed. But without this, we get the following ugly
-			// Godot error in the logs when exiting the game:
-			//	 WARNING: cleanup: ObjectDB Instances still exist!
-			//	 At: core/object.cpp:1989.
-			//	 ERROR: clear: Resources Still in use at Exit!
-			//	 At: core/resource.cpp:418.
-			// i.e. holding a static reference to the NativeScript prevents it from
-			// being destroyed when godot exits. So for now, we dereference the
-			// nativescript.
-			//_native_script.unref();
-		}
-		std::pair<godot::Variant, T*> instance() {
-			if (_native_script.is_null()) {
-				_native_script = godot::ResourceLoader::load(_resource_path);
-			}
-			godot::Variant v = _native_script->call("new");
-			T *t = godot::as<T>(v);
-			return std::make_pair(v, t);
-		}
-};
 
 template<class T>
 inline godot::Variant to_godot_variant(T x, godot::Reference *owner) {
@@ -214,16 +118,31 @@ inline godot::Variant to_godot_variant(const std::string str, godot::Reference *
 	return godot::String(str.c_str());
 }
 
+template<>
+inline godot::Variant to_godot_variant(const std::string &str, godot::Reference *owner) {
+	return godot::String(str.c_str());
+}
+
+// jim: These cases are covered by the base template. However, I'm not sure the
+// base template is a great idea, so I'm keeping this around just in case.
+//template<> inline godot::Variant to_godot_variant(int x, godot::Reference *owner) { return x; }
+//template<> inline godot::Variant to_godot_variant(bool x, godot::Reference *owner) { return x; }
+
+#define SCRIPT_AT(path)\
+	const char *CLASSNAME::resource_path = path;\
+	template<> const char *Forwarder<::CLASSNAME, CLASSNAME>::_resource_path = path;\
+	template<> Ref<NativeScript> Forwarder<::CLASSNAME, CLASSNAME>::_native_script = nullptr;
+
 #define MAKE_INSTANCEABLE(CLASSNAME)\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
-		auto [w, o] = godot::CLASSNAME::instance();\
+		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME &x, godot::Reference *owner) {\
-		auto [w, o] = godot::CLASSNAME::instance();\
+		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(&x), owner);\
 		return w;\
 	}

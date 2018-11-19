@@ -10,7 +10,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *EffectInstance::resource_path = "res://native/effect_instance.gdns";
+	SCRIPT_AT("res://native/effect_instance.gdns")
 
 	EffectInstance::EffectInstance() {
 		Spell_ = ResourceLoader::load(Spell::resource_path);

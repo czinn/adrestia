@@ -5,7 +5,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Duration::resource_path = "res://native/duration.gdns";
+	SCRIPT_AT("res://native/duration.gdns")
 
 	void Duration::_register_methods() {
 		REGISTER_METHOD(is_active);

@@ -6,7 +6,7 @@
 #include "macros.h"
 
 namespace godot {
-	class Book : public godot::GodotScript<Reference>, public OwnerOrPointer<::Book> {
+	class Book : public godot::GodotScript<Reference>, public Forwarder<::Book, Book> {
 			GODOT_CLASS(Book)
 		public:
 			static const char *resource_path;

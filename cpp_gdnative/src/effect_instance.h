@@ -9,8 +9,7 @@ namespace godot {
 	class GameRules;
 	class Player;
 
-	class EffectInstance : public godot::GodotScript<Reference>,
-			public OwnerOrPointer<::EffectInstance> {
+	class EffectInstance : public godot::GodotScript<Reference>, public Forwarder<::EffectInstance, EffectInstance> {
 			GODOT_CLASS(EffectInstance)
 		private:
 			godot::Ref<godot::NativeScript> Spell_;

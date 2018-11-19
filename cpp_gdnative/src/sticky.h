@@ -10,7 +10,7 @@ namespace godot {
 	class EffectInstance;
 	class Spell;
 
-	class Sticky : public godot::GodotScript<Reference>, public OwnerOrPointer<::Sticky> {
+	class Sticky : public godot::GodotScript<Reference>, public Forwarder<::Sticky, Sticky> {
 			GODOT_CLASS(Sticky)
 		private:
 			godot::Ref<godot::NativeScript> Effect_;

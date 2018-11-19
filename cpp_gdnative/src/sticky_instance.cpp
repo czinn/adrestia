@@ -11,7 +11,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *StickyInstance::resource_path = "res://native/sticky.gdns";
+	SCRIPT_AT("res://native/sticky.gdns");
 
 	StickyInstance::StickyInstance() {
 		Duration_ = ResourceLoader::load(Duration::resource_path);

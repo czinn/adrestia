@@ -9,7 +9,7 @@ namespace godot {
 	class Duration;
 
 	class StickyInvoker : public godot::GodotScript<Reference>,
-			public OwnerOrPointer<::StickyInvoker> {
+			public Forwarder<::StickyInvoker, StickyInvoker> {
 			GODOT_CLASS(StickyInvoker)
 		private:
 			godot::Ref<godot::NativeScript> Duration_;

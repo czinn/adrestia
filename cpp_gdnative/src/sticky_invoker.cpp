@@ -7,7 +7,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *StickyInvoker::resource_path = "res://native/sticky_invoker.gdns";
+	SCRIPT_AT("res://native/sticky_invoker.gdns")
 
 	StickyInvoker::StickyInvoker() {
 		Duration_ = ResourceLoader::load(Duration::resource_path);

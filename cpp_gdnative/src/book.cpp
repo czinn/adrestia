@@ -5,7 +5,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Book::resource_path = "res://native/book.gdns";
+	SCRIPT_AT("res://native/book.gdns")
 
 	void Book::_register_methods() {
 		REGISTER_METHOD(get_id);

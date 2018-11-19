@@ -6,7 +6,7 @@
 #include "macros.h"
 
 namespace godot {
-	class Spell : public godot::GodotScript<Reference>, public OwnerOrPointer<::Spell> {
+	class Spell : public godot::GodotScript<Reference>, public Forwarder<::Spell, Spell> {
 			GODOT_CLASS(Spell)
 		private:
 			godot::Ref<godot::NativeScript> Selector_;

@@ -12,8 +12,7 @@ namespace godot {
 	class Spell;
 	class StickyInstance;
 
-	class Player : public godot::GodotScript<Reference>,
-			public OwnerOrPointer<::Player> {
+	class Player : public godot::GodotScript<Reference>, public Forwarder<::Player, Player> {
 			GODOT_CLASS(Player)
 		private:
 			godot::Ref<godot::NativeScript> Book_;

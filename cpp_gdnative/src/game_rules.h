@@ -10,7 +10,7 @@ namespace godot {
 	class Spell;
 	class Sticky;
 
-	class GameRules : public godot::GodotScript<Reference>, public OwnerOrPointer<::GameRules> {
+	class GameRules : public godot::GodotScript<Reference>, public Forwarder<::GameRules, GameRules> {
 			GODOT_CLASS(GameRules)
 		private:
 			godot::Ref<godot::NativeScript> Book_;

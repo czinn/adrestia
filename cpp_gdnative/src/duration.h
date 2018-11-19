@@ -6,7 +6,7 @@
 #include "macros.h"
 
 namespace godot {
-	class Duration : public godot::GodotScript<Reference>, public OwnerOrPointer<::Duration> {
+	class Duration : public godot::GodotScript<Reference>, public Forwarder<::Duration, Duration> {
 			GODOT_CLASS(Duration)
 		public:
 			static const char *resource_path;

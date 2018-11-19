@@ -8,7 +8,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Spell::resource_path = "res://native/spell.gdns";
+	SCRIPT_AT("res://native/spell.gdns")
 
 	Spell::Spell() {
 		Effect_ = ResourceLoader::load(Effect::resource_path);

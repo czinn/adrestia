@@ -9,7 +9,7 @@ namespace godot {
 	class Spell;
 	class EffectInstance;
 
-	class Selector : public godot::GodotScript<Reference>, public OwnerOrPointer<::Selector> {
+	class Selector : public godot::GodotScript<Reference>, public Forwarder<::Selector, Selector> {
 			GODOT_CLASS(Selector)
 		private:
 			godot::Ref<godot::NativeScript> Spell_;

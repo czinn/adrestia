@@ -8,7 +8,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Selector::resource_path = "res://native/selector.gdns";
+	SCRIPT_AT("res://native/selector.gdns")
 
 	Selector::Selector() {
 		Spell_ = ResourceLoader::load(Spell::resource_path);

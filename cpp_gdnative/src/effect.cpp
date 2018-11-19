@@ -7,7 +7,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Effect::resource_path = "res://native/effect.gdns";
+	SCRIPT_AT("res://native/effect.gdns")
 
 	Effect::Effect() {
 		StickyInvoker_ = ResourceLoader::load(StickyInvoker::resource_path);

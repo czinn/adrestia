@@ -12,7 +12,7 @@ namespace godot {
 	class GameRules;
 
 	class StickyInstance : public godot::GodotScript<Reference>,
-			public OwnerOrPointer<::StickyInstance> {
+			public Forwarder<::StickyInstance, StickyInstance> {
 			GODOT_CLASS(StickyInstance)
 		private:
 			godot::Ref<godot::NativeScript> Duration_;

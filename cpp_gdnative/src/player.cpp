@@ -11,7 +11,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Player::resource_path = "res://native/player.gdns";
+	SCRIPT_AT("res://native/player.gdns")
 
 	Player::Player() {
 		Book_ = ResourceLoader::load(Book::resource_path);

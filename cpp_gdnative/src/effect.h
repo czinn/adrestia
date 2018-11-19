@@ -6,7 +6,7 @@
 #include "macros.h"
 
 namespace godot {
-	class Effect : public godot::GodotScript<Reference>, public OwnerOrPointer<::Effect> {
+	class Effect : public godot::GodotScript<Reference>, public Forwarder<::Effect, Effect> {
 			GODOT_CLASS(Effect)
 		private:
 			godot::Ref<godot::NativeScript> StickyInvoker_;
@@ -25,3 +25,5 @@ namespace godot {
 			INTF_JSONABLE
 	};
 }
+
+MAKE_INSTANCEABLE(Effect)

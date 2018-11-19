@@ -9,7 +9,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *GameRules::resource_path = "res://native/game_rules.gdns";
+	SCRIPT_AT("res://native/game_rules.gdns")
 
 	GameRules::GameRules() {
 		Book_ = ResourceLoader::load(Book::resource_path);

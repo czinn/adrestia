@@ -9,7 +9,7 @@
 using namespace godot;
 
 namespace godot {
-	const char *Sticky::resource_path = "res://native/sticky.gdns";
+	SCRIPT_AT("res://native/sticky.gdns")
 
 	Sticky::Sticky() {
 		Effect_ = ResourceLoader::load(Effect::resource_path);
