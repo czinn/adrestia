@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://main-menu.gd" type="Script" id=1]
+[ext_resource path="res://scenes/main-menu.gd" type="Script" id=1]
 [ext_resource path="res://art/unlimited_blades_0001.jpg" type="Texture" id=2]
 [ext_resource path="res://theme-default.tres" type="Theme" id=3]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=4]
@@ -15,6 +15,7 @@ script = ExtResource( 1 )
 position = Vector2( 275.99, 466.868 )
 scale = Vector2( 2.26445, 2.26445 )
 texture = ExtResource( 2 )
+_sections_unfolded = [ "Transform" ]
 
 [node name="ui" type="Control" parent="." index="1"]
 
@@ -31,12 +32,29 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 3 )
-_sections_unfolded = [ "Theme" ]
+_sections_unfolded = [ "Rect", "Theme" ]
 
-[node name="button-play" type="TouchScreenButton" parent="ui" index="0"]
+[node name="texture_rect" type="TextureRect" parent="ui" index="0"]
 
-position = Vector2( 51.9921, 381.952 )
-scale = Vector2( 0.863128, 0.863128 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 100.0
+margin_top = 650.0
+margin_right = 140.0
+margin_bottom = 690.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+stretch_mode = 0
+
+[node name="button-play" type="TouchScreenButton" parent="ui" index="1"]
+
+position = Vector2( 20, 380 )
 normal = ExtResource( 4 )
 pressed = null
 bitmask = null
@@ -48,7 +66,7 @@ action = ""
 visibility_mode = 0
 _sections_unfolded = [ "Transform" ]
 
-[node name="label" type="Label" parent="ui" index="1"]
+[node name="label" type="Label" parent="ui" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -71,16 +89,16 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Theme" ]
 
-[node name="ninepatch" type="NinePatchRect" parent="ui" index="2"]
+[node name="ninepatch" type="NinePatchRect" parent="ui" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 90.0
-margin_top = 570.0
-margin_right = 430.0
-margin_bottom = 750.0
+margin_left = 70.0
+margin_top = 610.0
+margin_right = 460.0
+margin_bottom = 790.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -92,17 +110,18 @@ patch_margin_left = 30
 patch_margin_top = 30
 patch_margin_right = 30
 patch_margin_bottom = 30
+_sections_unfolded = [ "Patch Margin", "Rect" ]
 
-[node name="richtext" type="RichTextLabel" parent="ui/ninepatch" index="0"]
+[node name="richtext" type="RichTextLabel" parent="ui" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 30.0
-margin_top = 30.0
-margin_right = 310.0
-margin_bottom = 160.0
+margin_left = 100.0
+margin_top = 650.0
+margin_right = 435.0
+margin_bottom = 805.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
@@ -122,6 +141,6 @@ scroll_active = true
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "BBCode", "Theme", "custom_fonts" ]
+_sections_unfolded = [ "BBCode" ]
 
 
