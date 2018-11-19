@@ -30,6 +30,7 @@ func _init():
 	print('test Spell')
 	var spell = rules.get_spell("shield_2")
 	assert(spell.get_id() == "shield_2")
+	assert(spell.get_counterspell_selector().is_valid() == false)
 	print('test Effect')
 	var effect = spell.get_effects()[0]
 	assert(effect.get_effect_type() == EffectType.ET_SHIELD)

@@ -15,10 +15,10 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			int get_kind() const;
-			bool get_targets_self() const;
-			int get_effect_type() const;
-			int get_amount() const;
+			Variant get_kind() const;
+			Variant get_targets_self() const;
+			Variant get_effect_type() const;
+			Variant get_amount() const;
 			Variant get_sticky_invoker() const;
 
 			INTF_NULLABLE

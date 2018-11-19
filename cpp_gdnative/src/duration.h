@@ -12,9 +12,9 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			bool is_active() const;
-			int get_unit() const;
-			int get_value() const;
+			Variant is_active() const;
+			Variant get_unit() const;
+			Variant get_value() const;
 
 			void subtract_step();
 			void subtract_turn();

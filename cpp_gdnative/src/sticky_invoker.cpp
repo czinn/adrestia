@@ -21,8 +21,8 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
-	FORWARD_STRING_GETTER(get_sticky_id)
-	FORWARD_GETTER(int, get_amount)
+	FORWARD_AUTO_GETTER(get_sticky_id)
+	FORWARD_AUTO_GETTER(get_amount)
 
 	Variant StickyInvoker::get_duration() const {
 		auto [v, thing] = instance<Duration>(Duration_);

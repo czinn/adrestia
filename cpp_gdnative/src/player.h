@@ -29,7 +29,7 @@ namespace godot {
 			// TODO: charles: Implement find_spell if needed
 			
 			int find_book_idx(String book_id) const;
-			int level() const;
+			Variant level() const;
 			Array pipe_effect(int player_id, EffectInstance *effect, bool inbound);
 			Array pipe_spell(int player_id, Spell *spell);
 			Array pipe_turn(int player_id);

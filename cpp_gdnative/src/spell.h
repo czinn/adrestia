@@ -16,16 +16,16 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			String get_id() const;
-			String get_name() const;
-			String get_book() const;
-			int get_tech() const;
-			int get_level() const;
-			int get_cost() const;
-			String get_text() const;
+			Variant get_id() const;
+			Variant get_name() const;
+			Variant get_book() const;
+			Variant get_tech() const;
+			Variant get_level() const;
+			Variant get_cost() const;
+			Variant get_text() const;
 			Array get_effects() const;
-			bool is_counterspell() const;
-			bool is_tech_spell() const;
+			Variant is_counterspell() const;
+			Variant is_tech_spell() const;
 			Variant get_counterspell_selector() const;
 
 			INTF_NULLABLE

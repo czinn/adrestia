@@ -23,7 +23,7 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
-	FORWARD_GETTER(bool, is_valid);
+	FORWARD_AUTO_GETTER(is_valid);
 
 	bool Selector::selects_spell(Spell *spell) const {
 		return _ptr->selects_spell(*spell->_ptr);

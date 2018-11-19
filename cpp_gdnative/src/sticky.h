@@ -21,16 +21,16 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			String get_id() const;
-			String get_name() const;
-			String get_text() const;
-			int get_kind() const;
+			Variant get_id() const;
+			Variant get_name() const;
+			Variant get_text() const;
+			Variant get_kind() const;
 			Array get_effects() const;
-			bool get_trigger_inbound() const;
+			Variant get_trigger_inbound() const;
 
 			bool triggers_for_effect(EffectInstance *effect, bool inbound) const;
 			bool triggers_for_spell(Spell *spell) const;
-			bool triggers_at_end_of_turn() const;
+			Variant triggers_at_end_of_turn() const;
 
 			INTF_NULLABLE
 			INTF_JSONABLE

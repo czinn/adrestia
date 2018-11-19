@@ -25,9 +25,9 @@ namespace godot {
 			Variant get_spell(String id) const;
 			Variant get_book(String id) const;
 			Dictionary get_books();
-			int get_mana_cap() const;
-			int get_initial_health() const;
-			int get_initial_mana_regen() const;
+			Variant get_mana_cap() const;
+			Variant get_initial_health() const;
+			Variant get_initial_mana_regen() const;
 
 			INTF_NULLABLE
 			INTF_JSONABLE

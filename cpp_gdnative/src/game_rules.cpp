@@ -32,18 +32,18 @@ namespace godot {
 	FORWARD_REF_BY_ID_GETTER(Sticky, get_sticky)
 	FORWARD_REF_BY_ID_GETTER(Spell, get_spell)
 	FORWARD_REF_BY_ID_GETTER(Book, get_book)
-  Dictionary GameRules::get_books() {
-    Dictionary result;
-    for (auto &[book_id, book] : _ptr->get_books()) {
-      auto [v, b] = instance<Book>(Book_);
-      b->set_ptr(const_cast<::Book*>(&book), owner);
-      result[String(book_id.c_str())] = v;
-    }
-    return result;
-  }
-	FORWARD_GETTER(int, get_mana_cap)
-	FORWARD_GETTER(int, get_initial_health)
-	FORWARD_GETTER(int, get_initial_mana_regen)
+	Dictionary GameRules::get_books() {
+		Dictionary result;
+		for (auto &[book_id, book] : _ptr->get_books()) {
+			auto [v, b] = instance<Book>(Book_);
+			b->set_ptr(const_cast<::Book*>(&book), owner);
+			result[String(book_id.c_str())] = v;
+		}
+		return result;
+	}
+	FORWARD_AUTO_GETTER(get_mana_cap)
+	FORWARD_AUTO_GETTER(get_initial_health)
+	FORWARD_AUTO_GETTER(get_initial_mana_regen)
 
 	IMPL_NULLABLE
 	IMPL_JSONABLE

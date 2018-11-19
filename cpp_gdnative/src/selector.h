@@ -19,7 +19,7 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			bool is_valid() const;
+			Variant is_valid() const;
 			bool selects_spell(Spell *spell) const;
 			bool selects_effect(EffectInstance *effect) const;
 

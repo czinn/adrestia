@@ -18,8 +18,8 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
-			String get_sticky_id() const;
-			int get_amount() const;
+			Variant get_sticky_id() const;
+			Variant get_amount() const;
 			Variant get_duration() const;
 
 			INTF_NULLABLE

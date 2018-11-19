@@ -38,8 +38,8 @@ namespace godot {
 	IMPL_SETGET(bool, targets_self)
 	IMPL_SETGET_ENUM(EffectType, effect_type)
 	IMPL_SETGET(int, amount)
-  IMPL_SETGET_CONST_REF(StickyInvoker, sticky_invoker)
-  IMPL_SETGET_CONST_REF(Spell, spell)
+	IMPL_SETGET_CONST_REF(StickyInvoker, sticky_invoker)
+	IMPL_SETGET_CONST_REF(Spell, spell)
 	IMPL_SETGET(int, target_player)
 
 	IMPL_NULLABLE

@@ -31,19 +31,19 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
-	FORWARD_STRING_GETTER(get_id)
-	FORWARD_STRING_GETTER(get_name)
-	FORWARD_STRING_GETTER(get_text)
-	FORWARD_GETTER(int, get_kind)
+	FORWARD_AUTO_GETTER(get_id)
+	FORWARD_AUTO_GETTER(get_name)
+	FORWARD_AUTO_GETTER(get_text)
+	FORWARD_AUTO_GETTER(get_kind)
 	FORWARD_REF_ARRAY_GETTER(Effect, get_effects)
-	FORWARD_GETTER(bool, get_trigger_inbound)
+	FORWARD_AUTO_GETTER(get_trigger_inbound)
 	bool Sticky::triggers_for_effect(EffectInstance *effect, bool inbound) const {
 		return _ptr->triggers_for_effect(*effect->_ptr, inbound);
 	}
 	bool Sticky::triggers_for_spell(Spell *spell) const {
 		return _ptr->triggers_for_spell(*spell->_ptr);
 	}
-	FORWARD_GETTER(bool, triggers_at_end_of_turn)
+	FORWARD_AUTO_GETTER(triggers_at_end_of_turn)
 
 	IMPL_NULLABLE
 	IMPL_JSONABLE

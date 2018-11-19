@@ -31,16 +31,16 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
-	FORWARD_STRING_GETTER(get_id)
-	FORWARD_STRING_GETTER(get_name)
-	FORWARD_STRING_GETTER(get_book)
-	FORWARD_GETTER(int, get_tech)
-	FORWARD_GETTER(int, get_level)
-	FORWARD_GETTER(int, get_cost)
-	FORWARD_STRING_GETTER(get_text)
+	FORWARD_AUTO_GETTER(get_id)
+	FORWARD_AUTO_GETTER(get_name)
+	FORWARD_AUTO_GETTER(get_book)
+	FORWARD_AUTO_GETTER(get_tech)
+	FORWARD_AUTO_GETTER(get_level)
+	FORWARD_AUTO_GETTER(get_cost)
+	FORWARD_AUTO_GETTER(get_text)
 	FORWARD_REF_ARRAY_GETTER(Effect, get_effects)
-	FORWARD_GETTER(bool, is_counterspell)
-	FORWARD_GETTER(bool, is_tech_spell)
+	FORWARD_AUTO_GETTER(is_counterspell)
+	FORWARD_AUTO_GETTER(is_tech_spell)
 	FORWARD_REF_GETTER(Selector, get_counterspell_selector)
 
 	IMPL_NULLABLE

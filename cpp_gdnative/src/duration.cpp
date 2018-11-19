@@ -18,9 +18,9 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
-	FORWARD_GETTER(bool, is_active)
-	FORWARD_GETTER(int, get_unit)
-	FORWARD_GETTER(int, get_value)
+	FORWARD_AUTO_GETTER(is_active)
+	FORWARD_AUTO_GETTER(get_unit)
+	FORWARD_AUTO_GETTER(get_value)
 
 	FORWARD_VOID(subtract_step)
 	FORWARD_VOID(subtract_turn)

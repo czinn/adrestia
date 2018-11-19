@@ -22,10 +22,10 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
-	FORWARD_GETTER(int, get_kind)
-	FORWARD_GETTER(bool, get_targets_self)
-	FORWARD_GETTER(int, get_effect_type)
-	FORWARD_GETTER(int, get_amount)
+	FORWARD_AUTO_GETTER(get_kind)
+	FORWARD_AUTO_GETTER(get_targets_self)
+	FORWARD_AUTO_GETTER(get_effect_type)
+	FORWARD_AUTO_GETTER(get_amount)
 	FORWARD_REF_GETTER(StickyInvoker, get_sticky_invoker)
 
 	IMPL_NULLABLE

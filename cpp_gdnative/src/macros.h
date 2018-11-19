@@ -1,9 +1,14 @@
 #pragma once
+
+#include <vector>
+
 #include <Godot.hpp>
 #include <NativeScript.hpp>
 #include <ResourceLoader.hpp>
 #include <JSONParseResult.hpp>
 #include <JSON.hpp>
+
+#include "../../cpp/json.h"
 
 // Work around a peculiarity in the macro replacement algorithm.
 // https://stackoverflow.com/questions/12648988/converting-a-defined-constant-number-to-a-string
@@ -72,6 +77,69 @@ class OwnerOrPointer {
 	}
 };
 
+template<class T, class Self>
+class Forwarder {
+	private:
+		static const char *_resource_path;
+		static godot::Ref<godot::NativeScript> _native_script;
+	public:
+		inline static std::pair<godot::Variant, Self*> instance() {
+			if (_native_script.is_null()) {
+				_native_script = godot::ResourceLoader::load(_resource_path);
+			}
+			godot::Variant v = _native_script->call("new");
+			Self *t = godot::as<Self>(v);
+			return std::make_pair(v, t);
+		}
+
+	private:
+		// Owner of the data. If null, I own the data.
+		godot::Ref<godot::Reference> _owner;
+
+	public:
+		T *_ptr; // Pointer to the underlying data.
+		inline void del_ptr() {
+			if (_ptr != nullptr && _owner.is_null()) {
+				delete _ptr;
+			}
+		}
+
+		Forwarder() : _ptr(nullptr), _owner(nullptr) {
+		}
+		~Forwarder() {
+			del_ptr();
+		}
+
+		Forwarder &operator=(const Forwarder &other) {
+			// jim: Extremely fast failure if the copy assignment operator is ever
+			// called. If we decide we actually do want to use it, uncomment the
+			// following line and it should probably work?
+			abort();
+
+			_owner = other._owner;
+			if (other._ptr != nullptr && _owner.is_null()) {
+				_ptr = new T();
+				*_ptr = *other._ptr;
+			} else {
+				_ptr = other._ptr;
+			}
+		}
+
+		// Own it.
+		void set_ptr(T *u) {
+			del_ptr();
+			_ptr = u;
+			_owner.unref();
+		}
+
+		// Don't own it.
+		void set_ptr(T *u, godot::Reference *r) {
+			del_ptr();
+			_ptr = u;
+			_owner = godot::Ref<godot::Reference>(r);
+		}
+};
+
 // jim: So it turns out instantiating other scripts from within a
 // nativescript is kinda hard. Our GodotScripts need owners which have to be
 // created by Godot, so we need a handle to the NativeScript object (the
@@ -96,32 +164,69 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
 // to use macros, because you can't instantiate a class's parent's template
 // with the class itself.
 // FOLLOWING CODE IS NOT USED
+// jim (months later): Turns out this is actually perfectly fine C++. In
+// fact, it has a name: CRTP. This horrifies me and I will look into it 
 template<class T>
 class Instanceable {
-	static const char *resource_path;
-	static godot::Ref<godot::NativeScript> native_script;
-	std::pair<godot::Variant, T*> instance() {
-		if (native_script.is_null()) {
-			native_script = godot::ResourceLoader::load(resource_path);
+	private:
+		static const char *_resource_path;
+		static godot::Ref<godot::NativeScript> _native_script;
+	public:
+		~Instanceable() {
+			// jim: We don't actually need to dereference the NativeScript whenever an
+			// instance of it is destroyed. But without this, we get the following ugly
+			// Godot error in the logs when exiting the game:
+			//	 WARNING: cleanup: ObjectDB Instances still exist!
+			//	 At: core/object.cpp:1989.
+			//	 ERROR: clear: Resources Still in use at Exit!
+			//	 At: core/resource.cpp:418.
+			// i.e. holding a static reference to the NativeScript prevents it from
+			// being destroyed when godot exits. So for now, we dereference the
+			// nativescript.
+			//_native_script.unref();
 		}
-		godot::Variant v = native_script->call("new");
-		T *t = godot::as<T>(v);
-		return std::make_pair(v, t);
-	}
-	~Instanceable() {
-		// jim: We don't actually need to dereference the NativeScript whenever an
-		// instance of it is destroyed. But without this, we get the following ugly
-		// Godot error in the logs when exiting the game:
-		//	 WARNING: cleanup: ObjectDB Instances still exist!
-		//	 At: core/object.cpp:1989.
-		//	 ERROR: clear: Resources Still in use at Exit!
-		//	 At: core/resource.cpp:418.
-		// i.e. holding a static reference to the NativeScript prevents it from
-		// being destroyed when godot exits. So for now, we dereference the
-		// nativescript.
-		native_script.unref();
-	}
+		std::pair<godot::Variant, T*> instance() {
+			if (_native_script.is_null()) {
+				_native_script = godot::ResourceLoader::load(_resource_path);
+			}
+			godot::Variant v = _native_script->call("new");
+			T *t = godot::as<T>(v);
+			return std::make_pair(v, t);
+		}
 };
+
+template<class T>
+inline godot::Variant to_godot_variant(T x, godot::Reference *owner) {
+	return x;
+}
+
+template<class V>
+inline godot::Variant to_godot_variant(const std::vector<V> &vec, godot::Reference *owner) {
+	godot::Array result;
+	for (const auto &x : vec) {
+		result.append(to_godot_variant(x, owner));
+	}
+	return result;
+}
+
+template<>
+inline godot::Variant to_godot_variant(const std::string str, godot::Reference *owner) {
+	return godot::String(str.c_str());
+}
+
+#define MAKE_INSTANCEABLE(CLASSNAME)\
+	template<>\
+	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
+		auto [w, o] = godot::CLASSNAME::instance();\
+		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
+		return w;\
+	}\
+	template<>\
+	inline godot::Variant to_godot_variant(const CLASSNAME &x, godot::Reference *owner) {\
+		auto [w, o] = godot::CLASSNAME::instance();\
+		o->set_ptr(const_cast<CLASSNAME*>(&x), owner);\
+		return w;\
+	}
 
 #define REGISTER_METHOD(method)\
 	register_method(#method, &CLASSNAME::method);
@@ -131,32 +236,14 @@ class Instanceable {
 		_ptr->method();\
 	}
 
-#define FORWARD_GETTER(type, getter)\
-	type CLASSNAME::getter() const {\
-		return _ptr->getter();\
+#define FORWARD_AUTO_GETTER(getter)\
+	Variant CLASSNAME::getter() const {\
+		return to_godot_variant(_ptr->getter(), owner);\
 	}
 
-#define FORWARD_STRING_GETTER(getter)\
-	String CLASSNAME::getter() const {\
-		return String(_ptr->getter().c_str());\
-	}
-
-#define FORWARD_ARRAY_GETTER(getter)\
-	Array CLASSNAME::getter() const {\
-		Array result;\
-		for (const auto &x : _ptr->getter()) {\
-			result.append(x);\
-		}\
-		return result;\
-	}
-
-#define FORWARD_STRING_ARRAY_GETTER(getter)\
-	Array CLASSNAME::getter() const {\
-		Array result;\
-		for (const auto &x : _ptr->getter()) {\
-			result.append(String(x.c_str()));\
-		}\
-		return result;\
+#define FORWARD_AUTO_GETTER_REF(getter)\
+	Variant CLASSNAME::getter() const {\
+		return to_godot_variant(&_ptr->getter(), owner);\
 	}
 
 // Implied naming convention:
@@ -164,7 +251,7 @@ class Instanceable {
 #define FORWARD_SMART_PTR_GETTER(Kind, getter)\
 	Variant CLASSNAME::getter() const {\
 		auto [v, kind] = instance<Kind>(Kind ## _);\
-		kind->set_ptr(_ptr->getter().get(), owner);\
+		kind->set_ptr(const_cast<::Kind*>(_ptr->getter().get()), owner);\
 		return v;\
 	}
 
@@ -254,11 +341,7 @@ class Instanceable {
 // you ever want to set an array from gdscript.
 #define IMPL_SETGET_ARRAY(member)\
 	Array CLASSNAME::get_ ## member() const {\
-		Array result;\
-		for (const auto &x : _ptr->member) {\
-			result.append(x);\
-		}\
-		return result;\
+		return to_godot_variant(_ptr->member, owner);\
 	}\
 	void CLASSNAME::set_ ## member(Array v) {\
 		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for an array member)");\
@@ -269,12 +352,12 @@ class Instanceable {
 // Implements SETGET for an std::vector-like class member. Only implements the
 // getter; the setter is left undefined because why would you ever want to set
 // an array from gdscript.
-#define IMPL_SETGET_REF_ARRAY(Type, member)\
+#define IMPL_SETGET_ARRAY_BASE(Type, member, x_)\
 	Array CLASSNAME::get_ ## member() const {\
 		Array result;\
 		for (const auto &x : _ptr->member) {\
 			auto [v, thing] = instance<Type>(Type ## _);\
-			thing->set_ptr(const_cast<::Type*>(&x), owner);\
+			thing->set_ptr(const_cast<::Type*>(x_), owner);\
 			result.append(v);\
 		}\
 		return result;\
@@ -283,6 +366,9 @@ class Instanceable {
 		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for an array member)");\
 		assert(false);\
 	}
+
+#define IMPL_SETGET_REF_ARRAY(Type, member) IMPL_SETGET_ARRAY_BASE(Type, member, &x)
+#define IMPL_SETGET_PTR_ARRAY(Type, member) IMPL_SETGET_ARRAY_BASE(Type, member, x)
 
 // SETGET_REF_DICT:
 // Implements SETGET for an std::map-like class member. Only implements the

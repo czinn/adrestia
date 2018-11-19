@@ -44,7 +44,7 @@ namespace godot {
 		return _ptr->find_book_idx(std::string(book_id.ascii().get_data()));
 	}
 
-	FORWARD_GETTER(int, level)
+	FORWARD_AUTO_GETTER(level)
 
 	// TODO: charles: These functions and the corresponding ones in
 	// StickyInstance seem like they could be generalized. Maybe do that.
