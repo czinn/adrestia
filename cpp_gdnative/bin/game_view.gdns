@@ -4,7 +4,7 @@
 
 [resource]
 
-resource_name = "gdexample"
-class_name = "gdexample"
+resource_name = "game_view"
+class_name = "GameView"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]

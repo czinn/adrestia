@@ -8,9 +8,9 @@
 using json = nlohmann::json;
 
 enum DurationUnit {
-	FULL_GAME,
-	TURNS,
-	STEPS,
+	FULL_GAME = 0,
+	TURNS = 1,
+	STEPS = 2,
 };
 
 class Duration {

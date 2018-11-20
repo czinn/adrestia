@@ -4,7 +4,7 @@
 
 [resource]
 
-resource_name = "unit"
-class_name = "Unit"
+resource_name = "selector"
+class_name = "Selector"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]

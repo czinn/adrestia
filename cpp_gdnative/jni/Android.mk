@@ -13,13 +13,13 @@ LOCAL_CPP_FEATURES := rtti exceptions
 LOCAL_LDLIBS := -llog
 
 LOCAL_SRC_FILES := $(wildcard $(abspath $(LOCAL_PATH)/../src/*.cpp))
-LOCAL_SRC_FILES += $(wildcard $(abspath $(LOCAL_PATH)/../../units_cpp/*.cc))
+LOCAL_SRC_FILES += $(wildcard $(abspath $(LOCAL_PATH)/../../cpp/*.cc))
 
 LOCAL_STATIC_LIBRARIES += godot-cpp
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../godot-cpp/include/core
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../godot-cpp/include
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../godot_headers
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../units_cpp/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../cpp/
 
 include $(BUILD_SHARED_LIBRARY)

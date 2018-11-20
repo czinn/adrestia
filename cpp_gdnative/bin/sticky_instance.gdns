@@ -4,7 +4,7 @@
 
 [resource]
 
-resource_name = "unit_kind"
-class_name = "UnitKind"
+resource_name = "sticky_instance"
+class_name = "StickyInstance"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]

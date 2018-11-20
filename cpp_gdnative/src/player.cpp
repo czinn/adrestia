@@ -1,32 +1,66 @@
 #include "player.h"
 
-using namespace godot;
+#include "book.h"
+#include "effect_instance.h"
+#include "game_rules.h"
+#include "spell.h"
+#include "sticky_instance.h"
 
 #define CLASSNAME Player
 
+using namespace godot;
+
 namespace godot {
-  const char *Player::resource_path = "res://native/player.gdns";
+	SCRIPT_AT("res://native/player.gdns")
 
-  Player::Player() {
-    Tech_ = ResourceLoader::load(Tech::resource_path);
-    Unit_ = ResourceLoader::load(Unit::resource_path);
-  }
+	void Player::_register_methods() {
+		REGISTER_METHOD(find_book_idx);
+		REGISTER_METHOD(level);
+		REGISTER_METHOD(pipe_effect);
+		REGISTER_METHOD(pipe_spell);
+		REGISTER_METHOD(pipe_turn);
+		REGISTER_METHOD(subtract_step);
+		REGISTER_METHOD(subtract_turn);
+		REGISTER_SETGET(hp, -1);
+		REGISTER_SETGET(max_hp, -1);
+		REGISTER_SETGET(mp, -1);
+		REGISTER_SETGET(mp_regen, -1);
+		REGISTER_SETGET(tech, Variant())
+		REGISTER_SETGET(books, Variant())
+		REGISTER_SETGET(stickies, Variant())
+		REGISTER_NULLABLE
+		REGISTER_TO_JSONABLE
+	}
 
-  void Player::_register_methods() {
-    REGISTER_SETGET(units, Variant());
-    REGISTER_SETGET(alive, true);
-    REGISTER_SETGET(coins, -1);
-    REGISTER_SETGET(tech, Variant());
-    REGISTER_SETGET(next_unit, -1);
-    REGISTER_NULLABLE;
-    REGISTER_TO_JSONABLE;
-  }
+	int Player::find_book_idx(String book_id) const {
+		return _ptr->find_book_idx(std::string(book_id.ascii().get_data()));
+	}
 
-  IMPL_SETGET_REF_DICT(Unit, units);
-  IMPL_SETGET(bool, alive);
-  IMPL_SETGET(int, coins);
-  IMPL_SETGET_REF(Tech, tech);
-  IMPL_SETGET(int, next_unit);
-  IMPL_NULLABLE;
-  IMPL_TO_JSONABLE;
+	FORWARD_AUTO_GETTER(level)
+
+	Variant Player::pipe_effect(int player_id, EffectInstance *effect, bool inbound) {
+		return to_godot_variant(_ptr->pipe_effect(player_id, *effect->_ptr, inbound), owner);
+	}
+
+	Variant Player::pipe_spell(int player_id, Spell *spell) {
+		return to_godot_variant(_ptr->pipe_spell(player_id, *spell->_ptr), owner);
+	}
+
+	Variant Player::pipe_turn(int player_id) {
+		return to_godot_variant(_ptr->pipe_turn(player_id), owner);
+	}
+
+	FORWARD_VOID(subtract_step)
+	FORWARD_VOID(subtract_turn)
+
+	IMPL_SETGET(int, hp)
+	IMPL_SETGET(int, max_hp)
+	IMPL_SETGET(int, mp)
+	IMPL_SETGET(int, mp_regen)
+	IMPL_SETGET_CONST_AUTO(tech)
+	IMPL_SETGET_CONST_AUTO(books)
+	IMPL_SETGET_CONST_AUTO(stickies)
+
+	IMPL_NULLABLE
+	IMPL_TO_JSONABLE
 }

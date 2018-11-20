@@ -1,73 +1,59 @@
 #include "game_state.h"
 
-using namespace godot;
+#include "player.h"
+#include "game_rules.h"
 
 #define CLASSNAME GameState
 
+using namespace godot;
+
 namespace godot {
-  const char *GameState::resource_path = "res://native/game_state.gdns";
+	SCRIPT_AT("res://native/game_state.gdns")
 
-  GameState::GameState() {
-    Action_ = ResourceLoader::load(Action::resource_path);
-    Battle_ = ResourceLoader::load(Battle::resource_path);
-    GameRules_ = ResourceLoader::load(GameRules::resource_path);
-    Player_ = ResourceLoader::load(Player::resource_path);
-  }
+	void CLASSNAME::_register_methods() {
+		REGISTER_METHOD(init)
+		REGISTER_METHOD(is_valid_action)
+		REGISTER_METHOD(simulate)
+		REGISTER_METHOD(turn_number)
+		REGISTER_METHOD(winners)
+		REGISTER_SETGET(history, Variant())
+		REGISTER_SETGET(players, Variant())
+		REGISTER_SETGET(rules, Variant())
+		REGISTER_NULLABLE
+		REGISTER_TO_JSONABLE
+	}
 
-  void GameState::_register_methods() {
-    REGISTER_METHOD(init)
-    REGISTER_METHOD(perform_action)
-    REGISTER_METHOD(get_winners)
-    REGISTER_METHOD(get_rules)
-    REGISTER_METHOD(get_turn)
-    REGISTER_METHOD(get_players)
-    REGISTER_METHOD(get_action_log)
-    REGISTER_METHOD(get_battles)
-    REGISTER_NULLABLE
-    REGISTER_TO_JSONABLE
-  }
+	void CLASSNAME::init(Variant rules, Variant player_books) {
+		Array a = player_books;
+		auto *_rules = godot::as<GameRules>(rules);
+		std::vector<std::vector<std::string>> _books;
+		of_godot_variant(player_books, &_books);
 
-  void GameState::init(GameRules *rules, int num_players) {
-    set_ptr(new ::GameState(*rules->_ptr, num_players));
-  }
+		// TODO: jim: Is it possible that the memory underlying the rules will be
+		// freed by Godot? Should we hold a reference to rules somehow to prevent
+		// that?
+		set_ptr(new ::GameState(*_rules->_ptr, _books));
+	}
 
-  bool GameState::perform_action(int pid, Action *action) {
-    return _ptr->perform_action(pid, *action->_ptr);
-  }
+	bool CLASSNAME::is_valid_action(int player_id, Variant action) const {
+		::GameAction action_;
+		of_godot_variant(action, &action_);
+		return _ptr->is_valid_action(player_id, action_);
+	}
 
-  FORWARD_ARRAY_GETTER(get_winners)
-  FORWARD_REF_GETTER(GameRules, get_rules)
-  FORWARD_GETTER(int, get_turn)
-  FORWARD_REF_ARRAY_GETTER(Player, get_players)
+	bool CLASSNAME::simulate(Variant actions) {
+		std::vector<::GameAction> actions_;
+		of_godot_variant(actions, &actions_);
+		return _ptr->simulate(actions_);
+	}
 
-  Array CLASSNAME::get_action_log() const {
-    Array result;
-    for (const auto &x1 : _ptr->get_action_log()) {
-      Array r1;
-      for (const auto &x2 : x1) {
-        Array r2;
-        for (const auto &x : x2) {
-          auto [v, thing] = instance<Action>(Action_);
-          thing->set_ptr(const_cast<::Action*>(&x), owner);
-          r2.append(v);
-        }
-        r1.append(r2);
-      }
-      result.append(r1);
-    }
-    return result;
-  }
+	FORWARD_AUTO_GETTER(turn_number)
+	FORWARD_AUTO_GETTER(winners)
 
-  Array CLASSNAME::get_battles() const {
-    Array result;
-    for (const auto &b : _ptr->get_battles()) {
-      auto [v, thing] = instance<Battle>(Battle_);
-      thing->set_ptr(const_cast<::Battle*>(b.get()), owner);
-      result.append(v);
-    }
-    return result;
-  }
+	IMPL_SETGET_CONST_AUTO(history)
+	IMPL_SETGET_CONST_AUTO(players)
+	IMPL_SETGET_CONST_AUTO(rules)
 
-  IMPL_NULLABLE
-  IMPL_TO_JSONABLE
+	IMPL_NULLABLE
+	IMPL_TO_JSONABLE
 }

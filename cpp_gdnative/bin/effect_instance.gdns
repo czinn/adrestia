@@ -4,7 +4,7 @@
 
 [resource]
 
-resource_name = "battle"
-class_name = "Battle"
+resource_name = "effect_instance"
+class_name = "EffectInstance"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]

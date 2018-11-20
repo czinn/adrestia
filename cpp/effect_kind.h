@@ -9,15 +9,15 @@ using json = nlohmann::json;
 
 enum EffectKind {
 	// Applies delta to target's health.
-	EK_HEALTH,
+	EK_HEALTH = 0,
 	// Applies delta to target's tech.
-	EK_TECH,
+	EK_TECH = 1,
 	// Applies delta to target's mana.
-	EK_MANA,
+	EK_MANA = 2,
 	// Applies delta to target's mana regeneration.
-	EK_REGEN,
+	EK_REGEN = 3,
 	// Adds a sticky to the target.
-	EK_STICKY,
+	EK_STICKY = 4,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EffectKind, {

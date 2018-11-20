@@ -4,7 +4,7 @@
 
 [resource]
 
-resource_name = "tech"
-class_name = "Tech"
+resource_name = "sticky"
+class_name = "Sticky"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]

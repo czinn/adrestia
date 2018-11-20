@@ -3,28 +3,43 @@
 #include <Reference.hpp>
 #include <player.h>
 
-#include "tech.h"
-#include "unit.h"
 #include "macros.h"
 
 namespace godot {
-  class Player : public godot::GodotScript<Reference>, public OwnerOrPointer<::Player> {
-    GODOT_CLASS(Player)
-   private:
-    godot::Ref<godot::NativeScript> Tech_;
-    godot::Ref<godot::NativeScript> Unit_;
-   public:
-    Player();
-    static const char *resource_path;
-    static void _register_methods();
+	class Book;
+	class EffectInstance;
+	class GameRules;
+	class Spell;
+	class StickyInstance;
 
-    INTF_SETGET(Variant, units);
-    INTF_SETGET(bool, alive);
-    INTF_SETGET(int, coins);
-    INTF_SETGET(Variant, tech);
-    INTF_SETGET(int, next_unit);
+	class Player : public godot::GodotScript<Reference>, public Forwarder<::Player, Player> {
+			GODOT_CLASS(Player)
+		public:
+			static const char *resource_path;
+			static void _register_methods();
+			
+			// TODO: charles: Implement find_spell if needed
+			
+			int find_book_idx(String book_id) const;
+			Variant level() const;
+			Variant pipe_effect(int player_id, EffectInstance *effect, bool inbound);
+			Variant pipe_spell(int player_id, Spell *spell);
+			Variant pipe_turn(int player_id);
 
-    INTF_NULLABLE;
-    INTF_TO_JSONABLE;
-  };
+			void subtract_step();
+			void subtract_turn();
+
+			INTF_SETGET(int, hp)
+			INTF_SETGET(int, max_hp)
+			INTF_SETGET(int, mp)
+			INTF_SETGET(int, mp_regen)
+			INTF_SETGET(Variant, tech)
+			INTF_SETGET(Variant, books)
+			INTF_SETGET(Variant, stickies)
+
+			INTF_NULLABLE
+			INTF_TO_JSONABLE
+	};
 }
+
+MAKE_INSTANCEABLE(Player)

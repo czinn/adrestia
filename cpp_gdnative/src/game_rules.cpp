@@ -1,44 +1,36 @@
 #include "game_rules.h"
 
-using namespace godot;
+#include "book.h"
+#include "spell.h"
+#include "sticky.h"
 
 #define CLASSNAME GameRules
 
+using namespace godot;
+
 namespace godot {
-  const char *GameRules::resource_path = "res://native/game_rules.gdns";
+	SCRIPT_AT("res://native/game_rules.gdns")
 
-  GameRules::GameRules() {
-    UnitKind_ = ResourceLoader::load(UnitKind::resource_path);
-  }
+	void GameRules::_register_methods() {
+		REGISTER_METHOD(get_sticky)
+		REGISTER_METHOD(get_spell)
+		REGISTER_METHOD(get_book)
+		REGISTER_METHOD(get_books)
+		REGISTER_METHOD(get_mana_cap)
+		REGISTER_METHOD(get_initial_health)
+		REGISTER_METHOD(get_initial_mana_regen)
+		REGISTER_NULLABLE
+		REGISTER_JSONABLE
+	}
 
-  void GameRules::_register_methods() {
-    register_method("get_unit_cap", &GameRules::get_unit_cap);
-    register_method("get_unit_kinds", &GameRules::get_unit_kinds);
-    register_method("get_unit_kind", &GameRules::get_unit_kind);
-    REGISTER_NULLABLE
-    REGISTER_JSONABLE
-  }
+	FORWARD_REF_BY_ID_GETTER(Sticky, get_sticky)
+	FORWARD_REF_BY_ID_GETTER(Spell, get_spell)
+	FORWARD_REF_BY_ID_GETTER(Book, get_book)
+	FORWARD_AUTO_GETTER(get_books)
+	FORWARD_AUTO_GETTER(get_mana_cap)
+	FORWARD_AUTO_GETTER(get_initial_health)
+	FORWARD_AUTO_GETTER(get_initial_mana_regen)
 
-  FORWARD_GETTER(int, get_unit_cap)
-
-  Dictionary GameRules::get_unit_kinds() {
-    Dictionary result;
-    for (auto &[kind_id, kind] : _ptr->get_unit_kinds()) {
-      auto [v, uk] = instance<UnitKind>(UnitKind_);
-      uk->set_ptr(const_cast<::UnitKind*>(&kind), owner);
-      result[String(kind_id.c_str())] = v;
-    }
-    return result;
-  }
-
-  Variant GameRules::get_unit_kind(String id) {
-    auto [v, kind] = instance<UnitKind>(UnitKind_);
-    auto &kinds = const_cast<std::map<std::string, ::UnitKind>&>(_ptr->get_unit_kinds());
-    const std::string key(id.ascii().get_data());
-    kind->set_ptr(&kinds[key], owner);
-    return v;
-  }
-
-  IMPL_NULLABLE
-  IMPL_JSONABLE
+	IMPL_NULLABLE
+	IMPL_JSONABLE
 }

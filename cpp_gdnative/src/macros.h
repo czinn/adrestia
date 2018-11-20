@@ -1,9 +1,14 @@
 #pragma once
+
+#include <vector>
+
 #include <Godot.hpp>
 #include <NativeScript.hpp>
 #include <ResourceLoader.hpp>
 #include <JSONParseResult.hpp>
 #include <JSON.hpp>
+
+#include "../../cpp/json.h"
 
 // Work around a peculiarity in the macro replacement algorithm.
 // https://stackoverflow.com/questions/12648988/converting-a-defined-constant-number-to-a-string
@@ -12,278 +17,303 @@
 
 template<typename T>
 godot::Ref<godot::JSONParseResult> to_godot_json(T &t) {
-  nlohmann::json j = t;
-  godot::String str = j.dump().c_str();
-  return godot::JSON::parse(str);
+	nlohmann::json j = t;
+	godot::String str = j.dump().c_str();
+	return godot::JSON::parse(str);
 }
 
-// An OwnerOrPointer<T> holds a pointer _ptr that it may own, or that may be
-// owned by some other Godot object _owner.
-// If the _owner is null, we know that we ourselves own _ptr and must free it.
-// Otherwise, another Godot object owns it and we hold the _owner Ref to them
-// to make sure they don't free it.
-template<class T>
-class OwnerOrPointer {
- private:
-  // Owner of the data. If null, I own the data.
-  godot::Ref<godot::Reference> _owner;
+// A Forwarder<T, Self> provides two capabilities:
+// - It holds a T* _ptr that it may own, or that may be owned by some other
+// Godot object _owner. If the _owner is null, we know that we ourselves own
+// _ptr and must free it. Otherwise, another Godot object owns it and we hold
+// the _owner Ref to them to make sure they don't free it.
+// - It allows instantiating itself through the Godot runtime using the static
+// make_instance() method.
+//
+// Yes, classes can inherit from a template superclass instantiated with the
+// class itself. Turns out this is a technique called CRTP.
+template<class T, class Self>
+class Forwarder {
+	private:
+		static const char *_resource_path;
+		static godot::Ref<godot::NativeScript> _native_script;
+	public:
+		inline static std::pair<godot::Variant, Self*> make_instance() {
+			if (_native_script.is_null()) {
+				_native_script = godot::ResourceLoader::load(_resource_path);
+			}
+			godot::Variant v = _native_script->call("new");
+			Self *t = godot::as<Self>(v);
+			return std::make_pair(v, t);
+		}
 
- public:
-  T *_ptr; // Pointer to the underlying data.
-  inline void del_ptr() {
-    if (_ptr != nullptr && _owner.is_null()) {
-      delete _ptr;
-    }
-  }
+	private:
+		// Owner of the data. If null, I own the data.
+		godot::Ref<godot::Reference> _owner;
 
-  OwnerOrPointer() : _ptr(nullptr), _owner(nullptr) {
-  }
-  ~OwnerOrPointer() {
-    del_ptr();
-  }
+	public:
+		T *_ptr; // Pointer to the underlying data.
+		inline void del_ptr() {
+			if (_ptr != nullptr && _owner.is_null()) {
+				delete _ptr;
+			}
+		}
 
-  OwnerOrPointer &operator=(const OwnerOrPointer &other) {
-    // jim: Extremely fast failure if the copy assignment operator is ever
-    // called. If we decide we actually do want to use it, uncomment the
-    // following line and it should probably work?
-    abort();
+		Forwarder() : _ptr(nullptr), _owner(nullptr) {
+		}
+		~Forwarder() {
+			del_ptr();
+			_native_script.unref();
+		}
 
-    _owner = other._owner;
-    if (other._ptr != nullptr && _owner.is_null()) {
-      _ptr = new T();
-      *_ptr = *other._ptr;
-    } else {
-      _ptr = other._ptr;
-    }
-  }
+		Forwarder &operator=(const Forwarder &other) {
+			// jim: Extremely fast failure if the copy assignment operator is ever
+			// called. If we decide we actually do want to use it, uncomment the
+			// following line and it should probably work?
+			abort();
 
-  // Own it.
-  void set_ptr(T *u) {
-    del_ptr();
-    _ptr = u;
-    _owner.unref();
-  }
+			_owner = other._owner;
+			if (other._ptr != nullptr && _owner.is_null()) {
+				_ptr = new T();
+				*_ptr = *other._ptr;
+			} else {
+				_ptr = other._ptr;
+			}
+		}
 
-  // Don't own it.
-  void set_ptr(T *u, godot::Reference *r) {
-    del_ptr();
-    _ptr = u;
-    _owner = godot::Ref<godot::Reference>(r);
-  }
+		// Own it.
+		void set_ptr(T *u) {
+			del_ptr();
+			_ptr = u;
+			_owner.unref();
+		}
+
+		// Don't own it.
+		void set_ptr(T *u, godot::Reference *r) {
+			del_ptr();
+			_ptr = u;
+			_owner = godot::Ref<godot::Reference>(r);
+		}
 };
 
-// jim: So it turns out instantiating other scripts from within a
-// nativescript is kinda hard. Our GodotScripts need owners which have to be
-// created by Godot, so we need a handle to the NativeScript object (the
-// thing we normally call .new() on from gdscript). That means either:
-// - methods that instantiate other scripts need to be passed a NativeScript*
-// for every other thing they instantiate (yuck)
-// OR:
-// - we need to load these NativeScripts through ResourceLoader and make them
-// available to the class as a member (we do this for now)
+// Instantiates a NativeScript.
 template<class T>
 std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_script_) {
-  godot::Variant v = native_script_->call("new");
-  T *t = godot::as<T>(v);
-  return std::make_pair(v, t);
+	godot::Variant v = native_script_->call("new");
+	T *t = godot::as<T>(v);
+	return std::make_pair(v, t);
 }
 
-// TODO: jim: Can we instance our classes by storing a single static
-// Ref<NativeScript> for each class instead of holding Ref<NativeScript> in
-// every instance that needs one? The answer seems to be "yes, but you'll get
-// ugly warning because those refs stop the NativeScripts from ever being
-// collected". Also, instead of the following approach we would probably have
-// to use macros, because you can't instantiate a class's parent's template
-// with the class itself.
-// FOLLOWING CODE IS NOT USED
+// Converts ANY C++ type into a Godot variant.
+// TODO: jim: This guy (https://stackoverflow.com/questions/39250545/) says
+// template specialization is a trap. Is there a better way to achieve this
+// effect?
 template<class T>
-class Instanceable {
-  static const char *resource_path;
-  static godot::Ref<godot::NativeScript> native_script;
-  std::pair<godot::Variant, T*> instance() {
-    if (native_script.is_null()) {
-      native_script = godot::ResourceLoader::load(resource_path);
-    }
-    godot::Variant v = native_script->call("new");
-    T *t = godot::as<T>(v);
-    return std::make_pair(v, t);
-  }
-  ~Instanceable() {
-    // jim: We don't actually need to dereference the NativeScript whenever an
-    // instance of it is destroyed. But without this, we get the following ugly
-    // Godot error in the logs when exiting the game:
-    //   WARNING: cleanup: ObjectDB Instances still exist!
-    //   At: core/object.cpp:1989.
-    //   ERROR: clear: Resources Still in use at Exit!
-    //   At: core/resource.cpp:418.
-    // i.e. holding a static reference to the NativeScript prevents it from
-    // being destroyed when godot exits. So for now, we dereference the
-    // nativescript.
-    native_script.unref();
-  }
-};
+inline godot::Variant to_godot_variant(T x, godot::Reference *owner) {
+	return x;
+}
+
+// Does std::vector AND std::list LMAO
+template<template<class> class Container, class V>
+inline godot::Variant to_godot_variant(const Container<V> &c, godot::Reference *owner) {
+	godot::Array result;
+	for (const auto &x : c) {
+		result.append(to_godot_variant(x, owner));
+	}
+	return result;
+}
+
+template<class K, class V>
+inline godot::Variant to_godot_variant(const std::map<K, V> &m, godot::Reference *owner) {
+	godot::Dictionary result;
+	for (auto &[k, v] : m) {
+		result[to_godot_variant(k, owner)] = to_godot_variant(v, owner);
+	}
+	return result;
+}
+
+template<>
+inline godot::Variant to_godot_variant(const std::string str, godot::Reference *owner) {
+	return godot::String(str.c_str());
+}
+
+template<>
+inline godot::Variant to_godot_variant(const std::string &str, godot::Reference *owner) {
+	return godot::String(str.c_str());
+}
+
+// of_godot_variant<T> "writes" a godot::Variant to the T*.
+template<class T>
+inline void of_godot_variant(godot::Variant v, T *t) {
+	t->this_template_should_never_be_instantiated;
+}
+
+template<>
+inline void of_godot_variant(godot::Variant v, std::string *t) {
+	godot::String s = v;
+	*t = std::string(s.ascii().get_data());
+}
+
+template<typename V>
+inline void of_godot_variant(godot::Variant v, std::vector<V> *vec) {
+	vec->clear();
+	godot::Array a = v;
+	for (size_t i = 0; i < a.size(); i++) {
+		V elem;
+		of_godot_variant(a[i], &elem);
+		vec->push_back(elem);
+	}
+}
+
+// jim: These cases are covered by the base template. However, I'm not sure the
+// base template is a great idea, so I'm keeping this around just in case.
+//template<> inline godot::Variant to_godot_variant(int x, godot::Reference *owner) { return x; }
+//template<> inline godot::Variant to_godot_variant(bool x, godot::Reference *owner) { return x; }
+
+#define SCRIPT_AT(path)\
+	const char *CLASSNAME::resource_path = path;\
+	template<> const char *Forwarder<::CLASSNAME, CLASSNAME>::_resource_path = path;\
+	template<> Ref<NativeScript> Forwarder<::CLASSNAME, CLASSNAME>::_native_script = nullptr;
+
+// TODO: jim: This may do unnecessary copying of things that could be passed as
+// references. See if this is the case and fix it if so.
+// (This can be extended to support wrapping smart pointers.)
+#define MAKE_INSTANCEABLE(CLASSNAME)\
+	template<>\
+	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
+		auto [w, o] = godot::CLASSNAME::make_instance();\
+		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
+		return w;\
+	}\
+	template<>\
+	inline godot::Variant to_godot_variant(const CLASSNAME x, godot::Reference *owner) {\
+		auto [w, o] = godot::CLASSNAME::make_instance();\
+		o->set_ptr(new ::CLASSNAME(x), owner);\
+		return w;\
+	}\
+	template<>\
+	inline godot::Variant to_godot_variant(const CLASSNAME &x, godot::Reference *owner) {\
+		auto [w, o] = godot::CLASSNAME::make_instance();\
+		o->set_ptr(const_cast<CLASSNAME*>(&x), owner);\
+		return w;\
+	}
 
 #define REGISTER_METHOD(method)\
-  register_method(#method, &CLASSNAME::method);
+	register_method(#method, &CLASSNAME::method);
 
-#define FORWARD_GETTER(type, getter)\
-  type CLASSNAME::getter() const {\
-    return _ptr->getter();\
-  }
+#define FORWARD_VOID(method)\
+	void CLASSNAME::method() {\
+		_ptr->method();\
+	}
 
-#define FORWARD_STRING_GETTER(getter)\
-  String CLASSNAME::getter() const {\
-    return String(_ptr->getter().c_str());\
-  }
+#define FORWARD_AUTO_GETTER(getter)\
+	Variant CLASSNAME::getter() const {\
+		return to_godot_variant(_ptr->getter(), owner);\
+	}
 
-#define FORWARD_ARRAY_GETTER(getter)\
-  Array CLASSNAME::getter() const {\
-    Array result;\
-    for (const auto &x : _ptr->getter()) {\
-      result.append(x);\
-    }\
-    return result;\
-  }
+// jim: Using this MAY improve performance over the non-_REF version by not
+// using the copying version of the template, but I'm not entirely sure
+#define FORWARD_AUTO_GETTER_REF(getter)\
+	Variant CLASSNAME::getter() const {\
+		return to_godot_variant(&_ptr->getter(), owner);\
+	}
 
-// Implied naming convention:
-// Member handles to Ref<NativeScript> for Kind are named Kind_
-#define FORWARD_SMART_PTR_GETTER(Kind, getter)\
-  Variant CLASSNAME::getter() const {\
-    auto [v, kind] = instance<Kind>(Kind ## _);\
-    kind->set_ptr(_ptr->getter().get(), owner);\
-    return v;\
-  }
-
-#define FORWARD_REF_GETTER(Kind, getter)\
-  Variant CLASSNAME::getter() const {\
-    auto [v, kind] = instance<Kind>(Kind ## _);\
-    kind->set_ptr(const_cast<::Kind*>(&_ptr->getter()), owner);\
-    return v;\
-  }
-
-#define FORWARD_REF_ARRAY_GETTER(Kind, getter)\
-  Array CLASSNAME::getter() const {\
-    Array result;\
-    for (const auto &x : _ptr->getter()) {\
-      auto [v, thing] = instance<Kind>(Kind ## _);\
-      thing->set_ptr(const_cast<::Kind*>(&x), owner);\
-      result.append(v);\
-    }\
-    return result;\
-  }
+#define FORWARD_REF_BY_ID_GETTER(Kind, getter)\
+	Variant CLASSNAME::getter(String id) const {\
+		const std::string key(id.ascii().get_data());\
+		return to_godot_variant(&_ptr->getter(key), owner);\
+	}
 
 // SETGET(Type, member):
 // Type get_member()
 // void set_member(Type x)
 #define REGISTER_SETGET(member, default_value)\
-  register_property(#member, &CLASSNAME::set_ ## member, &CLASSNAME::get_ ## member, default_value);
+	register_property(#member, &CLASSNAME::set_ ## member, &CLASSNAME::get_ ## member, default_value);
 
 #define INTF_SETGET(Type, member)\
-  Type get_ ## member() const;\
-  void set_ ## member(Type value);
+	Type get_ ## member() const;\
+	void set_ ## member(Type value);
 
 #define IMPL_SETGET(Type, member)\
-  Type CLASSNAME::get_ ## member() const {\
-    return _ptr->member;\
-  }\
-  void CLASSNAME::set_ ## member(Type x) {\
-    _ptr->member = x;\
-  }
+	Type CLASSNAME::get_ ## member() const {\
+		return _ptr->member;\
+	}\
+	void CLASSNAME::set_ ## member(Type x) {\
+		_ptr->member = x;\
+	}
 
-// SETGET_REF:
-// Implements SETGET for a mutable class member.
-// Requires INTF_SETGET(Variant, ...)
+#define IMPL_SETGET_ENUM(Type, member)\
+	int CLASSNAME::get_ ## member() const {\
+		return _ptr->member;\
+	}\
+	void CLASSNAME::set_ ## member(int x) {\
+		_ptr->member = (Type)x;\
+	}
+
+// TODO: jim: Can we define a totally automatic mutable version of this?
+#define IMPL_SETGET_CONST_AUTO(member)\
+	Variant CLASSNAME::get_ ## member() const {\
+		return to_godot_variant(_ptr->member, owner);\
+	}\
+	void CLASSNAME::set_ ## member(Variant value) {\
+		Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a const auto member)");\
+		assert(false);\
+	}
+
 #define IMPL_SETGET_REF(Type, member)\
-  Variant CLASSNAME::get_ ## member() const {\
-    auto [v, thing] = instance<Type>(Type ## _);\
-    thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
-    return v;\
-  }\
-  void CLASSNAME::set_ ## member(Variant value) {\
-    Tech *thing = godot::as<Type>(value);\
-    _ptr->tech = *thing->_ptr;\
-  }
-
-// SETGET_CONST_REF:
-// Implements SETGET for an immutable class member.
-// Requires INTF_SETGET(Variant, ...)
-#define IMPL_SETGET_CONST_REF(Type, member)\
-  Variant CLASSNAME::get_ ## member() const {\
-    auto [v, thing] = instance<Type>(Type ## _);\
-    thing->set_ptr(const_cast<::Type*>(&_ptr->member), owner);\
-    return v;\
-  }\
-  void CLASSNAME::set_ ## member(Variant value) {\
-    Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a const member)");\
-    assert(false);\
-  }
-
-// SETGET_REF_DICT:
-// Implements SETGET for an std::map-like class member. Only implements the
-// getter; the setter is left undefined because why would you ever want to set
-// a dict from gdscript. Key type must be implicitly convertible to Variant
-// (string won't work).
-#define IMPL_SETGET_REF_DICT(Type, member)\
-  Variant CLASSNAME::get_ ## member() const {\
-    Dictionary d;\
-    for (const auto &[k, x] : _ptr->member) {\
-      auto [v, thing] = instance<Type>(Type ## _);\
-      thing->set_ptr(const_cast<::Type*>(&x), owner);\
-      d[k] = v;\
-    }\
-    return d;\
-  }\
-  void CLASSNAME::set_ ## member(Variant v) {\
-    Godot::print("Error: Called " STRINGIZE(CLASSNAME) "::set_" #member " (setter for a dict member)");\
-    assert(false);\
-  }
+	Type CLASSNAME::get_ ## member() const {\
+		return to_godot_variant(_ptr->member, owner);\
+	}\
+	void CLASSNAME::set_ ## member(Variant value) {\
+		_ptr->member = *thing->_ptr;\
+	}
 
 // NULLABLE:
 // bool is_null()
 // bool not_null()
 #define REGISTER_NULLABLE\
-  register_method("is_null", &CLASSNAME::is_null);\
-  register_method("not_null", &CLASSNAME::not_null);
+	register_method("is_null", &CLASSNAME::is_null);\
+	register_method("not_null", &CLASSNAME::not_null);
 
 #define INTF_NULLABLE\
-  bool is_null() const;\
-  bool not_null() const;
+	bool is_null() const;\
+	bool not_null() const;
 
 #define IMPL_NULLABLE\
-  bool CLASSNAME::is_null() const {\
-    return _ptr == nullptr;\
-  }\
-  bool CLASSNAME::not_null() const {\
-    return _ptr != nullptr;\
-  }
+	bool CLASSNAME::is_null() const {\
+		return _ptr == nullptr;\
+	}\
+	bool CLASSNAME::not_null() const {\
+		return _ptr != nullptr;\
+	}
 
 // TO_JSONABLE:
 // JSONParseResult as_json()
 #define REGISTER_TO_JSONABLE\
-  register_method("as_json", &CLASSNAME::as_json);
+	register_method("as_json", &CLASSNAME::as_json);
 
 #define INTF_TO_JSONABLE\
-  Variant as_json() const;
+	Variant as_json() const;
 
 #define IMPL_TO_JSONABLE\
-  Variant CLASSNAME::as_json() const {\
-    return to_godot_json(*_ptr);\
-  }
+	Variant CLASSNAME::as_json() const {\
+		return to_godot_json(*_ptr);\
+	}
 
 // JSONABLE: JSONABLE and
 // void load_json_string(String)
 #define REGISTER_JSONABLE\
-  register_method("load_json_string", &CLASSNAME::load_json_string);\
-  REGISTER_TO_JSONABLE
+	register_method("load_json_string", &CLASSNAME::load_json_string);\
+	REGISTER_TO_JSONABLE
 
 #define INTF_JSONABLE\
-  void load_json_string(String str);\
-  INTF_TO_JSONABLE
+	void load_json_string(String str);\
+	INTF_TO_JSONABLE
 
 #define IMPL_JSONABLE\
-  void CLASSNAME::load_json_string(String str) {\
-    ::CLASSNAME *tmp = new ::CLASSNAME();\
-    *tmp = nlohmann::json::parse(str.utf8().get_data());\
-    set_ptr(tmp);\
-  }\
-  IMPL_TO_JSONABLE
+	void CLASSNAME::load_json_string(String str) {\
+		::CLASSNAME *tmp = new ::CLASSNAME();\
+		*tmp = nlohmann::json::parse(str.utf8().get_data());\
+		set_ptr(tmp);\
+	}\
+	IMPL_TO_JSONABLE

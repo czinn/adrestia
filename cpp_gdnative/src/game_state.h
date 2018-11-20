@@ -2,37 +2,30 @@
 #include <Godot.hpp>
 #include <Reference.hpp>
 #include <game_state.h>
-
-#include "action.h"
-#include "battle.h"
-#include "player.h"
-#include "game_rules.h"
+#include <game_action.h>
 
 #include "macros.h"
 
 namespace godot {
-  class GameState : public godot::GodotScript<Reference>, public OwnerOrPointer<::GameState> {
-    GODOT_CLASS(GameState)
-   private:
-    godot::Ref<godot::NativeScript> Action_;
-    godot::Ref<godot::NativeScript> Battle_;
-    godot::Ref<godot::NativeScript> GameRules_;
-    godot::Ref<godot::NativeScript> Player_;
-   public:
-    GameState();
-    static const char *resource_path;
-    static void _register_methods();
+	class GameState : public godot::GodotScript<Reference>, public Forwarder<::GameState, GameState> {
+			GODOT_CLASS(GameState)
+		public:
+			static const char *resource_path;
+			static void _register_methods();
 
-    void init(GameRules *rules, int num_players);
-    bool perform_action(int pid, Action *action);
-    Array get_winners() const;
-    Variant get_rules() const;
-    int get_turn() const;
-    Array get_players() const;
-    Array get_action_log() const;
-    Array get_battles() const;
+			void init(Variant rules, Variant player_books);
+			bool is_valid_action(int player_id, Variant action) const;
+			Variant turn_number() const;
+			Variant winners() const;
+			bool simulate(Variant actions);
 
-    INTF_NULLABLE
-    INTF_TO_JSONABLE
-  };
+			INTF_SETGET(Variant, history)
+			INTF_SETGET(Variant, players)
+			INTF_SETGET(Variant, rules)
+
+			INTF_NULLABLE
+			INTF_TO_JSONABLE
+	};
 }
+
+MAKE_INSTANCEABLE(GameState)
