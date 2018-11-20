@@ -104,6 +104,10 @@ std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_sc
 	return std::make_pair(v, t);
 }
 
+// Converts ANY C++ type into a Godot variant.
+// TODO: jim: This guy (https://stackoverflow.com/questions/39250545/) says
+// template specialization is a trap. Is there a better way to achieve this
+// effect?
 template<class T>
 inline godot::Variant to_godot_variant(T x, godot::Reference *owner) {
 	return x;
@@ -136,6 +140,29 @@ inline godot::Variant to_godot_variant(const std::string str, godot::Reference *
 template<>
 inline godot::Variant to_godot_variant(const std::string &str, godot::Reference *owner) {
 	return godot::String(str.c_str());
+}
+
+// of_godot_variant<T> "writes" a godot::Variant to the T*.
+template<class T>
+inline void of_godot_variant(godot::Variant v, T *t) {
+	t->this_template_should_never_be_instantiated;
+}
+
+template<>
+inline void of_godot_variant(godot::Variant v, std::string *t) {
+	godot::String s = v;
+	*t = std::string(s.ascii().get_data());
+}
+
+template<typename V>
+inline void of_godot_variant(godot::Variant v, std::vector<V> *vec) {
+	vec->clear();
+	godot::Array a = v;
+	for (size_t i = 0; i < a.size(); i++) {
+		V elem;
+		of_godot_variant(a[i], &elem);
+		vec->push_back(elem);
+	}
 }
 
 // jim: These cases are covered by the base template. However, I'm not sure the

@@ -28,3 +28,5 @@ namespace godot {
 			INTF_JSONABLE
 	};
 }
+
+MAKE_INSTANCEABLE(GameRules)
