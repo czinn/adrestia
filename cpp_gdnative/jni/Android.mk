@@ -7,7 +7,7 @@ LOCAL_SRC_FILES := ../godot-cpp/obj/local/$(TARGET_ARCH_ABI)/libgodot-cpp.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := gdexample
+LOCAL_MODULE := libadrestia
 LOCAL_CPPFLAGS := -std=c++17
 LOCAL_CPP_FEATURES := rtti exceptions
 LOCAL_LDLIBS := -llog

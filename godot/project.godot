@@ -11,17 +11,18 @@ config_version=3
 [application]
 
 config/name="Adrestia Spells"
-run/main_scene="res://scenes/main-menu.tscn"
+run/main_scene="res://scenes/title.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-global="*res://global.gd"
+global="*res://global/global.gd"
+scene_loader="*res://global/scene_loader.gd"
 
 [display]
 
 window/size/width=540
-window/size/height=900
+window/size/height=960
 window/dpi/allow_hidpi=true
 window/handheld/orientation="portrait"
 window/handheld/emulate_touchscreen=true
