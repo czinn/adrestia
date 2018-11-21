@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/book_button.gd" type="Script" id=2]
 [ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=3]
+[ext_resource path="res://art-built/check-box.png" type="Texture" id=4]
 
-[node name="control" type="Control"]
+[node name="control" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -38,7 +39,7 @@ size_flags_vertical = 3
 alignment = 0
 _sections_unfolded = [ "Mouse", "Rect", "Size Flags" ]
 
-[node name="texture_button" type="TextureButton" parent="vbox" index="0"]
+[node name="button" type="TextureButton" parent="vbox" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -61,6 +62,28 @@ texture_normal = ExtResource( 3 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Mouse", "Rect", "Size Flags", "Textures" ]
+
+[node name="checkmark" type="TextureRect" parent="vbox/button" index="0"]
+
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -5.0
+margin_top = -8.0
+margin_right = 68.0
+margin_bottom = 59.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 4 )
+expand = true
+stretch_mode = 0
+_sections_unfolded = [ "Rect", "Visibility" ]
 
 [node name="label" type="Label" parent="vbox" index="1"]
 

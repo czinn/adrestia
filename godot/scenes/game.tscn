@@ -6,7 +6,7 @@
 [ext_resource path="res://components/book_button.tscn" type="PackedScene" id=4]
 [ext_resource path="res://art-built/panel-transparent-9patch.png" type="Texture" id=5]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -34,6 +34,9 @@ _sections_unfolded = [ "Theme" ]
 position = Vector2( 260, 480 )
 scale = Vector2( 1.07333, 1.07333 )
 texture = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="book_select" type="Control" parent="ui" index="1"]
 
