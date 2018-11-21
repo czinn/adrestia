@@ -80,7 +80,9 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 			return false;
 		}
 		mp_left -= spell->get_cost();
-		if (mp_left < 0) return false;
+		if (mp_left < 0) {
+			return false;
+		}
 		if (spell->is_tech_spell()) {
 			turn_tech = book_idx;
 		}
@@ -132,7 +134,9 @@ bool GameState::simulate(const std::vector<GameAction> actions) {
 		return false;
 	}
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
-		if (!is_valid_action(player_id, actions[player_id])) return false;
+		if (!is_valid_action(player_id, actions[player_id])) {
+			return false;
+		}
 	}
 
 	// history has its eyes on you

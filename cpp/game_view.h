@@ -21,6 +21,8 @@ class GameView {
 
 		int turn_number() const; // First turn is 1.
 		std::vector<size_t> winners() const; // empty: Game still in progress.
+		std::vector<GameAction> legal_actions() const;
+		std::vector<GameAction> sane_actions() const;
 
 		friend void to_json(json &, const GameView &);
 
@@ -30,4 +32,7 @@ class GameView {
 
 	private:
 		const GameRules &rules;
+
+		void generate_actions(std::vector<GameAction> &, GameAction &, int, int) const;
+		void generate_sane_actions(std::vector<GameAction> &, GameAction &, int, int, bool, bool) const;
 };

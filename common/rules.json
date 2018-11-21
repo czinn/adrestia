@@ -1,5 +1,5 @@
 {
-  "mana_cap": 20,
+  "mana_cap": 10,
   "initial_mana_regen": 5,
   "initial_health": 25,
   "stickies": [
@@ -64,7 +64,7 @@
   ],
   "spells": [
     {
-      "id": "tech_conjuration", "name": "Learn Conjuration",
+      "id": "conjuration_tech", "name": "Learn Conjuration",
       "book": "conjuration",
       "tech": 0, "level": 0, "cost": 0,
       "text": "Increase Conjuration by 1.",
@@ -299,7 +299,7 @@
     {
       "id": "conjuration", "name": "Book of Conjuration",
       "spells": [
-        "tech_conjuration", "damage_1", "shield_1", "mana_1", "poison_1",
+        "conjuration_tech", "damage_1", "shield_1", "mana_1", "poison_1",
         "shield_2", "shield_3", "damage_2", "chain_1", "damage_3", "endgame_1"
       ]
     },
