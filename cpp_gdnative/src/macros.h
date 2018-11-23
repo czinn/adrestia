@@ -153,6 +153,11 @@ inline godot::Variant to_godot_variant(const std::string &str, godot::Reference 
 	return godot::String(str.c_str());
 }
 
+template<>
+inline godot::Variant to_godot_variant(unsigned long num, godot::Reference *owner) {
+	return (unsigned int) num;
+}
+
 // of_godot_variant<T> "writes" a godot::Variant to the T*.
 template<class T>
 inline void of_godot_variant(godot::Variant v, T *t) {
