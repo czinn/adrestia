@@ -5,7 +5,7 @@
 #include "../game_action.h"
 #include "../game_view.h"
 #include "strategy.h"
-// #include "monte_strategy.h"
+#include "monte_strategy.h"
 #include "random_strategy.h"
 
 using json = nlohmann::json;
@@ -14,7 +14,7 @@ int main() {
 	GameRules rules("rules.json");
 	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration", "regulation"}, {"conjuration", "regulation"}});
 	std::vector<Strategy*> strategies;
-	strategies.push_back(new RandomStrategy());
+	strategies.push_back(new MonteStrategy());
 	strategies.push_back(new RandomStrategy());
 
 	while (game.winners().size() == 0) {

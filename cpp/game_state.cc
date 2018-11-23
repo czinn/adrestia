@@ -1,6 +1,7 @@
 #include "game_state.h"
 #include "effect_instance.h"
 #include "spell.h"
+#include "game_view.h"
 
 #include <deque>
 #include <ostream>
@@ -25,6 +26,16 @@ GameState::GameState(const GameRules &rules, const json &j)
 	for (const auto &it : j.at("history")) {
 		history.push_back(it);
 	}
+}
+
+GameState::GameState(const GameView &view, std::vector<int> &tech,
+		std::vector<const Book*> &books)
+	: history(view.history)
+	, players(view.players)
+	, rules(view.rules) {
+	// TODO: charles: Fill in the missing parts of the history if required.
+	players[1 - view.view_player_id].tech = tech;
+	players[1 - view.view_player_id].books = books;
 }
 
 bool GameState::operator==(const GameState &other) const {
