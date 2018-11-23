@@ -14,6 +14,7 @@ const GameView = preload('res://native/game_view.gdns')
 
 onready var scene_loader = get_node('/root/scene_loader')
 var rules
+var state
 
 func _ready():
   var rules_file = File.new()
@@ -22,6 +23,12 @@ func _ready():
   rules.load_json_string(rules_file.get_as_text())
   rules_file.close()
 
-func clear_children(node):
+static func clear_children(node):
   for i in range(0, node.get_child_count()):
     node.get_child(i).queue_free()
+
+static func map_method(list, method):
+  var result = []
+  for elem in list:
+    result.append(elem.call(method))
+  return result

@@ -4,7 +4,7 @@ onready var button = $vbox/button
 onready var checkmark = $vbox/button/checkmark
 onready var label = $vbox/label
 var book = null setget set_book
-onready var checked = false setget set_checked
+var checked = false setget set_checked
 
 func _ready():
   redraw()
