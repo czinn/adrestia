@@ -23,3 +23,5 @@
 - Figure out a lightweight set of interfaces that lets us do tutorial /
   multiplayer games without duplicate code.
 - Establish a TCP connection.
+- Create helper functions for each of the available server endpoints
+- Add login page
