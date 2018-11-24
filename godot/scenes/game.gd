@@ -28,9 +28,9 @@ func _ready():
 		book_grid.add_child(book_button)
 		book_button.book = book
 		book_button.connect('pressed', self, 'toggle_book', [book_button])
-	print(play_button)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
+	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
 	book_select.visible = true
 	spell_select.visible = false
 	player_stats.visible = false
@@ -80,7 +80,14 @@ func on_play_button_pressed():
 func on_spell_enqueue(index, spell):
 	var action = spell_queue.spells.duplicate()
 	action.append(spell.get_id())
-	print(action)
+	if not g.state.is_valid_action(0, action):
+		return
+	spell_queue.spells = action
+	redraw()
+
+func on_spell_queue_pressed(index, spell):
+	var action = spell_queue.spells.duplicate()
+	action.remove(index)
 	if not g.state.is_valid_action(0, action):
 		return
 	spell_queue.spells = action
