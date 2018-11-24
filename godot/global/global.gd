@@ -17,24 +17,24 @@ var rules
 var state
 
 func _ready():
-  var rules_file = File.new()
-  rules_file.open('res://data/rules.json', File.READ)
-  rules = GameRules.new()
-  rules.load_json_string(rules_file.get_as_text())
-  rules_file.close()
+	var rules_file = File.new()
+	rules_file.open('res://data/rules.json', File.READ)
+	rules = GameRules.new()
+	rules.load_json_string(rules_file.get_as_text())
+	rules_file.close()
 
 static func clear_children(node):
-  for i in range(0, node.get_child_count()):
-    node.get_child(i).queue_free()
+	for i in range(0, node.get_child_count()):
+		node.get_child(i).queue_free()
 
 static func map_method(list, method):
-  var result = []
-  for elem in list:
-    result.append(elem.call(method))
-  return result
+	var result = []
+	for elem in list:
+		result.append(elem.call(method))
+	return result
 
 static func map_member(list, member):
-  var result = []
-  for elem in list:
-    result.append(elem.get(member))
-  return result
+	var result = []
+	for elem in list:
+		result.append(elem.get(member))
+	return result

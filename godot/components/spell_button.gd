@@ -1,23 +1,23 @@
 extends Control
 
+signal pressed
+
 onready var texture_button = $vbox/texture_button
 onready var label = $vbox/label
 var spell = null setget set_spell
 
-signal pressed
-
 func _ready():
-  texture_button.connect('pressed', self, 'on_pressed')
-  redraw()
+	texture_button.connect('pressed', self, 'on_pressed')
+	redraw()
 
 func on_pressed():
-  emit_signal('pressed')
+	emit_signal('pressed')
 
 func set_spell(spell_):
-  spell = spell_
-  redraw()
+	spell = spell_
+	redraw()
 
 func redraw():
-  if spell == null: return
-  if label == null: return
-  label.text = spell.get_name()
+	if spell == null: return
+	if label == null: return
+	label.text = spell.get_name()

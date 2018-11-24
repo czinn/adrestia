@@ -1,38 +1,37 @@
 extends Control
 
+signal pressed(index, spell)
+
 onready var g = get_node('/root/global')
 onready var hbox = $scroll_container/hbox
-var book = null setget set_book
+var spells = null setget set_spells
 
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 
 func _ready():
-  if book == null:
-    book = g.rules.get_book('conjuration')
-  g.clear_children(hbox)
-  redraw()
+	if spells == null:
+		spells = []
+	g.clear_children(hbox)
+	redraw()
 
-func set_book(book_):
-  book = book_
-  redraw()
+func set_spells(spells_):
+	spells = spells_
+	redraw()
 
 func redraw():
-  if hbox == null: return
-  if book == null: return
+	if hbox == null: return
+	if spells == null: return
 
-  g.clear_children(hbox)
-  for spell_id in book.get_spells():
-    var spell = g.rules.get_spell(spell_id)
-    var spell_button = spell_button_scene.instance()
-    spell_button.spell = spell
-    hbox.add_child(spell_button)
-    if handle_spell_clicked_object:
-      spell_button.connect('pressed', handle_spell_clicked_object, handle_spell_clicked_method, [spell])
+	g.clear_children(hbox)
+	var index = 0
+	for spell_id in spells:
+		var spell = g.rules.get_spell(spell_id)
+		var spell_button = spell_button_scene.instance()
+		spell_button.spell = spell
+		spell_button.connect('pressed', self, 'on_pressed', [index, spell])
+		hbox.add_child(spell_button)
+		index += 1
 
-var handle_spell_clicked_object = null
-var handle_spell_clicked_method = null
-
-func handle_spell_clicked(object, method):
-  handle_spell_clicked_object = object
-  handle_spell_clicked_method = method
-  redraw()
+func on_pressed(index, spell):
+	emit_signal("pressed", index, spell)
+	redraw()

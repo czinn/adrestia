@@ -10,22 +10,22 @@ var checked = false setget set_checked
 signal pressed
 
 func _ready():
-  button.connect('pressed', self, 'on_pressed')
-  redraw()
+	button.connect('pressed', self, 'on_pressed')
+	redraw()
 
 func on_pressed():
-  emit_signal('pressed')
+	emit_signal('pressed')
 
 func set_book(book_):
-  book = book_
-  redraw()
+	book = book_
+	redraw()
 
 func set_checked(checked_):
-  checked = checked_
-  redraw()
+	checked = checked_
+	redraw()
 
 func redraw():
-  if book == null: return
-  if label == null: return
-  label.text = book.get_name()
-  checkmark.visible = checked
+	if book == null: return
+	if label == null: return
+	label.text = book.get_name()
+	checkmark.visible = checked
