@@ -11,6 +11,7 @@
 
 struct TreeNode {
 	int total;
+	std::vector<GameAction> actions;
 	std::vector<int> visits;
 	std::vector<int> wins;
 };
@@ -24,7 +25,7 @@ size_t get_view_hash(const GameView &v) {
 	// probably bad, but is fast to code and probably works.
 	// Hash must, at minimum, include (explicitly or implicitly) mana and tech
 	// for current player.
-	return std::hash<std::string>{}(json(v.history).dump());
+	return std::hash<std::string>{}(json(v.view_player_id).dump() + json(v.history).dump());
 }
 
 // Returns a random set containing k integers in the range [0, n-1]
@@ -83,11 +84,12 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 		}
 	}
 
-	std::cout << "Finished determining unknown tech" << std::endl;
-	
 	// Iterations!
 	std::map<size_t, TreeNode> tree;
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 100000; i++) {
+		if (i % 10000 == 0) {
+			std::cout << i << std::endl;
+		}
 		// Choose the determinization
 		// For now, don't do self-determinizations.
 		size_t op = 1 - view.view_player_id;
@@ -98,27 +100,28 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 		for (const auto book : book_selection) {
 			books.push_back(&view.rules.get_book(remaining_books[op][book]));
 		}
-		std::set<int> tech_distribution =
-			choose(gen, unknown_techs[op] + book_selection.size() - 1, unknown_techs[op]);
-		int last_distr = -1;
-		int to_push = 0;
-		for (const auto t : tech_distribution) {
-			if (t == last_distr + 1) {
-				to_push++;
-			} else {
-				tech.push_back(to_push);
-				to_push = 0;
+		{
+			std::set<int> tech_distribution =
+				choose(gen, unknown_techs[op] + books.size() - 1, unknown_techs[op]);
+			int last_distr = -1;
+			int to_push = 0;
+			while (tech.size() < books.size()) {
+				tech.push_back(0);
 			}
-			last_distr = t;
+			int j = 0;
+			for (const auto t : tech_distribution) {
+				if (t == last_distr + 1) {
+					to_push++;
+				} else {
+					tech[j++] += to_push;
+					to_push = 0;
+				}
+				last_distr = t;
+			}
+			tech[j] += to_push;
 		}
-		tech.push_back(to_push);
-		while (tech.size() < books.size()) {
-			tech.push_back(0);
-		}
-		std::cout << json(tech) << std::endl;
 		// Create the determinization.
 		GameState g(view, tech, books);
-		std::cout << "Created a determinization" << std::endl;
 		// Expand (i.e. add to the tree) only one node per player per iteration.
 		std::vector<bool> expanded(view.players.size());
 		std::vector<std::pair<TreeNode*, int>> paths[view.players.size()];
@@ -128,7 +131,6 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 			std::vector<GameAction> the_turn;
 			for (int i = 0; i < view.players.size(); i++) {
 				GameView v(g, i);
-				std::vector<GameAction> actions = v.legal_actions();
 				size_t view_hash = get_view_hash(v);
 				// If we haven't expanded this node...
 				if (tree.count(view_hash) == 0) {
@@ -136,10 +138,12 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 					if (!expanded[i] && turn_number == 0) {
 						// ...expand the node.
 						expanded[i] = true;
-						tree[view_hash] = TreeNode { 0, std::vector<int>(actions.size()), std::vector<int>(actions.size()) };
+						std::vector<GameAction> actions = v.sane_actions();
+						std::cout << "Generated " << actions.size() << " actions" << std::endl;
+						tree[view_hash] = TreeNode { 0, actions, std::vector<int>(actions.size()), std::vector<int>(actions.size()) };
 					} else {
 						// Otherwise, choose a random action.
-						the_turn.push_back(actions[gen() % actions.size()]);
+						the_turn.push_back(v.random_action(gen));
 						continue;
 					}
 				}
@@ -169,13 +173,15 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 						}
 					}
 				}
-				the_turn.push_back(actions[chosen_child]);
+				the_turn.push_back(node.actions[chosen_child]);
 				paths[i].push_back(std::make_pair(&node, chosen_child));
 			}
 			g.simulate(the_turn);
 			turn_number++;
+			if (turn_number > 10) {
+				break;
+			}
 		}
-		std::cout << "Finished an iteration" << std::endl;
 		// Update node statistics.
 		const std::vector<size_t> &winners = g.winners();
 		for (size_t i = 0; i < view.players.size(); i++) {

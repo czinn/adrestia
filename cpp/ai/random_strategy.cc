@@ -8,7 +8,6 @@ RandomStrategy::RandomStrategy() : g(std::chrono::high_resolution_clock::now().t
 RandomStrategy::~RandomStrategy() {}
 
 GameAction RandomStrategy::get_action(const GameView &view) {
-	std::vector<GameAction> actions = view.legal_actions();
-	std::cout << "Number of actions available: " << actions.size() << std::endl;
+	std::vector<GameAction> actions = view.sane_actions();
 	return actions[g() % actions.size()];
 }

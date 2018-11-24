@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <deque>
+#include <random>
 
 #include "game_state.h"
 #include "player.h"
@@ -23,8 +24,10 @@ class GameView {
 
 		int turn_number() const; // First turn is 1.
 		std::vector<size_t> winners() const; // empty: Game still in progress.
+
 		std::vector<GameAction> legal_actions() const;
 		std::vector<GameAction> sane_actions() const;
+		GameAction random_action(std::mt19937 &gen) const;
 
 		friend void to_json(json &, const GameView &);
 
