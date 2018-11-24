@@ -32,3 +32,9 @@ static func map_method(list, method):
   for elem in list:
     result.append(elem.call(method))
   return result
+
+static func map_member(list, member):
+  var result = []
+  for elem in list:
+    result.append(elem.get(member))
+  return result

@@ -1,0 +1,5 @@
+Things that Jim skipped but fully intends to eventually do.
+
+- Replace TabContainer for spells with a custom thing built with TextureButtons
+  and visibility.
+- Health bars, mana crystals; not just numbers.

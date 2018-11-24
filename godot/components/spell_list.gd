@@ -13,14 +13,10 @@ func _ready():
   redraw()
 
 func set_book(book_):
-  print('book set')
   book = book_
   redraw()
 
 func redraw():
-  print('spell list redrawing')
-  print(hbox)
-  print(book)
   if hbox == null: return
   if book == null: return
 
@@ -30,3 +26,13 @@ func redraw():
     var spell_button = spell_button_scene.instance()
     spell_button.spell = spell
     hbox.add_child(spell_button)
+    if handle_spell_clicked_object:
+      spell_button.connect('pressed', handle_spell_clicked_object, handle_spell_clicked_method, [spell])
+
+var handle_spell_clicked_object = null
+var handle_spell_clicked_method = null
+
+func handle_spell_clicked(object, method):
+  handle_spell_clicked_object = object
+  handle_spell_clicked_method = method
+  redraw()
