@@ -10,17 +10,16 @@ onready var play_button = $ui/book_select/play_button
 
 onready var book_button_scene = preload('res://components/book_button.tscn')
 onready var spell_list_scene = preload('res://components/spell_list.tscn')
-onready var spell_button_scene = preload('res://components/spell_button.tscn')
 
 # The game.
 onready var spell_select = $ui/spell_select
 onready var end_turn_button = $ui/spell_select/end_turn_button
 onready var book_tabs = $ui/spell_select/book_tabs
 onready var player_stats = $ui/player_stats
+onready var enemy_stats = $ui/enemy_stats
 onready var spell_queue = $ui/spell_queue
 
 func _ready():
-	print('ain nobody bring us')
 	g.clear_children(book_grid)
 	spell_queue.spells = []
 	for book in g.rules.get_books().values():
@@ -34,6 +33,7 @@ func _ready():
 	book_select.visible = true
 	spell_select.visible = false
 	player_stats.visible = false
+	enemy_stats.visible = false
 	spell_queue.visible = false
 
 func get_selected_books():
@@ -58,14 +58,13 @@ func on_play_button_pressed():
 	book_select.visible = false
 	spell_select.visible = true
 	player_stats.visible = true
+	enemy_stats.visible = true
 	spell_queue.visible = true
-	print(g.state.as_json().result)
 
 	g.clear_children(book_tabs)
 	
-	selected_books = g.state.players[0].books # Not needed but just in case
-
 	# Populate spell list
+	selected_books = g.state.players[0].books
 	for i in range(len(selected_books)):
 		var book = selected_books[i]
 		var tab = NinePatchRect.new()
@@ -93,19 +92,14 @@ func on_spell_queue_pressed(index, spell):
 	spell_queue.spells = action
 	redraw()
 
-onready var hp_icon = $ui/player_stats/hp_icon
-onready var mp_icon = $ui/player_stats/mp_icon
-onready var hp_label = $ui/player_stats/hp_label
-onready var mp_label = $ui/player_stats/mp_label
-
 func redraw():
 	var me = g.state.players[0]
 	var mp_left = me.mp
 	for spell_id in spell_queue.spells:
 		var spell = g.rules.get_spell(spell_id)
 		mp_left -= spell.get_cost()
-	hp_label.text = '%d/%d' % [me.hp, me.max_hp]
-	mp_label.text = '%d/%d (+%d)' % [mp_left, g.rules.get_mana_cap(), me.mp_regen]
+	enemy_stats.redraw(g.state.players[1])
+	player_stats.redraw(me, mp_left)
 
 func on_end_turn_button_pressed():
 	var action = spell_queue.spells
@@ -119,3 +113,7 @@ func on_end_turn_button_pressed():
 	g.state.simulate([action, enemy_action])
 	spell_queue.spells = []
 	redraw()
+
+	if len(g.state.winners()) > 0:
+		print('Game is over')
+		# TODO: End game scene
