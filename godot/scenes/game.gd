@@ -14,6 +14,7 @@ onready var spell_button_scene = preload('res://components/spell_button.tscn')
 
 # The game.
 onready var spell_select = $ui/spell_select
+onready var end_turn_button = $ui/spell_select/end_turn_button
 onready var book_tabs = $ui/spell_select/book_tabs
 onready var player_stats = $ui/player_stats
 onready var spell_queue = $ui/spell_queue
@@ -28,9 +29,10 @@ func _ready():
     var book_button = book_button_scene.instance()
     book_grid.add_child(book_button)
     book_button.book = book
-    book_button.connect('pressed', self, 'on_toggle_book', [book_button])
+    book_button.connect('pressed', self, 'toggle_book', [book_button])
   print(play_button)
-  play_button.connect('pressed', self, 'on_choose_books')
+  play_button.connect('pressed', self, 'on_play_button_pressed')
+  end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
   book_select.visible = true
   spell_select.visible = false
   player_stats.visible = false
@@ -43,12 +45,12 @@ func get_selected_books():
       result.append(book_button.book)
   return result
 
-func on_toggle_book(book_button):
+func toggle_book(book_button):
   var already_checked = book_button.checked
   if already_checked or len(get_selected_books()) < 3:
     book_button.checked = not already_checked
 
-func on_choose_books():
+func on_play_button_pressed():
   var selected_books = get_selected_books()
   if len(selected_books) < 1 or len(selected_books) > 3:
     return
@@ -84,10 +86,8 @@ func on_spell_enqueue(spell):
     return
   var new_button = spell_button_scene.instance()
   new_button.spell = spell
-  # TODO: jim: jj
   spell_queue_hbox.add_child(new_button)
-  # allow recalculation of scroll size
-  yield(get_tree(), 'idle_frame')
+  yield(get_tree(), 'idle_frame') # allow recalculation of scroll size
   spell_queue_scroller.set_h_scroll(spell_queue_hbox.rect_size.x)
   redraw()
 
@@ -110,3 +110,17 @@ func redraw():
     mp_left -= spell.get_cost()
   hp_label.text = '%d/%d' % [me.hp, me.max_hp]
   mp_label.text = '%d/%d (+%d)' % [mp_left, g.rules.get_mana_cap(), me.mp_regen]
+
+func on_end_turn_button_pressed():
+  var action = current_action()
+  if not g.state.is_valid_action(0, action):
+    return
+  
+  # Enemy does nothing
+  # TODO: AIs
+  var enemy_action = []
+
+  g.state.simulate([action, enemy_action])
+  g.clear_children(spell_queue_hbox)
+  yield(get_tree(), 'idle_frame') # allow recalculation of enqueued spells
+  redraw()
