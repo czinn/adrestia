@@ -311,12 +311,6 @@
         "regulation_damper", "regulation_shield_2", "regulation_shield_3",
         "regulation_shield_4"
       ]
-    },
-    {
-      "id": "testing", "name": "Past AP Exams Collection",
-      "spells": [
-        "burn_mana_1"
-      ]
     }
   ]
 }

@@ -35,12 +35,10 @@ size_t get_action_hash(size_t player, const GameAction &a) {
 	return h;
 }
 
-const double pi = std::atan(1)*4;
-
 double score_game_state(const GameState &g) {
 	// Returns an esimate of the probability that the first player will win.
-	if (g.players[0].hp == 0) return 0;
-	if (g.players[1].hp == 0) return 1;
+	if (g.players[0].hp <= 0) return 0;
+	if (g.players[1].hp <= 0) return 1;
 	double x = (double)(g.players[0].hp) / (double)(g.players[1].hp);
 	if (x < 1) {
 		return x * 0.5;
@@ -114,7 +112,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 	std::unordered_map<size_t, Node> regret_map;
 	std::unordered_map<size_t, std::vector<GameAction>> action_map;
 	std::unordered_map<size_t, double> score_map;
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 1000; i++) {
 		// Choose the determinization
 		// For now, don't do self-determinizations.
 		size_t op = 1 - view.view_player_id;
@@ -189,7 +187,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 					score_action_pair(g, a, chosen_actions[1], score_map) :
 					score_action_pair(g, chosen_actions[0], a, score_map);
 				n.strategy += std::max(0.0, n.regret) / total_regret[i];
-				n.regret += score - actual_score;
+				n.regret += i == 0 ? score - actual_score : actual_score - score;
 			}
 		}
 	}
