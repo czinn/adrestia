@@ -11,12 +11,12 @@ namespace godot {
 	SCRIPT_AT("res://native/game_view.gdns")
 
 	void CLASSNAME::_register_methods() {
-    REGISTER_METHOD(init)
-    REGISTER_METHOD(turn_number)
-    REGISTER_METHOD(winners)
-    REGISTER_SETGET(history, Variant())
-    REGISTER_SETGET(players, Variant())
-    REGISTER_SETGET(view_player_id, Variant())
+		REGISTER_METHOD(init)
+		REGISTER_METHOD(turn_number)
+		REGISTER_METHOD(winners)
+		REGISTER_SETGET(history, Variant())
+		REGISTER_SETGET(players, Variant())
+		REGISTER_SETGET(view_player_id, Variant())
 		REGISTER_NULLABLE
 		REGISTER_TO_JSONABLE
 	}

@@ -11,7 +11,7 @@
 using namespace godot;
 
 namespace godot {
-	SCRIPT_AT("res://native/sticky.gdns");
+	SCRIPT_AT("res://native/sticky_instance.gdns");
 
 	void StickyInstance::_register_methods() {
 		REGISTER_METHOD(apply_to_effect)

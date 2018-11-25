@@ -6,11 +6,8 @@
 #include "macros.h"
 
 namespace godot {
-	class Book;
 	class EffectInstance;
-	class GameRules;
 	class Spell;
-	class StickyInstance;
 
 	class Player : public godot::GodotScript<Reference>, public Forwarder<::Player, Player> {
 			GODOT_CLASS(Player)
