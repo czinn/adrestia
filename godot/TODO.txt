@@ -1,7 +1,5 @@
 # First milestone: we can play the game
 
-- Display enemy stats
-- Display stickies
 - Victory screen
 
 # Second milestone: others can play the game

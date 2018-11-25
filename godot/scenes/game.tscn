@@ -215,10 +215,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -199.0
-margin_top = -282.0
-margin_right = -33.0
-margin_bottom = -215.0
+margin_left = -193.0
+margin_top = -303.0
+margin_right = -27.0
+margin_bottom = -236.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -237,17 +237,19 @@ _sections_unfolded = [ "Textures" ]
 
 [node name="spell_queue" parent="ui" index="2" instance=ExtResource( 5 )]
 
-margin_top = 480.0
-margin_bottom = 480.0
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -70.0
+margin_bottom = -70.0
 
 [node name="player_stats" parent="ui" index="3" instance=ExtResource( 6 )]
 
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 18.0
-margin_top = -272.0
+margin_top = -322.0
 margin_right = 81.0
-margin_bottom = -219.0
+margin_bottom = -269.0
 
 [node name="enemy_stats" parent="ui" index="4" instance=ExtResource( 6 )]
 

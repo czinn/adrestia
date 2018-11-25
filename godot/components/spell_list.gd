@@ -2,11 +2,12 @@ extends Control
 
 signal pressed(index, spell)
 
+onready var spell_button_scene = preload('res://components/spell_button.tscn')
+
 onready var g = get_node('/root/global')
+
 onready var hbox = $scroll_container/hbox
 var spells = null setget set_spells
-
-onready var spell_button_scene = preload('res://components/spell_button.tscn')
 
 func _ready():
 	if spells == null:
