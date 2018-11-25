@@ -1,11 +1,10 @@
 # First milestone: we can play the game (done!)
 
-- Random AI
-
 # Second milestone: others can play the game
 
 - Spell hover shows description and flavor text.
-- Book hover shows description and flavor text.
+- Sticky hover shows description and flavor text.
+- Book hover shows description and flavor text and list of spells.
 
 # Third milestone: others can enjoy the game
 
