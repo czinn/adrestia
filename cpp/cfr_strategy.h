@@ -1,7 +1,7 @@
 #pragma once
 #include <random>
-#include "../game_action.h"
-#include "../game_view.h"
+#include "game_action.h"
+#include "game_view.h"
 #include "strategy.h"
 
 class CfrStrategy : public Strategy {

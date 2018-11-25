@@ -8,6 +8,5 @@ RandomStrategy::RandomStrategy() : g(std::chrono::high_resolution_clock::now().t
 RandomStrategy::~RandomStrategy() {}
 
 GameAction RandomStrategy::get_action(const GameView &view) {
-	std::vector<GameAction> actions = view.sane_actions();
-	return actions[g() % actions.size()];
+	return view.random_action(g);
 }

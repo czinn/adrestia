@@ -1,6 +1,6 @@
 #pragma once
-#include "../game_action.h"
-#include "../game_view.h"
+#include "game_action.h"
+#include "game_view.h"
 
 class Strategy {
  public:

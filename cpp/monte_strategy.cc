@@ -5,9 +5,9 @@
 #include <vector>
 #include <set>
 #include <iostream>
-#include "../game_action.h"
-#include "../game_view.h"
-#include "../game_state.h"
+#include "game_action.h"
+#include "game_view.h"
+#include "game_state.h"
 
 struct TreeNode {
 	int total;

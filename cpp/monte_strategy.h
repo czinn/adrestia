@@ -1,8 +1,8 @@
 #pragma once
 #include <random>
 #include <set>
-#include "../game_action.h"
-#include "../game_view.h"
+#include "game_action.h"
+#include "game_view.h"
 #include "strategy.h"
 
 class MonteStrategy : public Strategy {

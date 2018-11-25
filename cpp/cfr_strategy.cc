@@ -7,9 +7,9 @@
 #include <set>
 #include <iostream>
 #include <unordered_map>
-#include "../game_action.h"
-#include "../game_view.h"
-#include "../game_state.h"
+#include "game_action.h"
+#include "game_view.h"
+#include "game_state.h"
 
 struct Node {
 	double regret;
