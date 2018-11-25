@@ -13,6 +13,8 @@ const GameState = preload('res://native/game_state.gdns')
 const GameView = preload('res://native/game_view.gdns')
 const Strategy = preload('res://native/strategy.gdns')
 
+onready var tooltip_scene = preload('res://components/tooltip.tscn')
+
 onready var scene_loader = get_node('/root/scene_loader')
 var rules
 var state
@@ -40,3 +42,13 @@ static func map_member(list, member):
 	for elem in list:
 		result.append(elem.get(member))
 	return result
+
+func summon_tooltip(scene, target, text, above=true):
+	var tooltip = tooltip_scene.instance()
+	tooltip.text = text
+	var y = target.rect_position.y if above else (target.rect_position.y + target.rect_size.y)
+	tooltip.set_target(target.rect_position.x + target.rect_size.x / 2, y, above)
+	scene.add_child(tooltip)
+	print(y)
+	print(tooltip.margin_top)
+	print(tooltip.margin_bottom)

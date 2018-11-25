@@ -63,5 +63,5 @@ TabContainer/icons/menu_highlight = null
 TabContainer/styles/panel = null
 TabContainer/styles/tab_bg = null
 TabContainer/styles/tab_fg = null
-_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "Resource", "RichTextLabel", "TabContainer", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles" ]
+_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "Resource", "RichTextLabel", "RichTextLabel/fonts", "TabContainer", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles" ]
 
