@@ -1,5 +1,8 @@
 extends Node
 
+# A bit heavy-handed, but opens up the possibility for sick scene-loading
+# transitions.
+
 # See
 # http://docs.godotengine.org/en/latest/tutorials/io/background_loading.html
 
@@ -32,8 +35,8 @@ func _process(time):
 			loader = null
 			break
 
-func goto_scene(path):
-	loader = ResourceLoader.load_interactive('res://scenes/game.tscn')
+func goto_scene(scene_name):
+	loader = ResourceLoader.load_interactive('res://scenes/%s.tscn' % [scene_name])
 	set_process(true)
 	current_scene.queue_free()
 

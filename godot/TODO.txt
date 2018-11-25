@@ -1,6 +1,6 @@
-# First milestone: we can play the game
+# First milestone: we can play the game (done!)
 
-- Victory screen
+- Random AI
 
 # Second milestone: others can play the game
 

@@ -9,4 +9,4 @@ func _ready():
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 
 func on_play_button_pressed():
-	g.scene_loader.goto_scene('res://scenes/game.tscn')
+	g.scene_loader.goto_scene('game')

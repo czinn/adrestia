@@ -116,4 +116,4 @@ func on_end_turn_button_pressed():
 
 	if len(g.state.winners()) > 0:
 		print('Game is over')
-		# TODO: End game scene
+		g.scene_loader.goto_scene('game_results')

@@ -22,5 +22,4 @@ func redraw(player, mp_override = null):
 	for sticky in player.stickies:
 		var sticky_display = sticky_display_scene.instance()
 		stickies.add_child(sticky_display)
-		print(sticky.amount)
 		sticky_display.redraw(sticky)
