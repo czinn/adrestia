@@ -49,6 +49,3 @@ func summon_tooltip(scene, target, text, above=true):
 	var y = target.rect_position.y if above else (target.rect_position.y + target.rect_size.y)
 	tooltip.set_target(target.rect_position.x + target.rect_size.x / 2, y, above)
 	scene.add_child(tooltip)
-	print(y)
-	print(tooltip.margin_top)
-	print(tooltip.margin_bottom)
