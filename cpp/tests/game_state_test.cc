@@ -43,7 +43,6 @@ TEST_CASE("Mana drains") {
 
 	auto &p0 = state.players[0];
 	auto &p1 = state.players[1];
-	const int p0_starting_hp = p0.hp;
 	const int p1_starting_hp = p1.hp;
 	p0.mp = 10;
 	p0.mp_regen = 3;

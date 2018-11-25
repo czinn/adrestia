@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -MMD -O2 -std=c++17
+CXXFLAGS = -Wall -MMD -std=c++17 -g
 OBJECTS = $(patsubst %.cc,%.o,$(filter-out main.cc, $(wildcard *.cc)))
 
 MAIN_EXEC = main
@@ -10,7 +10,11 @@ TEST_EXEC = test
 TEST_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard tests/*.cc))
 TEST_DEPS = ${TEST_OBJS:.o=.d}
 
-EXECS = ${MAIN_EXEC} ${TEST_EXEC}
+AI_EXEC = skynet
+AI_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard ai/*.cc))
+AI_DEPS = ${TEST_OBJS:.o=.d}
+
+EXECS = ${MAIN_EXEC} ${TEST_EXEC} ${AI_EXEC}
 
 all: ${EXECS}
 
@@ -20,7 +24,10 @@ ${MAIN_EXEC}: ${MAIN_OBJS}
 ${TEST_EXEC}: ${TEST_OBJS}
 	${CXX} ${CXXFLAGS} $^ -o $@
 
--include ${MAIN_DEPS} ${TEST_DEPS} ${CLI_DEPS} ${AI_DEPS}
+${AI_EXEC}: ${AI_OBJS}
+	${CXX} ${CXXFLAGS} $^ -o $@
+
+-include ${MAIN_DEPS} ${TEST_DEPS} ${AI_DEPS}
 
 clean:
-	rm -f {.,tests}/*.{o,d} ${EXECS}
+	rm -f {.,tests,ai}/*.{o,d} ${EXECS}

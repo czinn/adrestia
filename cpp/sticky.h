@@ -58,7 +58,7 @@ class Sticky {
 		std::string get_name() const;
 		std::string get_text() const;
 		StickyKind get_kind() const;
-		const std::vector<Effect> get_effects() const;
+		const std::vector<Effect> &get_effects() const;
 		bool get_trigger_inbound() const;
 
 		// EffectInstance is not yet implemented.
