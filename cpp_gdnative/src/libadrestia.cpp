@@ -12,6 +12,7 @@
 #include "sticky.h"
 #include "sticky_instance.h"
 #include "sticky_invoker.h"
+#include "strategy.h"
 
 extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *o) {
   godot::Godot::gdnative_init(o);
@@ -36,4 +37,5 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
   godot::register_class<godot::Sticky>();
   godot::register_class<godot::StickyInstance>();
   godot::register_class<godot::StickyInvoker>();
+  godot::register_class<godot::Strategy>();
 }

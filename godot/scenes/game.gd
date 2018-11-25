@@ -55,6 +55,8 @@ func on_play_button_pressed():
 	var selected_book_ids = g.map_method(selected_books, 'get_id')
 	g.state = g.GameState.new()
 	g.state.init(g.rules, [selected_book_ids, ['conjuration']])
+	g.ai = g.Strategy.new()
+	g.ai.init_random_strategy()
 	book_select.visible = false
 	spell_select.visible = true
 	player_stats.visible = true
@@ -108,7 +110,10 @@ func on_end_turn_button_pressed():
 	
 	# Enemy does nothing
 	# TODO: AIs
-	var enemy_action = []
+	var view = g.GameView.new()
+	view.init(g.state, 1)
+	var enemy_action = g.ai.get_action(view)
+	print(enemy_action)
 
 	g.state.simulate([action, enemy_action])
 	spell_queue.spells = []

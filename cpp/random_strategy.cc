@@ -1,7 +1,6 @@
 #include "random_strategy.h"
 #include <chrono>
 #include <random>
-#include <iostream>
 
 RandomStrategy::RandomStrategy() : g(std::chrono::high_resolution_clock::now().time_since_epoch().count()) {}
 

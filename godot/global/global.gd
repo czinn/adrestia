@@ -11,10 +11,12 @@ const Sticky = preload('res://native/sticky.gdns')
 const GameRules = preload('res://native/game_rules.gdns')
 const GameState = preload('res://native/game_state.gdns')
 const GameView = preload('res://native/game_view.gdns')
+const Strategy = preload('res://native/strategy.gdns')
 
 onready var scene_loader = get_node('/root/scene_loader')
 var rules
 var state
+var ai
 
 func _ready():
 	var rules_file = File.new()
