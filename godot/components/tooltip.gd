@@ -1,7 +1,8 @@
 extends Control
 
-onready var label = $nine_patch_rect/rich_text_label
-onready var triangle = $triangle
+onready var background = $background
+onready var label = $background/nine_patch_rect/rich_text_label
+onready var triangle = $background/triangle
 
 var text = null setget set_text
 var x = 270
@@ -13,6 +14,10 @@ const margin = 30 + 72 # aaahhh magic numbers
 
 func _ready():
 	redraw()
+
+func _gui_event(event):
+	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
+		get_parent().remove_child(self)
 
 func set_text(text_):
 	text = text_
@@ -41,13 +46,13 @@ func redraw():
 		triangle.margin_top = -78
 		triangle.margin_bottom = 0
 		triangle.rect_scale.y = 1
-		margin_top = y - height
-		margin_bottom = y
+		background.margin_top = y - height
+		background.margin_bottom = y
 	else:
 		triangle.rect_scale.y = -1
 		triangle.anchor_top = 0
 		triangle.anchor_bottom = 0
 		triangle.margin_top = 78
 		triangle.margin_bottom = 0
-		margin_top = y
-		margin_bottom = y + height
+		background.margin_top = y
+		background.margin_bottom = y + height

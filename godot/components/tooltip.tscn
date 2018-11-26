@@ -5,13 +5,12 @@
 [ext_resource path="res://art-built/panel-9patch.png" type="Texture" id=3]
 [ext_resource path="res://art-built/panel-triangle.png" type="Texture" id=4]
 
-[node name="control" type="Control"]
+[node name="control" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 0.0
-margin_bottom = 960.0
+anchor_bottom = 1.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -20,13 +19,28 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 __meta__ = {
 "_edit_horizontal_guides_": [  ],
 "_edit_vertical_guides_": [ 270.283 ]
 }
 
-[node name="nine_patch_rect" type="NinePatchRect" parent="." index="0"]
+[node name="background" type="Control" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_bottom = 960.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Mouse" ]
+
+[node name="nine_patch_rect" type="NinePatchRect" parent="background" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -47,9 +61,9 @@ patch_margin_left = 41
 patch_margin_top = 41
 patch_margin_right = 41
 patch_margin_bottom = 41
-_sections_unfolded = [ "Anchor", "Margin", "Patch Margin" ]
+_sections_unfolded = [ "Patch Margin" ]
 
-[node name="rich_text_label" type="RichTextLabel" parent="nine_patch_rect" index="0"]
+[node name="rich_text_label" type="RichTextLabel" parent="background/nine_patch_rect" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -57,8 +71,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 30.0
 margin_top = 30.0
-margin_right = -30.0
-margin_bottom = -30.0
+margin_right = -10.0
+margin_bottom = -10.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
@@ -80,7 +94,7 @@ selection_enabled = false
 override_selected_font_color = false
 _sections_unfolded = [ "Anchor", "BBCode", "Margin" ]
 
-[node name="triangle" type="TextureRect" parent="." index="1"]
+[node name="triangle" type="TextureRect" parent="background" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -100,5 +114,7 @@ size_flags_vertical = 1
 texture = ExtResource( 4 )
 stretch_mode = 0
 _sections_unfolded = [ "Anchor", "Margin", "Rect" ]
+
+[connection signal="gui_input" from="." to="." method="_gui_event"]
 
 
