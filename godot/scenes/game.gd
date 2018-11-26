@@ -76,6 +76,9 @@ func on_play_button_pressed():
 		spell_list.connect('pressed', self, 'on_spell_enqueue')
 		tab.add_child(spell_list)
 		book_tabs.add_child(tab)
+
+	# allow tab container to detect new tabs...
+	yield(get_tree(), 'idle_frame')
 	redraw()
 
 func on_spell_enqueue(index, spell):
@@ -94,6 +97,13 @@ func on_spell_queue_pressed(index, spell):
 	spell_queue.spells = action
 	redraw()
 
+func get_upgraded_book():
+	for spell_id in spell_queue.spells:
+		var spell = g.rules.get_spell(spell_id)
+		if spell.is_tech_spell():
+			return spell.get_book()
+	return null
+
 func redraw():
 	var me = g.state.players[0]
 	var mp_left = me.mp
@@ -103,13 +113,21 @@ func redraw():
 	enemy_stats.redraw(g.state.players[1])
 	player_stats.redraw(me, mp_left)
 
+	# display effective tech levels
+	var upgraded_book_id = get_upgraded_book()
+	for i in range(len(me.tech)):
+		var tech = me.tech[i]
+		if me.books[i].get_id() == upgraded_book_id:
+			tech += 1
+		book_tabs.set_tab_title(i, '%s (%d)' % [me.books[i].get_id(), tech])
+		print(book_tabs.get_tab_title(i))
+	book_tabs.update()
+
 func on_end_turn_button_pressed():
 	var action = spell_queue.spells
 	if not g.state.is_valid_action(0, action):
 		return
 	
-	# Enemy does nothing
-	# TODO: AIs
 	var view = g.GameView.new()
 	view.init(g.state, 1)
 	var enemy_action = g.ai.get_action(view)
