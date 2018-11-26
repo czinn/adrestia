@@ -39,7 +39,7 @@ string Z_DEFAULT_FUNCTION_NAME           ("z_default");
 string FLOOP_FUNCTION_NAME               ("floop");
 string REGISTER_NEW_ACCOUNT_FUNCTION_NAME("register_new_account");
 string VERIFY_ACCOUNT_FUNCTION_NAME      ("verify_account");
-string DELETE_ACCOUNT_FUNCTION_NAME      ("delete_account");
+string CHANGE_USER_NAME_FUNCTION_NAME    ("change_user_name");
 // All responses will be json containing key 'api_code' and 'api_message', possibly other keys.
 
 #define ENV_FILE_PATH ".env"
@@ -134,6 +134,57 @@ void print_hexy(const char* not_hexy, int length) {
 }
 
 
+json adjust_user_name_in_database(pqxx::connection* psql_connection,
+                                  const string& uuid,
+                                  const string& user_name
+                                 ) {
+	/* Returns json with [tag] */
+	const string update_user_name_command = ""
+	"UPDATE adrestia_accounts"
+	"    SET user_name = $1, tag = $2"
+	"    WHERE uuid = $3"
+	";";
+
+	cout << "adjust_user_name_in_database called with args:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+	cout << "    user_name: |" << user_name << "|" << endl;
+
+	json new_account_info;
+
+	bool successfully_updated = false;
+	psql_connection[0].prepare("update_user_name_command",
+	                           update_user_name_command
+	                          );
+	for (int i = 0; i < 1000; i += 1) {
+		string tag = hex_urandom(TAG_LENGTH);
+
+		pqxx::work insertion_transaction(psql_connection[0]);
+		try {
+			pqxx::result statement_result = insertion_transaction.prepared("update_user_name_command")
+			                                                              (user_name)(tag)(uuid)
+			                                                              .exec();
+			insertion_transaction.commit();
+
+			cout << "Successfully adjustment of user_name in database." << endl;
+			successfully_updated = true;
+			new_account_info["tag"] = tag;
+			break;
+		}
+		catch (pqxx::integrity_constraint_violation) {
+			insertion_transaction.abort();
+			continue;
+		}
+	}
+
+	if (!successfully_updated) {
+		cout << "Failed to update the user_name!";
+		throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + user_name + "|!");
+	}
+
+	return new_account_info;
+}
+
+
 json register_new_account_in_database(pqxx::connection* psql_connection,
 	                                  const string& password
 	                                 ) {
@@ -177,7 +228,7 @@ json register_new_account_in_database(pqxx::connection* psql_connection,
 		try {
 			pqxx::result statement_result = insertion_transaction.prepared("insert_new_account_into_database_command")
 			                                                              (uuid)(default_user_name)(tag)(bstring)(salt)
-                                                                          .exec();
+			                                                              .exec();
 			insertion_transaction.commit();
 
 			cout << "Successfully finished insertion of new account into database." << endl;
@@ -206,7 +257,6 @@ json register_new_account_in_database(pqxx::connection* psql_connection,
 bool verify_existing_account_in_database(pqxx::connection* psql_connection,
                                          const string& uuid,
                                          const string& password) {
-
 	const string select_password_from_database_command = ""
 	"SELECT hash_of_salt_and_password, salt"
 	"    FROM adrestia_accounts"
@@ -280,9 +330,29 @@ string get_database_connection_config_string() {
 }
 
 
+void missing_key_message(int client_socket, const string& missing_key_name) {
+    /* For when the client calls a real function but forgets one of its keys */
+    json json_message;
+    json_message["api_code"] = 400;
+    json_message["api_message"] = "Missing expected key: |" + missing_key_name + "|.";
+    string client_send_string = json_message.dump();
+    client_send_string += '\n';
+    send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+}
+
+
 int register_new_account(int client_socket, json& client_json) {
 	cout << "Triggered register_new_account." << endl;
-	string password = client_json["password"];
+    string password;
+    try {
+        password = client_json.at("password");
+    }
+	catch (json::exception& e) {
+        cout << "register_new_account not provided with key 'password'." << endl;
+        const string missing_key = "password";
+        missing_key_message(client_socket, missing_key);
+        return 1;
+    }
 
 	cout << "Creating new account with params:" << endl;
 	cout << "    password: |" << password << "|" << endl;
@@ -312,8 +382,27 @@ int register_new_account(int client_socket, json& client_json) {
 
 int verify_account(int client_socket, json& client_json) {
 	cout << "Triggered verify_account." << endl;
-	string uuid = client_json["uuid"];
-	string password = client_json["password"];
+    string uuid;
+    string password;
+
+    try {
+        uuid = client_json.at("uuid");
+    }
+    catch (json::exception& e) {
+        cout << "verify_account missing key 'uuid'." << endl;
+        const string missing_key = "uuid";
+        missing_key_message(client_socket, missing_key);
+        return 1;
+    }
+    try {
+        password = client_json.at("password");
+    }
+    catch (json::exception& e) {
+        cout << "verify_account missing key 'password'." << endl;
+        const string missing_key = "password";
+        missing_key_message(client_socket, missing_key);
+        return 1;
+    }
 
 	cout << "Checking authentication for account with:" << endl;
 	cout << "    uuid: |" << uuid << "|" << endl;
@@ -344,11 +433,77 @@ int verify_account(int client_socket, json& client_json) {
 }
 
 
+int change_user_name(int client_socket, json& client_json) {
+	cout << "Triggered change_user_name." << endl;
+	string uuid;
+	string password;
+	string new_user_name;
+
+	try {
+		uuid = client_json.at("uuid");
+	}
+	catch (json::exception& e) {
+		cout << "change_user_name missing key 'uuid'." << endl;
+		const string missing_key = "uuid";
+		missing_key_message(client_socket, missing_key);
+		return 1;
+	}
+	try {
+		password = client_json.at("password");
+	}
+	catch (json::exception& e) {
+		cout << "change_user_name missing key 'password'." << endl;
+		const string missing_key = "password";
+		missing_key_message(client_socket, missing_key);
+		return 1;
+	}
+	try {
+		new_user_name = client_json["new_user_name"];
+	}
+	catch (json::exception& e) {
+		cout << "change_user_name missing key 'new_user_name'." << endl;
+		const string missing_key = "new_user_name";
+		missing_key_message(client_socket, missing_key);
+		return 1;
+	}
+
+	// Authenticate this change.
+	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
+	bool authorized_change = verify_existing_account_in_database(psql_connection, uuid, password);
+	if (!authorized_change) {
+		cout << "uuid/password mismatch; cannot perform operation." << endl;
+		delete psql_connection;
+		json json_message;
+		json_message["api_code"] = 401;
+		json_message["api_message"] = "Bad uuid/password authorization for this action.";
+		string client_send_string = json_message.dump();
+		client_send_string += '\n';
+		send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+		return 0;
+	}
+
+	cout << "Change request authenticated; commencing." << endl;
+	json new_account_info = adjust_user_name_in_database(psql_connection, uuid, new_user_name);
+
+	cout << "New account info is:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+	cout << "    user_name: |" << new_user_name << "|" << endl;
+	cout << "    tag: |" << new_account_info["tag"] << "|" << endl;
+
+	new_account_info["api_code"] = 201;
+	new_account_info["api_message"] = "User name has been changed.";
+	string client_send_string = new_account_info.dump();
+	client_send_string += '\n';
+	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+	return 0;
+}
+
+
 int z_default(int client_socket, json& fake_client_json) {
 	/* We expect client's original message to be in 'message'. */
 	string client_message;
 	try {
-		client_message = fake_client_json["message"];
+		client_message = fake_client_json["api_message"];
 	}
 	catch (json::exception& e) {
 		cout << "Triggered z_default, but no message was provided?" << endl;
@@ -452,7 +607,7 @@ void process_connection(int server_socket, int client_socket) {
 
 		// This is for z_default
 		json fake_client_json;
-		fake_client_json["message"] = client_request;
+		fake_client_json["api_message"] = client_request;
 
 		json client_json;
         string requested_function_name;
@@ -568,6 +723,7 @@ int main(int na, char* arg[]) {
 	handler_map[FLOOP_FUNCTION_NAME] = floop;
 	handler_map[REGISTER_NEW_ACCOUNT_FUNCTION_NAME] = register_new_account;
 	handler_map[VERIFY_ACCOUNT_FUNCTION_NAME] = verify_account;
+	handler_map[CHANGE_USER_NAME_FUNCTION_NAME] = change_user_name;
 	//handler_map[DELETE_ACCOUNT_FUNCTION_NAME] = delete_account;
 
 

@@ -209,12 +209,56 @@ bool verify_existing_account(const string& uuid, const string& password) {
 	return false;
 }
 
+
+json change_user_name(const string& uuid, const string& password, const string& new_user_name) {
+	/* Returns the server's response, which will contain key 'tag' if successful. */
+
+	cout << "change_user_name outbound with:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+	cout << "    password: |" << password << "|" << endl;
+	cout << "    new_user_name: |" << new_user_name << "|" << endl;
+
+	int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
+	if (my_socket == -1) {
+		cerr << "change_user_name failed to connect." << endl;
+		throw string("change_user_name failed to connect.");
+	}
+
+	json json_message;
+	json_message[HANDLER_KEY_NAME] = "change_user_name";
+	json_message["uuid"] = uuid;
+	json_message["password"] = password;
+	json_message["new_user_name"] = new_user_name;
+	string server_send_string = json_message.dump();
+	server_send_string += '\n';
+	send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
+
+	string server_response = read_packet(my_socket);
+	json server_response_json = json::parse(server_response);
+
+	if (server_response_json["api_code"] == 201) {
+		cout << "change_user_name reports name has been successfully changed." << endl;
+		cout << "New tag: |" << server_response_json["tag"] << "|" << endl;
+		return server_response_json;
+	}
+	else if (server_response_json["api_code"] == 401) {
+		cout << "change_user_name reports that the uuid/password given was invalid." << endl;
+		return server_response_json;
+	}
+	cout << "change_user_name reported:" << endl;
+	cout << "    code: |" << server_response_json["code"] << "|" << endl;
+	cout << "    message: |" << server_response_json["message"] << "|" << endl;
+	return server_response_json;
+}
+
 // ACTUAL API ENDS HERE
 
 
 int main(int argc, char* argv[]) {
 	string password("blop");
+	string desired_user_name("stheno");
 
 	json new_account_info = register_new_account(password);
 	bool account_verification = verify_existing_account(new_account_info["uuid"], password);
+	json tag_json = change_user_name(new_account_info["uuid"], password, desired_user_name);
 }
