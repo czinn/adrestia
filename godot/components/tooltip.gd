@@ -1,5 +1,7 @@
 extends Control
 
+onready var g = get_node('/root/global')
+
 onready var background = $background
 onready var label = $background/nine_patch_rect/rich_text_label
 onready var triangle = $background/triangle
@@ -16,7 +18,7 @@ func _ready():
 	redraw()
 
 func _gui_event(event):
-	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
+	if g.event_is_pressed(event):
 		get_parent().remove_child(self)
 
 func set_text(text_):
@@ -26,6 +28,7 @@ func set_text(text_):
 func set_target(x_, y_, point_down_=true):
 	x = x_
 	y = y_
+	print(x, " ", y)
 	point_down = point_down_
 	redraw()
 

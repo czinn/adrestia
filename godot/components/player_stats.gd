@@ -21,5 +21,6 @@ func redraw(player, mp_override = null):
 	g.clear_children(stickies)
 	for sticky in player.stickies:
 		var sticky_display = sticky_display_scene.instance()
+		sticky_display.sticky = sticky
 		stickies.add_child(sticky_display)
-		sticky_display.redraw(sticky)
+		sticky_display.redraw()

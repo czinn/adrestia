@@ -43,9 +43,15 @@ static func map_member(list, member):
 		result.append(elem.get(member))
 	return result
 
-func summon_tooltip(scene, target, text, above=true):
+func summon_tooltip(target, text, above=true):
 	var tooltip = tooltip_scene.instance()
 	tooltip.text = text
-	var y = target.rect_position.y if above else (target.rect_position.y + target.rect_size.y)
-	tooltip.set_target(target.rect_position.x + target.rect_size.x / 2, y, above)
-	scene.add_child(tooltip)
+	var pos = target.get_global_rect().position
+	var y = pos.y if above else (target.rect_position.y + target.rect_size.y)
+	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
+	get_node("/root/root/ui").add_child(tooltip)
+
+func event_is_pressed(event):
+	return event is InputEventMouseButton \
+		and event.button_index == BUTTON_LEFT \
+		and event.pressed
