@@ -34,15 +34,19 @@ using json = nlohmann::json;
 #define MESSAGE_HANDLER_NAME_LENGTH 32
 
 // AAHOLAGF:DSJKHFG
+string HANDLER_KEY_NAME("api_handler_name");
 string Z_DEFAULT_FUNCTION_NAME           ("z_default");
-string FLOOP_FUNCTION_NAME               ("000000000000000000000000000floop");
-string REGISTER_NEW_ACCOUNT_FUNCTION_NAME("000000000000register_new_account");
-string VERIFY_ACCOUNT_FUNCTION_NAME      ("000000000000000000verify_account");
-string DELETE_ACCOUNT_FUNCTION_NAME      ("000000000000000000delete_account");
+string FLOOP_FUNCTION_NAME               ("floop");
+string REGISTER_NEW_ACCOUNT_FUNCTION_NAME("register_new_account");
+string VERIFY_ACCOUNT_FUNCTION_NAME      ("verify_account");
+string DELETE_ACCOUNT_FUNCTION_NAME      ("delete_account");
+// All responses will be json containing key 'api_code' and 'api_message', possibly other keys.
 
 #define ENV_FILE_PATH ".env"
 
 #define SALT_LENGTH 16
+#define UUID_LENGTH 32
+#define TAG_LENGTH 8
 
 class connection_closed {};
 class socket_error {};
@@ -84,7 +88,11 @@ string hex_urandom(unsigned int number_of_characters) {  // Creates random hex s
 }
 
 // CRYPTO STUFF BEGINS -- put this in another file!
-void digest_message(const char* message, size_t message_length, unsigned char** digest_returncarrier, unsigned int* digest_length_returncarrier) {
+void digest_message(const char* message,
+                    size_t message_length,
+                    unsigned char** digest_returncarrier,
+                    unsigned int* digest_length_returncarrier
+                   ) {
 	EVP_MD_CTX* mdctx;
 
 	if ((mdctx = EVP_MD_CTX_new()) == nullptr) {
@@ -126,14 +134,19 @@ void print_hexy(const char* not_hexy, int length) {
 }
 
 
-void register_new_account_in_database(pqxx::connection* psql_connection, const string& account_name, const string& password) {
-	cout << "Inserting new account |" << account_name << "|:|" << password << "| into database..." << endl;
-
+json register_new_account_in_database(pqxx::connection* psql_connection,
+	                                  const string& password
+	                                 ) {
+	/* Returns json with [id, user_name, tag] */
 	const string insert_new_account_into_database_command = ""
-	"INSERT INTO adrestia_accounts (account_name, hash_of_salt_and_password, salt)"
-	"    VALUES ($1, $2, $3)"
-	"    ON CONFLICT DO NOTHING"
+	"INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)"
+	"    VALUES ($1, $2, $3, $4, $5)"
 	";";
+
+	const string default_user_name = "Initiate";
+
+	cout << "register_new_account_in_database called with args:" << endl;
+	cout << "    password: |" << password << "|" << endl;
 
 	// Get hash of salt and password
 	string salt = hex_urandom(SALT_LENGTH);
@@ -141,41 +154,81 @@ void register_new_account_in_database(pqxx::connection* psql_connection, const s
 	const char* salt_and_password_c_str = salt_and_password.c_str();
 	unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
 	unsigned int hash_of_salt_and_password_length;
-	digest_message(salt_and_password_c_str, salt_and_password.length(), &hash_of_salt_and_password, &hash_of_salt_and_password_length);
-
-	// Insert into table
-	psql_connection[0].prepare("insert_new_account_into_database_command", insert_new_account_into_database_command);
-	pqxx::work insertion_transaction(psql_connection[0]);
-	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+	digest_message(salt_and_password_c_str, salt_and_password.length(),
+	               &hash_of_salt_and_password, &hash_of_salt_and_password_length
+	              );
+	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
+	                                 (size_t)hash_of_salt_and_password_length
+	                                );
 	pqxx::binarystring bstring(good_string);
-	pqxx::result statement_result = insertion_transaction.prepared("insert_new_account_into_database_command")(account_name)(bstring)(salt).exec();
-	insertion_transaction.commit();
+
+	json new_account;
+	bool actually_created_account = false;
+
+	// Keep making up ids/tags until we get a successful insertion.
+	psql_connection[0].prepare("insert_new_account_into_database_command",
+	                           insert_new_account_into_database_command
+	                          );
+	for (int i = 0; i < 1000; i += 1) {
+		string uuid = hex_urandom(UUID_LENGTH);
+		string tag = hex_urandom(TAG_LENGTH);
+
+		pqxx::work insertion_transaction(psql_connection[0]);
+		try {
+			pqxx::result statement_result = insertion_transaction.prepared("insert_new_account_into_database_command")
+			                                                              (uuid)(default_user_name)(tag)(bstring)(salt)
+                                                                          .exec();
+			insertion_transaction.commit();
+
+			cout << "Successfully finished insertion of new account into database." << endl;
+			actually_created_account = true;
+			new_account["uuid"] = uuid;
+			new_account["tag"] = tag;
+			new_account["user_name"] = default_user_name;
+			break;
+		}
+		catch (pqxx::integrity_constraint_violation) {
+			insertion_transaction.abort();
+			continue;
+		}
+	}
+
+	if (!actually_created_account) {
+		throw string("Failed to generate non-conflicing uuid/tag pair.");
+	}
 
 	delete hash_of_salt_and_password;
-	cout << "Finished insertion of new account into database." << endl;
+
+	return new_account;
 }
 
-bool verify_existing_account_in_database(pqxx::connection* psql_connection, const string& account_name, const string& password) {
-	cout << "Verifying account |" << account_name << "|:|" << password << "| in database..." << endl;
 
-	const string select_account_from_database_command = ""
-	"SELECT account_name, hash_of_salt_and_password, salt"
+bool verify_existing_account_in_database(pqxx::connection* psql_connection,
+                                         const string& uuid,
+                                         const string& password) {
+
+	const string select_password_from_database_command = ""
+	"SELECT hash_of_salt_and_password, salt"
 	"    FROM adrestia_accounts"
-	"    WHERE account_name = $1"
+	"    WHERE uuid = $1"
 	";";
 
+	cout << "verify_existing_account_in_database called with args:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+	cout << "    password: |" << password << "|" << endl;
+
 	// Find account of given name
-	psql_connection[0].prepare("select_account_from_database_command", select_account_from_database_command);
+	psql_connection[0].prepare("select_password_from_database_command", select_password_from_database_command);
 	pqxx::work select_transaction(psql_connection[0]);
-	pqxx::result search_result = select_transaction.prepared("select_account_from_database_command")(account_name).exec();
+	pqxx::result search_result = select_transaction.prepared("select_password_from_database_command")
+	                                                        (uuid).exec();
 	select_transaction.commit();
 
 	if (search_result.size() == 0) {
-		cout << "No accounts of this name in database.";
+		cout << "This uuid not found in database.";
 		return false;
 	}
 
-	string database_account(search_result[0]["account_name"].c_str());
 	pqxx::binarystring database_hash_of_salt_and_password(search_result[0]["hash_of_salt_and_password"]);
 	string database_salt(search_result[0]["salt"].c_str());
 
@@ -185,24 +238,32 @@ bool verify_existing_account_in_database(pqxx::connection* psql_connection, cons
 	const char* salt_and_password_c_str = salt_and_password.c_str();
 	unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
 	unsigned int hash_of_salt_and_password_length;
-	digest_message(salt_and_password_c_str, salt_and_password.length(), &hash_of_salt_and_password, &hash_of_salt_and_password_length);
-	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password), (size_t)hash_of_salt_and_password_length);
+	digest_message(salt_and_password_c_str,
+	               salt_and_password.length(),
+	               &hash_of_salt_and_password,
+	               &hash_of_salt_and_password_length
+	              );
+	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
+	                                 (size_t)hash_of_salt_and_password_length
+	                                );
 	pqxx::binarystring expected_hash_of_salt_and_password(good_string);
 
 	if (expected_hash_of_salt_and_password == database_hash_of_salt_and_password) {
-		cout << "This account and password have been verified." << endl;
+		cout << "This uuid and password have been verified." << endl;
 		return true;
 	}
 
-	cout << "Recieved an incorrect password for this known account." << endl;
+	cout << "Recieved an incorrect password for this known uuid." << endl;
 	return false;
 }
+
 
 pqxx::connection* establish_psql_connection(const string& connection_config_string) {
 	pqxx::connection* psql_connection = new pqxx::connection(connection_config_string);
 	return psql_connection;
 }
 // DATABASE STUFF ENDS
+
 
 string get_database_connection_config_string() {
 	ifstream f;
@@ -218,72 +279,118 @@ string get_database_connection_config_string() {
 	return connection_config_string;
 }
 
-int register_new_account(int client_socket, string recieved_message) {
-	cout << "Triggered register_new_account, message: |" << recieved_message << "|" << endl;
-	auto message_json = json::parse(recieved_message.substr(MESSAGE_HANDLER_NAME_LENGTH, string::npos));
-	string account_name = message_json["account_name"];
-	string password = message_json["password"];
 
-	cout << "Creating new account |" << account_name << "|:|" << password << "|..." << endl;
+int register_new_account(int client_socket, json& client_json) {
+	cout << "Triggered register_new_account." << endl;
+	string password = client_json["password"];
+
+	cout << "Creating new account with params:" << endl;
+	cout << "    password: |" << password << "|" << endl;
+
 	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
-	register_new_account_in_database(psql_connection, account_name, password);
+	json new_account = register_new_account_in_database(psql_connection, password);
 	delete psql_connection;
 
-	cout << "Reporting 201..." << endl;
-	string message = "201\n";
-	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
+	cout << "Created new account with:" << endl;
+	cout << "    uuid: |" << new_account["uuid"] << "|" << endl;
+	cout << "    user_name: |" << new_account["user_name"] << "|" << endl;
+	cout << "    tag: |" << new_account["tag"] << "|" << endl;
+
+	cout << "Returning this data to client..." << endl;
+	json json_message = new_account;
+	json_message["api_code"] = 201;
+	json_message["api_message"] = "Created new account.";
+	string client_send_string = json_message.dump();
+	client_send_string += '\n';
+	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
 
 	cout << "register_new_account concluded." << endl;
 
 	return 0;
 }
 
-int verify_account(int client_socket, string recieved_message) {
-	cout << "Triggered verify_account, message: |" << recieved_message << "|" << endl;
-	auto message_json = json::parse(recieved_message.substr(MESSAGE_HANDLER_NAME_LENGTH, string::npos));
-	string account_name = message_json["account_name"];
-	string password = message_json["password"];
 
-	cout << "Checking authentication |" << account_name << "|:|" << password << "|..." << endl;
+int verify_account(int client_socket, json& client_json) {
+	cout << "Triggered verify_account." << endl;
+	string uuid = client_json["uuid"];
+	string password = client_json["password"];
+
+	cout << "Checking authentication for account with:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+	cout << "    password: |" << password << "|" << endl;
 	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
-	bool valid = verify_existing_account_in_database(psql_connection, account_name, password);
+	bool valid = verify_existing_account_in_database(psql_connection, uuid, password);
 	delete psql_connection;
 
-	string message = "500\n";
+	json json_message;
 	if (valid) {
-		cout << "Authorization OK. Reporting 200...\n";
-		message = "200\n";
+		cout << "Authorization OK; reporting 200...\n";
+		json_message["api_code"] = 200;
+		json_message["api_message"] = "Authorization OK.";
+
 	}
 	else {
 		cout << "Authorization NOT OK. Reporting 401...\n";
-		message = "401\n";
+		json_message["api_code"] = 401;
+		json_message["api_message"] = "Authorization NOT OK.";
 	}
-	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
+
+	string client_send_string = json_message.dump();
+	client_send_string += '\n';
+	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
 
 	cout << "verify_account concluded." << endl;
 	return 0;
 }
 
-int z_default(int client_socket, string recieved_message) {
-	cout << "Triggered z_default on message |" << recieved_message << "|." << endl;
-	string message = "Server does not recognize your request |" + recieved_message + "|.\n";
-	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
+
+int z_default(int client_socket, json& fake_client_json) {
+	/* We expect client's original message to be in 'message'. */
+	string client_message;
+	try {
+		client_message = fake_client_json["message"];
+	}
+	catch (json::exception& e) {
+		cout << "Triggered z_default, but no message was provided?" << endl;
+
+		json json_message;
+		json_message["api_code"] = 400;
+		json_message["api_message"] = "z_default explicitly called, but provided no message???";
+		string client_send_string = json_message.dump();
+		send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+		return 0;
+	}
+
+	cout << "Triggered z_default on message |" << client_message << "|" << endl;
+
+	json json_message;
+	json_message["api_code"] = 400;
+	json_message["api_message"] = "Server does not recognize your request |" + client_message + "|";
+	string client_send_string = json_message.dump();
+	client_send_string += '\n';
+	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
 	return 0;
 }
 
-int floop(int client_socket, string recieved_message) {
-	cout << "Triggered the floop function." << endl;
-	string message = "You've found the floop function!\n";
-	send(client_socket, message.c_str(), message.length(), MSG_NOSIGNAL);
+
+int floop(int client_socket, json& client_json) {
+	cout << "Triggered floop.";
+	json json_message;
+	json_message["api_code"] = 200;
+	json_message["api_message"] = "You've found the floop function!\n";
+	string message_string = json_message.dump();
+	message_string += '\n';
+	send(client_socket, message_string.c_str(), message_string.length(), MSG_NOSIGNAL);
 	return 0;
 }
 
 
-// The different handler functions, which all take in the socket and message
-//     (which will contain the first 32 bytes, their name!) and return an int.
-// In case of no match, z_default is called instead. Note that since z_default
-//     is less than 32 characters no one can call it normally.
-map<string, int (*)(int, string)> handler_map;
+// The different functions, which all take in the socket and json of the message,
+//     (which will contain HANDLER_KEY_NAME, their name!) and return an int.
+// In the case of no match, or other problems, z_default is called instead with json containing the client's
+//     string under the key 'message'.
+// Note that you can call z_default normally, and it will be unhappy if you don't provide it a 'message'.
+map<string, int (*)(int, json&)> handler_map;
 
 
 string read_packet (int client_socket)
@@ -342,30 +449,52 @@ void process_connection(int server_socket, int client_socket) {
 	try {
 		cout << "[Server] Got new connection: server_socket: |" << server_socket << "|, client_socket: |" << client_socket << "|." << endl;
 		string client_request = read_packet(client_socket);
-		if (client_request.length() < MESSAGE_HANDLER_NAME_LENGTH) {
-			// No function name.
-			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, client_request);
-		}
-		else {
-			// We have an actual function name to analyze.
-			string requested_function_name = client_request.substr(0, MESSAGE_HANDLER_NAME_LENGTH);
-			int (*requested_function)(int, string); 
-			bool found_requested_function = true;
-			try {
-				requested_function = handler_map.at(requested_function_name);
-			}
-			catch (out_of_range& oor) {
-				// Target does not exist.
-				found_requested_function = false;
-			}
 
-			if (found_requested_function) {
-				requested_function(client_socket, client_request);
-			}
-			else {
-				handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, client_request);
-			}
+		// This is for z_default
+		json fake_client_json;
+		fake_client_json["message"] = client_request;
+
+		json client_json;
+        string requested_function_name;
+        int (*requested_function)(int, json&);
+
+        // Parse JSON
+		try {
+			client_json = json::parse(client_request);
 		}
+		catch (json::exception& e) {
+			// Not parsable to json
+			cout << "[Server] Did not recieve json-y message." << endl;
+			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, fake_client_json);
+			goto label_terminus;
+		}
+		
+        // Extract function name
+		try {
+			requested_function_name = client_json.at(HANDLER_KEY_NAME);
+		}
+		catch (json::exception& e) {
+			// Did not provide a function name
+			cout << "[Server] Did not recieve handler key |" << HANDLER_KEY_NAME << "| in request json." << endl;
+			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, fake_client_json);
+			goto label_terminus;
+		}
+
+        // Check if requested function is real function
+		try {
+			requested_function = handler_map.at(requested_function_name);
+		}
+		catch (out_of_range& oor) {
+			// Asked to access non-existent function.
+			cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|." << endl;
+			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, fake_client_json);
+			goto label_terminus;
+		}
+
+		cout << "[Server] Activating function |" << requested_function_name << "|." << endl;
+		requested_function(client_socket, client_json);
+
+		label_terminus:
 		cout << "[Server] Closing this connection: server_socket: |" << server_socket << "|, client_socket: |" << client_socket << "|." << endl;
 		cout << endl;
 		close(client_socket);
