@@ -35,10 +35,10 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 scroll_horizontal_enabled = true
 scroll_horizontal = 0
-scroll_vertical_enabled = true
+scroll_vertical_enabled = false
 scroll_vertical = 0
 scroll_deadzone = 0
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = [ "Scroll" ]
 
 [node name="hbox" type="HBoxContainer" parent="scroll_container" index="0"]
 

@@ -2,8 +2,9 @@
 
 # Second milestone: others can play the game
 
-- Spell hover shows description and flavor text.
-- Sticky hover shows description and flavor text.
+- Spell hover shows description and flavor text. (done!)
+- Sticky hover shows description and flavor text. (done!)
+- Spell icons have numbers showing tech/level/cost so you don't have to open tooltip to see those stats.
 - Book hover shows description and flavor text and list of spells.
 
 # Third milestone: others can enjoy the game

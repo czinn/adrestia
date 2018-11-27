@@ -19,7 +19,7 @@ func _ready():
 
 func _gui_event(event):
 	if g.event_is_pressed(event):
-		get_parent().remove_child(self)
+		g.close_tooltip()
 
 func set_text(text_):
 	text = text_
@@ -28,7 +28,6 @@ func set_text(text_):
 func set_target(x_, y_, point_down_=true):
 	x = x_
 	y = y_
-	print(x, " ", y)
 	point_down = point_down_
 	redraw()
 

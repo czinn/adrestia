@@ -19,6 +19,7 @@ onready var scene_loader = get_node('/root/scene_loader')
 var rules
 var state
 var ai
+var tooltip = null # Currently displayed tooltip
 
 func _ready():
 	var rules_file = File.new()
@@ -43,8 +44,14 @@ static func map_member(list, member):
 		result.append(elem.get(member))
 	return result
 
+func close_tooltip():
+	if tooltip != null:
+		tooltip.get_parent().remove_child(tooltip)
+		tooltip = null
+
 func summon_tooltip(target, text):
-	var tooltip = tooltip_scene.instance()
+	close_tooltip()
+	tooltip = tooltip_scene.instance()
 	tooltip.text = text
 	var pos = target.get_global_rect().position
 	var above = pos.y > 980 - pos.y + target.rect_size.y
