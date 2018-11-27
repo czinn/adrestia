@@ -1,12 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/title.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
-[ext_resource path="res://art/unlimited_blades_0001.jpg" type="Texture" id=3]
-[ext_resource path="res://art-built/button-play.png" type="Texture" id=4]
-[ext_resource path="res://art-built/health-heart.png" type="Texture" id=5]
+[ext_resource path="res://art-built/button-play.png" type="Texture" id=3]
+[ext_resource path="res://art-built/health-heart.png" type="Texture" id=4]
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -29,14 +28,7 @@ size_flags_vertical = 1
 theme = ExtResource( 2 )
 _sections_unfolded = [ "Theme" ]
 
-[node name="background" type="Sprite" parent="ui" index="0"]
-
-position = Vector2( 410, 670 )
-scale = Vector2( 2.96224, 2.96224 )
-texture = ExtResource( 3 )
-_sections_unfolded = [ "Transform", "Visibility", "Z Index" ]
-
-[node name="play_button" type="TextureButton" parent="ui" index="1"]
+[node name="play_button" type="TextureButton" parent="ui" index="0"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -57,11 +49,11 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 4 )
+texture_normal = ExtResource( 3 )
 expand = true
 _sections_unfolded = [ "Anchor", "Rect", "Textures" ]
 
-[node name="label" type="Label" parent="ui" index="2"]
+[node name="label" type="Label" parent="ui" index="1"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -84,7 +76,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Anchor", "Theme" ]
 
-[node name="heart" type="TextureRect" parent="ui" index="3"]
+[node name="heart" type="TextureRect" parent="ui" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -100,7 +92,7 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 5 )
+texture = ExtResource( 4 )
 stretch_mode = 0
 _sections_unfolded = [ "Anchor", "Margin", "Rect" ]
 
