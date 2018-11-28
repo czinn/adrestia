@@ -28,6 +28,12 @@ func _ready():
 	rules.load_json_string(rules_file.get_as_text())
 	rules_file.close()
 
+static func sum(list):
+	var result = 0
+	for elem in list:
+		result += elem
+	return result
+
 static func clear_children(node):
 	for i in range(0, node.get_child_count()):
 		node.get_child(i).queue_free()

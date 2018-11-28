@@ -6,7 +6,7 @@
 [ext_resource path="res://art/moge-ko.png" type="Texture" id=4]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=5]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -44,6 +44,7 @@ size_flags_vertical = 1
 texture = ExtResource( 3 )
 expand = true
 stretch_mode = 6
+_sections_unfolded = [ "Material" ]
 
 [node name="moge_ko" type="TextureButton" parent="ui" index="1"]
 

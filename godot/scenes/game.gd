@@ -69,13 +69,12 @@ func on_play_button_pressed():
 	selected_books = g.state.players[0].books
 	for i in range(len(selected_books)):
 		var book = selected_books[i]
-		var tab = NinePatchRect.new()
-		tab.name = book.get_id()
 		var spell_list = spell_list_scene.instance()
 		spell_list.spells = book.get_spells()
+		spell_list.enabled_filter = funcref(self, 'player_can_afford')
+		spell_list.display_filter = funcref(self, 'player_knows_spell')
 		spell_list.connect('pressed', self, 'on_spell_enqueue')
-		tab.add_child(spell_list)
-		book_tabs.add_child(tab)
+		book_tabs.add_child(spell_list)
 
 	# allow tab container to detect new tabs...
 	yield(get_tree(), 'idle_frame')
@@ -104,23 +103,56 @@ func get_upgraded_book():
 			return spell.get_book()
 	return null
 
-func redraw():
+# TODO: jim: This is O(n) in the number of spells in the queue. Not super
+# important to improve, but feels bad.
+func player_mp_left():
 	var me = g.state.players[0]
 	var mp_left = me.mp
 	for spell_id in spell_queue.spells:
 		var spell = g.rules.get_spell(spell_id)
 		mp_left -= spell.get_cost()
+	return mp_left
+
+func player_can_afford(spell):
+	var me = g.state.players[0]
+	var mp_left = player_mp_left()
+	return spell.get_cost() <= mp_left
+
+# TODO: jim: This is ugly because we have to zip through Player.tech and
+# Player.books. Make it not ugly.
+func player_effective_tech(book_id):
+	var me = g.state.players[0]
+	for i in range(len(me.tech)):
+		if me.books[i].get_id() == book_id:
+			return me.tech[i] + (1 if get_upgraded_book() == book_id else 0)
+	return 0
+
+func player_effective_level():
+	var me = g.state.players[0]
+	return g.sum(me.tech) + (1 if get_upgraded_book() != null else 0)
+
+# TODO: jim: we currently hide unlearned spells completely. I like the effect
+# this produces, but this harms discoverability. Should allow player some way
+# of discovering spells.
+func player_knows_spell(spell):
+	return (player_effective_level() >= spell.get_level() and
+			player_effective_tech(spell.get_book()) >= spell.get_tech())
+
+func redraw():
+	var me = g.state.players[0]
+	var mp_left = player_mp_left()
 	enemy_stats.redraw(g.state.players[1])
 	player_stats.redraw(me, mp_left)
 
 	# display effective tech levels
-	var upgraded_book_id = get_upgraded_book()
 	for i in range(len(me.tech)):
-		var tech = me.tech[i]
-		if me.books[i].get_id() == upgraded_book_id:
-			tech += 1
-		book_tabs.set_tab_title(i, '%s (%d)' % [me.books[i].get_id(), tech])
+		var book_id = me.books[i].get_id()
+		book_tabs.set_tab_title(i, '%s (%d)' % [book_id, player_effective_tech(book_id)])
 	book_tabs.update()
+
+	for spell_list in book_tabs.get_children():
+		spell_list.redraw()
+	spell_queue.redraw()
 
 func on_end_turn_button_pressed():
 	var action = spell_queue.spells
