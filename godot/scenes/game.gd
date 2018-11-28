@@ -96,7 +96,9 @@ func on_spell_queue_pressed(index, spell):
 	spell_queue.spells = action
 	redraw()
 
-func get_upgraded_book():
+# TODO: jim: All the player_* functions duplicate some part of our game logic.
+# Move these to helper functions in C++ and wrap them?
+func player_upgraded_book():
 	for spell_id in spell_queue.spells:
 		var spell = g.rules.get_spell(spell_id)
 		if spell.is_tech_spell():
@@ -114,6 +116,8 @@ func player_mp_left():
 	return mp_left
 
 func player_can_afford(spell):
+	if spell.is_tech_spell() and player_upgraded_book() != null:
+		return false
 	var me = g.state.players[0]
 	var mp_left = player_mp_left()
 	return spell.get_cost() <= mp_left
@@ -124,12 +128,12 @@ func player_effective_tech(book_id):
 	var me = g.state.players[0]
 	for i in range(len(me.tech)):
 		if me.books[i].get_id() == book_id:
-			return me.tech[i] + (1 if get_upgraded_book() == book_id else 0)
+			return me.tech[i] + (1 if player_upgraded_book() == book_id else 0)
 	return 0
 
 func player_effective_level():
 	var me = g.state.players[0]
-	return g.sum(me.tech) + (1 if get_upgraded_book() != null else 0)
+	return g.sum(me.tech) + (1 if player_upgraded_book() != null else 0)
 
 # TODO: jim: we currently hide unlearned spells completely. I like the effect
 # this produces, but this harms discoverability. Should allow player some way
