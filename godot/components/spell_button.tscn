@@ -62,7 +62,7 @@ group = null
 texture_normal = ExtResource( 3 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Mouse", "Rect" ]
+_sections_unfolded = [ "Mouse", "Rect", "Textures" ]
 
 [node name="label" type="Label" parent="vbox" index="1"]
 

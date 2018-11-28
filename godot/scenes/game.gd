@@ -120,7 +120,6 @@ func redraw():
 		if me.books[i].get_id() == upgraded_book_id:
 			tech += 1
 		book_tabs.set_tab_title(i, '%s (%d)' % [me.books[i].get_id(), tech])
-		print(book_tabs.get_tab_title(i))
 	book_tabs.update()
 
 func on_end_turn_button_pressed():

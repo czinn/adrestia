@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/panel-9patch.png-6f7ef6805064a7d75c9c7822a390a92c.stex"
+path="res://.import/poison.png-0e8e6d48df77bbe7b98efc66dc1bc520.stex"
 
 [deps]
 
-source_file="res://art-built/panel-9patch.png"
-dest_files=[ "res://.import/panel-9patch.png-6f7ef6805064a7d75c9c7822a390a92c.stex" ]
+source_file="res://art-built/stickies/poison.png"
+dest_files=[ "res://.import/poison.png-0e8e6d48df77bbe7b98efc66dc1bc520.stex" ]
 
 [params]
 

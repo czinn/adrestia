@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="42.508541mm"
-   height="17.300619mm"
-   viewBox="0 0 42.508541 17.300619"
+   width="103.71667mm"
+   height="30.691668mm"
+   viewBox="0 0 103.71667 30.691668"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -25,10 +25,10 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="25.617319"
-     inkscape:cy="-5.4672511"
-     inkscape:document-units="mm"
+     inkscape:zoom="1.979899"
+     inkscape:cx="95.245488"
+     inkscape:cy="118.01747"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
@@ -39,7 +39,8 @@
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false" />
   <metadata
      id="metadata1715">
     <rdf:RDF>
@@ -48,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -56,28 +57,29 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-51.317161,-137.91517)">
+     transform="translate(-13.266331,-123.14736)">
     <rect
-       style="opacity:1;vector-effect:none;fill:#404040;fill-opacity:0.65490196;stroke:#ffffff;stroke-width:0.26499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:5;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.7254902"
-       id="rect2424-3-4"
-       width="42.243542"
-       height="17.03562"
-       x="51.449661"
-       y="138.04767"
-       ry="3.4008842" />
+       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.17506552;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       id="rect1367"
+       width="101.5416"
+       height="28.516602"
+       x="14.353864"
+       y="124.23489"
+       ry="2.2150416"
+       rx="2.2150416" />
     <flowRoot
        xml:space="preserve"
-       id="flowRoot2150-4-6"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#fbfbfb;fill-opacity:0.88496734;stroke:none;stroke-width:1.27055204"
-       transform="matrix(0.20824282,0,0,0.20824282,53.204153,131.80691)"><flowRegion
-         id="flowRegion2152-2-5"
-         style="fill:#fbfbfb;fill-opacity:0.88496734;stroke-width:1.60378957"><rect
-           id="rect2154-0-7"
-           width="346.68463"
-           height="62.510166"
+       id="flowRoot2150-4-6-27"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1"
+       transform="matrix(0.45294178,0,0,0.45294178,17.840363,106.7025)"><flowRegion
+         id="flowRegion2152-2-5-09"
+         style="fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1"><rect
+           id="rect2154-0-7-36"
+           width="357.59399"
+           height="46.46703"
            x="30.304577"
            y="44.68692"
-           style="fill:#fbfbfb;fill-opacity:0.88496734;stroke-width:1.27055204" /></flowRegion><flowPara
-         id="flowPara2156-1-4"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#fbfbfb;fill-opacity:0.88496734;stroke-width:1.60378957">←Back</flowPara></flowRoot>  </g>
+           style="fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara2156-1-4-06"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1">Back</flowPara></flowRoot>  </g>
 </svg>

@@ -2,14 +2,14 @@ extends Control
 
 signal pressed
 
+onready var g = get_node('/root/global')
+
 onready var texture_button = $vbox/texture_button
 onready var label = $vbox/label
 onready var timer = $timer
 var spell = null setget set_spell
 var was_long_pressed = false
 var down_pos = null
-
-onready var g = get_node('/root/global')
 
 func _ready():
 	texture_button.connect('button_down', self, 'on_down')
@@ -46,4 +46,9 @@ func set_spell(spell_):
 func redraw():
 	if spell == null: return
 	if label == null: return
+
+	texture_button.texture_normal = g.load_or(
+			'res://art-built/spells/%s.png' % spell.get_id(),
+			'res://art-built/spells/placeholder.png')
+
 	label.text = spell.get_name()

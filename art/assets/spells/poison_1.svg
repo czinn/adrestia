@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="9.4930344mm"
-   height="9.5831099mm"
-   viewBox="0 0 9.4930336 9.5831099"
+   width="96"
+   height="96"
+   viewBox="0 0 25.399997 25.399999"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="health-heart.svg">
+   sodipodi:docname="poison_1.svg">
   <defs
      id="defs1712" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="14.515884"
-     inkscape:cy="17.55544"
+     inkscape:zoom="2.8"
+     inkscape:cx="19.426355"
+     inkscape:cy="54.523488"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -40,7 +40,8 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:snap-global="false" />
+     inkscape:snap-global="false"
+     units="px" />
   <metadata
      id="metadata1715">
     <rdf:RDF>
@@ -57,14 +58,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-61.232553,-133.13628)">
+     transform="translate(-59.067602,-118.91057)">
     <path
-       inkscape:tile-y0="517.94011"
-       inkscape:tile-x0="729.26344"
-       sodipodi:nodetypes="ccccccc"
+       style="fill:#b9ff87;fill-opacity:1;stroke:#3bad00;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+       d="m 72.660276,121.2216 c -2.161439,6.89923 -6.700443,10.66906 -7.288792,16.24679 -0.909021,6.95033 14.900301,5.51787 12.55693,0.0697 -1.705969,-4.33761 -5.953641,-7.38236 -5.268138,-16.31644 z"
+       id="path10132"
        inkscape:connector-curvature="0"
-       id="use549"
-       d="m 66.060772,136.06598 c -0.46142,-0.77657 -0.75237,-1.51981 -1.80193,-1.56265 -1.34575,-0.009 -1.61684,0.98955 -1.69411,1.68718 -0.20255,2.64549 2.078359,2.87168 3.454699,4.49362 1.437461,-1.66736 3.095191,-1.74015 3.379831,-4.47482 0.0591,-1.131 -0.57302,-1.77315 -1.62725,-1.74959 -0.81906,0.01 -1.266991,0.8764 -1.71124,1.60626 z"
-       style="fill:#ffd7e5;fill-opacity:1;stroke:#ff054b;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+       sodipodi:nodetypes="cccc" />
   </g>
 </svg>

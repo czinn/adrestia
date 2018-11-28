@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/panel-transparent-9patch.png-190f70a98b6ee984c238c7c6bde000cc.stex"
+path="res://.import/moge-ko.png-f42dbc881f6e7fd8c3534c90a3fa1408.stex"
 
 [deps]
 
-source_file="res://art-built/panel-transparent-9patch.png"
-dest_files=[ "res://.import/panel-transparent-9patch.png-190f70a98b6ee984c238c7c6bde000cc.stex" ]
+source_file="res://art/moge-ko.png"
+dest_files=[ "res://.import/moge-ko.png-f42dbc881f6e7fd8c3534c90a3fa1408.stex" ]
 
 [params]
 

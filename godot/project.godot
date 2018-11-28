@@ -35,6 +35,6 @@ name_casing=2
 
 [rendering]
 
-environment/default_clear_color=Color( 0.0676088, 0.0653687, 0.0703125, 1 )
+environment/default_clear_color=Color( 1, 1, 1, 1 )
 environment/default_environment="res://default_env.tres"
 quality/dynamic_fonts/use_oversampling=true

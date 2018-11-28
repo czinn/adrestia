@@ -2,6 +2,7 @@ extends Control
 
 onready var g = get_node('/root/global')
 
+onready var texture = $texture
 onready var duration_label = $duration_label
 
 var sticky = null setget set_sticky
@@ -23,8 +24,11 @@ func redraw():
 	if g == null: return
 	if sticky == null: return
 
-	var duration = sticky.remaining_duration
+	texture.texture = g.load_or(
+			'res://art-built/stickies/%s.png' % sticky.sticky.get_id(),
+			'res://art-built/stickies/placeholder.png')
 
+	var duration = sticky.remaining_duration
 	var unit = duration.get_unit()
 	match unit:
 		g.DurationUnit.FULL_GAME:

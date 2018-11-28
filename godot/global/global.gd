@@ -44,6 +44,9 @@ static func map_member(list, member):
 		result.append(elem.get(member))
 	return result
 
+static func load_or(path, path_default):
+	return load(path if File.new().file_exists(path) else path_default)
+
 func close_tooltip():
 	if tooltip != null:
 		tooltip.get_parent().remove_child(tooltip)
@@ -57,7 +60,7 @@ func summon_tooltip(target, text):
 	var above = pos.y > 980 - pos.y + target.rect_size.y
 	var y = pos.y if above else (pos.y + target.rect_size.y)
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
-	get_node("/root/root/ui").add_child(tooltip)
+	get_node("/root").add_child(tooltip)
 
 func event_is_pressed(event):
 	return event is InputEventMouseButton \
