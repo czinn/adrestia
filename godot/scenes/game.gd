@@ -16,6 +16,7 @@ func _ready():
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
 	spell_queue.spells = []
+	spell_queue.show_stats = false
 
 	# Populate spell lists
 	g.clear_children(book_tabs)
@@ -23,9 +24,11 @@ func _ready():
 	for i in range(len(selected_books)):
 		var book = selected_books[i]
 		var spell_list = spell_list_scene.instance()
+		spell_list.show_stats = true
+		spell_list.enabled_filter = funcref(self, 'player_can_cast')
+		spell_list.mana_enabled_filter = funcref(self, 'player_can_afford')
+		# Set the spell list last so that we don't redraw so many times
 		spell_list.spells = book.get_spells()
-		spell_list.enabled_filter = funcref(self, 'player_can_afford')
-		spell_list.display_filter = funcref(self, 'player_knows_spell')
 		spell_list.connect('pressed', self, 'on_spell_enqueue')
 		book_tabs.add_child(spell_list)
 
@@ -88,10 +91,9 @@ func player_effective_level():
 	var me = g.state.players[0]
 	return g.sum(me.tech) + (1 if player_upgraded_book() != null else 0)
 
-# TODO: jim: we currently hide unlearned spells completely. I like the effect
-# this produces, but this harms discoverability. Should allow player some way
-# of discovering spells.
-func player_knows_spell(spell):
+func player_can_cast(spell):
+	if spell.is_tech_spell() and player_upgraded_book() != null:
+		return false
 	return (player_effective_level() >= spell.get_level() and
 			player_effective_tech(spell.get_book()) >= spell.get_tech())
 

@@ -11,7 +11,9 @@ onready var scroll_container = $scroll_container
 onready var hbox = $scroll_container/hbox
 var spells = null setget set_spells
 var enabled_filter = null setget set_enabled_filter
+var mana_enabled_filter = null setget set_mana_enabled_filter
 var display_filter = null setget set_display_filter
+var show_stats = null setget set_show_stats
 
 func _ready():
 	scroll_container.connect('scroll_started', self, 'on_scroll_started')
@@ -31,8 +33,16 @@ func set_enabled_filter(filter_):
 	enabled_filter = filter_
 	redraw()
 
+func set_mana_enabled_filter(filter_):
+	mana_enabled_filter = filter_
+	redraw()
+
 func set_display_filter(filter_):
 	display_filter = filter_
+	redraw()
+
+func set_show_stats(show_stats_):
+	show_stats = show_stats_
 	redraw()
 
 func redraw():
@@ -46,9 +56,13 @@ func redraw():
 		if display_filter != null and not display_filter.call_func(spell):
 			continue
 		var spell_button = spell_button_scene.instance()
+		spell_button.show_stats = show_stats
+		spell_button.enabled = enabled_filter == null or enabled_filter.call_func(spell)
+		spell_button.mana_enabled = \
+				mana_enabled_filter == null or mana_enabled_filter.call_func(spell)
+		# Set the spell last so that we don't redraw so many times
 		spell_button.spell = spell
 		spell_button.connect('pressed', self, 'on_pressed', [index, spell])
-		spell_button.enabled = enabled_filter == null or enabled_filter.call_func(spell)
 		hbox.add_child(spell_button)
 		index += 1
 
