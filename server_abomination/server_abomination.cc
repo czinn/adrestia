@@ -34,7 +34,6 @@ using json = nlohmann::json;
 #define MESSAGE_HANDLER_NAME_LENGTH 32
 
 string HANDLER_KEY_NAME("api_handler_name");
-string Z_DEFAULT_FUNCTION_NAME("z_default");
 // All responses will be json containing key 'api_code' and 'api_message', possibly other keys.
 
 #define ENV_FILE_PATH ".env"
@@ -498,28 +497,11 @@ int change_user_name(int client_socket, json& client_json) {
 }
 
 
-int z_default(int client_socket, json& fake_client_json) {
-	/* We expect client's original message to be in 'message'. */
-	string client_message;
-	try {
-		client_message = fake_client_json["api_message"];
-	}
-	catch (json::exception& e) {
-		cout << "Triggered z_default, but no message was provided?" << endl;
-
-		json json_message;
-		json_message["api_code"] = 400;
-		json_message["api_message"] = "z_default explicitly called, but provided no message???";
-		string client_send_string = json_message.dump();
-		send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
-		return 0;
-	}
-
-	cout << "Triggered z_default on message |" << client_message << "|" << endl;
-
+int handle_error(int client_socket, const string& client_message) {
+	cout << "Triggered handle_error on message " << client_message << "" << endl;
 	json json_message;
 	json_message["api_code"] = 400;
-	json_message["api_message"] = "Server does not recognize your request |" + client_message + "|";
+	json_message["api_message"] = "Invalid request";
 	string client_send_string = json_message.dump();
 	client_send_string += '\n';
 	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
@@ -539,11 +521,8 @@ int floop(int client_socket, json& client_json) {
 }
 
 
-// The different functions, which all take in the socket and json of the message,
-//     (which will contain HANDLER_KEY_NAME, their name!) and return an int.
-// In the case of no match, or other problems, z_default is called instead with json containing the client's
-//     string under the key 'message'.
-// Note that you can call z_default normally, and it will be unhappy if you don't provide it a 'message'.
+// Map from message kinds to functions that handle them. Message kind is stored
+// in field HANDLER_KEY_NAME.
 map<string, int (*)(int, json&)> handler_map;
 
 
@@ -559,10 +538,10 @@ string read_packet (int client_socket)
 	while (true)
 	{
 		int bytes_read = recv (client_socket, buffer, sizeof(buffer) - 2, 0);
-			// Though extremely unlikely in our setting --- connection from 
-			// localhost, transmitting a small packet at a time --- this code 
-			// takes care of fragmentation  (one packet arriving could have 
-			// just one fragment of the transmitted message)
+		// Though extremely unlikely in our setting --- connection from 
+		// localhost, transmitting a small packet at a time --- this code 
+		// takes care of fragmentation  (one packet arriving could have 
+		// just one fragment of the transmitted message)
 
 		if (bytes_read > 0)
 		{
@@ -604,10 +583,6 @@ void process_connection(int server_socket, int client_socket) {
 		cout << "[Server] Got new connection: server_socket: |" << server_socket << "|, client_socket: |" << client_socket << "|." << endl;
 		string client_request = read_packet(client_socket);
 
-		// This is for z_default
-		json fake_client_json;
-		fake_client_json["api_message"] = client_request;
-
 		json client_json;
 		string requested_function_name;
 		int (*requested_function)(int, json&);
@@ -619,7 +594,7 @@ void process_connection(int server_socket, int client_socket) {
 		catch (json::exception& e) {
 			// Not parsable to json
 			cout << "[Server] Did not receive json-y message." << endl;
-			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, fake_client_json);
+			handle_error(client_socket, client_request);
 			goto label_terminus;
 		}
 		
@@ -630,7 +605,7 @@ void process_connection(int server_socket, int client_socket) {
 		catch (json::exception& e) {
 			// Did not provide a function name
 			cout << "[Server] Did not receive handler key |" << HANDLER_KEY_NAME << "| in request json." << endl;
-			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, fake_client_json);
+			handle_error(client_socket, client_request);
 			goto label_terminus;
 		}
 
@@ -641,7 +616,7 @@ void process_connection(int server_socket, int client_socket) {
 		catch (out_of_range& oor) {
 			// Asked to access non-existent function.
 			cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|." << endl;
-			handler_map.at(Z_DEFAULT_FUNCTION_NAME)(client_socket, fake_client_json);
+			handle_error(client_socket, client_request);
 			goto label_terminus;
 		}
 
@@ -718,12 +693,11 @@ void listen_for_connections(int port) {
 
 
 int main(int na, char* arg[]) {
-	handler_map[Z_DEFAULT_FUNCTION_NAME] = z_default;
 	handler_map["floop"] = floop;
 	handler_map["register_new_account"] = register_new_account;
 	handler_map["verify_account"] = verify_account;
 	handler_map["change_user_name"] = change_user_name;
-	//handler_map[DELETE_ACCOUNT_FUNCTION_NAME] = delete_account;
+	//handler_map["delete_account"] = delete_account;
 
 	listen_for_connections(SERVER_PORT);
 	return 0;
