@@ -22,8 +22,10 @@ using namespace std;
 #include "../units_cpp/json.h"
 using json = nlohmann::json;
 
+#include "protocol.h"
+
 string SERVER_IP("127.0.0.1");
-int SERVER_PORT = 18677;
+const static int SERVER_PORT = 16969;
 
 string HANDLER_KEY_NAME("api_handler_name");
 
@@ -153,8 +155,7 @@ json register_new_account(const string& password) {
 	}
 
 	json json_message;
-	json_message[HANDLER_KEY_NAME] = "register_new_account";
-	json_message["password"] = password;
+	write_register_new_account_request(json_message, password);
 
 	string server_send_string = json_message.dump();
 	server_send_string += '\n';
@@ -183,21 +184,18 @@ bool verify_existing_account(const string& uuid, const string& password) {
 	}
 
 	json json_message;
-	json_message[HANDLER_KEY_NAME] = "verify_account";
-	json_message["uuid"] = uuid;
-	json_message["password"] = password;
+	write_verify_account_request(json_message, uuid, password);
+
 	string server_send_string = json_message.dump();
 	server_send_string += '\n';
 	send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-
 	string server_response = read_packet(my_socket);
 	json server_response_json = json::parse(server_response);
 
 	if (server_response_json["api_code"] == 200) {
 		cout << "verify_existing_account confirms credentials are valid." << endl;
 		return true;
-	}
-	else if (server_response_json["api_code"] == 401) {
+	} else if (server_response_json["api_code"] == 401) {
 		cout << "verify_existing_account confirms credentials are invalid." << endl;
 		return false;
 	}
@@ -224,14 +222,11 @@ json change_user_name(const string& uuid, const string& password, const string& 
 	}
 
 	json json_message;
-	json_message[HANDLER_KEY_NAME] = "change_user_name";
-	json_message["uuid"] = uuid;
-	json_message["password"] = password;
-	json_message["new_user_name"] = new_user_name;
+	write_change_user_name_request(json_message, uuid, password, new_user_name);
+
 	string server_send_string = json_message.dump();
 	server_send_string += '\n';
 	send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-
 	string server_response = read_packet(my_socket);
 	json server_response_json = json::parse(server_response);
 

@@ -26,6 +26,7 @@ using namespace std;
 #include <openssl/evp.h>
 #include <pqxx/pqxx>
 
+#include "protocol.h"
 #include "config.h"
 
 #include "../units_cpp/json.h"
@@ -324,26 +325,14 @@ string get_database_connection_config_string() {
 }
 
 
-void missing_key_message(int client_socket, const string& missing_key_name) {
-	/* For when the client calls a real function but forgets one of its keys */
-	json json_message;
-	json_message["api_code"] = 400;
-	json_message["api_message"] = "Missing expected key: |" + missing_key_name + "|.";
-	string client_send_string = json_message.dump();
-	client_send_string += '\n';
-	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
-}
-
-
-int handle_register_new_account(int client_socket, const json& client_json) {
+int handle_register_new_account(const json& client_json, json &resp) {
 	string password;
 	try {
 		password = client_json.at("password");
 	}
 	catch (json::exception& e) {
 		cout << "register_new_account not provided with key 'password'." << endl;
-		const string missing_key = "password";
-		missing_key_message(client_socket, missing_key);
+		write_missing_key_error(resp, "password");
 		return 1;
 	}
 
@@ -360,12 +349,10 @@ int handle_register_new_account(int client_socket, const json& client_json) {
 	cout << "    tag: |" << new_account["tag"] << "|" << endl;
 
 	cout << "Returning this data to client..." << endl;
-	json json_message = new_account;
-	json_message["api_code"] = 201;
-	json_message["api_message"] = "Created new account.";
-	string client_send_string = json_message.dump();
-	client_send_string += '\n';
-	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+	write_register_new_account_response(resp,
+			new_account["uuid"],
+			new_account["user_name"],
+			new_account["tag"]);
 
 	cout << "register_new_account concluded." << endl;
 
@@ -373,7 +360,7 @@ int handle_register_new_account(int client_socket, const json& client_json) {
 }
 
 
-int handle_verify_account(int client_socket, const json& client_json) {
+int handle_verify_account(const json& client_json, json &resp) {
 	cout << "Triggered verify_account." << endl;
 	string uuid;
 	string password;
@@ -383,17 +370,16 @@ int handle_verify_account(int client_socket, const json& client_json) {
 	}
 	catch (json::exception& e) {
 		cout << "verify_account missing key 'uuid'." << endl;
-		const string missing_key = "uuid";
-		missing_key_message(client_socket, missing_key);
+		write_missing_key_error(resp, "uuid");
 		return 1;
 	}
+
 	try {
 		password = client_json.at("password");
 	}
 	catch (json::exception& e) {
 		cout << "verify_account missing key 'password'." << endl;
-		const string missing_key = "password";
-		missing_key_message(client_socket, missing_key);
+		write_missing_key_error(resp, "password");
 		return 1;
 	}
 
@@ -404,28 +390,14 @@ int handle_verify_account(int client_socket, const json& client_json) {
 	bool valid = verify_existing_account_in_database(psql_connection, uuid, password);
 	delete psql_connection;
 
-	json json_message;
-	if (valid) {
-		cout << "Authorization OK; reporting 200...\n";
-		json_message["api_code"] = 200;
-		json_message["api_message"] = "Authorization OK.";
-	}
-	else {
-		cout << "Authorization NOT OK. Reporting 401...\n";
-		json_message["api_code"] = 401;
-		json_message["api_message"] = "Authorization NOT OK.";
-	}
-
-	string client_send_string = json_message.dump();
-	client_send_string += '\n';
-	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+	write_verify_account_response(resp, valid);
 
 	cout << "verify_account concluded." << endl;
 	return 0;
 }
 
 
-int handle_change_user_name(int client_socket, const json& client_json) {
+int handle_change_user_name(const json& client_json, json &resp) {
 	cout << "Triggered change_user_name." << endl;
 	string uuid;
 	string password;
@@ -436,8 +408,7 @@ int handle_change_user_name(int client_socket, const json& client_json) {
 	}
 	catch (json::exception& e) {
 		cout << "change_user_name missing key 'uuid'." << endl;
-		const string missing_key = "uuid";
-		missing_key_message(client_socket, missing_key);
+		write_missing_key_error(resp, "uuid");
 		return 1;
 	}
 	try {
@@ -445,8 +416,7 @@ int handle_change_user_name(int client_socket, const json& client_json) {
 	}
 	catch (json::exception& e) {
 		cout << "change_user_name missing key 'password'." << endl;
-		const string missing_key = "password";
-		missing_key_message(client_socket, missing_key);
+		write_missing_key_error(resp, "password");
 		return 1;
 	}
 	try {
@@ -454,23 +424,18 @@ int handle_change_user_name(int client_socket, const json& client_json) {
 	}
 	catch (json::exception& e) {
 		cout << "change_user_name missing key 'new_user_name'." << endl;
-		const string missing_key = "new_user_name";
-		missing_key_message(client_socket, missing_key);
+		write_missing_key_error(resp, "new_user_name");
 		return 1;
 	}
 
 	// Authenticate this change.
 	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
 	bool authorized_change = verify_existing_account_in_database(psql_connection, uuid, password);
+
 	if (!authorized_change) {
 		cout << "uuid/password mismatch; cannot perform operation." << endl;
 		delete psql_connection;
-		json json_message;
-		json_message["api_code"] = 401;
-		json_message["api_message"] = "Bad uuid/password authorization for this action.";
-		string client_send_string = json_message.dump();
-		client_send_string += '\n';
-		send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+		write_change_user_name_response_unauthorized(resp);
 		return 0;
 	}
 
@@ -482,41 +447,28 @@ int handle_change_user_name(int client_socket, const json& client_json) {
 	cout << "    user_name: |" << new_user_name << "|" << endl;
 	cout << "    tag: |" << new_account_info["tag"] << "|" << endl;
 
-	new_account_info["api_code"] = 201;
-	new_account_info["api_message"] = "User name has been changed.";
-	string client_send_string = new_account_info.dump();
-	client_send_string += '\n';
-	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+	write_change_user_name_response(resp, new_account_info["tag"]);
 	return 0;
 }
 
 
-int handle_error(int client_socket, const string& client_message) {
+int handle_error(const string& client_message, json &resp) {
 	cout << "Triggered handle_error on message " << client_message << "" << endl;
-	json json_message;
-	json_message["api_code"] = 400;
-	json_message["api_message"] = "Invalid request";
-	string client_send_string = json_message.dump();
-	client_send_string += '\n';
-	send(client_socket, client_send_string.c_str(), client_send_string.length(), MSG_NOSIGNAL);
+	write_error(resp);
 	return 0;
 }
 
 
-int handle_floop(int client_socket, const json& client_json) {
-	json json_message;
-	json_message["api_code"] = 200;
-	json_message["api_message"] = "You've found the floop function!\n";
-	string message_string = json_message.dump();
-	message_string += '\n';
-	send(client_socket, message_string.c_str(), message_string.length(), MSG_NOSIGNAL);
+int handle_floop(const json& client_json, json &resp) {
+	write_floop_response(resp);
 	return 0;
 }
 
 
 // Map from message kinds to functions that handle them. Message kind is stored
 // in field HANDLER_KEY_NAME.
-map<string, int (*)(int, const json&)> handler_map;
+typedef std::function<int(const json&, json&)> request_handler;
+std::map<string, request_handler> handler_map;
 
 string read_packet (int client_socket)
 {
@@ -566,37 +518,40 @@ void process_connection(int server_socket, int client_socket) {
 		string client_request = read_packet(client_socket);
 
 		json client_json;
+		json resp;
 		string requested_function_name;
-		int (*requested_function)(int, const json&);
+		request_handler requested_function;
 
 		try {
 			client_json = json::parse(client_request);
 			requested_function_name = client_json.at(HANDLER_KEY_NAME);
 			requested_function = handler_map.at(requested_function_name);
+			cout << "[Server] Activating function |" << requested_function_name << "|." << endl;
+			requested_function(client_json, resp);
 		}
 		catch (json::parse_error& e) {
 			// Not parsable to json
 			cout << "[Server] Did not receive json-y message." << endl;
-			handle_error(client_socket, client_request);
-			goto label_terminus;
+			resp.clear();
+			handle_error(client_request, resp);
 		}
 		catch (json::out_of_range& e) {
 			// Did not provide a function name
 			cout << "[Server] Did not receive handler key |" << HANDLER_KEY_NAME << "| in request json." << endl;
-			handle_error(client_socket, client_request);
-			goto label_terminus;
+			resp.clear();
+			handle_error(client_request, resp);
 		}
 		catch (out_of_range& oor) {
 			// Asked to access non-existent function.
 			cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|." << endl;
-			handle_error(client_socket, client_request);
-			goto label_terminus;
+			resp.clear();
+			handle_error(client_request, resp);
 		}
 
-		cout << "[Server] Activating function |" << requested_function_name << "|." << endl;
-		requested_function(client_socket, client_json);
+		string resp_str = resp.dump();
+		resp_str += '\n';
+		send(client_socket, resp_str.c_str(), resp_str.length(), MSG_NOSIGNAL);
 
-		label_terminus:
 		cout
 			<< "[Server] Closing this connection: server_socket: |" << server_socket
 			<< "|, client_socket: |" << client_socket << "|." << endl << endl;
