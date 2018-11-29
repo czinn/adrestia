@@ -149,8 +149,7 @@ json adjust_user_name_in_database(
 
 	bool successfully_updated = false;
 	psql_connection[0].prepare("update_user_name_command",
-	                           update_user_name_command
-	                          );
+	                           update_user_name_command);
 	for (int i = 0; i < 1000; i += 1) {
 		string tag = hex_urandom(TAG_LENGTH);
 
@@ -587,31 +586,22 @@ void process_connection(int server_socket, int client_socket) {
 		string requested_function_name;
 		int (*requested_function)(int, json&);
 
-		// Parse JSON
 		try {
 			client_json = json::parse(client_request);
+			requested_function_name = client_json.at(HANDLER_KEY_NAME);
+			requested_function = handler_map.at(requested_function_name);
 		}
-		catch (json::exception& e) {
+		catch (json::parse_error& e) {
 			// Not parsable to json
 			cout << "[Server] Did not receive json-y message." << endl;
 			handle_error(client_socket, client_request);
 			goto label_terminus;
 		}
-		
-		// Extract function name
-		try {
-			requested_function_name = client_json.at(HANDLER_KEY_NAME);
-		}
-		catch (json::exception& e) {
+		catch (json::out_of_range& e) {
 			// Did not provide a function name
 			cout << "[Server] Did not receive handler key |" << HANDLER_KEY_NAME << "| in request json." << endl;
 			handle_error(client_socket, client_request);
 			goto label_terminus;
-		}
-
-		// Check if requested function is real function
-		try {
-			requested_function = handler_map.at(requested_function_name);
 		}
 		catch (out_of_range& oor) {
 			// Asked to access non-existent function.
@@ -624,14 +614,13 @@ void process_connection(int server_socket, int client_socket) {
 		requested_function(client_socket, client_json);
 
 		label_terminus:
-		cout << "[Server] Closing this connection: server_socket: |" << server_socket << "|, client_socket: |" << client_socket << "|." << endl;
-		cout << endl;
+		cout
+			<< "[Server] Closing this connection: server_socket: |" << server_socket
+			<< "|, client_socket: |" << client_socket << "|." << endl << endl;
 		close(client_socket);
 	}
 	catch (connection_closed) {
-		cout << "[Server] The client has closed their connection!" << endl;
-		cout << endl;
-		return;
+		cout << "[Server] The client closed their connection!" << endl << endl;
 	}
 	catch (socket_error) {
 		cout << "Socket error" << endl;
