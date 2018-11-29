@@ -33,13 +33,8 @@ using json = nlohmann::json;
 #define MESSAGE_MAX_BYTES 32768
 #define MESSAGE_HANDLER_NAME_LENGTH 32
 
-// AAHOLAGF:DSJKHFG
 string HANDLER_KEY_NAME("api_handler_name");
-string Z_DEFAULT_FUNCTION_NAME           ("z_default");
-string FLOOP_FUNCTION_NAME               ("floop");
-string REGISTER_NEW_ACCOUNT_FUNCTION_NAME("register_new_account");
-string VERIFY_ACCOUNT_FUNCTION_NAME      ("verify_account");
-string CHANGE_USER_NAME_FUNCTION_NAME    ("change_user_name");
+string Z_DEFAULT_FUNCTION_NAME("z_default");
 // All responses will be json containing key 'api_code' and 'api_message', possibly other keys.
 
 #define ENV_FILE_PATH ".env"
@@ -421,7 +416,6 @@ int verify_account(int client_socket, json& client_json) {
 		cout << "Authorization OK; reporting 200...\n";
 		json_message["api_code"] = 200;
 		json_message["api_message"] = "Authorization OK.";
-
 	}
 	else {
 		cout << "Authorization NOT OK. Reporting 401...\n";
@@ -725,10 +719,10 @@ void listen_for_connections(int port) {
 
 int main(int na, char* arg[]) {
 	handler_map[Z_DEFAULT_FUNCTION_NAME] = z_default;
-	handler_map[FLOOP_FUNCTION_NAME] = floop;
-	handler_map[REGISTER_NEW_ACCOUNT_FUNCTION_NAME] = register_new_account;
-	handler_map[VERIFY_ACCOUNT_FUNCTION_NAME] = verify_account;
-	handler_map[CHANGE_USER_NAME_FUNCTION_NAME] = change_user_name;
+	handler_map["floop"] = floop;
+	handler_map["register_new_account"] = register_new_account;
+	handler_map["verify_account"] = verify_account;
+	handler_map["change_user_name"] = change_user_name;
 	//handler_map[DELETE_ACCOUNT_FUNCTION_NAME] = delete_account;
 
 	listen_for_connections(SERVER_PORT);
