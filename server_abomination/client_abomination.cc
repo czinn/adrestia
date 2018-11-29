@@ -68,8 +68,7 @@ string hex_urandom(unsigned int number_of_characters) {
 }
 
 
-string read_packet (int client_socket)
-{
+string read_packet (int client_socket) {
 	// Reads a string sent from the target.
 	// The string should end with a newline, although this newline is not returned by this function.
 	string msg;

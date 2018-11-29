@@ -26,17 +26,13 @@ using namespace std;
 #include <openssl/evp.h>
 #include <pqxx/pqxx>
 
+#include "config.h"
+
 #include "../units_cpp/json.h"
 using json = nlohmann::json;
 
-#define SERVER_PORT 18677
-#define MESSAGE_MAX_BYTES 32768
-#define MESSAGE_HANDLER_NAME_LENGTH 32
-
 string HANDLER_KEY_NAME("api_handler_name");
 // All responses will be json containing key 'api_code' and 'api_message', possibly other keys.
-
-#define ENV_FILE_PATH ".env"
 
 #define SALT_LENGTH 16
 #define UUID_LENGTH 32
@@ -339,8 +335,7 @@ void missing_key_message(int client_socket, const string& missing_key_name) {
 }
 
 
-int register_new_account(int client_socket, json& client_json) {
-	cout << "Triggered register_new_account." << endl;
+int handle_register_new_account(int client_socket, const json& client_json) {
 	string password;
 	try {
 		password = client_json.at("password");
@@ -378,7 +373,7 @@ int register_new_account(int client_socket, json& client_json) {
 }
 
 
-int verify_account(int client_socket, json& client_json) {
+int handle_verify_account(int client_socket, const json& client_json) {
 	cout << "Triggered verify_account." << endl;
 	string uuid;
 	string password;
@@ -430,7 +425,7 @@ int verify_account(int client_socket, json& client_json) {
 }
 
 
-int change_user_name(int client_socket, json& client_json) {
+int handle_change_user_name(int client_socket, const json& client_json) {
 	cout << "Triggered change_user_name." << endl;
 	string uuid;
 	string password;
@@ -508,8 +503,7 @@ int handle_error(int client_socket, const string& client_message) {
 }
 
 
-int floop(int client_socket, json& client_json) {
-	cout << "Triggered floop.";
+int handle_floop(int client_socket, const json& client_json) {
 	json json_message;
 	json_message["api_code"] = 200;
 	json_message["api_message"] = "You've found the floop function!\n";
@@ -522,8 +516,7 @@ int floop(int client_socket, json& client_json) {
 
 // Map from message kinds to functions that handle them. Message kind is stored
 // in field HANDLER_KEY_NAME.
-map<string, int (*)(int, json&)> handler_map;
-
+map<string, int (*)(int, const json&)> handler_map;
 
 string read_packet (int client_socket)
 {
@@ -534,40 +527,30 @@ string read_packet (int client_socket)
 	const int size = MESSAGE_MAX_BYTES;
 	char buffer[size];
 
-	while (true)
-	{
+	while (true) {
 		int bytes_read = recv (client_socket, buffer, sizeof(buffer) - 2, 0);
 		// Though extremely unlikely in our setting --- connection from 
 		// localhost, transmitting a small packet at a time --- this code 
 		// takes care of fragmentation  (one packet arriving could have 
 		// just one fragment of the transmitted message)
 
-		if (bytes_read > 0)
-		{
+		if (bytes_read > 0) {
 			buffer[bytes_read] = '\0';
 			buffer[bytes_read + 1] = '\0';
 
 			const char * packet = buffer;
-			while (*packet != '\0')
-			{
+			while (*packet != '\0') {
 				msg += packet;
 				packet += strlen(packet) + 1;
 
-				if (msg.length() > 1 && msg[msg.length() - 1] == '\n')
-				{
+				if (msg.length() > 1 && msg[msg.length() - 1] == '\n') {
 					return msg.substr(0, msg.length()-1);
 				}
 			}
-		}
-
-		else if (bytes_read == 0)
-		{
+		} else if (bytes_read == 0) {
 			close (client_socket);
 			throw connection_closed();
-		}
-
-		else
-		{
+		} else {
 			cerr << "Error " << errno << "(" << strerror(errno) << ")" << endl;
 			throw socket_error();
 		}
@@ -584,7 +567,7 @@ void process_connection(int server_socket, int client_socket) {
 
 		json client_json;
 		string requested_function_name;
-		int (*requested_function)(int, json&);
+		int (*requested_function)(int, const json&);
 
 		try {
 			client_json = json::parse(client_request);
@@ -642,8 +625,7 @@ void listen_for_connections(int port) {
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	server_address.sin_port = htons(port);
 
-	if (bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address)) == -1)
-	{
+	if (bind(server_socket, (sockaddr*) &server_address, sizeof(server_address)) == -1) {
 		cout << "Could not bind socket to address:port: |" << strerror(errno) << "|" << endl;
 		throw socket_error();
 	}
@@ -652,7 +634,7 @@ void listen_for_connections(int port) {
 
 	while (true) {
 		client_address_sizeof = sizeof(client_address);
-		client_socket = accept(server_socket, (struct sockaddr*) &client_address, &client_address_sizeof);
+		client_socket = accept(server_socket, (sockaddr*) &client_address, &client_address_sizeof);
 
 		pid_t pid = fork();
 		if (pid == 0) {
@@ -682,10 +664,10 @@ void listen_for_connections(int port) {
 
 
 int main(int na, char* arg[]) {
-	handler_map["floop"] = floop;
-	handler_map["register_new_account"] = register_new_account;
-	handler_map["verify_account"] = verify_account;
-	handler_map["change_user_name"] = change_user_name;
+	handler_map["floop"] = handle_floop;
+	handler_map["register_new_account"] = handle_register_new_account;
+	handler_map["verify_account"] = handle_verify_account;
+	handler_map["change_user_name"] = handle_change_user_name;
 	//handler_map["delete_account"] = delete_account;
 
 	listen_for_connections(SERVER_PORT);
