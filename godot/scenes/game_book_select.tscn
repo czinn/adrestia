@@ -1,0 +1,225 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scenes/game_book_select.gd" type="Script" id=1]
+[ext_resource path="res://theme-default.tres" type="Theme" id=2]
+[ext_resource path="res://components/book_button.tscn" type="PackedScene" id=3]
+[ext_resource path="res://components/book_button.gd" type="Script" id=4]
+[ext_resource path="res://art-built/button-play.png" type="Texture" id=5]
+
+[node name="root" type="Node"]
+
+script = ExtResource( 1 )
+
+[node name="ui" type="Control" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+_sections_unfolded = [ "Mouse", "Theme" ]
+
+[node name="book_grid" type="GridContainer" parent="ui" index="0"]
+
+editor/display_folded = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -260.0
+margin_top = -375.0
+margin_right = 260.0
+margin_bottom = 230.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/vseparation = 10
+columns = 2
+_sections_unfolded = [ "Mouse", "Size Flags", "custom_constants" ]
+
+[node name="control" type="Control" parent="ui/book_grid" index="0" instance=ExtResource( 3 )]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 258.0
+margin_bottom = 220.0
+rect_min_size = Vector2( 150, 220 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="control2" type="Control" parent="ui/book_grid" index="1" instance=ExtResource( 3 )]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 262.0
+margin_right = 520.0
+margin_bottom = 220.0
+rect_min_size = Vector2( 150, 220 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="control3" type="Control" parent="ui/book_grid" index="2" instance=ExtResource( 3 )]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 230.0
+margin_right = 258.0
+margin_bottom = 450.0
+rect_min_size = Vector2( 150, 220 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="control4" type="Control" parent="ui/book_grid" index="3" instance=ExtResource( 3 )]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 262.0
+margin_top = 230.0
+margin_right = 520.0
+margin_bottom = 450.0
+rect_min_size = Vector2( 150, 220 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="control5" type="Control" parent="ui/book_grid" index="4" instance=ExtResource( 3 )]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 460.0
+margin_right = 258.0
+margin_bottom = 680.0
+rect_min_size = Vector2( 150, 220 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="control6" type="Control" parent="ui/book_grid" index="5" instance=ExtResource( 3 )]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 262.0
+margin_top = 460.0
+margin_right = 520.0
+margin_bottom = 680.0
+rect_min_size = Vector2( 150, 220 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="rich_text_label" type="RichTextLabel" parent="ui" index="1"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -130.0
+margin_top = -427.0
+margin_right = 130.0
+margin_bottom = -367.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = true
+bbcode_text = "Select up to 3 spellbooks."
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = "Select up to 3 spellbooks."
+scroll_active = false
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+_sections_unfolded = [ "BBCode" ]
+
+[node name="play_button" type="TextureButton" parent="ui" index="2"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -196.0
+margin_top = 319.0
+margin_right = 196.0
+margin_bottom = 435.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 5 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Margin", "Mouse", "Rect", "Textures" ]
+
+

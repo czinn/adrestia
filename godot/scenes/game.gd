@@ -1,68 +1,25 @@
 extends Node
 
-# Book Select.
-# (Maybe this should be a separate scene that we instantiate.
-
 onready var g = get_node('/root/global')
-onready var book_select = $ui/book_select
-onready var book_grid = $ui/book_select/book_grid
-onready var play_button = $ui/book_select/play_button
 
-onready var book_button_scene = preload('res://components/book_button.tscn')
 onready var spell_list_scene = preload('res://components/spell_list.tscn')
 
-# The game.
-
-onready var game = $ui/game
-onready var spell_select = $ui/game/spell_select
-onready var end_turn_button = $ui/game/spell_select/end_turn_button
-onready var book_tabs = $ui/game/spell_select/book_tabs
-onready var spell_queue = $ui/game/spell_queue
-onready var player_stats = $ui/game/player_stats
-onready var enemy_stats = $ui/game/enemy_stats
+onready var game = $ui
+onready var spell_select = $ui/spell_select
+onready var end_turn_button = $ui/spell_select/end_turn_button
+onready var book_tabs = $ui/spell_select/book_tabs
+onready var spell_queue = $ui/spell_queue
+onready var player_stats = $ui/player_stats
+onready var enemy_stats = $ui/enemy_stats
 
 func _ready():
-	g.clear_children(book_grid)
-	spell_queue.spells = []
-	for book in g.rules.get_books().values():
-		var book_button = book_button_scene.instance()
-		book_grid.add_child(book_button)
-		book_button.book = book
-		book_button.connect('pressed', self, 'toggle_book', [book_button])
-	play_button.connect('pressed', self, 'on_play_button_pressed')
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
-	book_select.visible = true
-	game.visible = false
+	spell_queue.spells = []
 
-func get_selected_books():
-	var result = []
-	for book_button in book_grid.get_children():
-		if book_button.checked:
-			result.append(book_button.book)
-	return result
-
-func toggle_book(book_button):
-	var already_checked = book_button.checked
-	if already_checked or len(get_selected_books()) < 3:
-		book_button.checked = not already_checked
-
-func on_play_button_pressed():
-	var selected_books = get_selected_books()
-	if len(selected_books) < 1 or len(selected_books) > 3:
-		return
-	var selected_book_ids = g.map_method(selected_books, 'get_id')
-	g.state = g.GameState.new()
-	g.state.init(g.rules, [selected_book_ids, ['conjuration']])
-	g.ai = g.Strategy.new()
-	g.ai.init_random_strategy()
-	book_select.visible = false
-	game.visible = true
-
+	# Populate spell lists
 	g.clear_children(book_tabs)
-	
-	# Populate spell list
-	selected_books = g.state.players[0].books
+	var selected_books = g.state.players[0].books
 	for i in range(len(selected_books)):
 		var book = selected_books[i]
 		var spell_list = spell_list_scene.instance()

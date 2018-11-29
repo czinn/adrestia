@@ -14,4 +14,4 @@ func on_waifu_pressed():
 	g.summon_tooltip($ui/moge_ko, "Hey now, why are you runniiing? No, no, I wanna play!\n... [i]Oooh, I see, it's tag![/i]\n[b]GYAHAHAHAHAHAA!!!![/b]")
 
 func on_play_button_pressed():
-	g.scene_loader.goto_scene('game')
+	g.scene_loader.goto_scene('game_book_select')
