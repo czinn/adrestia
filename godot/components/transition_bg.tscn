@@ -11,7 +11,7 @@ loop = false
 step = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("texture_rect:rect_position")
-tracks/0/interp = 1
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -19,7 +19,19 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( 582, -40 ), Vector2( -337, -40 ) ]
+"values": [ Vector2( 582, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("texture_rect:rect_rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 60.0, 0.0 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -38,7 +50,19 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( -335, -40 ), Vector2( -1222, -40 ) ]
+"values": [ Vector2( 0, 0 ), Vector2( -540, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("texture_rect:rect_rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, -60.0 ]
 }
 
 [node name="control" type="Control" index="0"]
@@ -61,11 +85,10 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 214.4
-margin_top = -40.0
-margin_right = 754.4
-margin_bottom = 920.0
-rect_pivot_offset = Vector2( 0, 0 )
+margin_left = -540.0
+margin_bottom = 960.0
+rect_rotation = -60.0
+rect_pivot_offset = Vector2( 270, 480 )
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0

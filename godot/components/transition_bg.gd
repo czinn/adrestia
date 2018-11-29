@@ -22,6 +22,7 @@ func _ready():
 	texture_rect.margin_bottom = y + h
 	texture_rect.margin_left = x0
 	texture_rect.margin_right = x0 + w
+	texture_rect.rect_pivot_offset = texture_rect.rect_size / 2
 
 	var pos_0 = Vector2(x0, y)
 	var pos_1 = Vector2(x0 - dx, y)
