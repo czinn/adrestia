@@ -42,7 +42,7 @@ string HANDLER_KEY_NAME("api_handler_name");
 class connection_closed {};
 class socket_error {};
 
-string hex_urandom(unsigned int number_of_characters) {  // Creates random hex string of requested length
+string hex_urandom(size_t number_of_characters) {  // Creates random hex string of requested length
 	char proto_output[number_of_characters + 1];
 
 	ifstream urandom("/dev/urandom", ios::in|ios::binary);
@@ -52,7 +52,7 @@ string hex_urandom(unsigned int number_of_characters) {  // Creates random hex s
 		throw;
 	}
 
-	for (int i = 0; i < number_of_characters; i = i + 1) {
+	for (size_t i = 0; i < number_of_characters; i = i + 1) {
 		char next_number = 0;
 
 		urandom.read((char*)(&next_number), sizeof(char));
@@ -326,15 +326,8 @@ string get_database_connection_config_string() {
 
 
 int handle_register_new_account(const json& client_json, json &resp) {
-	string password;
-	try {
-		password = client_json.at("password");
-	}
-	catch (json::exception& e) {
-		cout << "register_new_account not provided with key 'password'." << endl;
-		write_missing_key_error(resp, "password");
-		return 1;
-	}
+	cout << "Triggered register_new_account." << endl;
+	string password = client_json.at("password");
 
 	cout << "Creating new account with params:" << endl;
 	cout << "    password: |" << password << "|" << endl;
@@ -355,33 +348,14 @@ int handle_register_new_account(const json& client_json, json &resp) {
 			new_account["tag"]);
 
 	cout << "register_new_account concluded." << endl;
-
 	return 0;
 }
 
 
 int handle_verify_account(const json& client_json, json &resp) {
 	cout << "Triggered verify_account." << endl;
-	string uuid;
-	string password;
-
-	try {
-		uuid = client_json.at("uuid");
-	}
-	catch (json::exception& e) {
-		cout << "verify_account missing key 'uuid'." << endl;
-		write_missing_key_error(resp, "uuid");
-		return 1;
-	}
-
-	try {
-		password = client_json.at("password");
-	}
-	catch (json::exception& e) {
-		cout << "verify_account missing key 'password'." << endl;
-		write_missing_key_error(resp, "password");
-		return 1;
-	}
+	string uuid = client_json.at("uuid");
+	string password = client_json.at("password");
 
 	cout << "Checking authentication for account with:" << endl;
 	cout << "    uuid: |" << uuid << "|" << endl;
@@ -399,62 +373,30 @@ int handle_verify_account(const json& client_json, json &resp) {
 
 int handle_change_user_name(const json& client_json, json &resp) {
 	cout << "Triggered change_user_name." << endl;
-	string uuid;
-	string password;
-	string new_user_name;
-
-	try {
-		uuid = client_json.at("uuid");
-	}
-	catch (json::exception& e) {
-		cout << "change_user_name missing key 'uuid'." << endl;
-		write_missing_key_error(resp, "uuid");
-		return 1;
-	}
-	try {
-		password = client_json.at("password");
-	}
-	catch (json::exception& e) {
-		cout << "change_user_name missing key 'password'." << endl;
-		write_missing_key_error(resp, "password");
-		return 1;
-	}
-	try {
-		new_user_name = client_json["new_user_name"];
-	}
-	catch (json::exception& e) {
-		cout << "change_user_name missing key 'new_user_name'." << endl;
-		write_missing_key_error(resp, "new_user_name");
-		return 1;
-	}
+	string uuid = client_json.at("uuid");
+	string password = client_json.at("password");
+	string new_user_name = client_json.at("new_user_name");
 
 	// Authenticate this change.
 	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
 	bool authorized_change = verify_existing_account_in_database(psql_connection, uuid, password);
 
-	if (!authorized_change) {
+	if (authorized_change) {
+		cout << "Change request authenticated; commencing." << endl;
+		json new_account_info = adjust_user_name_in_database(psql_connection, uuid, new_user_name);
+
+		cout << "New account info is:" << endl;
+		cout << "    uuid: |" << uuid << "|" << endl;
+		cout << "    user_name: |" << new_user_name << "|" << endl;
+		cout << "    tag: |" << new_account_info["tag"] << "|" << endl;
+
+		write_change_user_name_response(resp, new_account_info["tag"]);
+	} else {
 		cout << "uuid/password mismatch; cannot perform operation." << endl;
-		delete psql_connection;
 		write_change_user_name_response_unauthorized(resp);
-		return 0;
 	}
 
-	cout << "Change request authenticated; commencing." << endl;
-	json new_account_info = adjust_user_name_in_database(psql_connection, uuid, new_user_name);
-
-	cout << "New account info is:" << endl;
-	cout << "    uuid: |" << uuid << "|" << endl;
-	cout << "    user_name: |" << new_user_name << "|" << endl;
-	cout << "    tag: |" << new_account_info["tag"] << "|" << endl;
-
-	write_change_user_name_response(resp, new_account_info["tag"]);
-	return 0;
-}
-
-
-int handle_error(const string& client_message, json &resp) {
-	cout << "Triggered handle_error on message " << client_message << "" << endl;
-	write_error(resp);
+	delete psql_connection;
 	return 0;
 }
 
@@ -533,19 +475,21 @@ void process_connection(int server_socket, int client_socket) {
 			// Not parsable to json
 			cout << "[Server] Did not receive json-y message." << endl;
 			resp.clear();
-			handle_error(client_request, resp);
+			write_error(resp);
 		}
 		catch (json::out_of_range& e) {
-			// Did not provide a function name
-			cout << "[Server] Did not receive handler key |" << HANDLER_KEY_NAME << "| in request json." << endl;
+			// Does not contain all required fields
+			// TODO: jim: Print just the name of the missing key, not the entire
+			// exception explanation.
+			cout << "[Server] Request object did not have an expected key. " << e.what() << endl;
 			resp.clear();
-			handle_error(client_request, resp);
+			write_missing_key_error(resp, e.what());
 		}
 		catch (out_of_range& oor) {
 			// Asked to access non-existent function.
 			cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|." << endl;
 			resp.clear();
-			handle_error(client_request, resp);
+			write_error(resp);
 		}
 
 		string resp_str = resp.dump();
