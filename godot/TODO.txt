@@ -2,24 +2,37 @@
 
 # Second milestone: others can play the game
 
-- Spell hover shows description and flavor text. (done!)
-- Sticky hover shows description and flavor text. (done!)
-- Spell icons have numbers showing tech/level/cost so you don't have to open tooltip to see those stats.
-- Book hover shows description and flavor text and list of spells.
+- [x] Spell hover shows description and flavor text.
+- [x] Sticky hover shows description and flavor text.
+- [ ] Spell icons have numbers showing tech/level/cost so you don't have to
+  open tooltip to see those stats.
+- [ ] Book hover shows description and flavor text and list of spells.
+- [ ] Show sequence of events between turns.
+- [ ] After-game screen shows game details.
+
+# Tutorial
+
+- [ ] Exists
 
 # Third milestone: others can enjoy the game
 
-- Animate book selection.
-- Animate spell selection.
-- Replace TabContainer for spells with a custom thing built with TextureButtons
-  and visibility.
-- Health bars, mana crystals; not just numbers.
-- Much art.
+- [ ] Splash screen and transition to title.
+- [ ] Animate book selection.
+- [ ] Animate spell selection.
+- [ ] Animate sequence of events between turns.
+- [ ] Replace TabContainer for spells with a custom thing built with
+  TextureButtons and visibility.
+- [ ] Health bars, mana crystals; not just numbers.
+- [ ] Art for all books, spells, and stickies.
 
 # Networking
 
-- Figure out a lightweight set of interfaces that lets us do tutorial /
+- [ ] Figure out a lightweight set of interfaces that lets us do tutorial /
   multiplayer games without duplicate code.
-- Establish a TCP connection.
-- Create helper functions for each of the available server endpoints
-- Add login page
+- [ ] Establish a TCP connection.
+- [ ] Create helper functions for each of the available server endpoints
+- [ ] Add login page
+
+# Campaign / story
+
+- [ ] Exists
