@@ -12,12 +12,14 @@ onready var book_button_scene = preload('res://components/book_button.tscn')
 onready var spell_list_scene = preload('res://components/spell_list.tscn')
 
 # The game.
-onready var spell_select = $ui/spell_select
-onready var end_turn_button = $ui/spell_select/end_turn_button
-onready var book_tabs = $ui/spell_select/book_tabs
-onready var player_stats = $ui/player_stats
-onready var enemy_stats = $ui/enemy_stats
-onready var spell_queue = $ui/spell_queue
+
+onready var game = $ui/game
+onready var spell_select = $ui/game/spell_select
+onready var end_turn_button = $ui/game/spell_select/end_turn_button
+onready var book_tabs = $ui/game/spell_select/book_tabs
+onready var spell_queue = $ui/game/spell_queue
+onready var player_stats = $ui/game/player_stats
+onready var enemy_stats = $ui/game/enemy_stats
 
 func _ready():
 	g.clear_children(book_grid)
@@ -31,10 +33,7 @@ func _ready():
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
 	book_select.visible = true
-	spell_select.visible = false
-	player_stats.visible = false
-	enemy_stats.visible = false
-	spell_queue.visible = false
+	game.visible = false
 
 func get_selected_books():
 	var result = []
@@ -58,10 +57,7 @@ func on_play_button_pressed():
 	g.ai = g.Strategy.new()
 	g.ai.init_random_strategy()
 	book_select.visible = false
-	spell_select.visible = true
-	player_stats.visible = true
-	enemy_stats.visible = true
-	spell_queue.visible = true
+	game.visible = true
 
 	g.clear_children(book_tabs)
 	
