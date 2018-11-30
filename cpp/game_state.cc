@@ -68,6 +68,164 @@ std::ostream &operator<<(std::ostream &os, const GameState &state) {
 //------------------------------------------------------------------------------
 // BUSINESS LOGIC
 //------------------------------------------------------------------------------
+void append_to_effect_queue(
+		std::deque<EffectInstance> *effect_queue,
+		const EffectInstance &effect_instance) {
+	if (effect_instance.targets_self) {
+		effect_queue->push_front(effect_instance);
+	} else {
+		effect_queue->push_back(effect_instance);
+	}
+}
+
+void append_to_effect_queue(
+		std::deque<EffectInstance> *effect_queue,
+		std::vector<EffectInstance> &effects) {
+	for (const auto &effect_instance : effects) {
+		append_to_effect_queue(effect_queue, effect_instance);
+	}
+}
+
+template<bool emit_events>
+bool simulate_base(
+	GameState &state,
+	const std::vector<GameAction> actions,
+	std::vector<json> &events_out)
+{
+	auto &players = state.players;
+
+	if (state.winners().size() > 0) {
+		return false;
+	}
+	if (actions.size() != players.size()) {
+		return false;
+	}
+	for (size_t player_id = 0; player_id < players.size(); player_id++) {
+		if (!state.is_valid_action(player_id, actions[player_id])) {
+			return false;
+		}
+	}
+
+	// history has its eyes on you
+	state.history.push_back(actions);
+
+	size_t max_action_length = 0;
+	for (const auto &action : actions) {
+		max_action_length = std::max(max_action_length, action.size());
+	}
+
+	// Cast spells.
+	std::deque<EffectInstance> queue1;
+	std::deque<EffectInstance> queue2;
+	std::deque<EffectInstance> *effect_queue = &queue1;
+	std::deque<EffectInstance> *next_effect_queue = &queue2;
+	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
+		std::vector<const Spell *> spells_in_flight(players.size(), nullptr);
+		
+		// Fire spells, putting them in flight.
+		for (size_t player_id = 0; player_id < players.size(); player_id++) {
+			auto &caster = players[player_id];
+
+			// Tick down stickies that last for some number of steps.
+			caster.subtract_step();
+
+			if (spell_idx >= actions[player_id].size()) continue;
+
+			const auto &spell = state.rules.get_spell(actions[player_id][spell_idx]);
+			if (caster.mp >= spell.get_cost()) {
+				if (emit_events) {
+					events_out.emplace_back(json{
+						{"type", "fire_spell"},
+						{"player", player_id},
+						{"spell", spell.get_id()},
+						{"success", true}
+					});
+				}
+				caster.mp -= spell.get_cost();
+				spells_in_flight[player_id] = &spell;
+				std::vector<EffectInstance> generated_effects =
+					caster.pipe_spell(player_id, spell);
+				append_to_effect_queue(effect_queue, generated_effects);
+			} else {
+				if (emit_events) {
+					events_out.emplace_back(json{
+						{"type", "fire_spell"},
+						{"player", player_id},
+						{"spell", spell.get_id()},
+						{"success", false}
+					});
+				}
+			}
+		}
+
+		// Process effects triggered by spells.
+		state.process_effect_queue(effect_queue, next_effect_queue);
+
+		// Resolve effects of in-flight spells.
+		for (size_t player_id = 0; player_id < players.size(); player_id++) {
+			auto &caster = players[player_id];
+			const auto *spell_ptr = spells_in_flight[player_id];
+			if (spell_ptr == nullptr) continue;
+			const auto &spell = *spell_ptr;
+
+			// Check for counterspells.
+			if (spell_idx < actions[1 - player_id].size()) {
+				const auto &other_spell = state.rules.get_spell(actions[1 - player_id][spell_idx]);
+				if (other_spell.is_counterspell() &&
+						other_spell.get_counterspell_selector().selects_spell(spell)) {
+					if (emit_events) {
+						events_out.emplace_back(json{
+							{"type", "spell_countered"},
+							{"player", player_id},
+						});
+					}
+					continue;
+				}
+			}
+
+			events_out.emplace_back(json{
+				{"type", "spell_hit"},
+				{"caster", player_id},
+			});
+			for (const auto &effect : spell.get_effects()) {
+				EffectInstance effect_instance(player_id, spell, effect);
+				std::vector<EffectInstance> generated_effects =
+					caster.pipe_effect(player_id, effect_instance, false);
+				append_to_effect_queue(next_effect_queue, generated_effects);
+				append_to_effect_queue(effect_queue, effect_instance);
+			}
+		}
+
+		// Process effects created by spells.
+		state.process_effect_queue(effect_queue, next_effect_queue);
+	}
+
+	for (size_t player_id = 0; player_id < players.size(); player_id++) {
+		std::vector<EffectInstance> generated_effects = players[player_id].pipe_turn(player_id);
+		append_to_effect_queue(effect_queue, generated_effects);
+	}
+
+	// Process effects created by god.
+	state.process_effect_queue(effect_queue, next_effect_queue);
+
+	for (size_t player_id = 0; player_id < players.size(); player_id++) {
+		auto &player = players[player_id];
+		player.subtract_turn();
+		int mp_gain = std::min(state.rules.get_mana_cap() - player.mp, player.mp_regen);
+		if (emit_events) {
+			events_out.emplace_back(json{
+				{"type", "gain_mp"},
+				{"player", player_id},
+				{"amount", mp_gain},
+			});
+		}
+		player.mp += mp_gain;
+	}
+
+	return true;
+}
+
+
 bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	// TODO: Return code or list of codes for why action isn't valid.
 	const Player &player = players[player_id];
@@ -101,24 +259,6 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	return true;
 }
 
-void append_to_effect_queue(
-		std::deque<EffectInstance> *effect_queue,
-		const EffectInstance &effect_instance) {
-	if (effect_instance.targets_self) {
-		effect_queue->push_front(effect_instance);
-	} else {
-		effect_queue->push_back(effect_instance);
-	}
-}
-
-void append_to_effect_queue(
-		std::deque<EffectInstance> *effect_queue,
-		std::vector<EffectInstance> &effects) {
-	for (const auto &effect_instance : effects) {
-		append_to_effect_queue(effect_queue, effect_instance);
-	}
-}
-
 void GameState::process_effect_queue(
 		std::deque<EffectInstance> *effect_queue,
 		std::deque<EffectInstance> *next_effect_queue) {
@@ -137,102 +277,13 @@ void GameState::process_effect_queue(
 	}
 }
 
-bool GameState::simulate(const std::vector<GameAction> actions) {
-	if (winners().size() > 0) {
-		return false;
-	}
-	if (actions.size() != players.size()) {
-		return false;
-	}
-	for (size_t player_id = 0; player_id < players.size(); player_id++) {
-		if (!is_valid_action(player_id, actions[player_id])) {
-			return false;
-		}
-	}
+bool GameState::simulate(const std::vector<GameAction> &actions) {
+	std::vector<json> unused;
+	return simulate_base<false>(*this, actions, unused);
+}
 
-	// history has its eyes on you
-	history.push_back(actions);
-
-	size_t max_action_length = 0;
-	for (const auto &action : actions) {
-		max_action_length = std::max(max_action_length, action.size());
-	}
-
-	// Cast spells.
-	std::deque<EffectInstance> queue1;
-	std::deque<EffectInstance> queue2;
-	std::deque<EffectInstance> *effect_queue = &queue1;
-	std::deque<EffectInstance> *next_effect_queue = &queue2;
-	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
-		std::vector<const Spell *> spells_in_flight(players.size(), nullptr);
-		
-		// Fire spells, putting them in flight.
-		for (size_t player_id = 0; player_id < players.size(); player_id++) {
-			auto &caster = players[player_id];
-
-			// Tick down stickies that last for some number of steps.
-			caster.subtract_step();
-
-			if (spell_idx >= actions[player_id].size()) continue;
-
-			const auto &spell = rules.get_spell(actions[player_id][spell_idx]);
-			if (caster.mp >= spell.get_cost()) {
-				caster.mp -= spell.get_cost();
-				spells_in_flight[player_id] = &spell;
-				std::vector<EffectInstance> generated_effects =
-					caster.pipe_spell(player_id, spell);
-				append_to_effect_queue(effect_queue, generated_effects);
-			}
-		}
-
-		// Process effects triggered by spells.
-		process_effect_queue(effect_queue, next_effect_queue);
-
-		// Resolve effects of in-flight spells.
-		for (size_t player_id = 0; player_id < players.size(); player_id++) {
-			auto &caster = players[player_id];
-			const auto *spell_ptr = spells_in_flight[player_id];
-			if (spell_ptr == nullptr) continue;
-			const auto &spell = *spell_ptr;
-
-			// Check for counterspells.
-			if (spell_idx < actions[1 - player_id].size()) {
-				const auto &other_spell = rules.get_spell(actions[1 - player_id][spell_idx]);
-				if (other_spell.is_counterspell() &&
-						other_spell.get_counterspell_selector().selects_spell(spell)) {
-					continue;
-				}
-			}
-
-			for (const auto &effect : spell.get_effects()) {
-				EffectInstance effect_instance(player_id, spell, effect);
-				std::vector<EffectInstance> generated_effects =
-					caster.pipe_effect(player_id, effect_instance, false);
-				append_to_effect_queue(next_effect_queue, generated_effects);
-				append_to_effect_queue(effect_queue, effect_instance);
-			}
-		}
-
-		// Process effects created by spells.
-		process_effect_queue(effect_queue, next_effect_queue);
-	}
-
-	for (size_t player_id = 0; player_id < players.size(); player_id++) {
-		std::vector<EffectInstance> generated_effects = players[player_id].pipe_turn(player_id);
-		append_to_effect_queue(effect_queue, generated_effects);
-	}
-
-	// Process effects created by god.
-	process_effect_queue(effect_queue, next_effect_queue);
-
-	for (size_t player_id = 0; player_id < players.size(); player_id++) {
-		auto &player = players[player_id];
-		player.subtract_turn();
-		player.mp += player.mp_regen;
-		player.mp = std::min(player.mp, rules.get_mana_cap());
-	}
-
-	return true;
+bool GameState::simulate(const std::vector<GameAction> &actions, std::vector<json> &events_out) {
+	return simulate_base<true>(*this, actions, events_out);
 }
 
 int GameState::turn_number() const {
