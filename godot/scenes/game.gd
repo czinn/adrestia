@@ -26,7 +26,7 @@ func _ready():
 		var spell_list = spell_list_scene.instance()
 		spell_list.show_stats = true
 		spell_list.enabled_filter = funcref(self, 'player_can_cast')
-		spell_list.mana_enabled_filter = funcref(self, 'player_can_afford')
+		spell_list.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 		# Set the spell list last so that we don't redraw so many times
 		spell_list.spells = book.get_spells()
 		spell_list.connect('pressed', self, 'on_spell_enqueue')
@@ -91,11 +91,14 @@ func player_effective_level():
 	var me = g.state.players[0]
 	return g.sum(me.tech) + (1 if player_upgraded_book() != null else 0)
 
+func player_has_unlocked_spell(spell):
+	return (player_effective_level() >= spell.get_level() and
+			player_effective_tech(spell.get_book()) >= spell.get_tech())
+
 func player_can_cast(spell):
 	if spell.is_tech_spell() and player_upgraded_book() != null:
 		return false
-	return (player_effective_level() >= spell.get_level() and
-			player_effective_tech(spell.get_book()) >= spell.get_tech())
+	return player_has_unlocked_spell(spell) && player_can_afford(spell)
 
 func redraw():
 	var me = g.state.players[0]

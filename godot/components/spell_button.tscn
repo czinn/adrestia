@@ -103,12 +103,11 @@ autostart = false
 
 [node name="cost" type="Control" parent="." index="2"]
 
-visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_bottom = 100.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -120,11 +119,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse" ]
 [node name="mp_icon" type="TextureRect" parent="cost" index="0"]
 
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.0
 margin_left = -38.0
-margin_top = -36.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -139,11 +138,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Size Flags" ]
 [node name="mp_label" type="Label" parent="cost" index="1"]
 
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.0
 margin_left = -38.0
-margin_top = -36.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -156,7 +155,7 @@ valign = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags" ]
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Mouse", "Rect", "Size Flags" ]
 
 [node name="unlock" type="Control" parent="." index="3"]
 
@@ -164,6 +163,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
+margin_top = 64.0
 margin_bottom = 100.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -176,12 +176,13 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse" ]
 [node name="tech_icon" type="TextureRect" parent="unlock" index="0"]
 
 anchor_left = 0.0
-anchor_top = 1.0
+anchor_top = 0.0
 anchor_right = 0.0
-anchor_bottom = 1.0
+anchor_bottom = 0.0
 margin_left = 4.0
-margin_top = -34.0
+margin_top = 2.0
 margin_right = 34.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -196,11 +197,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Size Flags" ]
 [node name="tech_label" type="Label" parent="unlock" index="1"]
 
 anchor_left = 0.0
-anchor_top = 1.0
+anchor_top = 0.0
 anchor_right = 0.0
-anchor_bottom = 1.0
-margin_top = -36.0
+anchor_bottom = 0.0
 margin_right = 38.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -218,11 +219,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse" ]
 [node name="level_icon" type="TextureRect" parent="unlock" index="2"]
 
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.0
 margin_left = -38.0
-margin_top = -36.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -237,11 +238,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Size Flags" ]
 [node name="level_label" type="Label" parent="unlock" index="3"]
 
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.0
 margin_left = -36.0
-margin_top = -36.0
+margin_bottom = 36.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
