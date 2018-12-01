@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/book_button.gd" type="Script" id=2]
 [ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=3]
 [ext_resource path="res://art-built/check-box.png" type="Texture" id=4]
+[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=5]
 
 [node name="control" type="Control"]
 
@@ -13,7 +14,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 150.0
 margin_bottom = 220.0
-rect_min_size = Vector2( 220, 220 )
+rect_min_size = Vector2( 150, 220 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -30,6 +31,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_min_size = Vector2( 150, 190 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 1
@@ -45,15 +47,16 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 220.0
-margin_bottom = 186.0
+margin_right = 150.0
+margin_bottom = 155.0
+rect_min_size = Vector2( 125, 155 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 1
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -61,7 +64,7 @@ group = null
 texture_normal = ExtResource( 3 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Mouse", "Rect", "Size Flags", "Textures" ]
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
 
 [node name="checkmark" type="TextureRect" parent="vbox/button" index="0"]
 
@@ -90,19 +93,23 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 190.0
-margin_right = 220.0
-margin_bottom = 220.0
+margin_top = 159.0
+margin_right = 150.0
+margin_bottom = 214.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-text = "Book"
+custom_fonts/font = ExtResource( 5 )
+custom_constants/line_spacing = -5
+text = "Book of Conjuration"
 align = 1
+autowrap = true
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
+_sections_unfolded = [ "custom_constants", "custom_fonts" ]
 
 
