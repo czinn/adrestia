@@ -6,7 +6,7 @@
 [ext_resource path="res://art-built/spells/placeholder.png" type="Texture" id=4]
 [ext_resource path="res://fonts/Amaranth-Regular-16.tres" type="DynamicFont" id=5]
 [ext_resource path="res://art-built/mana-gem.png" type="Texture" id=6]
-[ext_resource path="res://art-built/book/placeholder.png" type="Texture" id=7]
+[ext_resource path="res://art-built/level-book.png" type="Texture" id=7]
 [ext_resource path="res://art-built/level-star.png" type="Texture" id=8]
 
 [node name="control" type="Control" index="0"]
@@ -180,8 +180,9 @@ anchor_top = 1.0
 anchor_right = 0.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = -34.0
-margin_right = 34.0
+margin_top = -33.0
+margin_right = 33.0
+margin_bottom = 2.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -191,7 +192,7 @@ size_flags_vertical = 1
 texture = ExtResource( 7 )
 expand = true
 stretch_mode = 0
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Size Flags" ]
+_sections_unfolded = [ "Anchor", "Mouse", "Rect", "Size Flags" ]
 
 [node name="tech_label" type="Label" parent="unlock" index="1"]
 
@@ -221,8 +222,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -38.0
-margin_top = -36.0
+margin_left = -36.0
+margin_top = -35.0
+margin_bottom = -1.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -232,7 +234,7 @@ size_flags_vertical = 1
 texture = ExtResource( 8 )
 expand = true
 stretch_mode = 0
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Size Flags" ]
+_sections_unfolded = [ "Anchor", "Hint", "Margin", "Mouse", "Rect", "Size Flags" ]
 
 [node name="level_label" type="Label" parent="unlock" index="3"]
 
@@ -254,6 +256,6 @@ valign = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Anchor", "Margin", "Mouse" ]
+_sections_unfolded = [ "Anchor", "Mouse", "Rect" ]
 
 
