@@ -6,7 +6,7 @@
 - [x] Sticky hover shows description and flavor text.
 - [x] Spell icons have numbers showing tech/level/cost so you don't have to
   open tooltip to see those stats.
-- [ ] Book hover shows description and flavor text and list of spells.
+- [x] Book hover shows description and flavor text and list of spells.
 - [ ] Show sequence of events between turns.
 - [ ] After-game screen shows game details.
 
