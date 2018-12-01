@@ -10,6 +10,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
+rect_min_size = Vector2( 0, 150 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -18,7 +19,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
-_sections_unfolded = [ "Theme" ]
+_sections_unfolded = [ "Rect", "Theme" ]
 
 [node name="scroll_container" type="ScrollContainer" parent="." index="0"]
 
@@ -27,6 +28,7 @@ anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
 margin_bottom = 150.0
+rect_min_size = Vector2( 0, 150 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
@@ -38,7 +40,7 @@ scroll_horizontal = 0
 scroll_vertical_enabled = false
 scroll_vertical = 0
 scroll_deadzone = 0
-_sections_unfolded = [ "Scroll" ]
+_sections_unfolded = [ "Rect", "Scroll" ]
 
 [node name="hbox" type="HBoxContainer" parent="scroll_container" index="0"]
 

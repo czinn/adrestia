@@ -3,10 +3,37 @@
 [ext_resource path="res://scenes/game_book_select.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://components/book_button.tscn" type="PackedScene" id=3]
-[ext_resource path="res://components/book_button.gd" type="Script" id=4]
-[ext_resource path="res://art-built/button-play.png" type="Texture" id=5]
+[ext_resource path="res://art-built/button-play.png" type="Texture" id=4]
 
-[node name="root" type="Node"]
+[sub_resource type="StyleBoxFlat" id=2]
+
+content_margin_left = -1.0
+content_margin_right = -1.0
+content_margin_top = -1.0
+content_margin_bottom = -1.0
+bg_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+draw_center = true
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color( 0.8, 0.8, 0.8, 1 )
+border_blend = false
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+corner_detail = 8
+expand_margin_left = 0.0
+expand_margin_right = 0.0
+expand_margin_top = 0.0
+expand_margin_bottom = 0.0
+shadow_color = Color( 0, 0, 0, 0.6 )
+shadow_size = 0
+anti_aliasing = true
+anti_aliasing_size = 1
+
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -23,160 +50,100 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 2 )
-_sections_unfolded = [ "Mouse", "Theme" ]
+_sections_unfolded = [ "Mouse", "Rect", "Theme" ]
 
-[node name="book_grid" type="GridContainer" parent="ui" index="0"]
+[node name="panel" type="Panel" parent="ui" index="0"]
 
-editor/display_folded = true
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -260.0
-margin_top = -375.0
-margin_right = 260.0
-margin_bottom = 230.0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 90.0
+margin_bottom = 330.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_styles/panel = SubResource( 2 )
+_sections_unfolded = [ "Anchor", "Margin", "custom_styles" ]
+
+[node name="scroll_container" type="ScrollContainer" parent="ui" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 100.0
+margin_bottom = 320.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+scroll_horizontal_enabled = true
+scroll_horizontal = 0
+scroll_vertical_enabled = true
+scroll_vertical = 0
+scroll_deadzone = 0
+_sections_unfolded = [ "Anchor", "Margin" ]
+
+[node name="book_grid" type="HBoxContainer" parent="ui/scroll_container" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1340.0
+margin_bottom = 220.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-custom_constants/vseparation = 10
-columns = 2
+alignment = 0
 _sections_unfolded = [ "Mouse", "Size Flags", "custom_constants" ]
 
-[node name="control" type="Control" parent="ui/book_grid" index="0" instance=ExtResource( 3 )]
+[node name="control" parent="ui/scroll_container/book_grid" index="0" instance=ExtResource( 3 )]
+
+margin_right = 220.0
+
+[node name="control2" parent="ui/scroll_container/book_grid" index="1" instance=ExtResource( 3 )]
+
+margin_left = 224.0
+margin_right = 444.0
+
+[node name="control3" parent="ui/scroll_container/book_grid" index="2" instance=ExtResource( 3 )]
+
+margin_left = 448.0
+margin_right = 668.0
+
+[node name="control4" parent="ui/scroll_container/book_grid" index="3" instance=ExtResource( 3 )]
+
+margin_left = 672.0
+margin_right = 892.0
+
+[node name="control5" parent="ui/scroll_container/book_grid" index="4" instance=ExtResource( 3 )]
+
+margin_left = 896.0
+margin_right = 1116.0
+
+[node name="control6" parent="ui/scroll_container/book_grid" index="5" instance=ExtResource( 3 )]
+
+margin_left = 1120.0
+margin_right = 1340.0
+
+[node name="rich_text_label" type="RichTextLabel" parent="ui" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
-anchor_right = 0.0
+anchor_right = 1.0
 anchor_bottom = 0.0
-margin_right = 258.0
-margin_bottom = 220.0
-rect_min_size = Vector2( 150, 220 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource( 2 )
-script = ExtResource( 4 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
-
-[node name="control2" type="Control" parent="ui/book_grid" index="1" instance=ExtResource( 3 )]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 262.0
-margin_right = 520.0
-margin_bottom = 220.0
-rect_min_size = Vector2( 150, 220 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource( 2 )
-script = ExtResource( 4 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
-
-[node name="control3" type="Control" parent="ui/book_grid" index="2" instance=ExtResource( 3 )]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 230.0
-margin_right = 258.0
-margin_bottom = 450.0
-rect_min_size = Vector2( 150, 220 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource( 2 )
-script = ExtResource( 4 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
-
-[node name="control4" type="Control" parent="ui/book_grid" index="3" instance=ExtResource( 3 )]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 262.0
-margin_top = 230.0
-margin_right = 520.0
-margin_bottom = 450.0
-rect_min_size = Vector2( 150, 220 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource( 2 )
-script = ExtResource( 4 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
-
-[node name="control5" type="Control" parent="ui/book_grid" index="4" instance=ExtResource( 3 )]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 460.0
-margin_right = 258.0
-margin_bottom = 680.0
-rect_min_size = Vector2( 150, 220 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource( 2 )
-script = ExtResource( 4 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
-
-[node name="control6" type="Control" parent="ui/book_grid" index="5" instance=ExtResource( 3 )]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 262.0
-margin_top = 460.0
-margin_right = 520.0
-margin_bottom = 680.0
-rect_min_size = Vector2( 150, 220 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-theme = ExtResource( 2 )
-script = ExtResource( 4 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
-
-[node name="rich_text_label" type="RichTextLabel" parent="ui" index="1"]
-
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -130.0
-margin_top = -427.0
-margin_right = 130.0
-margin_bottom = -367.0
+margin_top = 50.0
+margin_bottom = 90.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
@@ -184,7 +151,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 bbcode_enabled = true
-bbcode_text = "Select up to 3 spellbooks."
+bbcode_text = "[center]Select up to 3 spellbooks.[/center]"
 visible_characters = -1
 percent_visible = 1.0
 meta_underlined = true
@@ -194,9 +161,9 @@ scroll_active = false
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "BBCode" ]
+_sections_unfolded = [ "Anchor", "BBCode", "Margin" ]
 
-[node name="play_button" type="TextureButton" parent="ui" index="2"]
+[node name="play_button" type="TextureButton" parent="ui" index="3"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -217,9 +184,26 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 5 )
+texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Margin", "Mouse", "Rect", "Textures" ]
+
+[node name="spell_list_container" type="VBoxContainer" parent="ui" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 350.0
+margin_bottom = 750.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Anchor", "Margin" ]
 
 
