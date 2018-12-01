@@ -25,7 +25,17 @@ class GameState {
 		friend std::ostream &operator<<(std::ostream &os, const GameState &);
 
 		template<bool emit_events>
-		friend bool simulate_base(GameState &, std::vector<GameAction> actions, std::vector<json> &events_out);
+		friend bool _simulate(
+				GameState &,
+				std::vector<GameAction> actions,
+				std::vector<json> &events_out);
+
+		template<bool emit_events>
+		friend void _process_effect_queue(
+				GameState &,
+				std::deque<EffectInstance> *effect_queue,
+				std::deque<EffectInstance> *next_effect_queue,
+				std::vector<json> &events_out);
 
 		bool is_valid_action(size_t player_id, GameAction action) const;
 		bool simulate(const std::vector<GameAction> &actions);
@@ -38,9 +48,4 @@ class GameState {
 		std::vector<std::vector<GameAction>> history;
 		std::vector<Player> players;
 		const GameRules &rules;
-
-	private:
-		void process_effect_queue(
-				std::deque<EffectInstance> *effect_queue,
-				std::deque<EffectInstance> *next_effect_queue);
 };

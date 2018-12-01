@@ -87,7 +87,37 @@ void append_to_effect_queue(
 }
 
 template<bool emit_events>
-bool simulate_base(
+void _process_effect_queue(
+		GameState &state,
+		std::deque<EffectInstance> *effect_queue,
+		std::deque<EffectInstance> *next_effect_queue,
+		std::vector<json> &events_out)
+{
+	while (effect_queue->size() != 0) {
+		for (auto &effect_instance : *effect_queue) {
+			auto &target = state.players[effect_instance.target_player];
+			std::vector<EffectInstance> generated_effects =
+				target.pipe_effect(effect_instance.target_player, effect_instance, true);
+			for (const auto &e : generated_effects) {
+				append_to_effect_queue(next_effect_queue, e);
+			}
+			effect_instance.apply(state.rules, target);
+			if (emit_events) {
+				events_out.emplace_back(json{
+					{"type", "effect"},
+					{"kind", effect_instance.kind},
+					{"target", effect_instance.target_player},
+					{"amount", effect_instance.amount},
+				});
+			}
+		}
+		std::swap(effect_queue, next_effect_queue);
+		next_effect_queue->clear();
+	}
+}
+
+template<bool emit_events>
+bool _simulate(
 	GameState &state,
 	const std::vector<GameAction> actions,
 	std::vector<json> &events_out)
@@ -159,7 +189,7 @@ bool simulate_base(
 		}
 
 		// Process effects triggered by spells.
-		state.process_effect_queue(effect_queue, next_effect_queue);
+		_process_effect_queue<emit_events>(state, effect_queue, next_effect_queue, events_out);
 
 		// Resolve effects of in-flight spells.
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
@@ -197,7 +227,7 @@ bool simulate_base(
 		}
 
 		// Process effects created by spells.
-		state.process_effect_queue(effect_queue, next_effect_queue);
+		_process_effect_queue<emit_events>(state, effect_queue, next_effect_queue, events_out);
 	}
 
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
@@ -206,7 +236,7 @@ bool simulate_base(
 	}
 
 	// Process effects created by god.
-	state.process_effect_queue(effect_queue, next_effect_queue);
+	_process_effect_queue<emit_events>(state, effect_queue, next_effect_queue, events_out);
 
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		auto &player = players[player_id];
@@ -259,31 +289,13 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	return true;
 }
 
-void GameState::process_effect_queue(
-		std::deque<EffectInstance> *effect_queue,
-		std::deque<EffectInstance> *next_effect_queue) {
-	while (effect_queue->size() != 0) {
-		for (auto &effect_instance : *effect_queue) {
-			auto &target = players[effect_instance.target_player];
-			std::vector<EffectInstance> generated_effects =
-				target.pipe_effect(effect_instance.target_player, effect_instance, true);
-			for (const auto &e : generated_effects) {
-				append_to_effect_queue(next_effect_queue, e);
-			}
-			effect_instance.apply(rules, target);
-		}
-		std::swap(effect_queue, next_effect_queue);
-		next_effect_queue->clear();
-	}
-}
-
 bool GameState::simulate(const std::vector<GameAction> &actions) {
 	std::vector<json> unused;
-	return simulate_base<false>(*this, actions, unused);
+	return _simulate<false>(*this, actions, unused);
 }
 
 bool GameState::simulate(const std::vector<GameAction> &actions, std::vector<json> &events_out) {
-	return simulate_base<true>(*this, actions, events_out);
+	return _simulate<true>(*this, actions, events_out);
 }
 
 int GameState::turn_number() const {
