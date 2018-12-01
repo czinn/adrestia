@@ -95,9 +95,12 @@ void _process_effect_queue(
 {
 	while (effect_queue->size() != 0) {
 		for (auto &effect_instance : *effect_queue) {
-			auto &target = state.players[effect_instance.target_player];
+			size_t target_player_id = effect_instance.target_player;
+			auto &target = state.players[target_player_id];
 			std::vector<EffectInstance> generated_effects =
-				target.pipe_effect(effect_instance.target_player, effect_instance, true);
+				emit_events ?
+				target.pipe_effect(target_player_id, effect_instance, true, events_out) :
+				target.pipe_effect(target_player_id, effect_instance, true);
 			for (const auto &e : generated_effects) {
 				append_to_effect_queue(next_effect_queue, e);
 			}
@@ -157,7 +160,7 @@ bool _simulate(
 			auto &caster = players[player_id];
 
 			// Tick down stickies that last for some number of steps.
-			caster.subtract_step();
+			emit_events ? caster.subtract_step(events_out) : caster.subtract_step();
 
 			if (spell_idx >= actions[player_id].size()) continue;
 
@@ -174,6 +177,8 @@ bool _simulate(
 				caster.mp -= spell.get_cost();
 				spells_in_flight[player_id] = &spell;
 				std::vector<EffectInstance> generated_effects =
+					emit_events ?
+					caster.pipe_spell(player_id, spell, events_out) :
 					caster.pipe_spell(player_id, spell);
 				append_to_effect_queue(effect_queue, generated_effects);
 			} else {
@@ -220,6 +225,8 @@ bool _simulate(
 			for (const auto &effect : spell.get_effects()) {
 				EffectInstance effect_instance(player_id, spell, effect);
 				std::vector<EffectInstance> generated_effects =
+					emit_events ?
+					caster.pipe_effect(player_id, effect_instance, false, events_out) :
 					caster.pipe_effect(player_id, effect_instance, false);
 				append_to_effect_queue(next_effect_queue, generated_effects);
 				append_to_effect_queue(effect_queue, effect_instance);
@@ -231,7 +238,10 @@ bool _simulate(
 	}
 
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
-		std::vector<EffectInstance> generated_effects = players[player_id].pipe_turn(player_id);
+		std::vector<EffectInstance> generated_effects =
+			emit_events ?
+			players[player_id].pipe_turn(player_id, events_out) :
+			players[player_id].pipe_turn(player_id);
 		append_to_effect_queue(effect_queue, generated_effects);
 	}
 
@@ -240,7 +250,7 @@ bool _simulate(
 
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		auto &player = players[player_id];
-		player.subtract_turn();
+		emit_events ? player.subtract_turn(events_out) : player.subtract_turn();
 		int mp_gain = std::min(state.rules.get_mana_cap() - player.mp, player.mp_regen);
 		if (emit_events) {
 			events_out.emplace_back(json{

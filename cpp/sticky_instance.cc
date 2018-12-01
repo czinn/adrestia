@@ -36,39 +36,44 @@ bool StickyInstance::operator==(const StickyInstance &other) const {
 //------------------------------------------------------------------------------
 // BUSINESS LOGIC
 //------------------------------------------------------------------------------
-std::vector<EffectInstance> StickyInstance::apply(size_t player_id, EffectInstance &effect) {
-	switch (sticky.get_kind()) {
+template<bool emit_events>
+std::vector<EffectInstance> _apply_to_effect(
+		StickyInstance &s,
+		size_t player_id,
+		EffectInstance &effect,
+		std::vector<json> &events_out) {
+	switch (s.sticky.get_kind()) {
 		case SK_DELTA:
-			effect.amount += amount;
+			effect.amount += s.amount;
 			break;
 		case SK_SHIELD:
 			// TODO: charles: This could be made more general by allowing negative
 			// shields, but until we actually have a spell that does that, I'm not
 			// going to bother implementing it. The code here assumes that state is
 			// positive.
-			if (amount >= std::abs(effect.amount)) {
-				amount -= std::abs(effect.amount);
+			if (s.amount >= std::abs(effect.amount)) {
+				s.amount -= std::abs(effect.amount);
 				effect.amount = 0;
 			} else if (effect.amount > 0) {
-				effect.amount -= amount;
-				amount = 0;
+				effect.amount -= s.amount;
+				s.amount = 0;
 			} else {
-				effect.amount += amount;
-				amount = 0;
+				effect.amount += s.amount;
+				s.amount = 0;
 			}
 			break;
 		case SK_DAMPER:
-			if (amount >= std::abs(effect.amount)) {
+			if (s.amount >= std::abs(effect.amount)) {
 				effect.amount = 0;
 			} else if (effect.amount > 0) {
-				effect.amount -= amount;
+				effect.amount -= s.amount;
 			} else {
-				effect.amount += amount;
+				effect.amount += s.amount;
 			}
 			break;
 		case SK_SUPER_SHIELD:
 			effect.amount = 0;
-			remaining_duration.set_to_zero();
+			s.remaining_duration.set_to_zero();
 			break;
 		case SK_ID:
 			// Do nothing!
@@ -76,38 +81,84 @@ std::vector<EffectInstance> StickyInstance::apply(size_t player_id, EffectInstan
 	}
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
-	for (const auto &e : sticky.get_effects()) {
-		effects.push_back(EffectInstance(player_id, spell, e));
+	for (const auto &e : s.sticky.get_effects()) {
+		effects.push_back(EffectInstance(player_id, s.spell, e));
 	}
 	return effects;
 }
 
-std::vector<EffectInstance> StickyInstance::apply(size_t player_id, const Spell &spell) {
-	switch (sticky.get_kind()) {
+std::vector<EffectInstance> StickyInstance::apply_to_effect(
+		size_t player_id,
+		EffectInstance &effect) {
+	std::vector<json> unused;
+	return _apply_to_effect<false>(*this, player_id, effect, unused);
+}
+std::vector<EffectInstance> StickyInstance::apply_to_effect(
+		size_t player_id,
+		EffectInstance &effect,
+		std::vector<json> &events_out) {
+	return _apply_to_effect<true>(*this, player_id, effect, events_out);
+}
+
+template<bool emit_events>
+std::vector<EffectInstance> _apply_to_spell(
+		StickyInstance &s,
+		size_t player_id,
+		const Spell &spell,
+		std::vector<json> &events_out) {
+	switch (s.sticky.get_kind()) {
 		default:
 			// Do nothing!
 			break;
 	}
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
-	for (const auto &e : sticky.get_effects()) {
-		effects.push_back(EffectInstance(player_id, this->spell, e));
+	for (const auto &e : s.sticky.get_effects()) {
+		effects.push_back(EffectInstance(player_id, s.spell, e));
 	}
 	return effects;
 }
 
-std::vector<EffectInstance> StickyInstance::apply(size_t player_id) {
-	switch (sticky.get_kind()) {
+std::vector<EffectInstance> StickyInstance::apply_to_spell(
+		size_t player_id,
+		const Spell &spell) {
+	std::vector<json> unused;
+	return _apply_to_spell<false>(*this, player_id, spell, unused);
+}
+std::vector<EffectInstance> StickyInstance::apply_to_spell(
+		size_t player_id,
+		const Spell &spell,
+		std::vector<json> &events_out) {
+	return _apply_to_spell<true>(*this, player_id, spell, events_out);
+}
+
+template<bool emit_events>
+std::vector<EffectInstance> _apply_to_turn(
+		StickyInstance &s,
+		size_t player_id,
+		std::vector<json> &events_out) {
+	switch (s.sticky.get_kind()) {
 		default:
 			// Do nothing!
 			break;
 	}
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
-	for (const auto &e : sticky.get_effects()) {
-		effects.push_back(EffectInstance(player_id, spell, e));
+	for (const auto &e : s.sticky.get_effects()) {
+		effects.push_back(EffectInstance(player_id, s.spell, e));
 	}
 	return effects;
+}
+
+std::vector<EffectInstance> StickyInstance::apply_to_turn(size_t player_id) {
+	std::vector<json> unused;
+	return _apply_to_turn<false>(*this, player_id, unused);
+}
+
+std::vector<EffectInstance> StickyInstance::apply_to_turn(
+		size_t player_id,
+		std::vector<json> &events_out) {
+	return _apply_to_turn<true>(*this, player_id, events_out);
 }
 
 //------------------------------------------------------------------------------
