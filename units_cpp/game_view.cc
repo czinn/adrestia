@@ -16,7 +16,6 @@ void to_json(json &j, const GameView &view) {
 	j["action_log"] = view.action_log;
 }
 
-
 void GameView::generate_build_units_actions(
 	std::vector<Action> &actions,  // Possible actions (accumulator)
 	std::vector<std::string> &units,
@@ -45,7 +44,7 @@ void GameView::generate_build_units_actions(
 		units.push_back(begin->first);
 		generate_build_units_actions(
 			actions, units, coins - begin->second.get_cost(),
-			max_units - 1, next_it, end
+			max_units - 1, begin, end
 		);
 		units.pop_back();
 	}

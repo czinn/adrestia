@@ -11,7 +11,7 @@ GameRules::GameRules(std::string rules_filename) {
 	/*! \brief Create GameRules from rules json file (list of units) */
 
 	json j;
-	std::ifstream in("rules.json");
+	std::ifstream in(filename);
 	in >> j;
 	*this = j;
 }

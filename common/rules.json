@@ -1,218 +1,316 @@
 {
-  "unit_kinds": [
+  "mana_cap": 10,
+  "initial_mana_regen": 5,
+  "initial_health": 25,
+  "stickies": [
     {
-      "id": "general",
-      "name": "General",
-      "colour": "BLACK",
-      "health": 5,
-      "width": 1,
-      "attack": [2],
-      "cost": 0,
-      "tech": null,
-      "image": "commander.png",
-      "tiles": [0, 0],
-      "label": "G"
+      "id": "shield", "name": "Shield",
+      "text": "Blocks damage from attacks.",
+      "kind": "shield",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
     },
     {
-      "id": "grunt",
-      "name": "Grunt",
-      "colour": "RED",
-      "health": 1,
-      "width": 1,
-      "attack": [1],
-      "cost": 2,
-      "tech": {},
-      "image": "the_grunt.png",
-      "tiles": [0, 0],
-      "label": "g"
+      "id": "poison", "name": "Poison",
+      "text": "Deals 1 damage each turn.",
+      "kind": "id", "trigger": { "turn": true },
+      "effects": [
+        { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
+      ]
     },
     {
-      "id": "troll",
-      "name": "Troll",
-      "colour": "RED",
-      "health": 2,
-      "width": 2,
-      "attack": [4],
-      "cost": 5,
-      "tech": {"red": 5},
-      "image": "the_troll.png",
-      "tiles": [0, 0, 1, 0],
-      "label": "T"
+      "id": "storm", "name": "Storm",
+      "text": "Increases Gathering Storm's damage by 1.",
+      "kind": "delta",
+      "trigger": { "inbound": false, "effect": { "spell_id": [ "chain_1" ] } }
     },
     {
-      "id": "wall",
-      "name": "Wall",
-      "colour": "GREEN",
-      "health": 2,
-      "shields": 1,
-      "width": 1,
-      "attack": [],
-      "cost": 1,
-      "tech": {"green": 1},
-      "image": "wall.png",
-      "tiles": [0, 0],
-      "label": "w"
+      "id": "spell_poison", "name": "Fatigue",
+      "text": "Casting spells deals 1 poison damage.",
+      "kind": "id", "trigger": { "spell": {} },
+      "effects": [
+        { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
+      ]
     },
     {
-      "id": "turret",
-      "name": "Turret",
-      "colour": "GREEN",
-      "health": 1,
-      "width": 2,
-      "attack": [1],
-      "cost": 2,
-      "tech": {"green": 1},
-      "image": "cutie.png",
-      "tiles": [0, 0, 0, 1],
-      "label": "t"
+      "id": "damper", "name": "Damper",
+      "text": "Decreases the strength of incoming attacks.",
+      "kind": "damper",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
     },
     {
-      "id": "wide_wall",
-      "name": "Wide Wall",
-      "colour": "GREEN",
-      "health": 2,
-      "width": 4,
-      "attack": [],
-      "cost": 3,
-      "tech": {"green": 3},
-      "image": "wide_wall.png",
-      "tiles": [0, 0, 1, 0, 2, 0, 3, 0],
-      "label": "W"
+      "id": "poison_shield", "name": "Antidote",
+      "text": "Blocks damage from poison.",
+      "kind": "shield",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "poison" ] } }
     },
     {
-      "id": "worker",
-      "name": "Worker",
-      "colour": "BLUE",
-      "health": 1,
-      "shields": 2,
-      "width": 1,
-      "attack": [],
-      "cost": 3,
-      "tech": {},
-      "font": 1,
-      "image": "font_b.png",
-      "tiles": [0, 0],
-      "label": "w"
+      "id": "shields_from_spells", "name": "Fortress",
+      "text": "When you cast a spell, gain a shield that blocks 2 damage.",
+      "kind": "id",
+      "trigger": { "spell": {} },
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shield", "amount": 2, "duration": { "turns": 2 } }
+        }
+      ]
     },
     {
-      "id": "paragon",
-      "name": "Paragon",
-      "colour": "BLUE",
-      "health": 2,
-      "width": 1,
-      "attack": [],
-      "cost": 9,
-      "tech": {"red": 1, "green": 1, "blue": 7},
-      "font": 4,
-      "image": "paragon.png",
-      "tiles": [0, 0],
-      "label": "p"
-    },
-    {
-      "id": "ogre",
-      "name": "Ogre",
-      "colour": "RED",
-      "health": 2,
-      "width": 2,
-      "attack": [2],
-      "cost": 4,
-      "tech": {"red": 2, "green": 2},
-      "tiles": [0, 0, 1, 0],
-      "label": "o",
-      "image": "the_ogre.png"
-    },
-    {
-      "id": "shrek",
-      "name": "Shrek",
-      "colour": "GREEN",
-      "health": 4,
-      "width": 3,
-      "attack": [2],
-      "cost": 5,
-      "tech": {"red": 2, "green": 3},
-      "tiles": [0, 0, 1, 0, 2, 0],
-      "label": "S",
-      "image": "shrek.png"
-    },
-    {
-      "id": "soldier",
-      "name": "Soldier",
-      "colour": "BLUE",
-      "health": 1,
-      "width": 1,
-      "attack": [1],
-      "cost": 3,
-      "tech": {"red": 1, "blue": 2},
-      "image": "default_blue.png",
-      "tiles": [0, 0],
-      "label": "s"
-    },
-    {
-      "id": "commando",
-      "name": "Commando",
-      "colour": "RED",
-      "health": 2,
-      "width": 1,
-      "attack": [1, 1],
-      "cost": 5,
-      "tech": {"red": 3, "blue": 2},
-      "image": "default_red.png",
-      "tiles": [0, 0],
-      "label": "c"
-    },
-    {
-      "id": "fort",
-      "name": "Fort",
-      "colour": "GREEN",
-      "health": 1,
-      "width": 4,
-      "attack": [],
-      "cost": 5,
-      "tech": {"green": 3, "blue": 2},
-      "image": "default_green.png",
-      "tiles": [0, 0, 0, 1, 1, 0, 1, 1],
-      "label": "F"
-    },
-    {
-      "id": "insurgent",
-      "name": "Insurgent",
-      "colour": "RED",
-      "health": 3,
-      "width": 1,
-      "attack": [1],
-      "cost": 2,
-      "tech": {"red": 2, "green": 1, "blue": 1},
-      "image": "insurgent.png",
-      "tiles": [0, 0],
-      "label": "i"
-    },
-    {
-      "id": "avatar",
-      "name": "Avatar",
-      "colour": "BLUE",
-      "health": 3,
-      "width": 2,
-      "attack": [1, 3, 1],
-      "cost": 9,
-      "tech": {"red": 5, "green": 1, "blue": 3},
-      "image": "avatar.png",
-      "tiles": [0, 0, 0, 1],
-      "label": "A"
-    },
-    {
-      "id": "tank",
-      "name": "Tank",
-      "colour": "BLUE",
-      "health": 10,
-      "width": 7,
-      "attack": [2],
-      "cost": 9,
-      "tech": {"red": 1, "green": 5, "blue": 3},
-      "image": "tank.png",
-      "tiles": [1, 0, 0, 1, 1, 1, 2, 1, 0, 2, 1, 2, 2, 2],
-      "label": "K"
+      "id": "super_shield", "name": "Crystal Shield",
+      "text": "Blocks all damage from the next attack.",
+      "kind": "super_shield",
+      "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
     }
   ],
-  "unit_cap": 50,
-  "starting_units": ["general", "worker", "worker", "worker", "worker", "worker"]
+  "spells": [
+    {
+      "id": "conjuration_tech", "name": "Learn Conjuration",
+      "book": "conjuration",
+      "tech": 0, "level": 0, "cost": 0,
+      "text": "Increase Conjuration by 1.",
+      "effects": [
+        { "kind": "tech", "self": true, "effect_type": "tech", "amount": 1 }
+      ]
+    },
+    {
+      "id": "damage_1", "name": "Fiery Poke",
+      "book": "conjuration",
+      "tech": 0, "level": 1, "cost": 1,
+      "text": "Deal 1 damage",
+      "effects": [
+        { "kind": "health", "self": false, "effect_type": "attack", "amount": -1 }
+      ]
+    },
+    {
+      "id": "shield_1", "name": "Ripple Shield",
+      "book": "conjuration",
+      "tech": 0, "level": 1, "cost": 2,
+      "text": "Block 3 damage",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shield", "amount": 3, "duration": { "turns": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "mana_1", "name": "Concentration",
+      "book": "conjuration",
+      "tech": 1, "level": 1, "cost": 3,
+      "text": "Increase mana generation by 1.",
+      "effects": [
+        { "kind": "mana_regen", "self": true, "effect_type": "special", "amount": 1 }
+      ]
+    },
+    {
+      "id": "poison_1", "name": "Poison",
+      "book": "conjuration",
+      "tech": 2, "level": 2, "cost": 5,
+      "text": "Deal 1 damage per turn.",
+      "effects": [
+        {
+          "kind": "sticky", "self": false, "effect_type": "poison",
+          "sticky": { "sticky_id": "poison", "duration": { "game": true } }
+        }
+      ]
+    },
+    {
+      "id": "shield_2", "name": "Tower Shield",
+      "book": "conjuration",
+      "tech": 2, "level": 3, "cost": 3,
+      "text": "Block 4 damage; lasts for 2 turns.",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shield", "amount": 4, "duration": { "turns": 2 } }
+        }
+      ]
+    },
+    {
+      "id": "shield_3", "name": "Greater Shield",
+      "book": "conjuration",
+      "tech": 3, "level": 3, "cost": 5,
+      "text": "Block 8 damage.",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shield", "amount": 8, "duration": { "turns": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "damage_2", "name": "Flame Spear",
+      "book": "conjuration",
+      "tech": 3, "level": 3, "cost": 3,
+      "text": "Deal 5 damage.",
+      "effects": [
+        { "kind": "health", "self": false, "effect_type": "attack", "amount": -5 }
+      ]
+    },
+    {
+      "id": "chain_1", "name": "Gathering Storm",
+      "book": "conjuration",
+      "tech": 3, "level": 4, "cost": 4,
+      "text": "Deal 3 damage, plus 1 for each time you previously cast this spell.",
+      "effects": [
+        { "kind": "health", "self": false, "effect_type": "attack", "amount": -3 },
+        {
+          "kind": "sticky", "self": true, "effect_type": "special",
+          "sticky": { "sticky_id": "storm", "duration": { "game": true }, "amount": -1 }
+        }
+      ]
+    },
+    {
+      "id": "damage_3", "name": "Lightning Bolt",
+      "book": "conjuration",
+      "tech": 4, "level": 5, "cost": 4,
+      "text": "Deal 7 damage.",
+      "effects": [
+        { "kind": "health", "self": false, "effect_type": "attack", "amount": -7 }
+      ]
+    },
+    {
+      "id": "endgame_1", "name": "Catalyst Cannon",
+      "book": "conjuration",
+      "tech": 5, "level": 7, "cost": 4,
+      "text": "Deal 4 damage. Enemy takes 1 damage for each additional spell they cast this turn.",
+      "effects": [
+        { "kind": "health", "self": false, "effect_type": "constant", "amount": -4 },
+        {
+          "kind": "sticky", "self": false, "effect_type": "special",
+          "sticky": { "sticky_id": "spell_poison", "duration": { "turns": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "regulation_tech", "name": "Learn Regulation",
+      "book": "regulation",
+      "tech": 0, "level": 0, "cost": 0,
+      "text": "Increase Regulation by 1.",
+      "effects": [
+        { "kind": "tech", "self": true, "effect_type": "tech", "amount": 1 }
+      ]
+    },
+    {
+      "id": "regulation_mana_1", "name": "Focus",
+      "book": "regulation",
+      "tech": 0, "level": 1, "cost": 3,
+      "text": "Increase mana generation by 1.",
+      "effects": [
+        { "kind": "mana_regen", "self": true, "effect_type": "special", "amount": 1 }
+      ]
+    },
+    {
+      "id": "regulation_shield_1", "name": "Hex Shield",
+      "book": "regulation",
+      "tech": 1, "level": 2, "cost": 4,
+      "text": "Block 6 damage",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shield", "amount": 6, "duration": { "turns": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "regulation_cancel_1", "name": "Shieldbreaker",
+      "book": "regulation",
+      "tech": 2, "level": 3, "cost": 2,
+      "text": "Cancel a shield spell",
+      "effects": [],
+      "counterspell": {"effect_type": ["shield"]}
+    },
+    {
+      "id": "regulation_mana_2", "name": "Mana Crystal",
+      "book": "regulation",
+      "tech": 3, "level": 3, "cost": 3,
+      "text": "Gain 4 mana next turn",
+      "effects": [
+        { "kind": "mana", "self": true, "effect_type": "special", "amount": 4 }
+      ]
+    },
+    {
+      "id": "regulation_cancel_2", "name": "Negate",
+      "book": "regulation",
+      "tech": 2, "level": 4, "cost": 3,
+      "text": "Cancel an attack spell",
+      "effects": [],
+      "counterspell": {"effect_type": ["attack"]}
+    },
+    {
+      "id": "regulation_damper", "name": "Damper",
+      "book": "regulation",
+      "tech": 3, "level": 4, "cost": 3,
+      "text": "Reduce incoming attacks by 2 damage.",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "special",
+          "sticky": { "sticky_id": "damper", "amount": 2, "duration": { "turns": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "regulation_shield_2", "name": "Antidote",
+      "book": "regulation",
+      "tech": 4, "level": 4, "cost": 2,
+      "text": "Block 3 poison damage; lasts 2 turns.",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "poison_shield", "amount": 3, "duration": { "turns": 2 } }
+        }
+      ]
+    },
+    {
+      "id": "regulation_shield_3", "name": "Fortress",
+      "book": "regulation",
+      "tech": 1, "level": 5, "cost": 3,
+      "text": "Spells you cast this turn give you 2 shield each. Shields last until end of next turn.",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "shield",
+          "sticky": { "sticky_id": "shields_from_spells", "duration": { "turns": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "regulation_shield_4", "name": "Shield of Alaros",
+      "book": "regulation",
+      "tech": 4, "level": 5, "cost": 4,
+      "text": "Block next attack.",
+      "effects": [
+        {
+          "kind": "sticky", "self": true, "effect_type": "attack",
+          "sticky": { "sticky_id": "super_shield", "duration": { "game": true } }
+        }
+      ]
+    },
+    {
+      "id": "burn_mana_1", "name": "Mana Burn",
+      "book": "testing",
+      "tech": 0, "level": 0, "cost": 1,
+      "text": "Reduce opponent's mana by 3.",
+      "effects": [
+        { "kind": "mana", "self": false, "effect_type": "special", "amount": -3 }
+      ]
+    }
+  ],
+  "books": [
+    {
+      "id": "conjuration", "name": "Book of Conjuration",
+      "spells": [
+        "conjuration_tech", "damage_1", "shield_1", "mana_1", "poison_1",
+        "shield_2", "shield_3", "damage_2", "chain_1", "damage_3", "endgame_1"
+      ]
+    },
+    {
+      "id": "regulation", "name": "Book of Regulation",
+      "spells": [
+        "regulation_tech", "regulation_mana_1", "regulation_shield_1",
+        "regulation_cancel_1", "regulation_mana_2", "regulation_cancel_2",
+        "regulation_damper", "regulation_shield_2", "regulation_shield_3",
+        "regulation_shield_4"
+      ]
+    }
+  ]
 }

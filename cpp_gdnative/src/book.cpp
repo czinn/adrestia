@@ -1,0 +1,24 @@
+#include "book.h"
+
+#define CLASSNAME Book
+
+using namespace godot;
+
+namespace godot {
+	SCRIPT_AT("res://native/book.gdns")
+
+	void Book::_register_methods() {
+		REGISTER_METHOD(get_id);
+		REGISTER_METHOD(get_name);
+		REGISTER_METHOD(get_spells);
+		REGISTER_NULLABLE
+		REGISTER_JSONABLE
+	}
+
+	FORWARD_AUTO_GETTER(get_id)
+	FORWARD_AUTO_GETTER(get_name)
+	FORWARD_AUTO_GETTER(get_spells)
+
+	IMPL_NULLABLE
+	IMPL_JSONABLE
+}

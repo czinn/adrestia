@@ -1,0 +1,24 @@
+# First milestone: we can play the game (done!)
+
+# Second milestone: others can play the game
+
+- Spell hover shows description and flavor text.
+- Sticky hover shows description and flavor text.
+- Book hover shows description and flavor text and list of spells.
+
+# Third milestone: others can enjoy the game
+
+- Animate book selection.
+- Animate spell selection.
+- Replace TabContainer for spells with a custom thing built with TextureButtons
+  and visibility.
+- Health bars, mana crystals; not just numbers.
+- Much art.
+
+# Networking
+
+- Figure out a lightweight set of interfaces that lets us do tutorial /
+  multiplayer games without duplicate code.
+- Establish a TCP connection.
+- Create helper functions for each of the available server endpoints
+- Add login page

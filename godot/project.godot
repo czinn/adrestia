@@ -1,0 +1,40 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=3
+
+[application]
+
+config/name="Adrestia Spells"
+run/main_scene="res://scenes/title.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+global="*res://global/global.gd"
+scene_loader="*res://global/scene_loader.gd"
+
+[display]
+
+window/size/width=540
+window/size/height=960
+window/dpi/allow_hidpi=true
+window/handheld/orientation="portrait"
+window/handheld/emulate_touchscreen=true
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
+
+[node]
+
+name_casing=2
+
+[rendering]
+
+environment/default_clear_color=Color( 0.0676088, 0.0653687, 0.0703125, 1 )
+environment/default_environment="res://default_env.tres"
+quality/dynamic_fonts/use_oversampling=true
