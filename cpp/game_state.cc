@@ -5,16 +5,19 @@
 
 #include <deque>
 #include <ostream>
+#include <iostream>
 
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
 //------------------------------------------------------------------------------
 GameState::GameState(
-	const GameRules &rules,
-	const std::vector<std::vector<std::string>> &player_books)
-	: rules(rules) {
+		const GameRules &rules,
+		const std::vector<std::vector<std::string>> &player_books)
+		: rules(rules) {
+	size_t player_id = 0;
 	for (const auto &p : player_books) {
-		players.emplace_back(rules, p);
+		players.emplace_back(rules, player_id, p);
+		player_id++;
 	}
 }
 
@@ -99,13 +102,13 @@ void _process_effect_queue(
 			auto &target = state.players[target_player_id];
 			std::vector<EffectInstance> generated_effects =
 				emit_events ?
-				target.pipe_effect(target_player_id, effect_instance, true, events_out) :
-				target.pipe_effect(target_player_id, effect_instance, true);
+				target.pipe_effect(effect_instance, true, events_out) :
+				target.pipe_effect(effect_instance, true);
 			for (const auto &e : generated_effects) {
 				append_to_effect_queue(next_effect_queue, e);
 			}
 			effect_instance.apply(state.rules, target);
-			if (emit_events) {
+			if (emit_events && !effect_instance.fizzles()) {
 				events_out.emplace_back(json{
 					{"type", "effect"},
 					{"effect", effect_instance}
@@ -139,7 +142,6 @@ bool _simulate(
 
 	// history has its eyes on you
 	state.history.push_back(actions);
-	// TODO: emit an event here
 
 	size_t max_action_length = 0;
 	for (const auto &action : actions) {
@@ -177,8 +179,8 @@ bool _simulate(
 				spells_in_flight[player_id] = &spell;
 				std::vector<EffectInstance> generated_effects =
 					emit_events ?
-					caster.pipe_spell(player_id, spell, events_out) :
-					caster.pipe_spell(player_id, spell);
+					caster.pipe_spell(spell, events_out) :
+					caster.pipe_spell(spell);
 				append_to_effect_queue(effect_queue, generated_effects);
 			} else {
 				if (emit_events) {
@@ -217,19 +219,19 @@ bool _simulate(
 				}
 			}
 
-			events_out.emplace_back(json{
-				{"type", "spell_hit"},
-				{"caster", player_id},
-			});
 			for (const auto &effect : spell.get_effects()) {
 				EffectInstance effect_instance(player_id, spell, effect);
 				std::vector<EffectInstance> generated_effects =
 					emit_events ?
-					caster.pipe_effect(player_id, effect_instance, false, events_out) :
-					caster.pipe_effect(player_id, effect_instance, false);
+					caster.pipe_effect(effect_instance, false, events_out) :
+					caster.pipe_effect(effect_instance, false);
 				append_to_effect_queue(next_effect_queue, generated_effects);
 				append_to_effect_queue(effect_queue, effect_instance);
 			}
+			events_out.emplace_back(json{
+				{"type", "spell_hit"},
+				{"caster", player_id},
+			});
 		}
 
 		// Process effects created by spells.
@@ -239,8 +241,8 @@ bool _simulate(
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		std::vector<EffectInstance> generated_effects =
 			emit_events ?
-			players[player_id].pipe_turn(player_id, events_out) :
-			players[player_id].pipe_turn(player_id);
+			players[player_id].pipe_turn(events_out) :
+			players[player_id].pipe_turn();
 		append_to_effect_queue(effect_queue, generated_effects);
 	}
 
@@ -325,8 +327,27 @@ void GameState::apply_event(const json &event) {
 		}
 	} else if (type == "spell_countered") {
 		// State is unchanged, this event is used only for animation.
+	} else if (type == "spell_hit") {
+		// State is unchanged, this event is used only for animation.
+		// We don't generate effects here because they're piped through stickies
+		// and applied to players in separate events.
+	} else if (type == "sticky_amount_changed"
+			|| type == "sticky_expired"
+			|| type == "sticky_duration_changed") {
+		size_t player_id = event.at("player").get<size_t>();
+		size_t sticky_index = event.at("sticky_index").get<size_t>();
+		auto it = players[player_id].stickies.begin();
+		for (size_t i = 0; i < sticky_index; i++, it++);
+		if (type == "sticky_amount_changed") {
+			it->amount = event.at("amount").get<int>();
+		} else if (type == "sticky_duration_changed") {
+			it->remaining_duration = event.at("duration");
+		} else if (type == "sticky_expired") {
+			players[player_id].stickies.erase(it);
+		}
 	} else {
 		// We should be handling all event types.
+		std::cout << type << std::endl;
 		assert(false);
 	}
 }

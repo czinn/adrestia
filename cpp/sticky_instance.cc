@@ -41,7 +41,10 @@ std::vector<EffectInstance> _apply_to_effect(
 		StickyInstance &s,
 		size_t player_id,
 		EffectInstance &effect,
+		size_t sticky_index,
 		std::vector<json> &events_out) {
+	int initial_amount = s.amount;
+	Duration initial_duration = s.remaining_duration;
 	switch (s.sticky.get_kind()) {
 		case SK_DELTA:
 			effect.amount += s.amount;
@@ -79,6 +82,22 @@ std::vector<EffectInstance> _apply_to_effect(
 			// Do nothing!
 			break;
 	}
+	if (emit_events && initial_amount != s.amount) {
+		events_out.emplace_back(json{
+			{"type", "sticky_amount_changed"},
+			{"player", player_id},
+			{"sticky_index", sticky_index},
+			{"amount", s.amount}
+		});
+	}
+	if (emit_events && !(initial_duration == s.remaining_duration)) {
+		events_out.emplace_back(json{
+			{"type", "sticky_duration_changed"},
+			{"player", player_id},
+			{"sticky_index", sticky_index},
+			{"duration", s.remaining_duration}
+		});
+	}
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
@@ -91,13 +110,14 @@ std::vector<EffectInstance> StickyInstance::apply_to_effect(
 		size_t player_id,
 		EffectInstance &effect) {
 	std::vector<json> unused;
-	return _apply_to_effect<false>(*this, player_id, effect, unused);
+	return _apply_to_effect<false>(*this, player_id, effect, 0, unused);
 }
 std::vector<EffectInstance> StickyInstance::apply_to_effect(
 		size_t player_id,
 		EffectInstance &effect,
+		size_t sticky_index,
 		std::vector<json> &events_out) {
-	return _apply_to_effect<true>(*this, player_id, effect, events_out);
+	return _apply_to_effect<true>(*this, player_id, effect, sticky_index, events_out);
 }
 
 template<bool emit_events>
@@ -105,6 +125,7 @@ std::vector<EffectInstance> _apply_to_spell(
 		StickyInstance &s,
 		size_t player_id,
 		const Spell &spell,
+		size_t sticky_index,
 		std::vector<json> &events_out) {
 	switch (s.sticky.get_kind()) {
 		default:
@@ -123,19 +144,21 @@ std::vector<EffectInstance> StickyInstance::apply_to_spell(
 		size_t player_id,
 		const Spell &spell) {
 	std::vector<json> unused;
-	return _apply_to_spell<false>(*this, player_id, spell, unused);
+	return _apply_to_spell<false>(*this, player_id, spell, 0, unused);
 }
 std::vector<EffectInstance> StickyInstance::apply_to_spell(
 		size_t player_id,
 		const Spell &spell,
+		size_t sticky_index,
 		std::vector<json> &events_out) {
-	return _apply_to_spell<true>(*this, player_id, spell, events_out);
+	return _apply_to_spell<true>(*this, player_id, spell, sticky_index, events_out);
 }
 
 template<bool emit_events>
 std::vector<EffectInstance> _apply_to_turn(
 		StickyInstance &s,
 		size_t player_id,
+		size_t sticky_index,
 		std::vector<json> &events_out) {
 	switch (s.sticky.get_kind()) {
 		default:
@@ -152,13 +175,14 @@ std::vector<EffectInstance> _apply_to_turn(
 
 std::vector<EffectInstance> StickyInstance::apply_to_turn(size_t player_id) {
 	std::vector<json> unused;
-	return _apply_to_turn<false>(*this, player_id, unused);
+	return _apply_to_turn<false>(*this, player_id, 0, unused);
 }
 
 std::vector<EffectInstance> StickyInstance::apply_to_turn(
 		size_t player_id,
+		size_t sticky_index,
 		std::vector<json> &events_out) {
-	return _apply_to_turn<true>(*this, player_id, events_out);
+	return _apply_to_turn<true>(*this, player_id, sticky_index, events_out);
 }
 
 //------------------------------------------------------------------------------

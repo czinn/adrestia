@@ -1,4 +1,5 @@
 #include "../game_state.h"
+#include "../game_view.h"
 #include "../game_rules.h"
 #include "../json.h"
 #include "catch.hpp"
@@ -184,4 +185,21 @@ TEST_CASE("Regulation spells") {
 	}
 
 	// TODO: charles: Test some of the other non-trivial spells in this book.
+}
+
+TEST_CASE("apply_event") {
+	GameRules rules(rules_filename);
+	GameState state(rules, (std::vector<std::vector<std::string>>){{"regulation", "conjuration"}, {"conjuration", "regulation"}});
+
+	{
+		GameState simulation(state);
+		std::vector<json> events_out;
+		simulation.simulate({{"conjuration_tech", "damage_1", "mana_1"}, {"regulation_tech", "shield_1"}}, events_out);
+		for (const auto &event : events_out) {
+			state.apply_event(event);
+		}
+		GameView simulation_view(simulation, 0);
+		GameView view(state, 0);
+		REQUIRE(json(view.players) == json(simulation_view.players));
+	}
 }

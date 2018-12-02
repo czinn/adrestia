@@ -72,7 +72,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 	for (const auto &turn : view.history) {
 		for (int i = 0; i < view.players.size(); i++) {
 			for (const auto &spell_id : turn[i]) {
-				if (spell_id == tech_spell_id) {
+				if (spell_id == TECH_SPELL_ID) {
 					unknown_techs[i]++;
 					continue;
 				}

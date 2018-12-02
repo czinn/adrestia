@@ -41,6 +41,18 @@ bool EffectInstance::operator==(const EffectInstance &other) const {
 //------------------------------------------------------------------------------
 // BUSINESS LOGIC
 //------------------------------------------------------------------------------
+bool EffectInstance::fizzles() const {
+	switch (kind) {
+		case EK_TECH:
+		case EK_HEALTH:
+		case EK_MANA:
+		case EK_REGEN:
+			return amount == 0;
+		case EK_STICKY:
+			return false;
+	}
+}
+
 void EffectInstance::apply(const GameRules &rules, Player &player) const {
 	switch (kind) {
 		case EK_TECH:

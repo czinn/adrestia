@@ -28,6 +28,7 @@ class StickyInstance {
 		std::vector<EffectInstance> apply_to_effect(
 				size_t player_id,
 				EffectInstance &effect,
+				size_t sticky_index,
 				std::vector<json> &events_out);
 
 		// Applies the sticky to the spell and possibly generates additional
@@ -38,13 +39,17 @@ class StickyInstance {
 		std::vector<EffectInstance> apply_to_spell(
 				size_t player_id,
 				const Spell &spell,
+				size_t sticky_index,
 				std::vector<json> &events_out);
 
 		// Generates any per-turn effects. This function should only be called if
 		// this sticky triggers on turns.
 		// player_id is the id of the player to whom the sticky is attached.
 		std::vector<EffectInstance> apply_to_turn(size_t player_id);
-		std::vector<EffectInstance> apply_to_turn(size_t player_id, std::vector<json> &events_out);
+		std::vector<EffectInstance> apply_to_turn(
+				size_t player_id,
+				size_t sticky_index,
+				std::vector<json> &events_out);
 
 		friend void to_json(json &j, const StickyInstance &sticky);
 
@@ -60,6 +65,7 @@ class StickyInstance {
 				StickyInstance &,
 				size_t player_id,
 				EffectInstance &effect,
+				size_t sticky_index,
 				std::vector<json> &events_out);
 
 		template<bool emit_events>
@@ -67,11 +73,13 @@ class StickyInstance {
 				StickyInstance &,
 				size_t player_id,
 				const Spell &spell,
+				size_t sticky_index,
 				std::vector<json> &events_out);
 
 		template<bool emit_events>
 		friend std::vector<EffectInstance> _apply_to_turn(
 				StickyInstance &,
 				size_t player_id,
+				size_t sticky_index,
 				std::vector<json> &events_out);
 };

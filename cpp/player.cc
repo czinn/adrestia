@@ -6,8 +6,8 @@
 //------------------------------------------------------------------------------
 // C++ SEMANTICS
 //------------------------------------------------------------------------------
-Player::Player(const GameRules &rules, const std::vector<std::string> books)
-	: rules(rules)
+Player::Player(const GameRules &rules, size_t id, const std::vector<std::string> books)
+	: id(id), rules(rules)
 {
 	this->max_hp = rules.get_initial_health();
 	this->mp_regen = rules.get_initial_mana_regen();
@@ -20,7 +20,8 @@ Player::Player(const GameRules &rules, const std::vector<std::string> books)
 }
 
 Player::Player(const GameRules &rules, const json &j) 
-	: hp(j.at("hp"))
+	: id(j.at("id"))
+	, hp(j.at("hp"))
 	, max_hp(j.at("max_hp"))
 	, mp(j.at("mp"))
 	, mp_regen(j.at("mp_regen"))
@@ -38,6 +39,7 @@ Player::Player(const GameRules &rules, const json &j)
 
 bool Player::operator==(const Player &other) const {
 	return (
+			this->id == other.id &&
 			this->hp == other.hp &&
 			this->max_hp == other.max_hp &&
 			this->mp == other.mp &&
@@ -79,115 +81,134 @@ size_t Player::find_book_idx(const std::string &book_id) const {
 template<bool emit_events>
 std::vector<EffectInstance> _pipe_effect(
 		Player &p,
-		size_t player_id,
 		EffectInstance &effect,
 		bool inbound,
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
+	size_t sticky_index = 0;
 	for (auto &sticky : p.stickies) {
 		if (sticky.sticky.triggers_for_effect(effect, inbound)) {
 			std::vector<EffectInstance> new_effects =
 				emit_events ?
-				sticky.apply_to_effect(player_id, effect, events_out) :
-				sticky.apply_to_effect(player_id, effect);
+				sticky.apply_to_effect(p.id, effect, sticky_index, events_out) :
+				sticky.apply_to_effect(p.id, effect);
 			std::copy(new_effects.begin(), new_effects.end(),
 					std::back_inserter(generated_effects));
+			if (effect.fizzles()) {
+				break;
+			}
 		}
+		sticky_index++;
 	}
 	return generated_effects;
 }
 
 std::vector<EffectInstance> Player::pipe_effect(
-		size_t player_id,
 		EffectInstance &effect,
 		bool inbound) {
 	std::vector<json> unused;
-	return _pipe_effect<false>(*this, player_id, effect, inbound, unused);
+	return _pipe_effect<false>(*this, effect, inbound, unused);
 }
 
 std::vector<EffectInstance> Player::pipe_effect(
-		size_t player_id,
 		EffectInstance &effect,
 		bool inbound,
 		std::vector<json> &events_out) {
-	return _pipe_effect<true>(*this, player_id, effect, inbound, events_out);
+	return _pipe_effect<true>(*this, effect, inbound, events_out);
 }
 
 template<bool emit_events>
 std::vector<EffectInstance> _pipe_spell(
 		Player &p,
-		size_t player_id,
 		const Spell &spell,
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
+	size_t sticky_index = 0;
 	for (auto &sticky : p.stickies) {
 		if (sticky.sticky.triggers_for_spell(spell)) {
 			std::vector<EffectInstance> new_effects =
 				emit_events ?
-				sticky.apply_to_spell(player_id, spell, events_out) :
-				sticky.apply_to_spell(player_id, spell);
+				sticky.apply_to_spell(p.id, spell, sticky_index, events_out) :
+				sticky.apply_to_spell(p.id, spell);
 			std::copy(new_effects.begin(), new_effects.end(),
 					std::back_inserter(generated_effects));
 		}
+		sticky_index++;
 	}
 	return generated_effects;
 }
 
 std::vector<EffectInstance> Player::pipe_spell(
-		size_t player_id,
 		const Spell &spell) {
 	std::vector<json> unused;
-	return _pipe_spell<false>(*this, player_id, spell, unused);
+	return _pipe_spell<false>(*this, spell, unused);
 }
 
 std::vector<EffectInstance> Player::pipe_spell(
-		size_t player_id,
 		const Spell &spell,
 		std::vector<json> &events_out) {
-	return _pipe_spell<true>(*this, player_id, spell, events_out);
+	return _pipe_spell<true>(*this, spell, events_out);
 }
 
 template<bool emit_events>
 std::vector<EffectInstance> _pipe_turn(
 		Player &p,
-		size_t player_id,
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
+	size_t sticky_index = 0;
 	for (auto &sticky : p.stickies) {
 		if (sticky.sticky.triggers_at_end_of_turn()) {
 			std::vector<EffectInstance> new_effects =
 				emit_events ?
-				sticky.apply_to_turn(player_id, events_out) :
-				sticky.apply_to_turn(player_id);
+				sticky.apply_to_turn(p.id, sticky_index, events_out) :
+				sticky.apply_to_turn(p.id);
 			std::copy(new_effects.begin(), new_effects.end(),
 					std::back_inserter(generated_effects));
 		}
+		sticky_index++;
 	}
 	return generated_effects;
 }
 
-std::vector<EffectInstance> Player::pipe_turn(
-		size_t player_id) {
+std::vector<EffectInstance> Player::pipe_turn() {
 	std::vector<json> unused;
-	return _pipe_turn<false>(*this, player_id, unused);
+	return _pipe_turn<false>(*this, unused);
 }
 
 std::vector<EffectInstance> Player::pipe_turn(
-		size_t player_id,
 		std::vector<json> &events_out) {
-	return _pipe_turn<true>(*this, player_id, events_out);
+	return _pipe_turn<true>(*this, events_out);
 }
 
 template<bool emit_events>
 void _subtract_step(Player &p, std::vector<json> &events_out) {
 	auto sticky = p.stickies.begin();
+	size_t sticky_index = 0;
 	while (sticky != p.stickies.end()) {
+		Duration initial_duration = sticky->remaining_duration;
 		sticky->remaining_duration.subtract_step();
 		if (!sticky->remaining_duration.is_active()) {
 			sticky = p.stickies.erase(sticky);
+			if (emit_events) {
+				events_out.emplace_back(json{
+					{"type", "sticky_expired"},
+					{"player", p.id},
+					{"sticky_index", sticky_index}
+				});
+			}
+			sticky_index--;
 		} else {
 			sticky++;
+			if (emit_events && !(sticky->remaining_duration == initial_duration)) {
+				events_out.emplace_back(json{
+					{"type", "sticky_duration_changed"},
+					{"player", p.id},
+					{"sticky_index", sticky_index},
+					{"duration", sticky->remaining_duration}
+				});
+			}
 		}
+		sticky_index++;
 	}
 }
 
@@ -203,13 +224,32 @@ void Player::subtract_step(std::vector<json> &events_out) {
 template<bool emit_events>
 void _subtract_turn(Player &p, std::vector<json> &events_out) {
 	auto sticky = p.stickies.begin();
+	size_t sticky_index = 0;
 	while (sticky != p.stickies.end()) {
+		Duration initial_duration = sticky->remaining_duration;
 		sticky->remaining_duration.subtract_turn();
 		if (!sticky->remaining_duration.is_active()) {
 			sticky = p.stickies.erase(sticky);
+			if (emit_events) {
+				events_out.emplace_back(json{
+					{"type", "sticky_expired"},
+					{"player", p.id},
+					{"sticky_index", sticky_index}
+				});
+			}
+			sticky_index--;
 		} else {
 			sticky++;
+			if (emit_events && !(sticky->remaining_duration == initial_duration)) {
+				events_out.emplace_back(json{
+					{"type", "sticky_duration_changed"},
+					{"player", p.id},
+					{"sticky_index", sticky_index},
+					{"duration", sticky->remaining_duration}
+				});
+			}
 		}
+		sticky_index++;
 	}
 }
 
@@ -226,6 +266,7 @@ void Player::subtract_turn(std::vector<json> &events_out) {
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void to_json(json &j, const Player &player) {
+	j["id"] = player.id;
 	j["hp"] = player.hp;
 	j["max_hp"] = player.max_hp;
 	j["mp"] = player.mp;
