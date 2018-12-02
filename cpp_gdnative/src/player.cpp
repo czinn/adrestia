@@ -21,6 +21,7 @@ namespace godot {
 		REGISTER_METHOD(pipe_turn);
 		REGISTER_METHOD(subtract_step);
 		REGISTER_METHOD(subtract_turn);
+		REGISTER_SETGET(id, -1);
 		REGISTER_SETGET(hp, -1);
 		REGISTER_SETGET(max_hp, -1);
 		REGISTER_SETGET(mp, -1);
@@ -38,21 +39,22 @@ namespace godot {
 
 	FORWARD_AUTO_GETTER(level)
 
-	Variant Player::pipe_effect(int player_id, EffectInstance *effect, bool inbound) {
-		return to_godot_variant(_ptr->pipe_effect(player_id, *effect->_ptr, inbound), owner);
+	Variant Player::pipe_effect(EffectInstance *effect, bool inbound) {
+		return to_godot_variant(_ptr->pipe_effect(*effect->_ptr, inbound), owner);
 	}
 
-	Variant Player::pipe_spell(int player_id, Spell *spell) {
-		return to_godot_variant(_ptr->pipe_spell(player_id, *spell->_ptr), owner);
+	Variant Player::pipe_spell(Spell *spell) {
+		return to_godot_variant(_ptr->pipe_spell(*spell->_ptr), owner);
 	}
 
-	Variant Player::pipe_turn(int player_id) {
-		return to_godot_variant(_ptr->pipe_turn(player_id), owner);
+	Variant Player::pipe_turn() {
+		return to_godot_variant(_ptr->pipe_turn(), owner);
 	}
 
 	FORWARD_VOID(subtract_step)
 	FORWARD_VOID(subtract_turn)
 
+	IMPL_SETGET(int, id)
 	IMPL_SETGET(int, hp)
 	IMPL_SETGET(int, max_hp)
 	IMPL_SETGET(int, mp)

@@ -19,13 +19,14 @@ namespace godot {
 			
 			int find_book_idx(String book_id) const;
 			Variant level() const;
-			Variant pipe_effect(int player_id, EffectInstance *effect, bool inbound);
-			Variant pipe_spell(int player_id, Spell *spell);
-			Variant pipe_turn(int player_id);
+			Variant pipe_effect(EffectInstance *effect, bool inbound);
+			Variant pipe_spell(Spell *spell);
+			Variant pipe_turn();
 
 			void subtract_step();
 			void subtract_turn();
 
+			INTF_SETGET(int, id)
 			INTF_SETGET(int, hp)
 			INTF_SETGET(int, max_hp)
 			INTF_SETGET(int, mp)

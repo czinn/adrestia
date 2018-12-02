@@ -12,8 +12,10 @@ namespace godot {
 
 	void CLASSNAME::_register_methods() {
 		REGISTER_METHOD(init)
-		REGISTER_METHOD(is_valid_action)
 		REGISTER_METHOD(simulate)
+		REGISTER_METHOD(simulate_events)
+		REGISTER_METHOD(apply_event)
+		REGISTER_METHOD(is_valid_action)
 		REGISTER_METHOD(turn_number)
 		REGISTER_METHOD(winners)
 		REGISTER_SETGET(history, Variant())
@@ -45,6 +47,25 @@ namespace godot {
 		std::vector<::GameAction> actions_;
 		of_godot_variant(actions, &actions_);
 		return _ptr->simulate(actions_);
+	}
+
+	Variant CLASSNAME::simulate_events(Variant actions) {
+		std::vector<::GameAction> actions_;
+		std::vector<nlohmann::json> events_out;
+		of_godot_variant(actions, &actions_);
+		_ptr->simulate(actions_, events_out);
+		Array a;
+		for (const auto &it : events_out) {
+			a.append(JSON::parse(it.dump().c_str()));
+		}
+		return a;
+	}
+
+	void CLASSNAME::apply_event(Variant event) {
+		std::string s;
+		of_godot_variant(godot::JSON::print(event), &s);
+		nlohmann::json j = nlohmann::json::parse(s);
+		_ptr->apply_event(j);
 	}
 
 	FORWARD_AUTO_GETTER(turn_number)
