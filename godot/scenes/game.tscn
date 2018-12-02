@@ -6,7 +6,7 @@
 [ext_resource path="res://components/player_stats.tscn" type="PackedScene" id=4]
 [ext_resource path="res://art-built/button-cast.png" type="Texture" id=5]
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -37,9 +37,9 @@ margin_bottom = -80.0
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 10.0
-margin_top = -373.0
+margin_top = -393.0
 margin_right = -8.0
-margin_bottom = -320.0
+margin_bottom = -340.0
 
 [node name="enemy_stats" parent="ui" index="2" instance=ExtResource( 4 )]
 
@@ -61,8 +61,26 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="book_tabs" type="TabContainer" parent="ui/spell_select" index="0"]
+[node name="book_buttons" type="HBoxContainer" parent="ui/spell_select" index="0"]
 
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -229.0
+margin_top = -220.0
+margin_right = 229.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="book_tabs" type="TabContainer" parent="ui/spell_select" index="1"]
+
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -121,7 +139,7 @@ _sections_unfolded = [ "Patch Margin" ]
 
 [node name="spell_list" parent="ui/spell_select/book_tabs/book2" index="0" instance=ExtResource( 3 )]
 
-[node name="end_turn_button" type="TextureButton" parent="ui/spell_select" index="1"]
+[node name="end_turn_button" type="TextureButton" parent="ui/spell_select" index="2"]
 
 anchor_left = 1.0
 anchor_top = 1.0
@@ -146,5 +164,21 @@ texture_normal = ExtResource( 5 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="spell_panel" type="Control" parent="ui/spell_select" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = -1.0
+margin_right = 40.0
+margin_bottom = 39.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
 
 

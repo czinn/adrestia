@@ -34,6 +34,7 @@ find $SVG_DIR -type f -name '*.svg' -print0 | while IFS= read -r -d $'\0' input_
 			--without-gui \
 			"$wd/$input_file"
 	else
-		echo "Skipping $base_file"
+		#echo "Skipping $base_file"
+		true
 	fi
 done

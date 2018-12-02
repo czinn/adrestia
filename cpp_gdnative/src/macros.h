@@ -99,14 +99,6 @@ class Forwarder {
 };
 }
 
-// Instantiates a NativeScript.
-template<class T>
-std::pair<godot::Variant, T*> instance(godot::Ref<godot::NativeScript> native_script_) {
-	godot::Variant v = native_script_->call("new");
-	T *t = godot::as<T>(v);
-	return std::make_pair(v, t);
-}
-
 // Converts ANY C++ type into a Godot variant.
 // TODO: jim: This guy (https://stackoverflow.com/questions/39250545/) says
 // template specialization is a trap. Is there a better way to achieve this
