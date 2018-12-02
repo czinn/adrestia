@@ -24,9 +24,11 @@ class GameState {
 		// Pretty print for debugging purposes.
 		friend std::ostream &operator<<(std::ostream &os, const GameState &);
 
-		bool is_valid_action(size_t player_id, GameAction action) const;
 		bool simulate(const std::vector<GameAction> &actions);
 		bool simulate(const std::vector<GameAction> &actions, std::vector<json> &events_out);
+		void apply_event(const json &event);
+
+		bool is_valid_action(size_t player_id, GameAction action) const;
 		int turn_number() const; // First turn is 1.
 		std::vector<size_t> winners() const; // empty: Game still in progress.
 

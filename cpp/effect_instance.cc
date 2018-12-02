@@ -53,6 +53,7 @@ void EffectInstance::apply(const GameRules &rules, Player &player) const {
 		case EK_MANA:
 			player.mp += amount;
 			player.mp = std::max(0, player.mp);
+			player.mp = std::min(rules.get_mana_cap(), player.mp);
 			break;
 		case EK_REGEN:
 			player.mp_regen += amount;
@@ -73,6 +74,7 @@ void EffectInstance::apply(const GameRules &rules, Player &player) const {
 //------------------------------------------------------------------------------
 void to_json(json &j, const EffectInstance &effect) {
 	j["kind"] = effect.kind;
+	j["targets_self"] = effect.targets_self;
 	j["effect_type"] = effect.effect_type;
 	if (effect.amount != 0) {
 		j["amount"] = effect.amount;
@@ -81,4 +83,5 @@ void to_json(json &j, const EffectInstance &effect) {
 		j["sticky"] = effect.sticky_invoker;
 	}
 	j["spell_id"] = effect.spell.get_id();
+	j["target_player"] = effect.target_player;
 }

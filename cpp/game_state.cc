@@ -108,9 +108,7 @@ void _process_effect_queue(
 			if (emit_events) {
 				events_out.emplace_back(json{
 					{"type", "effect"},
-					{"kind", effect_instance.kind},
-					{"target", effect_instance.target_player},
-					{"amount", effect_instance.amount},
+					{"effect", effect_instance}
 				});
 			}
 		}
@@ -141,6 +139,7 @@ bool _simulate(
 
 	// history has its eyes on you
 	state.history.push_back(actions);
+	// TODO: emit an event here
 
 	size_t max_action_length = 0;
 	for (const auto &action : actions) {
@@ -254,7 +253,7 @@ bool _simulate(
 		int mp_gain = std::min(state.rules.get_mana_cap() - player.mp, player.mp_regen);
 		if (emit_events) {
 			events_out.emplace_back(json{
-				{"type", "gain_mp"},
+				{"type", "player_mp"},
 				{"player", player_id},
 				{"amount", mp_gain},
 			});
@@ -265,6 +264,72 @@ bool _simulate(
 	return true;
 }
 
+bool GameState::simulate(const std::vector<GameAction> &actions) {
+	std::vector<json> unused;
+	return _simulate<false>(*this, actions, unused);
+}
+
+bool GameState::simulate(const std::vector<GameAction> &actions, std::vector<json> &events_out) {
+	return _simulate<true>(*this, actions, events_out);
+}
+
+void GameState::apply_event(const json &event) {
+	std::string type = event.at("type").get<std::string>();
+	if (type == "player_mp") {
+		size_t player_id = event.at("player").get<size_t>();
+		int amount = event.at("amount").get<int>();
+		players[player_id].mp += amount;
+	} else if (type == "effect") {
+		const json &effect = event.at("effect");
+		Player &player = players[effect.at("target_player").get<size_t>()];
+		switch (effect.at("kind").get<EffectKind>()) {
+			case EK_TECH:
+				{
+					auto [spell, book_idx] = player.find_spell(effect.at("spell_id"));
+					player.tech[book_idx] += effect.at("amount").get<int>();
+				}
+				break;
+			case EK_HEALTH:
+				player.hp += effect.at("amount").get<int>();
+				player.hp = std::min(player.hp, player.max_hp);
+				break;
+			case EK_MANA:
+				player.mp += effect.at("amount").get<int>();
+				player.mp = std::max(0, player.mp);
+				player.mp = std::min(rules.get_mana_cap(), player.mp);
+				break;
+			case EK_REGEN:
+				player.mp_regen += effect.at("amount").get<int>();
+				break;
+			case EK_STICKY:
+				{
+					StickyInvoker sticky_invoker = effect.at("sticky");
+					const Spell &spell = rules.get_spell(effect.at("spell_id"));
+					player.stickies.push_back(
+							StickyInstance(
+								spell,
+								rules.get_sticky(sticky_invoker.get_sticky_id()),
+								sticky_invoker
+								));
+				}
+				break;
+		}
+	} else if (type == "fire_spell") {
+		if (event.at("success").get<bool>()) {
+			size_t player_id = event.at("player").get<size_t>();
+			Player &player = players[player_id];
+			const Spell &spell = rules.get_spell(event.at("spell"));
+			player.mp -= spell.get_cost();
+			// We don't pipe the spell here, because piping the spell generates its
+			// own effects, which we want to display separately.
+		}
+	} else if (type == "spell_countered") {
+		// State is unchanged, this event is used only for animation.
+	} else {
+		// We should be handling all event types.
+		assert(false);
+	}
+}
 
 bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	// TODO: Return code or list of codes for why action isn't valid.
@@ -297,15 +362,6 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 		}
 	}
 	return true;
-}
-
-bool GameState::simulate(const std::vector<GameAction> &actions) {
-	std::vector<json> unused;
-	return _simulate<false>(*this, actions, unused);
-}
-
-bool GameState::simulate(const std::vector<GameAction> &actions, std::vector<json> &events_out) {
-	return _simulate<true>(*this, actions, events_out);
 }
 
 int GameState::turn_number() const {
