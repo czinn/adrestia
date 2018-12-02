@@ -13,7 +13,6 @@ func _ready():
 func _gui_event(event):
 	if g.event_is_pressed(event) && sticky != null:
 		var t = "[b]" + sticky.sticky.get_name() + "[/b]\n" + sticky.sticky.get_text()
-		print(t)
 		g.summon_tooltip(self, t)
 
 func set_sticky(sticky_):

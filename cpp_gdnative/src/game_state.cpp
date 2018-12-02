@@ -12,6 +12,7 @@ namespace godot {
 
 	void CLASSNAME::_register_methods() {
 		REGISTER_METHOD(init)
+		REGISTER_METHOD(clone)
 		REGISTER_METHOD(simulate)
 		REGISTER_METHOD(simulate_events)
 		REGISTER_METHOD(apply_event)
@@ -37,6 +38,11 @@ namespace godot {
 		set_ptr(new ::GameState(*_rules->_ptr, _books));
 	}
 
+	void CLASSNAME::clone(Variant state) {
+		auto *_state = godot::as<GameState>(state);
+		set_ptr(new ::GameState(*_state->_ptr));
+	}
+
 	bool CLASSNAME::is_valid_action(int player_id, Variant action) const {
 		::GameAction action_;
 		of_godot_variant(action, &action_);
@@ -56,7 +62,7 @@ namespace godot {
 		_ptr->simulate(actions_, events_out);
 		Array a;
 		for (const auto &it : events_out) {
-			a.append(JSON::parse(it.dump().c_str()));
+			a.append(JSON::parse(it.dump().c_str())->get_result());
 		}
 		return a;
 	}

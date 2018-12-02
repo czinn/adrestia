@@ -14,6 +14,7 @@ namespace godot {
 			static void _register_methods();
 
 			void init(Variant rules, Variant player_books);
+			void clone(Variant state);
 			bool simulate(Variant actions);
 			Variant simulate_events(Variant actions);
 			void apply_event(Variant event);

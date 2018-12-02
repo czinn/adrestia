@@ -11,12 +11,18 @@ onready var book_tabs = $ui/spell_select/book_tabs
 onready var spell_queue = $ui/spell_queue
 onready var player_stats = $ui/player_stats
 onready var enemy_stats = $ui/enemy_stats
+onready var event_timer = $ui/event_timer
+
+var events = []
+var simulation_state
 
 func _ready():
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
+	event_timer.connect('timeout', self, 'on_event_timer_timeout')
 	spell_queue.spells = []
 	spell_queue.show_stats = false
+	simulation_state = g.GameState.new()
 
 	# Populate spell lists
 	g.clear_children(book_tabs)
@@ -126,10 +132,23 @@ func on_end_turn_button_pressed():
 	var enemy_action = g.ai.get_action(view)
 	print(enemy_action)
 
-	g.state.simulate([action, enemy_action])
+	simulation_state.clone(g.state)
+	events = simulation_state.simulate_events([action, enemy_action])
 	spell_queue.spells = []
 	redraw()
 
-	if len(g.state.winners()) > 0:
-		print('Game is over')
-		g.scene_loader.goto_scene('game_results')
+func on_event_timer_timeout():
+	if events.size() == 0:
+		return
+	var event = events.pop_front()
+	print(event)
+	if events.size() > 0:
+		g.state.apply_event(event)
+		redraw()
+	else:
+		g.state.clone(simulation_state)
+		redraw()
+
+		if len(g.state.winners()) > 0:
+			print('Game is over')
+			g.scene_loader.goto_scene('game_results')
