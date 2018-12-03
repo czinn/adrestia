@@ -198,7 +198,6 @@ void _subtract_step(Player &p, std::vector<json> &events_out) {
 			}
 			sticky_index--;
 		} else {
-			sticky++;
 			if (emit_events && !(sticky->remaining_duration == initial_duration)) {
 				events_out.emplace_back(json{
 					{"type", "sticky_duration_changed"},
@@ -207,6 +206,7 @@ void _subtract_step(Player &p, std::vector<json> &events_out) {
 					{"duration", sticky->remaining_duration}
 				});
 			}
+			sticky++;
 		}
 		sticky_index++;
 	}
@@ -239,7 +239,6 @@ void _subtract_turn(Player &p, std::vector<json> &events_out) {
 			}
 			sticky_index--;
 		} else {
-			sticky++;
 			if (emit_events && !(sticky->remaining_duration == initial_duration)) {
 				events_out.emplace_back(json{
 					{"type", "sticky_duration_changed"},
@@ -248,6 +247,7 @@ void _subtract_turn(Player &p, std::vector<json> &events_out) {
 					{"duration", sticky->remaining_duration}
 				});
 			}
+			sticky++;
 		}
 		sticky_index++;
 	}
