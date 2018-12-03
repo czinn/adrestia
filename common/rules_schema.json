@@ -60,6 +60,7 @@
         "name": {"type": "string"},
         "text": {"type": "string"},
         "kind": {"$ref": "#/definitions/sticky_kind"},
+				"stacks": {"type": "boolean"},
         "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
         "trigger": {"oneOf":
           [{"type": "object", "additionalProperties": false, "required": ["spell"],

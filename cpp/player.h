@@ -48,6 +48,8 @@ class Player {
 		void subtract_turn();
 		void subtract_turn(std::vector<json> &events_out);
 
+		void add_sticky(const StickyInstance &);
+
 		friend void to_json(json &, const Player &);
 
 		size_t id;

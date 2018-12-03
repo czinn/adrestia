@@ -13,6 +13,7 @@
       "id": "poison", "name": "Poison",
       "text": "Deals 1 damage each turn.",
       "kind": "id", "trigger": { "turn": true },
+			"stacks": true,
       "effects": [
         { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
       ]
@@ -26,6 +27,7 @@
     {
       "id": "spell_poison", "name": "Fatigue",
       "text": "Casting spells deals 1 poison damage.",
+			"stacks": true,
       "kind": "id", "trigger": { "spell": {} },
       "effects": [
         { "kind": "health", "self": true, "effect_type": "poison", "amount": -1 }
@@ -65,6 +67,7 @@
       "id": "suck_mana", "name": "Suck Mana",
       "text": "Enemy is draining 1 mana per turn.",
       "kind": "id",
+			"stacks": true,
       "trigger": { "turn": true },
       "effects": [
         { "kind": "mana", "self": true, "effect_type": "special", "amount": -1 },

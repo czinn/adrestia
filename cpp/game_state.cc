@@ -307,7 +307,7 @@ void GameState::apply_event(const json &event) {
 				{
 					StickyInvoker sticky_invoker = effect.at("sticky");
 					const Spell &spell = rules.get_spell(effect.at("spell_id"));
-					player.stickies.push_back(
+					player.add_sticky(
 							StickyInstance(
 								spell,
 								rules.get_sticky(sticky_invoker.get_sticky_id()),

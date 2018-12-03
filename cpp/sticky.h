@@ -58,6 +58,9 @@ class Sticky {
 		std::string get_name() const;
 		std::string get_text() const;
 		StickyKind get_kind() const;
+		// Whether this sticky stacks with existing stickies with the same id and
+		// duration.
+		bool get_stacks() const;
 		const std::vector<Effect> &get_effects() const;
 		bool get_trigger_inbound() const;
 
@@ -74,6 +77,7 @@ class Sticky {
 		std::string name;
 		std::string text;
 		StickyKind kind;
+		bool stacks;
 		std::vector<Effect> effects;
 		TriggerType trigger_type;
 		// If trigger_type is not TRIGGER_TURN, used to determine whether the

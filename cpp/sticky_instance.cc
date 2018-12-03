@@ -13,7 +13,7 @@ StickyInstance::StickyInstance(
 		const Spell &spell,
 		const Sticky &sticky,
 		const StickyInvoker &invoker)
-	: amount(invoker.get_amount())
+	: amount(sticky.get_stacks() ? 1 : invoker.get_amount())
 	, remaining_duration(invoker.get_duration())
 	, spell(spell)
 	, sticky(sticky) {}
@@ -101,7 +101,9 @@ std::vector<EffectInstance> _apply_to_effect(
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
-		effects.push_back(EffectInstance(player_id, s.spell, e));
+		for (int i = 0; i < (s.sticky.get_stacks() ? s.amount : 1); i++) {
+			effects.push_back(EffectInstance(player_id, s.spell, e));
+		}
 	}
 	return effects;
 }
@@ -135,7 +137,9 @@ std::vector<EffectInstance> _apply_to_spell(
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
-		effects.push_back(EffectInstance(player_id, s.spell, e));
+		for (int i = 0; i < (s.sticky.get_stacks() ? s.amount : 1); i++) {
+			effects.push_back(EffectInstance(player_id, s.spell, e));
+		}
 	}
 	return effects;
 }
@@ -168,7 +172,9 @@ std::vector<EffectInstance> _apply_to_turn(
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
-		effects.push_back(EffectInstance(player_id, s.spell, e));
+		for (int i = 0; i < (s.sticky.get_stacks() ? s.amount : 1); i++) {
+			effects.push_back(EffectInstance(player_id, s.spell, e));
+		}
 	}
 	return effects;
 }

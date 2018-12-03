@@ -27,12 +27,8 @@ func redraw():
 			'res://art-built/stickies/%s.png' % sticky.sticky.get_id(),
 			'res://art-built/stickies/placeholder.png')
 
-	var duration = sticky.remaining_duration
-	var unit = duration.get_unit()
-	match unit:
-		g.DurationUnit.FULL_GAME:
-			duration_label.text = ''
-		g.DurationUnit.TURNS:
-			duration_label.text = str(duration.get_value())
-		g.DurationUnit.STEPS:
-			duration_label.text = '0.' + str(duration.get_value())
+	if sticky.amount != 0:
+		duration_label.text = str(sticky.amount) + \
+				('x' if sticky.sticky.get_stacks() else '')
+	else:
+		duration_label.text = ''

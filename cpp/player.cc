@@ -262,6 +262,24 @@ void Player::subtract_turn(std::vector<json> &events_out) {
 	return _subtract_turn<true>(*this, events_out);
 }
 
+void Player::add_sticky(const StickyInstance &sticky) {
+	if (!sticky.sticky.get_stacks()) {
+		// Just add it.
+		stickies.push_back(sticky);
+	} else {
+		// Try to find a sticky on which this one can stack.
+		for (auto &it : stickies) {
+			if (it.sticky.get_id() == sticky.sticky.get_id() &&
+					it.remaining_duration == sticky.remaining_duration) {
+				it.amount++;
+				return;
+			}
+		}
+		// Otherwise, just add it.
+		stickies.push_back(sticky);
+	}
+}
+
 //------------------------------------------------------------------------------
 // SERIALIZATION
 //------------------------------------------------------------------------------
