@@ -14,7 +14,7 @@ bool Duration::operator==(const Duration &other) const {
 	} else {
 		return
 			(  this->unit == other.unit
-			&& this->value == other.value > 0
+			&& this->value == other.value
 			);
 	}
 }
