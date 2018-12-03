@@ -14,6 +14,7 @@ const GameView = preload('res://native/game_view.gdns')
 const Strategy = preload('res://native/strategy.gdns')
 
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
+onready var spell_button_scene = preload('res://components/spell_button.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
 var rules
@@ -38,6 +39,11 @@ static func clear_children(node):
 	for i in range(0, node.get_child_count()):
 		node.get_child(i).queue_free()
 
+# Gets child by name rather than index.
+static func child(parent, child_name):
+	# Not recursive; not owned.
+	return parent.find_node(child_name, false, false)
+
 static func map_method(list, method):
 	var result = []
 	for elem in list:
@@ -52,6 +58,27 @@ static func map_member(list, member):
 
 static func load_or(path, path_default):
 	return load(path if File.new().file_exists(path) else path_default)
+
+static func get_book_texture(book_id):
+	return load_or(
+		'res://art-built/book/%s.png' % book_id,
+		'res://art-built/book/placeholder.png')
+
+func make_spell_buttons(spells, show_stats = false, display_filter = null, enabled_filter = null, unlocked_filter = null):
+	var result = []
+	for spell_id in spells:
+		var spell = rules.get_spell(spell_id)
+		if display_filter != null and not display_filter.call_func(spell):
+			continue
+		var spell_button = spell_button_scene.instance()
+		spell_button.show_stats = show_stats
+		spell_button.enabled = enabled_filter == null or enabled_filter.call_func(spell)
+		spell_button.show_unlock = \
+				unlocked_filter == null or not unlocked_filter.call_func(spell)
+		# Set the spell last so that we don't redraw so many times
+		spell_button.spell = spell
+		result.append(spell_button)
+	return result
 
 func close_tooltip():
 	if tooltip != null:

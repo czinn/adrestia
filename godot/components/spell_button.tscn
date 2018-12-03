@@ -17,7 +17,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 120.0
 margin_bottom = 140.0
-rect_min_size = Vector2( 100, 100 )
+rect_min_size = Vector2( 120, 140 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -26,7 +26,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
-_sections_unfolded = [ "Mouse", "Rect", "Theme" ]
+_sections_unfolded = [ "Mouse", "Rect", "Size Flags", "Theme" ]
 
 [node name="vbox" type="VBoxContainer" parent="." index="0"]
 

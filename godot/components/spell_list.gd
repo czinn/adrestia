@@ -3,8 +3,6 @@ extends Control
 signal pressed(index, spell)
 signal long_pressed(index, spell)
 
-onready var spell_button_scene = preload('res://components/spell_button.tscn')
-
 onready var g = get_node('/root/global')
 
 onready var scroll_container = $scroll_container
@@ -50,21 +48,13 @@ func redraw():
 	if spells == null: return
 
 	g.clear_children(hbox)
-	var index = 0
-	for spell_id in spells:
-		var spell = g.rules.get_spell(spell_id)
-		if display_filter != null and not display_filter.call_func(spell):
-			continue
-		var spell_button = spell_button_scene.instance()
-		spell_button.show_stats = show_stats
-		spell_button.enabled = enabled_filter == null or enabled_filter.call_func(spell)
-		spell_button.show_unlock = \
-				unlocked_filter == null or not unlocked_filter.call_func(spell)
-		# Set the spell last so that we don't redraw so many times
-		spell_button.spell = spell
-		spell_button.connect('pressed', self, 'on_pressed', [index, spell])
+
+	var spell_buttons = g.make_spell_buttons(spells, show_stats, display_filter, enabled_filter, unlocked_filter)
+	for i in range(len(spell_buttons)):
+		var spell_button = spell_buttons[i]
+		var spell = spell_button.spell
+		spell_button.connect('pressed', self, 'on_pressed', [i, spell])
 		hbox.add_child(spell_button)
-		index += 1
 
 func on_pressed(index, spell):
 	emit_signal('pressed', index, spell)
