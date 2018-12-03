@@ -19,12 +19,12 @@ onready var spell_grid = $spell_panel/scroll/grid
 onready var template_book_button = $templates/book_button
 
 func _ready():
-	spell_panel_close_button.connect('pressed', self, 'on_close_panel')
+	spell_panel_close_button.connect('pressed', self, 'on_close_book')
 	redraw()
 
 func _unhandled_input(event):
 	if g.event_is_pressed(event):
-		on_close_panel()
+		on_close_book()
 
 func redraw_tech_levels():
 	if tech_levels == null: return
@@ -56,7 +56,7 @@ func redraw():
 	
 	redraw_tech_levels()
 
-func on_close_panel():
+func on_close_book():
 	spell_panel.visible = false
 	current_book = null
 

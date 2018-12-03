@@ -6,9 +6,7 @@ onready var spell_list_scene = preload('res://components/spell_list.tscn')
 
 onready var game = $ui
 onready var spell_select = $ui/spell_select
-onready var new_spell_select = $ui/new_spell_select
 onready var end_turn_button = $ui/end_turn_button
-onready var book_tabs = $ui/spell_select/book_tabs
 onready var spell_queue = $ui/spell_queue
 onready var player_stats = $ui/player_stats
 onready var enemy_stats = $ui/enemy_stats
@@ -25,25 +23,10 @@ func _ready():
 	spell_queue.show_stats = false
 	simulation_state = g.GameState.new()
 
-	# Populate spell lists
-	g.clear_children(book_tabs)
-
-	new_spell_select.enabled_filter = funcref(self, 'player_can_cast')
-	new_spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
-	new_spell_select.books = g.state.players[0].books
-	new_spell_select.connect('spell_press', self, 'on_spell_enqueue')
-
-	var selected_books = g.state.players[0].books
-	for i in range(len(selected_books)):
-		var book = selected_books[i]
-		var spell_list = spell_list_scene.instance()
-		spell_list.show_stats = true
-		spell_list.enabled_filter = funcref(self, 'player_can_cast')
-		spell_list.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
-		# Set the spell list last so that we don't redraw so many times
-		spell_list.spells = book.get_spells()
-		spell_list.connect('pressed', self, 'on_spell_enqueue')
-		book_tabs.add_child(spell_list)
+	spell_select.enabled_filter = funcref(self, 'player_can_cast')
+	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
+	spell_select.books = g.state.players[0].books
+	spell_select.connect('spell_press', self, 'on_spell_enqueue')
 
 	# allow tab container to detect new tabs...
 	yield(get_tree(), 'idle_frame')
@@ -131,12 +114,12 @@ func redraw():
 	var mp_left = player_mp_left()
 	enemy_stats.redraw(g.state.players[1])
 	player_stats.redraw(me, mp_left)
-	new_spell_select.tech_levels = player_effective_tech()
-	book_tabs.update()
+	spell_select.tech_levels = player_effective_tech()
 	spell_queue.redraw()
-	new_spell_select.redraw_spells()
+	spell_select.redraw_spells()
 
 func on_end_turn_button_pressed():
+	spell_select.on_close_book()
 	var action = spell_queue.spells
 	if not g.state.is_valid_action(0, action):
 		return
