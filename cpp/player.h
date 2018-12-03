@@ -65,6 +65,13 @@ class Player {
 		const GameRules &rules;
 
 		template<bool emit_events>
+		friend void _iterate_stickies(
+				Player &,
+				std::function<bool(StickyInstance &, size_t)> f,
+				bool emit_duration_changes,
+				std::vector<json> &events_out);
+
+		template<bool emit_events>
 		friend std::vector<EffectInstance> _pipe_effect(
 				Player &,
 				EffectInstance &effect,

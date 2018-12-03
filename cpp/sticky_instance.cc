@@ -191,6 +191,18 @@ std::vector<EffectInstance> StickyInstance::apply_to_turn(
 	return _apply_to_turn<true>(*this, player_id, sticky_index, events_out);
 }
 
+bool StickyInstance::is_active() const {
+	switch (sticky.get_kind()) {
+		case SK_ID:
+		case SK_DELTA:
+		case SK_DAMPER:
+		case SK_SUPER_SHIELD:
+			return remaining_duration.is_active();
+		case SK_SHIELD:
+			return amount > 0 && remaining_duration.is_active();
+	}
+}
+
 //------------------------------------------------------------------------------
 // SERIALIZATION
 //------------------------------------------------------------------------------
