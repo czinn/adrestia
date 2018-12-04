@@ -83,8 +83,7 @@ func redraw():
 	var material_ = null if enabled else load('res://shaders/greyscale.material')
 	texture_button.material = material_
 	mp_icon.material = material_
-	tech_icon.material = material_
-	level_icon.material = material_
+	#tech_icon.material = material_
 
 	label.set('custom_colors/font_color', null if enabled else Color(0.75, 0.75, 0.75))
 	label.text = spell.get_name()
