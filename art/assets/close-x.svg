@@ -11,9 +11,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="49.892784"
-   height="39.811302"
-   viewBox="0 0 49.892785 39.811302"
+   width="40.267857"
+   height="40.267857"
+   viewBox="0 0 40.267857 40.267856"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="23.001784"
-     inkscape:cy="11.512633"
+     inkscape:cx="11.21607"
+     inkscape:cy="12.584061"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -59,12 +59,27 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(9.4230584,4.4329487)">
-    <path
-       style="fill:#fefefa;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       d="M 15.667272,10.825365 20.4887,2.1646506 30.220843,2.2539367 18.792272,16.718223 27.899415,30.111079 18.6137,30.289651 15.756557,20.736079 10.845843,30.200365 0.66727116,30.289651 12.095843,15.111079 1.3815578,1.1825076 10.756558,1.718222 Z"
-       id="path1731"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccc" />
+     transform="translate(4.4230585,3.8180752)">
+    <circle
+       style="opacity:1;vector-effect:none;fill:#fffffd;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       id="path2543"
+       cx="15.71087"
+       cy="16.315853"
+       r="15.133928" />
+    <g
+       id="g840"
+       transform="matrix(0.90070919,0,0,0.90070919,2.837807,2.2367818)"
+       style="stroke-width:1.11023629">
+      <path
+         inkscape:connector-curvature="0"
+         id="path821"
+         d="M 7.8983705,9.0390668 C 20.487655,21.628353 20.487655,21.628353 20.487655,21.628353"
+         style="fill:none;stroke:#000000;stroke-width:5.55118132;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path821-3"
+         d="M 20.487656,9.0390668 C 7.8983709,21.628353 7.8983709,21.628353 7.8983709,21.628353"
+         style="fill:none;stroke:#000000;stroke-width:5.55118132;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
   </g>
 </svg>

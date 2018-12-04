@@ -57,7 +57,12 @@ static func map_member(list, member):
 	return result
 
 static func load_or(path, path_default):
-	return load(path if File.new().file_exists(path) else path_default)
+	# jim: This spits errors into the debugger but is necessary to have custom art show in Android.
+	# https://github.com/godotengine/godot/issues/8773
+	var thing = load(path)
+	if thing == null:
+		thing = load(path_default)
+	return thing
 
 static func get_book_texture(book_id):
 	return load_or(
