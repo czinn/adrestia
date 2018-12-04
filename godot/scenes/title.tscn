@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/title.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://art-built/logo.png" type="Texture" id=3]
-[ext_resource path="res://art/moge-ko.png" type="Texture" id=4]
-[ext_resource path="res://art-built/button-play.png" type="Texture" id=5]
+[ext_resource path="res://shaders/outline.material" type="Material" id=4]
+[ext_resource path="res://art/moge-ko.png" type="Texture" id=5]
+[ext_resource path="res://art-built/button-play.png" type="Texture" id=6]
 
 [node name="root" type="Node"]
 
@@ -48,6 +49,7 @@ _sections_unfolded = [ "Material" ]
 
 [node name="moge_ko" type="TextureButton" parent="ui" index="1"]
 
+material = ExtResource( 4 )
 anchor_left = 0.0
 anchor_top = 1.0
 anchor_right = 0.0
@@ -67,10 +69,10 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 4 )
+texture_normal = ExtResource( 5 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Textures" ]
+_sections_unfolded = [ "Material", "Textures" ]
 
 [node name="play_button" type="TextureButton" parent="ui" index="2"]
 
@@ -93,7 +95,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 5 )
+texture_normal = ExtResource( 6 )
 expand = true
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
