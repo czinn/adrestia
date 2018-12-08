@@ -4,7 +4,7 @@
 [ext_resource path="res://components/player_stats.gd" type="Script" id=2]
 [ext_resource path="res://art-built/health-heart.png" type="Texture" id=3]
 [ext_resource path="res://art-built/mana-gem.png" type="Texture" id=4]
-[ext_resource path="res://components/sticky_display.tscn" type="PackedScene" id=5]
+[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=5]
 
 [node name="player_stats" type="Control"]
 
@@ -28,9 +28,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 3.0
+margin_left = 90.0
 margin_top = 7.0
-margin_right = 39.0
+margin_right = 126.0
 margin_bottom = 43.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -49,9 +49,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 148.0
+margin_left = 269.0
 margin_top = 5.0
-margin_right = 186.0
+margin_right = 307.0
 margin_bottom = 41.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -64,15 +64,36 @@ expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Rect" ]
 
-[node name="hp_label" type="Label" parent="." index="2"]
+[node name="mp_icon2" type="TextureRect" parent="." index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 48.0
+margin_left = 269.0
+margin_top = 5.0
+margin_right = 307.0
+margin_bottom = 41.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 4 )
+expand = true
+stretch_mode = 6
+_sections_unfolded = [ "Rect" ]
+
+[node name="hp_label" type="Label" parent="." index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 3.0
 margin_top = 8.0
-margin_right = 110.0
+margin_right = 84.0
 margin_bottom = 38.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -80,93 +101,42 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
 custom_constants/shadow_offset_x = 1
 custom_constants/shadow_offset_y = 1
 custom_constants/shadow_as_outline = 1
 text = "20/20"
+align = 2
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "custom_colors", "custom_constants" ]
+_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
 
-[node name="mp_label" type="Label" parent="." index="3"]
+[node name="mp_label" type="Label" parent="." index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 195.0
-margin_top = 8.0
-margin_right = 304.0
-margin_bottom = 38.0
+margin_left = 138.0
+margin_top = 9.0
+margin_right = 263.0
+margin_bottom = 39.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
 custom_constants/shadow_offset_x = 1
 custom_constants/shadow_offset_y = 1
 custom_constants/shadow_as_outline = 1
 text = "20/20 (+5)"
+align = 2
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "custom_colors", "custom_constants" ]
-
-[node name="stickies" type="ScrollContainer" parent="." index="4"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 0.0
-margin_top = -63.0
-margin_bottom = 1.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-scroll_horizontal_enabled = true
-scroll_horizontal = 0
-scroll_vertical_enabled = true
-scroll_vertical = 0
-scroll_deadzone = 0
-_sections_unfolded = [ "Mouse", "Rect" ]
-
-[node name="hbox" type="HBoxContainer" parent="stickies" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 268.0
-margin_bottom = 64.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-_sections_unfolded = [ "Mouse" ]
-
-[node name="sticky_display" parent="stickies/hbox" index="0" instance=ExtResource( 5 )]
-
-[node name="sticky_display2" parent="stickies/hbox" index="1" instance=ExtResource( 5 )]
-
-margin_left = 68.0
-margin_right = 132.0
-
-[node name="sticky_display3" parent="stickies/hbox" index="2" instance=ExtResource( 5 )]
-
-margin_left = 136.0
-margin_right = 200.0
-
-[node name="sticky_display4" parent="stickies/hbox" index="3" instance=ExtResource( 5 )]
-
-margin_left = 204.0
-margin_right = 268.0
+_sections_unfolded = [ "custom_constants", "custom_fonts" ]
 
 

@@ -1,14 +1,15 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scenes/game.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://components/spell_list.tscn" type="PackedScene" id=3]
 [ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=4]
 [ext_resource path="res://components/player_stats.tscn" type="PackedScene" id=5]
-[ext_resource path="res://art-built/button-cast.png" type="Texture" id=6]
-[ext_resource path="res://components/spell_select.tscn" type="PackedScene" id=7]
+[ext_resource path="res://components/sticky_list.tscn" type="PackedScene" id=6]
+[ext_resource path="res://art-built/button-cast.png" type="Texture" id=7]
+[ext_resource path="res://components/spell_select.tscn" type="PackedScene" id=8]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -29,21 +30,24 @@ _sections_unfolded = [ "Mouse", "Theme" ]
 
 [node name="enemy_spell_list" parent="ui" index="0" instance=ExtResource( 3 )]
 
-margin_left = 20.0
-margin_top = 175.0
-margin_bottom = 311.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -240.0
+margin_right = 0.0
+margin_bottom = -104.0
 
-[node name="spell_queue" parent="ui" index="1" instance=ExtResource( 4 )]
+[node name="spell_list" parent="ui" index="1" instance=ExtResource( 3 )]
+
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_right = 0.0
+
+[node name="spell_queue" parent="ui" index="2" instance=ExtResource( 4 )]
 
 anchor_top = 0.5
 anchor_bottom = 0.5
-margin_top = -150.0
-
-[node name="spell_list" parent="ui" index="2" instance=ExtResource( 3 )]
-
-margin_left = 20.0
-margin_top = 500.0
-margin_bottom = 636.0
 
 [node name="player_stats" parent="ui" index="3" instance=ExtResource( 5 )]
 
@@ -56,31 +60,41 @@ margin_bottom = -6.0
 mouse_filter = 2
 _sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
-[node name="enemy_stats" parent="ui" index="4" instance=ExtResource( 5 )]
+[node name="player_stickies" parent="ui" index="4" instance=ExtResource( 6 )]
+
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -305.0
+margin_bottom = -305.0
+
+[node name="enemy_stats" parent="ui" index="5" instance=ExtResource( 5 )]
 
 margin_left = 10.0
-margin_top = 76.0
 margin_right = -10.0
-margin_bottom = 76.0
 _sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
-[node name="event_timer" type="Timer" parent="ui" index="5"]
+[node name="enemy_stickies" parent="ui" index="6" instance=ExtResource( 6 )]
+
+margin_top = 54.0
+margin_bottom = 54.0
+
+[node name="event_timer" type="Timer" parent="ui" index="7"]
 
 process_mode = 1
 wait_time = 0.5
 one_shot = false
 autostart = true
 
-[node name="end_turn_button" type="TextureButton" parent="ui" index="6"]
+[node name="end_turn_button" type="TextureButton" parent="ui" index="8"]
 
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -185.0
-margin_top = -122.0
-margin_right = -15.0
-margin_bottom = -48.0
+anchor_bottom = 0.5
+margin_left = -125.0
+margin_top = -94.0
+margin_right = -21.0
+margin_bottom = -6.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -92,20 +106,20 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 6 )
+texture_normal = ExtResource( 7 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Rect", "Textures" ]
 
-[node name="spell_select" parent="ui" index="7" instance=ExtResource( 7 )]
+[node name="spell_select" parent="ui" index="9" instance=ExtResource( 8 )]
 
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 margin_left = -270.0
-margin_top = -139.0
+margin_top = -69.0
 margin_right = 270.0
-margin_bottom = -139.0
+margin_bottom = -69.0
 _sections_unfolded = [ "Anchor", "Margin", "Theme" ]
 
 

@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="44.902233mm"
-   height="19.565647mm"
-   viewBox="0 0 44.902234 19.565648"
+   width="27.516666mm"
+   height="23.283335mm"
+   viewBox="0 0 27.516667 23.283336"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="164.54688"
-     inkscape:cy="10.767446"
+     inkscape:zoom="7.919596"
+     inkscape:cx="53.094414"
+     inkscape:cy="39.553567"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -44,8 +44,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid10781"
-       originx="-3.9619446e-09"
-       originy="1.3127839e-06" />
+       originx="1.3363475"
+       originy="1.7395857" />
   </sodipodi:namedview>
   <metadata
      id="metadata1715">
@@ -63,32 +63,32 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0.3982994,-105.43575)">
+     transform="translate(1.7346469,-103.45765)">
     <rect
-       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.64583349;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.64583302;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
        id="rect1367-2-0-1"
-       width="42.256401"
-       height="16.919813"
-       x="0.92461735"
-       y="106.75867"
-       ry="2.2150416"
-       rx="2.2150416" />
+       width="24.870834"
+       height="20.637503"
+       x="-0.41173038"
+       y="104.78056"
+       ry="2.2150414"
+       rx="2.2150414" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-7-2-2"
-       style="font-style:normal;font-weight:normal;font-size:32px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0057e7;fill-opacity:1;stroke:none"
-       transform="matrix(0.26458334,0,0,0.26458334,-380.83473,106.70272)"
+       style="font-style:normal;font-weight:normal;font-size:32px;line-height:0.89999998;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0057e7;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458334,0,0,0.26458334,-384.48658,104.568)"
        inkscape:export-filename="/tmp/weh.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"><flowRegion
          id="flowRegion1410-2-9-45-6-0-3-7"
-         style="fill:#0057e7;fill-opacity:1"><rect
+         style="line-height:0.89999998;fill:#0057e7;fill-opacity:1"><rect
            id="rect1412-9-4-2-8-9-7-0"
-           width="283.6604"
-           height="41.595924"
+           width="70.392731"
+           height="64.537895"
            x="1463.6553"
            y="11.979513"
-           style="fill:#0057e7;fill-opacity:1" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#0057e7;fill-opacity:1"
-         id="flowPara1801-8-3-5-9">End turn</flowPara></flowRoot>  </g>
+           style="line-height:0.89999998;fill:#0057e7;fill-opacity:1" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.89999998;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle;fill:#0057e7;fill-opacity:1"
+         id="flowPara826">End Turn</flowPara></flowRoot>  </g>
 </svg>

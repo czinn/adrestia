@@ -46,15 +46,14 @@ _sections_unfolded = [ "Grow Direction", "Theme", "custom_constants" ]
 
 [node name="spell_panel" type="NinePatchRect" parent="." index="1"]
 
-visible = false
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -251.0
-margin_top = -344.0
+margin_top = -158.0
 margin_right = 250.0
-margin_bottom = -42.0
+margin_bottom = 3.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -97,7 +96,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 481.0
+margin_right = 720.0
+margin_bottom = 140.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -106,7 +106,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_constants/vseparation = 0
 custom_constants/hseparation = 0
-columns = 4
+columns = 99
 _sections_unfolded = [ "Anchor", "Size Flags", "custom_constants" ]
 
 [node name="control" parent="spell_panel/scroll/grid" index="0" instance=ExtResource( 4 )]
@@ -133,15 +133,15 @@ margin_bottom = 140.0
 
 [node name="control5" parent="spell_panel/scroll/grid" index="4" instance=ExtResource( 4 )]
 
-margin_top = 140.0
-margin_bottom = 280.0
+margin_left = 480.0
+margin_right = 600.0
+margin_bottom = 140.0
 
 [node name="control6" parent="spell_panel/scroll/grid" index="5" instance=ExtResource( 4 )]
 
-margin_left = 120.0
-margin_top = 140.0
-margin_right = 240.0
-margin_bottom = 280.0
+margin_left = 600.0
+margin_right = 720.0
+margin_bottom = 140.0
 
 [node name="close_button" type="TextureButton" parent="spell_panel" index="1"]
 
@@ -171,12 +171,15 @@ _sections_unfolded = [ "Rect", "Textures" ]
 
 [node name="templates" type="Control" parent="." index="2"]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -270.0
+margin_top = -960.0
+margin_right = -230.0
+margin_bottom = -920.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -262,9 +265,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -55.0
+margin_left = -57.0
 margin_top = -55.0
-margin_right = -2.0
+margin_right = -4.0
 margin_bottom = -5.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false

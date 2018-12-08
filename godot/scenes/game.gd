@@ -9,7 +9,9 @@ onready var spell_select = $ui/spell_select
 onready var end_turn_button = $ui/end_turn_button
 onready var spell_queue = $ui/spell_queue
 onready var player_stats = $ui/player_stats
+onready var player_stickies = $ui/player_stickies
 onready var enemy_stats = $ui/enemy_stats
+onready var enemy_stickies = $ui/enemy_stickies
 onready var event_timer = $ui/event_timer
 onready var spell_list = $ui/spell_list
 onready var enemy_spell_list = $ui/enemy_spell_list
@@ -113,9 +115,12 @@ func player_can_cast(spell):
 
 func redraw():
 	var me = g.state.players[0]
+	var them = g.state.players[1]
 	var mp_left = player_mp_left()
-	enemy_stats.redraw(g.state.players[1])
+	enemy_stats.redraw(them)
+	enemy_stickies.redraw(them.stickies)
 	player_stats.redraw(me, mp_left)
+	player_stickies.redraw(me.stickies)
 	spell_select.tech_levels = player_effective_tech()
 	spell_queue.redraw()
 	spell_select.redraw_spells()
