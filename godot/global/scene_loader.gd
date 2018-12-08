@@ -6,6 +6,7 @@ extends Node
 # See
 # http://docs.godotengine.org/en/latest/tutorials/io/background_loading.html
 
+onready var g = get_node('/root/global')
 onready var root = get_tree().get_root()
 const transition_scene = preload('res://components/transition_bg.tscn')
 var scene_holder
@@ -48,6 +49,7 @@ func _process(time):
 			break
 
 func goto_scene(scene_name):
+	g.close_tooltip()
 	loader = ResourceLoader.load_interactive('res://scenes/%s.tscn' % [scene_name])
 	set_process(true)
 	transition.visible = true

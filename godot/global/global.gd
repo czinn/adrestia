@@ -64,10 +64,19 @@ static func load_or(path, path_default):
 		thing = load(path_default)
 	return thing
 
-static func get_book_texture(book_id):
+static func get_thing_texture(thing_type, thing_id):
 	return load_or(
-		'res://art-built/book/%s.png' % book_id,
-		'res://art-built/book/placeholder.png')
+		'res://art-built/%s/%s.png' % [thing_type, thing_id],
+		'res://art-built/%s/placeholder.png' % thing_type)
+
+static func get_book_texture(book_id):
+	return get_thing_texture("book", book_id)
+
+static func get_spell_texture(spell_id):
+	return get_thing_texture("spells", spell_id)
+
+static func get_sticky_texture(sticky_id):
+	return get_thing_texture("stickies", sticky_id)
 
 func make_spell_buttons(spells, show_stats = false, display_filter = null, enabled_filter = null, unlocked_filter = null):
 	var result = []
@@ -99,6 +108,12 @@ func summon_tooltip(target, text):
 	var y = pos.y if above else (pos.y + target.rect_size.y)
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
 	get_node("/root").add_child(tooltip)
+
+func summon_spell_tooltip(target, spell):
+	summon_tooltip(target, "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()])
+
+func summon_sticky_tooltip(target, sticky):
+	summon_tooltip(target, "[b]%s[/b]\n%s" % [sticky.get_name(), sticky.get_text()])
 
 func event_is_pressed(event):
 	return event is InputEventMouseButton \

@@ -22,7 +22,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
-_sections_unfolded = [ "Mouse", "Rect", "Theme" ]
+_sections_unfolded = [ "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="texture" type="TextureRect" parent="." index="0"]
 
@@ -72,7 +72,7 @@ align = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Material", "Mouse", "custom_colors", "custom_constants", "custom_fonts", "custom_styles" ]
+_sections_unfolded = [ "Margin", "Material", "Mouse", "custom_colors", "custom_constants", "custom_fonts", "custom_styles" ]
 
 [connection signal="gui_input" from="." to="." method="_gui_event"]
 

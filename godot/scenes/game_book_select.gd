@@ -3,7 +3,7 @@ extends Node
 onready var g = get_node('/root/global')
 
 onready var book_button_scene = preload('res://components/book_button.tscn')
-onready var spell_list_scene = preload('res://components/spell_list.tscn')
+onready var spell_button_list_scene = preload('res://components/spell_button_list.tscn')
 
 onready var book_select = $ui
 onready var book_grid = $ui/scroll_container/book_grid
@@ -34,15 +34,15 @@ func toggle_book(book_button):
 	if already_checked or len(get_selected_books()) < 3:
 		book_button.checked = not already_checked
 		if book_button.checked:
-			var spell_list = spell_list_scene.instance()
-			spell_list.show_stats = true
-			spell_list.spells = book_button.book.get_spells()
-			spell_list_container.add_child(spell_list)
-			spell_lists[book_id] = spell_list
+			var spell_button_list = spell_button_list_scene.instance()
+			spell_button_list.show_stats = true
+			spell_button_list.spells = book_button.book.get_spells()
+			spell_list_container.add_child(spell_button_list)
+			spell_lists[book_id] = spell_button_list
 		else:
 			# Remove the corresponding spell list
-			var spell_list = spell_lists[book_id]
-			spell_list.get_parent().remove_child(spell_list)
+			var spell_button_list = spell_lists[book_id]
+			spell_button_list.get_parent().remove_child(spell_button_list)
 			spell_lists.erase(book_id)
 
 func on_play_button_pressed():

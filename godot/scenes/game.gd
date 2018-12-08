@@ -2,7 +2,7 @@ extends Node
 
 onready var g = get_node('/root/global')
 
-onready var spell_list_scene = preload('res://components/spell_list.tscn')
+onready var spell_button_list_scene = preload('res://components/spell_button_list.tscn')
 
 onready var game = $ui
 onready var spell_select = $ui/spell_select
@@ -11,6 +11,8 @@ onready var spell_queue = $ui/spell_queue
 onready var player_stats = $ui/player_stats
 onready var enemy_stats = $ui/enemy_stats
 onready var event_timer = $ui/event_timer
+onready var spell_list = $ui/spell_list
+onready var enemy_spell_list = $ui/enemy_spell_list
 
 var events = []
 var simulation_state
@@ -128,6 +130,10 @@ func on_end_turn_button_pressed():
 	view.init(g.state, 1)
 	var enemy_action = g.ai.get_action(view)
 	print(enemy_action)
+	
+	# Initialize the spell lists
+	spell_list.spells = action
+	enemy_spell_list.spells = enemy_action
 
 	simulation_state.clone(g.state)
 	events = simulation_state.simulate_events([action, enemy_action])
@@ -141,9 +147,20 @@ func on_event_timer_timeout():
 	print(event)
 	if events.size() > 0:
 		g.state.apply_event(event)
+		
+		# Do UI effects for event
+		if event['type'] == 'fire_spell':
+			var player_spell_list = spell_list if event['player'] == 0 else enemy_spell_list
+			player_spell_list.flash_spell(event['index'])
+		
 		redraw()
 	else:
 		g.state.clone(simulation_state)
+		
+		# Clear the spell lists
+		spell_list.spells = []
+		enemy_spell_list.spells = []
+		
 		redraw()
 
 		if len(g.state.winners()) > 0:

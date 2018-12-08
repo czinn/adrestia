@@ -111,20 +111,25 @@ _sections_unfolded = [ "Anchor", "Size Flags", "custom_constants" ]
 
 [node name="control" parent="spell_panel/scroll/grid" index="0" instance=ExtResource( 4 )]
 
+margin_bottom = 140.0
+
 [node name="control2" parent="spell_panel/scroll/grid" index="1" instance=ExtResource( 4 )]
 
 margin_left = 120.0
 margin_right = 240.0
+margin_bottom = 140.0
 
 [node name="control3" parent="spell_panel/scroll/grid" index="2" instance=ExtResource( 4 )]
 
 margin_left = 240.0
 margin_right = 360.0
+margin_bottom = 140.0
 
 [node name="control4" parent="spell_panel/scroll/grid" index="3" instance=ExtResource( 4 )]
 
 margin_left = 360.0
 margin_right = 480.0
+margin_bottom = 140.0
 
 [node name="control5" parent="spell_panel/scroll/grid" index="4" instance=ExtResource( 4 )]
 

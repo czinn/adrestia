@@ -1,0 +1,120 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://components/spell_display.gd" type="Script" id=1]
+[ext_resource path="res://art-built/spells/placeholder.png" type="Texture" id=2]
+[ext_resource path="res://fonts/Amaranth-Regular-16.tres" type="DynamicFont" id=3]
+
+[sub_resource type="Animation" id=1]
+
+resource_name = "flash"
+length = 0.5
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("vbox/texture:rect_rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
+}
+
+[node name="spell_display" type="Control"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 96.0
+margin_bottom = 136.0
+rect_min_size = Vector2( 96, 136 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 1 )
+_sections_unfolded = [ "Anchor", "Margin", "Rect" ]
+
+[node name="vbox" type="VBoxContainer" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 0
+alignment = 0
+_sections_unfolded = [ "Anchor", "Margin", "custom_constants" ]
+
+[node name="texture" type="TextureRect" parent="vbox" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 96.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 96, 96 )
+rect_rotation = 360.0
+rect_pivot_offset = Vector2( 48, 48 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect" ]
+
+[node name="label" type="Label" parent="vbox" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 96.0
+margin_right = 96.0
+margin_bottom = 133.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 0.6, 0.6, 0.6, 1 )
+custom_constants/line_spacing = -3
+text = "Test Spell One"
+align = 1
+autowrap = true
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Size Flags", "custom_colors", "custom_constants", "custom_fonts" ]
+
+[node name="animation_player" type="AnimationPlayer" parent="." index="1"]
+
+root_node = NodePath("..")
+autoplay = ""
+playback_process_mode = 1
+playback_default_blend_time = 0.0
+playback_speed = 1.0
+anims/flash = SubResource( 1 )
+blend_times = [  ]
+_sections_unfolded = [ "Playback Options" ]
+
+[connection signal="gui_input" from="." to="." method="_gui_event"]
+
+

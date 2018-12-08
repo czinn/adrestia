@@ -172,6 +172,7 @@ bool _simulate(
 						{"type", "fire_spell"},
 						{"player", player_id},
 						{"spell", spell.get_id()},
+						{"index", spell_idx},
 						{"success", true}
 					});
 				}
@@ -188,6 +189,7 @@ bool _simulate(
 						{"type", "fire_spell"},
 						{"player", player_id},
 						{"spell", spell.get_id()},
+						{"index", spell_idx},
 						{"success", false}
 					});
 				}
@@ -212,6 +214,7 @@ bool _simulate(
 					if (emit_events) {
 						events_out.emplace_back(json{
 							{"type", "spell_countered"},
+							{"index", spell_idx},
 							{"player", player_id},
 						});
 					}
@@ -230,6 +233,7 @@ bool _simulate(
 			}
 			events_out.emplace_back(json{
 				{"type", "spell_hit"},
+				{"index", spell_idx},
 				{"caster", player_id},
 			});
 		}

@@ -39,8 +39,7 @@ func on_long_press():
 		return
 	was_long_pressed = true
 	timer.stop()
-	var text = "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()]
-	g.summon_tooltip(self, text)
+	g.summon_spell_tooltip(self, spell)
 
 func on_up():
 	if not was_long_pressed:
@@ -76,9 +75,7 @@ func redraw():
 	if label == null: return
 	if mp_label == null: return
 
-	texture_button.texture_normal = g.load_or(
-			'res://art-built/spells/%s.png' % spell.get_id(),
-			'res://art-built/spells/placeholder.png')
+	texture_button.texture_normal = g.get_spell_texture(spell.get_id())
 	
 	var material_ = null if enabled else load('res://shaders/greyscale.material')
 	texture_button.material = material_
