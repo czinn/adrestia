@@ -9,7 +9,7 @@
 [ext_resource path="res://art-built/tech-upvote.png" type="Texture" id=7]
 [ext_resource path="res://fonts/Amaranth-Bold-40.tres" type="DynamicFont" id=8]
 
-[node name="spell_select" type="Control"]
+[node name="spell_select" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0

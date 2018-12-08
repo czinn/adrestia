@@ -15,6 +15,7 @@ var current_book = null
 onready var book_buttons_vbox = $book_buttons
 onready var spell_panel = $spell_panel
 onready var spell_panel_close_button = $spell_panel/close_button
+onready var spell_scroll = $spell_panel/scroll
 onready var spell_grid = $spell_panel/scroll/grid
 onready var template_book_button = $templates/book_button
 
@@ -75,6 +76,8 @@ func redraw_spells():
 
 func on_open_book(index, book):
 	current_book = book
+	spell_scroll.scroll_horizontal = 0
+	spell_scroll.scroll_vertical = 0
 	redraw_spells()
 
 func set_tech_levels(tech_levels_):
