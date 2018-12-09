@@ -10,8 +10,8 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 500.0
-margin_bottom = 136.0
-rect_min_size = Vector2( 0, 136 )
+margin_bottom = 156.0
+rect_min_size = Vector2( 0, 156 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -27,7 +27,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 96, 96 )
+margin_bottom = 12.0
+rect_min_size = Vector2( 96, 156 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 2
@@ -41,14 +42,36 @@ scroll_vertical = 0
 scroll_deadzone = 0
 _sections_unfolded = [ "Rect", "Scroll" ]
 
-[node name="hbox" type="HBoxContainer" parent="scroll_container" index="0"]
+[node name="margin_container" type="MarginContainer" parent="scroll_container" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 96.0
-margin_bottom = 136.0
+margin_right = 116.0
+margin_bottom = 156.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+_sections_unfolded = [ "Anchor", "Margin", "custom_constants" ]
+
+[node name="hbox" type="HBoxContainer" parent="scroll_container/margin_container" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 106.0
+margin_bottom = 146.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -58,7 +81,7 @@ size_flags_vertical = 1
 alignment = 0
 _sections_unfolded = [ "Anchor", "Margin" ]
 
-[node name="spell_display" parent="scroll_container/hbox" index="0" instance=ExtResource( 2 )]
+[node name="spell_display" parent="scroll_container/margin_container/hbox" index="0" instance=ExtResource( 2 )]
 
 mouse_filter = 2
 

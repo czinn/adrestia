@@ -5,7 +5,7 @@ onready var g = get_node('/root/global')
 onready var spell_display_scene = preload('res://components/spell_display.tscn')
 
 onready var scroll_container = $scroll_container
-onready var hbox = $scroll_container/hbox
+onready var hbox = $scroll_container/margin_container/hbox
 var spells = null setget set_spells
 
 func _ready():

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://components/spell_display.gd" type="Script" id=1]
 [ext_resource path="res://art-built/spells/placeholder.png" type="Texture" id=2]
-[ext_resource path="res://fonts/Amaranth-Regular-16.tres" type="DynamicFont" id=3]
+[ext_resource path="res://shaders/blur.material" type="Material" id=3]
+[ext_resource path="res://fonts/Amaranth-Regular-16.tres" type="DynamicFont" id=4]
 
 [sub_resource type="Animation" id=1]
 
@@ -21,6 +22,37 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 0.0, 360.0 ]
+}
+
+[sub_resource type="Animation" id=2]
+
+resource_name = "glow"
+length = 0.5
+loop = false
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("vbox/texture/glow_texture:rect_scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("vbox/texture/glow_texture:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
 }
 
 [node name="spell_display" type="Control"]
@@ -55,7 +87,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 custom_constants/separation = 0
 alignment = 0
-_sections_unfolded = [ "Anchor", "Margin", "custom_constants" ]
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "custom_constants" ]
 
 [node name="texture" type="TextureRect" parent="vbox" index="0"]
 
@@ -77,6 +109,30 @@ expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect" ]
 
+[node name="glow_texture" type="TextureRect" parent="vbox/texture" index="0"]
+
+visible = false
+modulate = Color( 1, 1, 1, 0.501961 )
+show_behind_parent = true
+material = ExtResource( 3 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 96.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 96, 96 )
+rect_pivot_offset = Vector2( 48, 48 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+_sections_unfolded = [ "Anchor", "Margin", "Material", "Mouse", "Rect", "Visibility" ]
+
 [node name="label" type="Label" parent="vbox" index="1"]
 
 anchor_left = 0.0
@@ -92,7 +148,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 3 )
+custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 0.6, 0.6, 0.6, 1 )
 custom_constants/line_spacing = -3
 text = "Test Spell One"
@@ -111,6 +167,7 @@ playback_process_mode = 1
 playback_default_blend_time = 0.0
 playback_speed = 1.0
 anims/flash = SubResource( 1 )
+anims/glow = SubResource( 2 )
 blend_times = [  ]
 _sections_unfolded = [ "Playback Options" ]
 
