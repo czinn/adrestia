@@ -15,6 +15,7 @@ const Strategy = preload('res://native/strategy.gdns')
 
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
+onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
 var rules
@@ -114,6 +115,15 @@ func summon_spell_tooltip(target, spell):
 
 func summon_sticky_tooltip(target, sticky):
 	summon_tooltip(target, "[b]%s[/b]\n%s" % [sticky.get_name(), sticky.get_text()])
+
+func summon_delta(target, value, color):
+	var delta = delta_anim_scene.instance()
+	var pos = target.get_global_rect().position
+	var fadeup = pos.y >= 80
+	delta.margin_top = pos.y - 80 if fadeup else (pos.y + target.rect_size.y)
+	delta.margin_left = pos.x + (target.rect_size.x / 2) - 25
+	get_node("/root").add_child(delta)
+	delta.play_text_and_color(("+" if value > 0 else "") + str(value), color, fadeup)
 
 func event_is_pressed(event):
 	return event is InputEventMouseButton \
