@@ -148,18 +148,68 @@ func on_end_turn_button_pressed():
 func on_event_timer_timeout():
 	if events.size() == 0:
 		return
+
 	var event = events.pop_front()
 	print(event)
-	if events.size() > 0:
-		g.state.apply_event(event)
-		
-		# Do UI effects for event
-		if event['type'] == 'fire_spell':
-			var player_spell_list = spell_list if event['player'] == 0 else enemy_spell_list
-			player_spell_list.flash_spell(event['index'])
-		
-		redraw()
-	else:
+
+	g.state.apply_event(event)
+
+	var me = g.state.players[0]
+	var them = g.state.players[1]
+	# Do UI effects for event
+	if event['type'] == 'fire_spell':
+		var player_spell_list = spell_list if event['player'] == 0 else enemy_spell_list
+		player_spell_list.flash_spell(event['index'])
+		# We need to update mana here because spells cost mana
+		if event['player'] == 0:
+			player_stats.redraw(me)
+		else:
+			enemy_stats.redraw(them)
+	elif event['type'] == 'player_mp':
+		if event['player'] == 0:
+			player_stats.redraw(me)
+		else:
+			enemy_stats.redraw(them)
+	elif event['type'] == 'effect':
+		var effect = event['effect']
+		var target_player = effect['target_player']
+		var kind = effect['kind']
+		if kind == 'health' or kind =='mana_regen' or kind == 'mana':
+			if target_player == 0:
+				player_stats.redraw(me)
+			else:
+				enemy_stats.redraw(them)
+		elif kind == 'tech':
+			spell_select.tech_levels = player_effective_tech()
+		elif kind == 'sticky':
+			if target_player == 0:
+				player_stickies.redraw_append(me.stickies)
+			else:
+				enemy_stickies.redraw_append(them.stickies)
+	elif event['type'] == 'spell_countered':
+		pass # TODO: charles: Animate this
+	elif event['type'] == 'spell_hit':
+		pass # TODO: charles: Maybe animate this
+	elif event['type'] == 'sticky_amount_changed':
+		# TODO: charles Animate this
+		if event['player'] == 0:
+			player_stickies.redraw(me.stickies)
+		else:
+			enemy_stickies.redraw(them.stickies)
+	elif event['type'] == 'sticky_duration_changed':
+		# TODO: charles Animate this
+		if event['player'] == 0:
+			player_stickies.redraw(me.stickies)
+		else:
+			enemy_stickies.redraw(them.stickies)
+	elif event['type'] == 'sticky_expired':
+		if event['player'] == 0:
+			player_stickies.redraw_remove(event['sticky_index'])
+		else:
+			enemy_stickies.redraw_remove(event['sticky_index'])
+
+	if events.size() == 0:
+		# TODO: charles: wait a moment before doing this
 		g.state.clone(simulation_state)
 		
 		# Clear the spell lists

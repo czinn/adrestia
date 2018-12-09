@@ -272,7 +272,10 @@ void Player::subtract_turn(std::vector<json> &events_out) {
 }
 
 void Player::add_sticky(const StickyInstance &sticky) {
-	if (!sticky.sticky.get_stacks()) {
+	// TODO: charles: Stacking is disabled until we can emit a different event.
+	// Really, I want to make a separate value called "stacks" instead of reusing
+	// quantity and clean up the logic a bit.
+	if (!sticky.sticky.get_stacks() || true) {
 		// Just add it.
 		stickies.push_back(sticky);
 	} else {

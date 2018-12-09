@@ -4,6 +4,7 @@ onready var g = get_node('/root/global')
 
 onready var texture = $texture
 onready var duration_label = $duration_label
+onready var animation_player = $animation_player
 
 var sticky = null setget set_sticky
 
@@ -16,6 +17,17 @@ func _gui_event(event):
 
 func set_sticky(sticky_):
 	sticky = sticky_
+
+func fadein():
+	animation_player.play("fadein")
+	redraw()
+
+func appear():
+	animation_player.play('appear')
+	redraw()
+
+func fadeout():
+	animation_player.play("fadeout")
 	redraw()
 
 func redraw():

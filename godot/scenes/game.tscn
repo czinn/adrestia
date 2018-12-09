@@ -9,7 +9,7 @@
 [ext_resource path="res://art-built/button-cast.png" type="Texture" id=7]
 [ext_resource path="res://components/spell_select.tscn" type="PackedScene" id=8]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
