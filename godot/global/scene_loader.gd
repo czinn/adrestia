@@ -1,7 +1,14 @@
 extends Node
 
-# A bit heavy-handed, but opens up the possibility for sick scene-loading
-# transitions.
+# We use this instead of [get_tree().change_scene()] for the sick scene-loading
+# transition.
+# How it works:
+# - Scene change is requested
+# - A giant hexagon starts to roll into the screen. In parallel, we start
+# loading the new scene's resources.
+# - The giant hexagon covers the screen. During this time, we finish loading
+# the new scene if there's anything left to load.
+# - The old scene is deleted and the new scene is inserted into the tree.
 
 # See
 # http://docs.godotengine.org/en/latest/tutorials/io/background_loading.html

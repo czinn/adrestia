@@ -14,11 +14,14 @@ const GameState = preload('res://native/game_state.gdns')
 const GameView = preload('res://native/game_view.gdns')
 const Strategy = preload('res://native/strategy.gdns')
 
+const Tweener = preload('res://global/tweener.gd')
+
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
+onready var drag_drop = get_node('/root/drag_drop')
 var rules
 var state
 var ai
@@ -58,9 +61,14 @@ static func map_member(list, member):
 		result.append(elem.get(member))
 	return result
 
+static func dispose(node):
+	node.queue_free()
+
 static func load_or(path, path_default):
-	# jim: This spits errors into the debugger but is necessary to have custom art show in Android.
-	# https://github.com/godotengine/godot/issues/8773
+	# jim: This spits errors into the debugger but is necessary to have custom
+	# art show in Android. https://github.com/godotengine/godot/issues/8773
+	# jim: Actually, this is a good thing since it lets us know exactly which
+	# things still need assets and annoys us until we create them.
 	var thing = load(path)
 	if thing == null:
 		thing = load(path_default)
@@ -130,3 +138,8 @@ func event_is_pressed(event):
 	return event is InputEventMouseButton \
 		and event.button_index == BUTTON_LEFT \
 		and event.pressed
+
+func tween(thing, to_pos, time):
+	var tw = Tweener.new(get_node('/root'))
+	tw.tween_to(thing, to_pos, time)
+	return tw

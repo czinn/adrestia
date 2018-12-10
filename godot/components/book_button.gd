@@ -1,5 +1,7 @@
 extends Control
 
+signal pressed
+
 onready var g = get_node('/root/global')
 
 onready var button = $vbox/button
@@ -7,9 +9,6 @@ onready var checkmark = $vbox/button/checkmark
 onready var label = $vbox/label
 var book = null setget set_book
 var checked = false setget set_checked
-
-# Forward button.pressed signal
-signal pressed
 
 func _ready():
 	button.connect('pressed', self, 'on_pressed')

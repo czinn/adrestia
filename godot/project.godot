@@ -18,6 +18,7 @@ config/icon="res://icon.png"
 
 global="*res://global/global.gd"
 scene_loader="*res://global/scene_loader.gd"
+drag_drop="*res://global/drag_drop.gd"
 
 [display]
 

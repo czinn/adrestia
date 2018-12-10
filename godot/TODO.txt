@@ -12,14 +12,16 @@
 
 # Third milestone: others can enjoy the game
 
-- [ ] Show sequence of events between turns.
+- [x] Show sequence of events between turns.
 - [ ] Splash screen and transition to title.
 - [ ] Animate book selection.
 - [ ] Animate spell selection.
 - [ ] Animate sequence of events between turns.
 - [ ] Replace TabContainer for spells with a custom thing built with
   TextureButtons and visibility.
-- [ ] Health bars, mana crystals; not just numbers.
+- [ ] Player avatars
+- [ ] Health bar
+- [x] Mana crystal row
 - [ ] Art for all books, spells, and stickies.
 - [ ] Figure out a lightweight set of interfaces that lets us do tutorial /
   multiplayer games without duplicate code.
