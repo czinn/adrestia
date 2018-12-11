@@ -28,11 +28,11 @@ size_t get_cfr_view_hash(const GameView &v) {
 }
 
 size_t get_action_hash(size_t player, const GameAction &a) {
-	size_t h = player;
+	size_t h = 0;
 	for (const auto &s : a) {
 		h = (h << 4) ^ std::hash<std::string>{}(s);
 	}
-	return h;
+	return h ^ std::hash<size_t>{}(player);
 }
 
 double score_game_state(const GameState &g) {
@@ -54,7 +54,7 @@ double score_action_pair(const GameState &g, const GameAction &a0, const GameAct
 		return it->second;
 	} else {
 		GameState gp(g);
-		gp.simulate({a0, a1});
+		assert(gp.simulate({a0, a1}));
 		double score = score_game_state(gp);
 		score_map.emplace(h, score);
 		return score;
@@ -63,6 +63,7 @@ double score_action_pair(const GameState &g, const GameAction &a0, const GameAct
 
 GameAction CfrStrategy::get_action(const GameView &view) {
 	const Player &view_player = view.players[view.view_player_id];
+
 	// Determine which techs are possible for the opponent.
 	std::map<std::string, int> visible_tech[view.players.size()];
 	int unknown_techs[view.players.size()];
@@ -112,7 +113,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 	std::unordered_map<size_t, Node> regret_map;
 	std::unordered_map<size_t, std::vector<GameAction>> action_map;
 	std::unordered_map<size_t, double> score_map;
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 100; i++) {
 		// Choose the determinization
 		// For now, don't do self-determinizations.
 		size_t op = 1 - view.view_player_id;
@@ -154,29 +155,51 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 			if (it != action_map.end()) {
 				actions.push_back(&it->second);
 			} else {
-				action_map.emplace(view_hash, v.sane_actions());
+				action_map.emplace(view_hash, v.legal_actions());
 				actions.push_back(&action_map[view_hash]);
 			}
 		}
+		// Choose an action for each player, based on regret.
 		std::vector<GameAction> chosen_actions;
 		double total_regret[2] = {0};
+		double total_count[2] = {0};
+		bool made_choice[2] = {0};
 		for (size_t i = 0; i < 2; i++) {
 			GameAction chosen_action;
+			GameAction random_action;
 			for (const auto &a : *actions[i]) {
 				size_t h = get_action_hash(i, a);
-				double regret = 1.0;
+				double regret = 0.0;
 				auto it = regret_map.find(h);
 				if (it != regret_map.end()) {
 					regret = it->second.regret;
 				}
 				total_regret[i] += std::max(0.0, regret);
-				if (dis(gen) <= regret / total_regret[i]) {
+				if (total_regret[i] > 0 && dis(gen) <= regret / total_regret[i]) {
+					made_choice[i] = true;
 					chosen_action = a;
 				}
+				total_count[i] += 1.0;
+				if (dis(gen) <= 1.0 / total_count[i]) {
+					random_action = a;
+				}
 			}
-			chosen_actions.push_back(chosen_action);
+			chosen_actions.push_back(made_choice[i] ? chosen_action : random_action);
 		}
+		// Update strategies.
+		for (size_t i = 0; i < 2; i++) {
+			for (const auto &a : *actions[i]) {
+				size_t h = get_action_hash(i, a);
+				Node &n = regret_map[h];
+				n.strategy +=
+					made_choice[i] ?
+					std::max(0.0, n.regret) / total_regret[i] :
+					1.0 / actions[i]->size();
+			}
+		}
+		// Determine the actual result of the game.
 		double actual_score = score_action_pair(g, chosen_actions[0], chosen_actions[1], score_map);
+		// Update regrets.
 		for (size_t i = 0; i < 2; i++) {
 			for (const auto &a : *actions[i]) {
 				size_t h = get_action_hash(i, a);
@@ -186,8 +209,8 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 					i == 0 ?
 					score_action_pair(g, a, chosen_actions[1], score_map) :
 					score_action_pair(g, chosen_actions[0], a, score_map);
-				n.strategy += std::max(0.0, n.regret) / total_regret[i];
-				n.regret += i == 0 ? score - actual_score : actual_score - score;
+				double regret_delta = i == 0 ? (score - actual_score) : (actual_score - score);
+				n.regret += regret_delta;
 			}
 		}
 	}
@@ -196,7 +219,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 	GameAction chosen_action;
 	double total_strategy = 0.0;
 	for (const auto &a : actions) {
-		size_t h = get_action_hash(0, a);
+		size_t h = get_action_hash(view.view_player_id, a);
 		double strategy = std::max(0.0, regret_map[h].strategy);
 		total_strategy += strategy;
 		if (dis(gen) <= strategy / total_strategy) {

@@ -71,6 +71,10 @@ void GameView::generate_actions(
 		) const {
 	const Player &p = players[view_player_id];
 	actions.push_back(current);
+	// If we've already cast the max number of spells this turn, we're done.
+	if (current.size() >= 3) {
+		return;
+	}
 	// If we haven't built a tech, we can build a tech.
 	if (turn_tech == -1) {
 		for (int i = 0; i < p.books.size(); i++) {
@@ -107,64 +111,15 @@ std::vector<GameAction> GameView::legal_actions() const {
 	return actions;
 }
 
-void GameView::generate_sane_actions(
-		std::vector<GameAction> &actions, // Accumulator
-		GameAction &current, // Current proposed action
-		int mana, // Remaining mana
-		int turn_tech, // The tech built this turn, or -1 for none yet
-		bool used_tech,
-		bool final_tech
-		) const {
-	const Player &p = players[view_player_id];
-	if (turn_tech != -1 && (used_tech || final_tech)) {
-		actions.push_back(current);
-	}
-	// If we haven't built a tech, we can build a tech.
-	if (turn_tech == -1) {
-		for (int i = 0; i < p.books.size(); i++) {
-			current.push_back(p.books[i]->get_id() + "_tech");
-			generate_sane_actions(actions, current, mana, i, false, true);
-			current.pop_back();
-		}
-	}
-	// If we're out of mana, we can't cast anything.
-	if (mana == 0) {
-		return;
-	}
-	// Otherwise, look through all our spells and figure out which ones we can cast.
-	int raw_level = p.level();
-	int level = raw_level + (turn_tech != -1 ? 1 : 0);
-	for (int i = 0; i < p.books.size(); i++) {
-		int tech = p.tech[i] + (turn_tech == i ? 1 : 0);
-		for (const auto &spell_id : p.books[i]->get_spells()) {
-			const Spell &spell = rules.get_spell(spell_id);
-			if (!spell.is_tech_spell() && tech >= spell.get_tech() &&
-					level >= spell.get_level() && mana >= spell.get_cost()) {
-				if (raw_level < spell.get_level() || p.tech[i] < spell.get_tech()) {
-					used_tech = true;
-				}
-				current.push_back(spell_id);
-				generate_sane_actions(actions, current, mana - spell.get_cost(), turn_tech, used_tech, false);
-				current.pop_back();
-			}
-		}
-	}
-}
-
-std::vector<GameAction> GameView::sane_actions() const {
-	std::vector<GameAction> actions;
-	GameAction current;
-	const Player &p = players[view_player_id];
-	generate_sane_actions(actions, current, p.mp, -1, false, false);
-	return actions;
-}
-
+// Note, this is not uniformly random; it is slightly biased towards casting
+// less than the maximum number of spells.
 GameAction GameView::random_action(std::mt19937 &gen) const {
 	GameAction a;
 	int turn_tech = -1;
 	const Player &p = players[view_player_id];
 	int mana = p.mp;
-	while (mana > 0) {
+	int total_spells = 0;
+	while (mana > 0 && total_spells < 3) {
 		int level = p.level() + (turn_tech != -1 ? 1 : 0);
 		std::string chosen_spell = "";
 		int spell_count = 1;
@@ -188,6 +143,7 @@ GameAction GameView::random_action(std::mt19937 &gen) const {
 		}
 		if (chosen_spell == "") break;
 		a.push_back(chosen_spell);
+		total_spells++;
 	}
 	// If tech_turn is still -1, choose a random new tech anyway
 	if (turn_tech == -1) {
