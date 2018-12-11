@@ -62,18 +62,14 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse", "custom_constants" ]
 
 [node name="control" parent="scroll_container/hbox" index="0" instance=ExtResource( 3 )]
 
-margin_bottom = 140.0
-
 [node name="control2" parent="scroll_container/hbox" index="1" instance=ExtResource( 3 )]
 
 margin_left = 125.0
 margin_right = 245.0
-margin_bottom = 140.0
 
 [node name="control3" parent="scroll_container/hbox" index="2" instance=ExtResource( 3 )]
 
 margin_left = 250.0
 margin_right = 370.0
-margin_bottom = 140.0
 
 

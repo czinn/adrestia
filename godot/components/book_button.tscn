@@ -6,7 +6,7 @@
 [ext_resource path="res://art-built/check-box.png" type="Texture" id=4]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=5]
 
-[node name="control" type="Control"]
+[node name="control" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
