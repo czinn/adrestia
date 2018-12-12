@@ -22,9 +22,8 @@ var dead_left = 0
 var dead_right = 0
 var dead_bottom = 0
 var tracked_node = null
-var tracked_node_start = null
 var drag_image = null
-var drag_image_start = null
+var drag_image_ofs = null
 var on_lift = null # funcref()
 var on_drop = null # funcref()
 
@@ -53,11 +52,9 @@ func _process(delta):
 			if not tracked_rect.has_point(pos):
 				state = STATE_DRAGGING
 				self.drag_image = self.clone_image(tracked_node)
-				self.drag_image_start = tracked_node.get_global_position()
 				self.on_lift.call_func()
 		STATE_DRAGGING:
-			var delta_pos = pos - drag_start
-			drag_image.rect_position = drag_image_start + delta_pos
+			drag_image.rect_position = pos + self.drag_image_ofs
 	
 func clone_image(node):
 	var image = TextureRect.new()
@@ -73,21 +70,13 @@ func clone_image(node):
 	root.add_child(image)
 	return image
 
-func start_drag(node, payload):
-	end_drag()
-	self.payload = payload
-	self.drag_image = clone_image(node)
-	self.drag_start = get_viewport().get_mouse_position()
-	self.drag_image_start = node.get_global_position()
-	set_process(true)
-
 # Tracks the user's mouse cursor, starting a drag (and triggering [on_lift])
 # after a dead zone is exited.
 func track_drag(node):
 	end_drag()
 	self.tracked_node = node
-	self.tracked_node_start = node.get_global_position()
 	self.drag_start = get_viewport().get_mouse_position()
+	self.drag_image_ofs = node.get_global_position() - self.drag_start
 	state = STATE_TRACKING
 	set_process(true)
 
