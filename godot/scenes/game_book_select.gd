@@ -30,6 +30,7 @@ func _ready():
 	for i in range(selected_books_hbox.get_child_count()):
 		var button = selected_books_hbox.get_child(i)
 		button.connect('pressed', self, 'on_remove_book', [i, button])
+		button.connect('button_down', self, 'on_remove_book_down', [i, button])
 
 func show_book_detail(book):
 	# set spell list
@@ -41,24 +42,20 @@ func show_book_detail(book):
 
 func on_lift():
 	g.drag_drop.payload.button.texture_normal = book_placeholder_texture
-	print('lifted')
 
 func on_drop(drag_image):
 	var button = g.drag_drop.payload
 	var book = button.book
 	var i = chosen_books.find(null)
-	print(g.drag_drop.drag_end)
-	print(spells_panel)
 	if g.drag_drop.drag_end.y > spells_panel.get_global_position().y or chosen_books.find(book) >= 0 or i == -1:
-		yield(g.tween(drag_image, button.button.get_global_position(), 0.2), 'done')
+		yield(g.tween(drag_image, button.button.get_global_position(), 0.3), 'done')
 		button.button.texture_normal = drag_image.texture
 		drag_image.queue_free()
 		return
 	chosen_books[i] = book
 	var chosen_book_icon = selected_books_hbox.get_child(i)
-	yield(g.tween(drag_image, chosen_book_icon.get_global_position(), 0.2), 'done')
+	yield(g.tween(drag_image, chosen_book_icon.get_global_position(), 0.3), 'done')
 	drag_image.queue_free()
-	print(book.get_name())
 	selected_books_hbox.get_child(i).texture_normal = g.get_book_texture(book.get_id())
 
 func on_book_down(book_button):
@@ -99,6 +96,29 @@ func on_remove_book(i, button):
 
 	# clear spell list
 	g.clear_children(spell_list_container)
+
+func on_remove_book_down(i, button):
+	if chosen_books[i] == null: return
+	g.drag_drop.set_dead_zone(0, 0, 0, 0)
+	g.drag_drop.on_lift = funcref(self, 'on_remove_book_down_lift')
+	g.drag_drop.on_drop = funcref(self, 'on_remove_book_down_drop')
+	g.drag_drop.payload = [i, button]
+	g.drag_drop.track_drag(button)
+
+func on_remove_book_down_lift():
+	match g.drag_drop.payload:
+		[var i, var button]:
+			button.texture_normal = book_placeholder_texture
+
+func on_remove_book_down_drop(image):
+	match g.drag_drop.payload:
+		[var i, var button]:
+			var book_id = chosen_books[i].get_id()
+			var book_button = book_buttons[book_id]
+			chosen_books[i] = null
+			yield(g.tween(image, book_button.get_global_position(), 0.3), 'done')
+			book_button.button.texture_normal = g.get_book_texture(book_id)
+			image.queue_free()
 
 func on_play_button_pressed():
 	var selected_books = []
