@@ -23,7 +23,7 @@ func _ready():
 		var book_button = book_button_scene.instance()
 		books_hbox.add_child(book_button)
 		book_button.book = book
-		#book_button.button.connect('pressed', self, 'on_select_book', [book_button])
+		book_button.button.connect('pressed', self, 'on_select_book', [book_button])
 		book_button.button.connect('button_down', self, 'on_book_down', [book_button])
 		book_buttons[book.get_id()] = book_button
 	play_button.connect('pressed', self, 'on_play_button_pressed')
