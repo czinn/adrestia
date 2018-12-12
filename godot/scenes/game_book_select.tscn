@@ -35,7 +35,7 @@ anti_aliasing = true
 anti_aliasing_size = 1
 _sections_unfolded = [ "Border", "Border Width", "Expand Margin", "Shadow" ]
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -271,37 +271,37 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-custom_constants/separation = 20
+custom_constants/separation = 0
 alignment = 0
 _sections_unfolded = [ "Margin", "Mouse", "Size Flags", "custom_constants" ]
 
 [node name="control" parent="ui/books_scroll/books_hbox" index="0" instance=ExtResource( 5 )]
 
-margin_right = 155.0
+margin_right = 171.0
 
 [node name="control2" parent="ui/books_scroll/books_hbox" index="1" instance=ExtResource( 5 )]
 
-margin_left = 175.0
-margin_right = 330.0
+margin_left = 171.0
+margin_right = 342.0
 
 [node name="control3" parent="ui/books_scroll/books_hbox" index="2" instance=ExtResource( 5 )]
 
-margin_left = 350.0
-margin_right = 505.0
+margin_left = 342.0
+margin_right = 513.0
 
 [node name="control4" parent="ui/books_scroll/books_hbox" index="3" instance=ExtResource( 5 )]
 
-margin_left = 525.0
-margin_right = 680.0
+margin_left = 513.0
+margin_right = 684.0
 
 [node name="control5" parent="ui/books_scroll/books_hbox" index="4" instance=ExtResource( 5 )]
 
-margin_left = 700.0
+margin_left = 684.0
 margin_right = 855.0
 
 [node name="control6" parent="ui/books_scroll/books_hbox" index="5" instance=ExtResource( 5 )]
 
-margin_left = 875.0
+margin_left = 855.0
 margin_right = 1030.0
 
 

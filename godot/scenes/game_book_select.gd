@@ -8,6 +8,7 @@ onready var book_placeholder_texture = preload('res://art-built/book-select-empt
 onready var Tweener = preload('res://global/tweener.gd')
 
 onready var ui = $ui
+onready var spells_panel = $ui/panel
 onready var books_hbox = $ui/books_scroll/books_hbox
 onready var spell_list_container = $ui/spell_list_container
 onready var play_button = $ui/play_button
@@ -22,23 +23,51 @@ func _ready():
 		var book_button = book_button_scene.instance()
 		books_hbox.add_child(book_button)
 		book_button.book = book
-		book_button.button.connect('pressed', self, 'on_select_book', [book_button])
-		book_button.button.connect('button_down', self, 'on_show_book_details', [book_button])
+		#book_button.button.connect('pressed', self, 'on_select_book', [book_button])
+		book_button.button.connect('button_down', self, 'on_book_down', [book_button])
 		book_buttons[book.get_id()] = book_button
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	for i in range(selected_books_hbox.get_child_count()):
 		var button = selected_books_hbox.get_child(i)
-		button.connect('button_down', self, 'on_remove_book', [i, button])
+		button.connect('pressed', self, 'on_remove_book', [i, button])
 
-func on_show_book_details(book_button):
-	var book = book_button.book
-
+func show_book_detail(book):
 	# set spell list
 	var spell_button_list = spell_button_list_scene.instance()
 	spell_button_list.show_stats = true
-	spell_button_list.spells = book_button.book.get_spells()
+	spell_button_list.spells = book.get_spells()
 	g.clear_children(spell_list_container)
 	spell_list_container.add_child(spell_button_list)
+
+func on_lift():
+	g.drag_drop.payload.button.texture_normal = book_placeholder_texture
+	print('lifted')
+
+func on_drop(drag_image):
+	var button = g.drag_drop.payload
+	var book = button.book
+	var i = chosen_books.find(null)
+	print(g.drag_drop.drag_end)
+	print(spells_panel)
+	if g.drag_drop.drag_end.y > spells_panel.get_global_position().y or chosen_books.find(book) >= 0 or i == -1:
+		yield(g.tween(drag_image, button.button.get_global_position(), 0.2), 'done')
+		button.button.texture_normal = drag_image.texture
+		drag_image.queue_free()
+		return
+	chosen_books[i] = book
+	var chosen_book_icon = selected_books_hbox.get_child(i)
+	yield(g.tween(drag_image, chosen_book_icon.get_global_position(), 0.2), 'done')
+	drag_image.queue_free()
+	print(book.get_name())
+	selected_books_hbox.get_child(i).texture_normal = g.get_book_texture(book.get_id())
+
+func on_book_down(book_button):
+	show_book_detail(book_button.book)
+	g.drag_drop.set_dead_zone(-20, null, null, null)
+	g.drag_drop.on_lift = funcref(self, 'on_lift')
+	g.drag_drop.on_drop = funcref(self, 'on_drop')
+	g.drag_drop.payload = book_button
+	g.drag_drop.track_drag(book_button.button)
 
 func on_select_book(book_button):
 	var book = book_button.book

@@ -17,6 +17,7 @@ func tween_to(thing, destination, duration):
 	var animation_name = thing_path.replace('/', '-')
 	anim.add_track(Animation.TYPE_VALUE, 0)
 	anim.track_set_path(0, track_path)
+	anim.track_set_interpolation_type(0, Animation.INTERPOLATION_CUBIC)
 	anim.track_insert_key(0, 0.0, Vector2(thing.rect_position))
 	anim.track_insert_key(0, duration, destination)
 	animator.add_animation(animation_name, anim)

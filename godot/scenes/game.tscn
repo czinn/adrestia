@@ -31,17 +31,13 @@ _sections_unfolded = [ "Mouse", "Theme" ]
 [node name="spell_list" parent="ui" index="0" instance=ExtResource( 3 )]
 
 anchor_top = 0.5
-anchor_right = 1.0
 anchor_bottom = 0.5
-margin_right = 0.0
 
 [node name="enemy_spell_list" parent="ui" index="1" instance=ExtResource( 3 )]
 
 anchor_top = 0.5
-anchor_right = 1.0
 anchor_bottom = 0.5
 margin_top = -280.0
-margin_right = 0.0
 margin_bottom = -124.0
 
 [node name="player_stats" parent="ui" index="2" instance=ExtResource( 4 )]
