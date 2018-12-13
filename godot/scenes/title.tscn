@@ -5,7 +5,7 @@
 [ext_resource path="res://art-built/logo.png" type="Texture" id=3]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=4]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 

@@ -14,10 +14,11 @@ var current_book = null
 
 onready var book_buttons_vbox = $book_buttons
 onready var spell_panel = $spell_panel
-onready var spell_panel_close_button = $spell_panel/close_button
-onready var spell_scroll = $spell_panel/scroll
-onready var spell_grid = $spell_panel/scroll/grid
+onready var spell_panel_close_button = $spell_panel/ninepatch/close_button
+onready var spell_scroll = $spell_panel/ninepatch/scroll
+onready var spell_grid = $spell_panel/ninepatch/scroll/grid
 onready var template_book_button = $templates/book_button
+onready var animation_player = $animation_player
 
 func _ready():
 	spell_panel_close_button.connect('pressed', self, 'on_close_book')
@@ -58,8 +59,8 @@ func redraw():
 	redraw_tech_levels()
 
 func on_close_book():
-	spell_panel.visible = false
 	current_book = null
+	animation_player.play_backwards('spell_panel_enter')
 
 func redraw_spells():
 	g.clear_children(spell_grid)
@@ -72,13 +73,14 @@ func redraw_spells():
 		var spell = spell_button.spell
 		spell_button.connect('pressed', self, 'on_spell_pressed', [i, spell])
 		spell_grid.add_child(spell_button)
-	spell_panel.visible = true
 
 func on_open_book(index, book):
 	current_book = book
 	spell_scroll.scroll_horizontal = 0
 	spell_scroll.scroll_vertical = 0
 	redraw_spells()
+	spell_panel.visible = true
+	animation_player.play('spell_panel_enter')
 
 func set_tech_levels(tech_levels_):
 	tech_levels = tech_levels_

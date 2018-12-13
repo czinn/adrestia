@@ -13,7 +13,6 @@ onready var mp_label = $cost/mp_label
 onready var unlock = $unlock
 onready var tech_icon = $unlock/tech_icon
 onready var tech_label = $unlock/tech_label
-onready var level_icon = $unlock/level_icon
 onready var level_label = $unlock/level_label
 
 var spell = null setget set_spell
