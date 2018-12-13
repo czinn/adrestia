@@ -60,17 +60,12 @@ namespace godot {
 		std::vector<nlohmann::json> events_out;
 		of_godot_variant(actions, &actions_);
 		_ptr->simulate(actions_, events_out);
-		Array a;
-		for (const auto &it : events_out) {
-			a.append(JSON::parse(it.dump().c_str())->get_result());
-		}
-		return a;
+		return to_godot_variant(events_out, owner);
 	}
 
 	void CLASSNAME::apply_event(Variant event) {
-		std::string s;
-		of_godot_variant(godot::JSON::print(event), &s);
-		nlohmann::json j = nlohmann::json::parse(s);
+		nlohmann::json j;
+		of_godot_variant(event, &j);
 		_ptr->apply_event(j);
 	}
 
