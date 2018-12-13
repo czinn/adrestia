@@ -79,11 +79,12 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
 
 anchor_top = 0.5
 anchor_bottom = 0.5
+margin_bottom = 150.0
 
 [node name="event_timer" type="Timer" parent="ui" index="7"]
 
 process_mode = 1
-wait_time = 0.5
+wait_time = 0.1
 one_shot = false
 autostart = true
 

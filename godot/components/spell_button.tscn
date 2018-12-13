@@ -33,6 +33,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_min_size = Vector2( 120, 140 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -40,7 +41,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
-_sections_unfolded = [ "Anchor", "Mouse", "Rect" ]
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "custom_constants" ]
 
 [node name="texture_button" type="TextureButton" parent="vbox" index="0"]
 
@@ -66,7 +67,7 @@ group = null
 texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Anchor", "Margin", "Material", "Mouse", "Rect", "Textures" ]
+_sections_unfolded = [ "Material", "Mouse", "Rect", "Textures" ]
 
 [node name="label" type="Label" parent="vbox" index="1"]
 
@@ -82,7 +83,7 @@ rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
-size_flags_vertical = 4
+size_flags_vertical = 5
 custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 0.601562, 0.601562, 0.601562, 1 )
 custom_constants/line_spacing = -3
