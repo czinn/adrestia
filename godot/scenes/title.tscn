@@ -1,11 +1,42 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/title.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://art-built/logo.png" type="Texture" id=3]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=4]
 
-[node name="root" type="Node"]
+[sub_resource type="Animation" id=1]
+
+resource_name = "fade_in"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("fade_in_rect:color")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("fade_in_rect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -69,5 +100,30 @@ group = null
 texture_normal = ExtResource( 4 )
 expand = true
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+
+[node name="fade_in_rect" type="ColorRect" parent="." index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+color = Color( 1, 1, 1, 0.6 )
+_sections_unfolded = [ "Mouse", "Visibility" ]
+
+[node name="animation_player" type="AnimationPlayer" parent="." index="2"]
+
+root_node = NodePath("..")
+autoplay = ""
+playback_process_mode = 1
+playback_default_blend_time = 0.0
+playback_speed = 1.0
+anims/fade_in = SubResource( 1 )
+blend_times = [  ]
 
 

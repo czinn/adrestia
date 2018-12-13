@@ -59,6 +59,7 @@ func redraw():
 	redraw_tech_levels()
 
 func on_close_book():
+	if current_book == null: return
 	current_book = null
 	animation_player.play_backwards('spell_panel_enter')
 
@@ -75,6 +76,7 @@ func redraw_spells():
 		spell_grid.add_child(spell_button)
 
 func on_open_book(index, book):
+	if current_book == book: return
 	current_book = book
 	spell_scroll.scroll_horizontal = 0
 	spell_scroll.scroll_vertical = 0

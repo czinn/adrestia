@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="216.56292"
-     inkscape:cy="491.9854"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="268.74885"
+     inkscape:cy="182.05522"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -35,7 +35,7 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1440"
+     inkscape:window-width="1920"
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -82,56 +82,5 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(11.71582,33.351666)">
-    <g
-       id="g2219"
-       transform="translate(0,29.672291)">
-      <flowRoot
-         transform="matrix(0.56130809,0,0,0.55963946,-12.948003,-35.205738)"
-         style="font-style:normal;font-weight:normal;font-size:40.28342819px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-         id="flowRoot2150-7"
-         xml:space="preserve"><flowRegion
-           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-           id="flowRegion2152-5"><rect
-             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-             y="44.68692"
-             x="30.304577"
-             height="46.46703"
-             width="357.59399"
-             id="rect2154-3" /></flowRegion><flowPara
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-           id="flowPara2156-5">Adrestia</flowPara></flowRoot>      <flowRoot
-         transform="matrix(0.22578933,0,0,0.22578933,29.688808,1.7880602)"
-         style="font-style:normal;font-weight:normal;font-size:37.49808121px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.54877472;stroke-opacity:1"
-         id="flowRoot2150-7-6"
-         xml:space="preserve"><flowRegion
-           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.54877472;stroke-opacity:1"
-           id="flowRegion2152-5-2"><rect
-             style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.54877472;stroke-opacity:1"
-             y="44.68692"
-             x="30.304577"
-             height="232.67584"
-             width="499.35294"
-             id="rect2154-3-9" /></flowRegion><flowPara
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.54877472;stroke-opacity:1"
-           id="flowPara2156-5-1">Magic Battles</flowPara></flowRoot>      <path
-         inkscape:transform-center-y="-3.3407218e-06"
-         transform="matrix(1.6602107,-0.95852306,0.95852306,1.6602107,-164.49473,151.12876)"
-         inkscape:transform-center-x="-1.1469534e-06"
-         d="m 161.56442,10.8562 c -3.59519,0 -2.91986,0.389897 -4.71746,-2.7236282 -1.79759,-3.1135249 -1.79759,-2.333731 0,-5.4472561 1.79759,-3.11352503 1.12227,-2.72362804 4.71746,-2.72362814 3.59519,-9e-8 2.91987,-0.38989705 4.71746,2.72362794 1.7976,3.113525 1.7976,2.333731 0,5.4472561 -1.79759,3.1135254 -1.12227,2.7236284 -4.71746,2.7236284 z"
-         inkscape:randomized="0"
-         inkscape:rounded="0.66"
-         inkscape:flatsided="true"
-         sodipodi:arg2="2.0943951"
-         sodipodi:arg1="1.5707963"
-         sodipodi:r2="4.7174621"
-         sodipodi:r1="5.4472561"
-         sodipodi:cy="5.4089437"
-         sodipodi:cx="161.56442"
-         sodipodi:sides="6"
-         id="path1035-3"
-         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.38016152;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-         sodipodi:type="star" />
-    </g>
-  </g>
+     transform="translate(11.71582,33.351666)" />
 </svg>

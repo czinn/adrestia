@@ -2,7 +2,7 @@ extends Node
 
 onready var g = get_node('/root/global')
 onready var play_button = $ui/play_button
-onready var waifu = $ui/moge_ko
+onready var animation_player = $animation_player
 
 func _ready():
 	get_tree().set_auto_accept_quit(true)
@@ -10,6 +10,8 @@ func _ready():
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	# jim: We definitely need an official waifu at some point, but Moge-ko isn't it.
 	#waifu.connect('pressed', self, 'on_waifu_pressed')
+	animation_player.play('fade_in')
+	yield(animation_player, 'animation_finished')
 
 func on_waifu_pressed():
 	g.summon_tooltip($ui/moge_ko, "Hey now, why are you runniiing? No, no, I wanna play!\n... [i]Oooh, I see, it's tag![/i]\n[b]GYAHAHAHAHAHAA!!!![/b]")
