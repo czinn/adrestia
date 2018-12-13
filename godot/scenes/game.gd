@@ -8,13 +8,14 @@ onready var game = $ui
 onready var spell_select = $ui/spell_select
 onready var end_turn_button = $ui/end_turn_button
 onready var spell_queue = $ui/spell_queue
-onready var player_stats = $ui/player_stats
-onready var player_stickies = $ui/player_stickies
+onready var my_stats = $ui/my_stats
+onready var my_stickies = $ui/my_stickies
+onready var my_spell_list = $ui/my_spell_list
 onready var enemy_stats = $ui/enemy_stats
+onready var enemy_spell_list = $ui/enemy_spell_list
 onready var enemy_stickies = $ui/enemy_stickies
 onready var event_timer = $ui/event_timer
-onready var spell_list = $ui/spell_list
-onready var enemy_spell_list = $ui/enemy_spell_list
+onready var animation_player = $ui/animation_player
 
 var events = []
 var simulation_state
@@ -119,8 +120,8 @@ func redraw():
 	var mp_left = player_mp_left()
 	enemy_stats.redraw(them)
 	enemy_stickies.redraw(them.stickies)
-	player_stats.redraw(me, mp_left)
-	player_stickies.redraw(me.stickies)
+	my_stats.redraw(me, mp_left)
+	my_stickies.redraw(me.stickies)
 	spell_select.tech_levels = player_effective_tech()
 	spell_queue.redraw()
 	spell_select.redraw_spells()
@@ -137,13 +138,17 @@ func on_end_turn_button_pressed():
 	print(enemy_action)
 	
 	# Initialize the spell lists
-	spell_list.spells = action
+	my_spell_list.spells = action
 	enemy_spell_list.spells = enemy_action
 
 	simulation_state.clone(g.state)
-	events = simulation_state.simulate_events([action, enemy_action])
 	spell_queue.spells = []
 	redraw()
+
+	animation_player.play('end_turn')
+	yield(animation_player, 'animation_finished')
+
+	events = simulation_state.simulate_events([action, enemy_action])
 
 func on_event_timer_timeout():
 	if events.size() == 0:
@@ -158,16 +163,16 @@ func on_event_timer_timeout():
 	var them = g.state.players[1]
 	# Do UI effects for event
 	if event['type'] == 'fire_spell':
-		var player_spell_list = spell_list if event['player'] == 0 else enemy_spell_list
+		var player_spell_list = my_spell_list if event['player'] == 0 else enemy_spell_list
 		player_spell_list.flash_spell(event['index'])
 		# We need to update mana here because spells cost mana
 		if event['player'] == 0:
-			player_stats.redraw(me)
+			my_stats.redraw(me)
 		else:
 			enemy_stats.redraw(them)
 	elif event['type'] == 'player_mp':
 		if event['player'] == 0:
-			player_stats.redraw(me)
+			my_stats.redraw(me)
 		else:
 			enemy_stats.redraw(them)
 	elif event['type'] == 'effect':
@@ -176,14 +181,14 @@ func on_event_timer_timeout():
 		var kind = effect['kind']
 		if kind == 'health' or kind =='mana_regen' or kind == 'mana':
 			if target_player == 0:
-				player_stats.redraw(me)
+				my_stats.redraw(me)
 			else:
 				enemy_stats.redraw(them)
 		elif kind == 'tech':
 			spell_select.tech_levels = player_effective_tech()
 		elif kind == 'sticky':
 			if target_player == 0:
-				player_stickies.redraw_append(me.stickies)
+				my_stickies.redraw_append(me.stickies)
 			else:
 				enemy_stickies.redraw_append(them.stickies)
 	elif event['type'] == 'spell_countered':
@@ -193,27 +198,28 @@ func on_event_timer_timeout():
 	elif event['type'] == 'sticky_amount_changed':
 		# TODO: charles Animate this
 		if event['player'] == 0:
-			player_stickies.redraw(me.stickies)
+			my_stickies.redraw(me.stickies)
 		else:
 			enemy_stickies.redraw(them.stickies)
 	elif event['type'] == 'sticky_duration_changed':
 		# TODO: charles Animate this
 		if event['player'] == 0:
-			player_stickies.redraw(me.stickies)
+			my_stickies.redraw(me.stickies)
 		else:
 			enemy_stickies.redraw(them.stickies)
 	elif event['type'] == 'sticky_expired':
 		if event['player'] == 0:
-			player_stickies.redraw_remove(event['sticky_index'])
+			my_stickies.redraw_remove(event['sticky_index'])
 		else:
 			enemy_stickies.redraw_remove(event['sticky_index'])
 
 	if events.size() == 0:
 		# TODO: charles: wait a moment before doing this
 		g.state.clone(simulation_state)
+		animation_player.play_backwards('end_turn')
 		
 		# Clear the spell lists
-		spell_list.spells = []
+		my_spell_list.spells = []
 		enemy_spell_list.spells = []
 		
 		redraw()

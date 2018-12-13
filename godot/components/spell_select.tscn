@@ -2,12 +2,12 @@
 
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/spell_select.gd" type="Script" id=2]
-[ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
-[ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=4]
-[ext_resource path="res://art-built/close-x.png" type="Texture" id=5]
-[ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=6]
-[ext_resource path="res://art-built/tech-upvote.png" type="Texture" id=7]
-[ext_resource path="res://fonts/Amaranth-Bold-40.tres" type="DynamicFont" id=8]
+[ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=3]
+[ext_resource path="res://art-built/tech-upvote.png" type="Texture" id=4]
+[ext_resource path="res://fonts/Amaranth-Bold-40.tres" type="DynamicFont" id=5]
+[ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=6]
+[ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=7]
+[ext_resource path="res://art-built/close-x.png" type="Texture" id=8]
 
 [sub_resource type="Animation" id=1]
 
@@ -40,7 +40,7 @@ tracks/1/keys = {
 "values": [ 211.0, -123.0 ]
 }
 
-[node name="spell_select" type="Control" index="0"]
+[node name="spell_select" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -74,6 +74,303 @@ size_flags_vertical = 1
 custom_constants/separation = 10
 alignment = 1
 _sections_unfolded = [ "Grow Direction", "Theme", "custom_constants" ]
+
+[node name="book_button2" type="Control" parent="book_buttons" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 72.0
+margin_right = 197.0
+margin_bottom = 155.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect", "Size Flags" ]
+
+[node name="book" type="TextureButton" parent="book_buttons/book_button2" index="0"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -63.0
+margin_top = -155.0
+margin_right = 62.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 3 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
+
+[node name="upgrade_arrow" type="TextureButton" parent="book_buttons/book_button2" index="1"]
+
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = -70.0
+margin_right = 66.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="level" type="Label" parent="book_buttons/book_button2" index="2"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -57.0
+margin_top = -55.0
+margin_right = -4.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+custom_constants/shadow_offset_x = 3
+custom_constants/shadow_offset_y = 3
+custom_constants/shadow_as_outline = 1
+text = "0"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
+
+[node name="book_button3" type="Control" parent="book_buttons" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 207.0
+margin_right = 332.0
+margin_bottom = 155.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect", "Size Flags" ]
+
+[node name="book" type="TextureButton" parent="book_buttons/book_button3" index="0"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -63.0
+margin_top = -155.0
+margin_right = 62.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 3 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
+
+[node name="upgrade_arrow" type="TextureButton" parent="book_buttons/book_button3" index="1"]
+
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = -70.0
+margin_right = 66.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="level" type="Label" parent="book_buttons/book_button3" index="2"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -57.0
+margin_top = -55.0
+margin_right = -4.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+custom_constants/shadow_offset_x = 3
+custom_constants/shadow_offset_y = 3
+custom_constants/shadow_as_outline = 1
+text = "0"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
+
+[node name="book_button4" type="Control" parent="book_buttons" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 342.0
+margin_right = 467.0
+margin_bottom = 155.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect", "Size Flags" ]
+
+[node name="book" type="TextureButton" parent="book_buttons/book_button4" index="0"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -63.0
+margin_top = -155.0
+margin_right = 62.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 3 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
+
+[node name="upgrade_arrow" type="TextureButton" parent="book_buttons/book_button4" index="1"]
+
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = -70.0
+margin_right = 66.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="level" type="Label" parent="book_buttons/book_button4" index="2"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -57.0
+margin_top = -55.0
+margin_right = -4.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+custom_constants/shadow_offset_x = 3
+custom_constants/shadow_offset_y = 3
+custom_constants/shadow_as_outline = 1
+text = "0"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
 
 [node name="spell_panel" type="Control" parent="." index="1"]
 
@@ -109,7 +406,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 3 )
+texture = ExtResource( 6 )
 patch_margin_left = 11
 patch_margin_top = 11
 patch_margin_right = 11
@@ -158,29 +455,29 @@ custom_constants/hseparation = 0
 columns = 99
 _sections_unfolded = [ "Anchor", "Size Flags", "custom_constants" ]
 
-[node name="control" parent="spell_panel/ninepatch/scroll/grid" index="0" instance=ExtResource( 4 )]
+[node name="control" parent="spell_panel/ninepatch/scroll/grid" index="0" instance=ExtResource( 7 )]
 
-[node name="control2" parent="spell_panel/ninepatch/scroll/grid" index="1" instance=ExtResource( 4 )]
+[node name="control2" parent="spell_panel/ninepatch/scroll/grid" index="1" instance=ExtResource( 7 )]
 
 margin_left = 120.0
 margin_right = 240.0
 
-[node name="control3" parent="spell_panel/ninepatch/scroll/grid" index="2" instance=ExtResource( 4 )]
+[node name="control3" parent="spell_panel/ninepatch/scroll/grid" index="2" instance=ExtResource( 7 )]
 
 margin_left = 240.0
 margin_right = 360.0
 
-[node name="control4" parent="spell_panel/ninepatch/scroll/grid" index="3" instance=ExtResource( 4 )]
+[node name="control4" parent="spell_panel/ninepatch/scroll/grid" index="3" instance=ExtResource( 7 )]
 
 margin_left = 360.0
 margin_right = 480.0
 
-[node name="control5" parent="spell_panel/ninepatch/scroll/grid" index="4" instance=ExtResource( 4 )]
+[node name="control5" parent="spell_panel/ninepatch/scroll/grid" index="4" instance=ExtResource( 7 )]
 
 margin_left = 480.0
 margin_right = 600.0
 
-[node name="control6" parent="spell_panel/ninepatch/scroll/grid" index="5" instance=ExtResource( 4 )]
+[node name="control6" parent="spell_panel/ninepatch/scroll/grid" index="5" instance=ExtResource( 7 )]
 
 margin_left = 600.0
 margin_right = 720.0
@@ -206,14 +503,13 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 5 )
+texture_normal = ExtResource( 8 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Rect", "Textures" ]
 
 [node name="templates" type="Control" parent="." index="2"]
 
-editor/display_folded = true
 visible = false
 anchor_left = 0.5
 anchor_top = 1.0
@@ -270,7 +566,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 6 )
+texture_normal = ExtResource( 3 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
@@ -297,7 +593,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 7 )
+texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Rect", "Textures" ]
@@ -318,7 +614,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 8 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
 custom_constants/shadow_offset_x = 3
 custom_constants/shadow_offset_y = 3
