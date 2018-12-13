@@ -8,7 +8,8 @@ func _ready():
 	get_tree().set_auto_accept_quit(true)
 	get_tree().set_quit_on_go_back(true)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
-	waifu.connect('pressed', self, 'on_waifu_pressed')
+	# jim: We definitely need an official waifu at some point, but Moge-ko isn't it.
+	#waifu.connect('pressed', self, 'on_waifu_pressed')
 
 func on_waifu_pressed():
 	g.summon_tooltip($ui/moge_ko, "Hey now, why are you runniiing? No, no, I wanna play!\n... [i]Oooh, I see, it's tag![/i]\n[b]GYAHAHAHAHAHAA!!!![/b]")

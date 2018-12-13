@@ -87,7 +87,7 @@ tracks/3/keys = {
 "values": [ Vector2( 33.5626, 359.389 ), Vector2( 33.5626, -230.611 ) ]
 }
 
-[node name="Root" type="Node"]
+[node name="Root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
