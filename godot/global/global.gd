@@ -22,7 +22,7 @@ onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
 onready var drag_drop = get_node('/root/drag_drop')
-var loaded = 0
+var loaded = false
 var rules
 var state
 var ai
