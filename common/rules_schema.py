@@ -80,9 +80,9 @@ class Spell:
     sub_id: str
     name: str
     text: str
-    tech: int = 0
-    level: int = 0
-    cost: int = 0
+    tech: int
+    level: int
+    cost: int
     effects: List[Effect] = field(default_factory=list)
     counterspell: Optional[Selector] = None
     id_: Optional[str] = None # will be set by the containing Book

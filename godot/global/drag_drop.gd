@@ -28,15 +28,27 @@ var on_lift = null # funcref()
 var on_drop = null # funcref()
 
 func _input(event):
-	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed:
-		match state:
-			STATE_TRACKING:
+	match state:
+		STATE_TRACKING:
+			if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed:
 				state = STATE_IDLE
-			STATE_DRAGGING:
+			elif event is InputEventMouseMotion:
+				var pos = event.position
+				var tracked_rect = tracked_node.get_global_rect()
+				tracked_rect = tracked_rect.grow_individual(self.dead_left, self.dead_top, self.dead_right, self.dead_bottom)
+				if not tracked_rect.has_point(pos):
+					self.drag_image = self.clone_image(tracked_node)
+					self.on_lift.call_func()
+					state = STATE_DRAGGING
+		STATE_DRAGGING:
+			if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed:
 				var drag_image = self.drag_image
 				end_drag()
 				self.on_drop.call_func(drag_image)
 				state = STATE_IDLE
+			elif event is InputEventMouseMotion:
+				var pos = event.position
+				self.drag_image.rect_position = pos + self.drag_image_ofs
 
 func _ready():
 	set_process(false)
@@ -47,14 +59,9 @@ func _process(delta):
 		STATE_IDLE:
 			set_process(false)
 		STATE_TRACKING:
-			var tracked_rect = tracked_node.get_global_rect()
-			tracked_rect = tracked_rect.grow_individual(self.dead_left, self.dead_top, self.dead_right, self.dead_bottom)
-			if not tracked_rect.has_point(pos):
-				state = STATE_DRAGGING
-				self.drag_image = self.clone_image(tracked_node)
-				self.on_lift.call_func()
+			pass
 		STATE_DRAGGING:
-			drag_image.rect_position = pos + self.drag_image_ofs
+			pass
 	
 func clone_image(node):
 	var image = TextureRect.new()

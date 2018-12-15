@@ -23,7 +23,7 @@ func _ready():
 		var book_button = book_button_scene.instance()
 		books_hbox.add_child(book_button)
 		book_button.book = book
-		book_button.button.connect('pressed', self, 'on_select_book', [book_button])
+		book_button.button.connect('pressed', self, 'on_press_book', [book_button])
 		book_button.button.connect('button_down', self, 'on_book_down', [book_button])
 		book_buttons[book.get_id()] = book_button
 	play_button.connect('pressed', self, 'on_play_button_pressed')
@@ -41,6 +41,7 @@ func show_book_detail(book):
 	spell_list_container.add_child(spell_button_list)
 
 func on_lift():
+	print('lift')
 	g.drag_drop.payload.button.texture_normal = book_placeholder_texture
 
 func on_drop(drag_image):
@@ -66,7 +67,7 @@ func on_book_down(book_button):
 	g.drag_drop.payload = book_button
 	g.drag_drop.track_drag(book_button.button)
 
-func on_select_book(book_button):
+func on_press_book(book_button):
 	var book = book_button.book
 	var i = chosen_books.find(null)
 	if i == -1 or chosen_books.find(book) >= 0:
