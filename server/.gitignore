@@ -1,5 +1,5 @@
-client_abomination
-server_abomination
+server
+test_client
 .env
 *.d
 *.o
