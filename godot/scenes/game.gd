@@ -27,7 +27,7 @@ func _ready():
 	spell_queue.spells = []
 	spell_queue.show_stats = false
 	simulation_state = g.GameState.new()
-
+	spell_select.display_filter = funcref(self, 'is_tech_spell')
 	spell_select.enabled_filter = funcref(self, 'player_can_cast')
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 	spell_select.books = g.state.players[0].books
@@ -114,6 +114,9 @@ func player_can_cast(spell):
 		return false
 	return player_has_unlocked_spell(spell) && player_can_afford(spell)
 
+func is_tech_spell(spell):
+	return not spell.is_tech_spell()
+
 func redraw():
 	var me = g.state.players[0]
 	var them = g.state.players[1]
@@ -125,6 +128,7 @@ func redraw():
 	spell_select.tech_levels = player_effective_tech()
 	spell_queue.redraw()
 	spell_select.redraw_spells()
+	spell_select.redraw_tech_upgrades(player_upgraded_book_id())
 
 func on_end_turn_button_pressed():
 	spell_select.on_close_book()

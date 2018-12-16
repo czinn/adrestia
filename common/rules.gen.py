@@ -15,7 +15,7 @@ from book_refinement import book as book_refinement
 
 library: List[Book] = [
     book_conjuration,
-    #book_conjuration_old,
+    book_conjuration_old,
     book_regulation,
     #book_contrition,
     #book_enticement,

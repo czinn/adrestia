@@ -8,6 +8,7 @@ onready var g = get_node('/root/global')
 
 var tech_levels = null setget set_tech_levels
 var books = null setget set_books
+var display_filter = null
 var enabled_filter = null
 var unlocked_filter = null
 var current_book = null
@@ -16,12 +17,13 @@ onready var book_buttons_vbox = $book_buttons
 onready var spell_panel = $spell_panel
 onready var spell_panel_close_button = $spell_panel/ninepatch/close_button
 onready var spell_scroll = $spell_panel/ninepatch/scroll
-onready var spell_grid = $spell_panel/ninepatch/scroll/grid
+onready var spell_grid = $spell_panel/ninepatch/scroll/hbox
 onready var template_book_button = $templates/book_button
 onready var animation_player = $animation_player
 
 func _ready():
 	spell_panel_close_button.connect('pressed', self, 'on_close_book')
+	$templates.visible = false
 	redraw()
 
 func _unhandled_input(event):
@@ -34,6 +36,12 @@ func redraw_tech_levels():
 	for index in range(len(book_buttons)):
 		var book_button = book_buttons[index]
 		g.child(book_button, 'level').text = str(tech_levels[index])
+
+func redraw_tech_upgrades(upgraded_book):
+	for i in range(len(books)):
+		var btn = book_buttons_vbox.get_child(i)
+		var btn_upgrade = g.child(btn, 'upgrade_arrow')
+		btn_upgrade.visible = (upgraded_book == null)
 
 func redraw():
 	spell_panel.visible = false
@@ -52,6 +60,7 @@ func redraw():
 		book_buttons_vbox.add_child(btn)
 		var btn_book = g.child(btn, 'book')
 		var btn_upgrade = g.child(btn, 'upgrade_arrow')
+		btn_upgrade.visible = false
 		btn_book.texture_normal = g.get_book_texture(book.get_id())
 		btn_book.connect('pressed', self, 'on_open_book', [index, book])
 		btn_upgrade.connect('pressed', self, 'on_book_upgrade', [index, book])
@@ -68,7 +77,7 @@ func redraw_spells():
 	if current_book == null:
 		return
 	var spell_buttons = g.make_spell_buttons(current_book.get_spells(), true,
-			null, enabled_filter, unlocked_filter)
+			display_filter, enabled_filter, unlocked_filter)
 	for i in range(len(spell_buttons)):
 		var spell_button = spell_buttons[i]
 		var spell = spell_button.spell
@@ -77,12 +86,14 @@ func redraw_spells():
 
 func on_open_book(index, book):
 	if current_book == book: return
+	var old_book = current_book
 	current_book = book
-	spell_scroll.scroll_horizontal = 0
-	spell_scroll.scroll_vertical = 0
 	redraw_spells()
 	spell_panel.visible = true
-	animation_player.play('spell_panel_enter')
+	spell_scroll.scroll_horizontal = 0
+	spell_scroll.scroll_vertical = 0
+	if old_book == null:
+		animation_player.play('spell_panel_enter')
 
 func set_tech_levels(tech_levels_):
 	tech_levels = tech_levels_
