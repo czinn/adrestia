@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wall -MMD -std=c++17 -O2
-CXXFLAGS_POST = -lpqxx -lssl -lcrypto
+CXXFLAGS_POST = -L/usr/local/lib64 -lpqxx -lssl -lcrypto
 MAINS = server_abomination.cc client_abomination.cc database_access_test.cc indigestion.cc
 OBJECTS = $(patsubst %.cc,%.o,$(filter-out $(MAINS), $(wildcard *.cc)))
 
