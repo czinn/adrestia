@@ -21,6 +21,10 @@ class EffectInstance {
 		EffectInstance(const EffectInstance &);
 		bool operator==(const EffectInstance &) const;
 
+		// Whether the effect is now a no-op. This can happen if it gets completely
+		// blocked by a shield, for example. The effect should not continue
+		// propagating if this happens.
+		bool fizzles() const;
 		// Applies the effect to the given player.
 		void apply(const GameRules &rules, Player &player) const;
 

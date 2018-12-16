@@ -144,7 +144,13 @@ int main() {
 			}
 			turn.push_back(action);
 		}
-		state.simulate(turn);
+		std::vector<json> events;
+		state.simulate(turn, events);
+
+		for (const json &e : events) {
+			std::cout << e << std::endl;
+		}
+
 		std::cout << "The new game state is" << std::endl;
 		std::cout << state;
 		kbhit();

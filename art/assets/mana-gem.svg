@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="11.750597mm"
-   height="11.750597mm"
-   viewBox="0 0 11.750596 11.750597"
+   width="10.024392mm"
+   height="9.480998mm"
+   viewBox="0 0 10.024391 9.4809981"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="12.144195"
-     inkscape:cy="14.98021"
-     inkscape:document-units="mm"
+     inkscape:cx="30.319224"
+     inkscape:cy="7.4143006"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
@@ -49,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -57,11 +57,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-59.978699,-132.24847)">
+     transform="translate(-60.874189,-133.0652)">
     <path
-       style="fill:#c4daf0;fill-opacity:1;stroke:#135aa2;stroke-width:1.56500006;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 68.979394,141.19667 0.575825,-5.56501 -4.82534,-1.47737 -2.858704,3.66009 2.788417,4.37108 z"
-       id="path2415"
-       inkscape:connector-curvature="0" />
+       inkscape:tile-y0="525.52349"
+       inkscape:tile-x0="683.58565"
+       inkscape:connector-curvature="0"
+       id="use7168"
+       d="m 67.90447,141.22294 1.40116,-4.25456 -3.8415,-2.21858 -2.93877,3.30201 2.00762,3.16993 z"
+       style="fill:#d7f3ff;fill-opacity:1;stroke:#458bff;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
   </g>
 </svg>

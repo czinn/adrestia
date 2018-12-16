@@ -60,6 +60,16 @@
       "text": "Blocks all damage from the next attack.",
       "kind": "super_shield",
       "trigger": { "inbound": true, "effect": { "effect_type": [ "attack" ] } }
+    },
+    {
+      "id": "suck_mana", "name": "Suck Mana",
+      "text": "Enemy is draining 1 mana per turn.",
+      "kind": "id",
+      "trigger": { "turn": true },
+      "effects": [
+        { "kind": "mana", "self": true, "effect_type": "special", "amount": -1 },
+        { "kind": "mana", "self": false, "effect_type": "special", "amount": 1 }
+      ]
     }
   ],
   "spells": [
@@ -286,6 +296,49 @@
       ]
     },
     {
+      "id": "contrition_tech", "name": "Learn Contrition",
+      "book": "contrition",
+      "tech": 0, "level": 0, "cost": 0,
+      "text": "Increase Contrition by 1.",
+      "effects": [
+        { "kind": "tech", "self": true, "effect_type": "tech", "amount": 1 }
+      ]
+    },
+    {
+      "id": "contrition_repent", "name": "Repent",
+      "book": "contrition",
+      "tech": 1, "level": 1, "cost": 0,
+      "text": "Gain 3 mana, lose 1 health.",
+      "effects": [
+        { "kind": "mana", "self": true, "effect_type": "special", "amount": 3 },
+        { "kind": "health", "self": true, "effect_type": "special", "amount": -1 }
+      ]
+    },
+    {
+      "id": "enticement_tech", "name": "Learn Enticement",
+      "book": "enticement",
+      "tech": 0, "level": 0, "cost": 0,
+      "text": "Increase Enticement by 1.",
+      "effects": [
+        { "kind": "tech", "self": true, "effect_type": "tech", "amount": 1 }
+      ]
+    },
+    {
+      "id": "enticement_suck_mana", "name": "Suck Mana",
+      "book": "enticement",
+      "tech": 1, "level": 1, "cost": 2,
+      "text": "Drain 1 mp each turn for 2 turns.",
+      "effects": [
+        {
+          "kind": "sticky", "self": false, "effect_type": "special",
+          "sticky": {
+            "sticky_id": "suck_mana",
+            "duration": { "turns": 2 }
+          }
+        }
+      ]
+    },
+    {
       "id": "burn_mana_1", "name": "Mana Burn",
       "book": "testing",
       "tech": 0, "level": 0, "cost": 1,
@@ -310,6 +363,18 @@
         "regulation_cancel_1", "regulation_mana_2", "regulation_cancel_2",
         "regulation_damper", "regulation_shield_2", "regulation_shield_3",
         "regulation_shield_4"
+      ]
+    },
+    {
+      "id": "contrition", "name": "Book of Contrition",
+      "spells": [
+        "contrition_tech", "contrition_repent"
+      ]
+    },
+    {
+      "id": "enticement", "name": "Book of Enticement",
+      "spells": [
+        "enticement_tech", "enticement_suck_mana"
       ]
     }
   ]

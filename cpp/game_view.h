@@ -13,7 +13,7 @@
 
 // Spell id for tech spells whose exact identity are not visible to the
 // viewing player.
-static std::string tech_spell_id = "tech";
+static std::string TECH_SPELL_ID = "tech";
 
 class GameView {
 	public:

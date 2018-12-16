@@ -13,10 +13,13 @@ const GameState = preload('res://native/game_state.gdns')
 const GameView = preload('res://native/game_view.gdns')
 const Strategy = preload('res://native/strategy.gdns')
 
+onready var tooltip_scene = preload('res://components/tooltip.tscn')
+
 onready var scene_loader = get_node('/root/scene_loader')
 var rules
 var state
 var ai
+var tooltip = null # Currently displayed tooltip
 
 func _ready():
 	var rules_file = File.new()
@@ -24,6 +27,12 @@ func _ready():
 	rules = GameRules.new()
 	rules.load_json_string(rules_file.get_as_text())
 	rules_file.close()
+
+static func sum(list):
+	var result = 0
+	for elem in list:
+		result += elem
+	return result
 
 static func clear_children(node):
 	for i in range(0, node.get_child_count()):
@@ -40,3 +49,26 @@ static func map_member(list, member):
 	for elem in list:
 		result.append(elem.get(member))
 	return result
+
+static func load_or(path, path_default):
+	return load(path if File.new().file_exists(path) else path_default)
+
+func close_tooltip():
+	if tooltip != null:
+		tooltip.get_parent().remove_child(tooltip)
+		tooltip = null
+
+func summon_tooltip(target, text):
+	close_tooltip()
+	tooltip = tooltip_scene.instance()
+	tooltip.text = text
+	var pos = target.get_global_rect().position
+	var above = pos.y > 980 - pos.y + target.rect_size.y
+	var y = pos.y if above else (pos.y + target.rect_size.y)
+	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
+	get_node("/root").add_child(tooltip)
+
+func event_is_pressed(event):
+	return event is InputEventMouseButton \
+		and event.button_index == BUTTON_LEFT \
+		and event.pressed

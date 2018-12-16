@@ -14,10 +14,13 @@ namespace godot {
 			static void _register_methods();
 
 			void init(Variant rules, Variant player_books);
+			bool simulate(Variant actions);
+			Variant simulate_events(Variant actions);
+			void apply_event(Variant event);
+
 			bool is_valid_action(int player_id, Variant action) const;
 			Variant turn_number() const;
 			Variant winners() const;
-			bool simulate(Variant actions);
 
 			INTF_SETGET(Variant, history)
 			INTF_SETGET(Variant, players)

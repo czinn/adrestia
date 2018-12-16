@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="12mm"
-   height="12mm"
-   viewBox="0 0 12 12"
+   width="10mm"
+   height="10mm"
+   viewBox="0 0 10 10"
    version="1.1"
    id="svg832"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="panel-transparent-9patch.svg"
+   sodipodi:docname="panel-9patch.svg"
    inkscape:export-filename="/home/neynt/code/adrestia/godot/art/panel-transparent-9patch.png"
    inkscape:export-xdpi="300.57001"
    inkscape:export-ydpi="300.57001">
@@ -28,21 +28,22 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9195959"
-     inkscape:cx="42.597954"
-     inkscape:cy="-1.0434895"
-     inkscape:document-units="mm"
+     inkscape:zoom="15.839192"
+     inkscape:cx="20.325559"
+     inkscape:cy="13.729101"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     inkscape:snap-global="false" />
   <metadata
      id="metadata829">
     <rdf:RDF>
@@ -51,7 +52,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -59,15 +60,15 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-104.61179,-50.114082)">
+     transform="translate(-118.73337,-47.064695)">
     <rect
-       style="opacity:1;vector-effect:none;fill:#404040;fill-opacity:0.65490196;stroke:#ffffff;stroke-width:0.26499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:5;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.7254902"
-       id="rect2424-3-4"
-       width="11.735"
-       height="11.735"
-       x="104.74429"
-       y="50.246582"
-       ry="3.4008846"
-       rx="3.4008844" />
+       style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.64583325;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       id="rect1367-2-0"
+       width="7.3541665"
+       height="7.3541665"
+       x="120.05628"
+       y="48.387611"
+       ry="1.3229166"
+       rx="1.3229166" />
   </g>
 </svg>

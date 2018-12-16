@@ -14,10 +14,10 @@ GameView::GameView(const GameState &state, size_t view_player_id)
 			history[i].push_back(GameAction());
 			for (const auto &it : state.history[i][player_id]) {
 				if(player_id == view_player_id ||
-						(it != tech_spell_id && !rules.get_spell(it).is_tech_spell())) {
+						(it != TECH_SPELL_ID && !rules.get_spell(it).is_tech_spell())) {
 					history[i][player_id].push_back(it);
 				} else {
-					history[i][player_id].push_back(tech_spell_id);
+					history[i][player_id].push_back(TECH_SPELL_ID);
 				}
 			}
 		}

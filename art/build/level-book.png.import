@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/panel-9patch.png-6f7ef6805064a7d75c9c7822a390a92c.stex"
+path="res://.import/level-book.png-ca9200aa0c8761c008eb24e388f169e5.stex"
 
 [deps]
 
-source_file="res://art-built/panel-9patch.png"
-dest_files=[ "res://.import/panel-9patch.png-6f7ef6805064a7d75c9c7822a390a92c.stex" ]
+source_file="res://art-built/level-book.png"
+dest_files=[ "res://.import/level-book.png-ca9200aa0c8761c008eb24e388f169e5.stex" ]
 
 [params]
 

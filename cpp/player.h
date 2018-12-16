@@ -13,7 +13,7 @@
 
 class Player {
 	public:
-		Player(const GameRules &, const std::vector<std::string> books);
+		Player(const GameRules &, size_t id, const std::vector<std::string> books);
 		Player(const GameRules &, const json &);
 		bool operator==(const Player &) const;
 
@@ -23,21 +23,34 @@ class Player {
 		size_t find_book_idx(const std::string &book_id) const;
 		int level() const;
 		// Applies all triggered stickies to the effect.
-		std::vector<EffectInstance> pipe_effect(size_t player_id, EffectInstance &effect, bool inbound);
+		std::vector<EffectInstance> pipe_effect(
+				EffectInstance &effect,
+				bool inbound);
+		std::vector<EffectInstance> pipe_effect(
+				EffectInstance &effect,
+				bool inbound,
+				std::vector<json> &events_out);
 		// Gets effects from stickies triggered by the spell.
-		std::vector<EffectInstance> pipe_spell(size_t player_id, const Spell &spell);
+		std::vector<EffectInstance> pipe_spell(const Spell &spell);
+		std::vector<EffectInstance> pipe_spell(
+				const Spell &spell,
+				std::vector<json> &events_out);
 		// Gets effects from stickies that trigger at end of turn. This isn't
 		// really piping anything, but it's called pipe_turn for consistency with
 		// pipe_effect and pipe_spell.
-		std::vector<EffectInstance> pipe_turn(size_t player_id);
+		std::vector<EffectInstance> pipe_turn();
+		std::vector<EffectInstance> pipe_turn(std::vector<json> &events_out);
 
 		// These functions subtract a step or turn from all stickies, removing them
 		// if they are no longer active.
 		void subtract_step();
+		void subtract_step(std::vector<json> &events_out);
 		void subtract_turn();
+		void subtract_turn(std::vector<json> &events_out);
 
 		friend void to_json(json &, const Player &);
 
+		size_t id;
 		int hp;
 		int max_hp;
 		int mp;
@@ -48,4 +61,27 @@ class Player {
 
 	private:
 		const GameRules &rules;
+
+		template<bool emit_events>
+		friend std::vector<EffectInstance> _pipe_effect(
+				Player &,
+				EffectInstance &effect,
+				bool inbound,
+				std::vector<json> &events_out);
+
+		template<bool emit_events>
+		friend std::vector<EffectInstance> _pipe_spell(
+				Player &,
+				const Spell &spell,
+				std::vector<json> &events_out);
+
+		template<bool emit_events>
+		friend std::vector<EffectInstance> _pipe_turn(
+				Player &,
+				std::vector<json> &events_out);
+
+		template<bool emit_events>
+		friend void _subtract_step(Player &, std::vector<json> &events_out);
+		template<bool emit_events>
+		friend void _subtract_turn(Player &, std::vector<json> &events_out);
 };

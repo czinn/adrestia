@@ -1,26 +1,26 @@
 1 conjuration
 1 conjuration
 
-tech_conjuration damage_1 damage_1 damage_1 damage_1 damage_1 done
-tech_conjuration done
+conjuration_tech damage_1 damage_1 damage_1 damage_1 damage_1 done
+conjuration_tech done
 
-tech_conjuration damage_1 damage_1 damage_1 damage_1 damage_1 done
-tech_conjuration poison_1 poison_1 done
+conjuration_tech damage_1 damage_1 damage_1 damage_1 damage_1 done
+conjuration_tech poison_1 poison_1 done
 
-tech_conjuration damage_1 damage_1 damage_1 damage_1 damage_1 done
-tech_conjuration poison_1 done
+conjuration_tech damage_1 damage_1 damage_1 damage_1 damage_1 done
+conjuration_tech poison_1 done
 
-tech_conjuration damage_1 damage_1 damage_1 damage_1 done
-tech_conjuration poison_1 done
+conjuration_tech damage_1 damage_1 damage_1 damage_1 done
+conjuration_tech poison_1 done
 
-tech_conjuration done
-tech_conjuration poison_1 done
+conjuration_tech done
+conjuration_tech poison_1 done
 
-tech_conjuration done
-tech_conjuration poison_1 done
+conjuration_tech done
+conjuration_tech poison_1 done
 
-tech_conjuration done
-tech_conjuration poison_1 done
+conjuration_tech done
+conjuration_tech poison_1 done
 
-tech_conjuration done
-tech_conjuration poison_1 done
+conjuration_tech done
+conjuration_tech poison_1 done

@@ -1,5 +1,7 @@
 extends Control
 
+onready var g = get_node('/root/global')
+
 onready var button = $vbox/button
 onready var checkmark = $vbox/button/checkmark
 onready var label = $vbox/label
@@ -29,3 +31,6 @@ func redraw():
 	if label == null: return
 	label.text = book.get_name()
 	checkmark.visible = checked
+	button.texture_normal = g.load_or(
+			'res://art-built/book/%s.png' % book.get_id(),
+			'res://art-built/book/placeholder.png')
