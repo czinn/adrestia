@@ -11,8 +11,8 @@ book = Book('conjuration', 'Book of Conjuration', [
 
     Spell('shield_1', 'Ripple Shield',
         'Absorb 8 damage. Breaks at the end of the turn.',
-        tech=1, level=1, cost=2,
-        effects=[effect_shield(3)],
+        tech=1, level=1, cost=3,
+        effects=[effect_shield(8)],
     ),
 
     Spell('mana_1', 'Fiery Spirit',
