@@ -412,35 +412,24 @@ int handle_floop(const json& client_json, json &resp) {
 typedef std::function<int(const json&, json&)> request_handler;
 std::map<string, request_handler> handler_map;
 
-string read_packet (int client_socket)
-{
-	// Reads a string sent from the target.
-	// The string should end with a newline, although this newline is not returned by this function.
-	string msg;
+// jim: I believe that each process has its own copy of this, which starts off
+// empty.
+string read_message_buffer; 
 
-	const int size = MESSAGE_MAX_BYTES;
-	char buffer[size];
+// Returns the next message from the client. Messages are separated by \n.
+string read_message (int client_socket) {
+	char buffer[MESSAGE_MAX_BYTES];
 
-	while (true) {
-		int bytes_read = recv (client_socket, buffer, sizeof(buffer) - 2, 0);
-		// Though extremely unlikely in our setting --- connection from 
-		// localhost, transmitting a small packet at a time --- this code 
-		// takes care of fragmentation  (one packet arriving could have 
-		// just one fragment of the transmitted message)
-
+	bool complete = read_message_buffer.find('\n') != string::npos;
+	while (!complete) {
+		int bytes_read = recv(client_socket, buffer, sizeof(buffer) - 2, 0);
+		cout << "Got some data from socket |" << client_socket << "|" << endl;
 		if (bytes_read > 0) {
-			buffer[bytes_read] = '\0';
-			buffer[bytes_read + 1] = '\0';
-
-			const char * packet = buffer;
-			while (*packet != '\0') {
-				msg += packet;
-				packet += strlen(packet) + 1;
-
-				if (msg.length() > 1 && msg[msg.length() - 1] == '\n') {
-					return msg.substr(0, msg.length()-1);
-				}
+			for (const char *c = buffer; c < buffer + bytes_read; c++) {
+				read_message_buffer += *c;
+				if (*c == '\n') complete = true;
 			}
+			cout << endl;
 		} else if (bytes_read == 0) {
 			close (client_socket);
 			throw connection_closed();
@@ -450,52 +439,54 @@ string read_packet (int client_socket)
 		}
 	}
 
-	throw connection_closed();
+	size_t nl_pos = read_message_buffer.find('\n');
+	string message = read_message_buffer.substr(0, nl_pos);
+	read_message_buffer = read_message_buffer.substr(nl_pos + 1);
+	return message;
 }
-
 
 void process_connection(int server_socket, int client_socket) {
 	try {
 		cout << "[Server] Got new connection: server_socket: |" << server_socket << "|, client_socket: |" << client_socket << "|." << endl;
-		string client_request = read_packet(client_socket);
+		while (true) {
+			string message = read_message(client_socket);
 
-		json client_json;
-		json resp;
-		string requested_function_name;
-		request_handler requested_function;
+			json client_json;
+			json resp;
+			string requested_function_name;
 
-		try {
-			client_json = json::parse(client_request);
-			requested_function_name = client_json.at(HANDLER_KEY_NAME);
-			requested_function = handler_map.at(requested_function_name);
-			cout << "[Server] Activating function |" << requested_function_name << "|." << endl;
-			requested_function(client_json, resp);
-		}
-		catch (json::parse_error& e) {
-			// Not parsable to json
-			cout << "[Server] Did not receive json-y message." << endl;
-			resp.clear();
-			write_error(resp);
-		}
-		catch (json::out_of_range& e) {
-			// Does not contain all required fields
-			// TODO: jim: Print just the name of the missing key, not the entire
-			// exception explanation.
-			cout << "[Server] Request object did not have an expected key. " << e.what() << endl;
-			resp.clear();
-			write_missing_key_error(resp, e.what());
-		}
-		catch (out_of_range& oor) {
-			// Asked to access non-existent function.
-			cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|." << endl;
-			resp.clear();
-			write_error(resp);
-		}
+			try {
+				client_json = json::parse(message);
+				requested_function_name = client_json.at(HANDLER_KEY_NAME);
+				request_handler requested_function = handler_map.at(requested_function_name);
+				cout << "[Server] Activating function |" << requested_function_name << "|." << endl;
+				requested_function(client_json, resp);
+			}
+			catch (json::parse_error& e) {
+				// Not parsable to json
+				cout << "[Server] Did not receive json-y message. " << e.what() << endl;
+				resp.clear();
+				write_error(resp);
+			}
+			catch (json::out_of_range& e) {
+				// Does not contain all required fields
+				// TODO: jim: Print just the name of the missing key, not the entire
+				// exception explanation.
+				cout << "[Server] Request object did not have an expected key. " << e.what() << endl;
+				resp.clear();
+				write_missing_key_error(resp, e.what());
+			}
+			catch (out_of_range& oor) {
+				// Asked to access non-existent function.
+				cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|." << endl;
+				resp.clear();
+				write_error(resp);
+			}
 
-		string resp_str = resp.dump();
-		resp_str += '\n';
-		send(client_socket, resp_str.c_str(), resp_str.length(), MSG_NOSIGNAL);
-
+			string resp_str = resp.dump();
+			resp_str += '\n';
+			send(client_socket, resp_str.c_str(), resp_str.length(), MSG_NOSIGNAL);
+		}
 		cout
 			<< "[Server] Closing this connection: server_socket: |" << server_socket
 			<< "|, client_socket: |" << client_socket << "|." << endl << endl;
@@ -569,6 +560,7 @@ int main(int na, char* arg[]) {
 	handler_map["change_user_name"] = handle_change_user_name;
 	//handler_map["delete_account"] = delete_account;
 
+	cout << "Listening for connections on port " << SERVER_PORT << "." << endl;
 	listen_for_connections(SERVER_PORT);
 	return 0;
 }

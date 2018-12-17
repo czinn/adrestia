@@ -4,8 +4,8 @@
 
 [resource]
 
-resource_name = "book"
-class_name = "Book"
+resource_name = "protocol"
+class_name = "Protocol"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]
 

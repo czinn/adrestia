@@ -7,6 +7,7 @@
 #include "game_view.h"
 #include "gdexample.h"
 #include "player.h"
+#include "protocol.h"
 #include "selector.h"
 #include "spell.h"
 #include "sticky.h"
@@ -32,6 +33,7 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
   godot::register_class<godot::GameState>();
   godot::register_class<godot::GameView>();
   godot::register_class<godot::Player>();
+  godot::register_class<godot::Protocol>();
   godot::register_class<godot::Selector>();
   godot::register_class<godot::Spell>();
   godot::register_class<godot::Sticky>();
