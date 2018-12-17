@@ -16,9 +16,24 @@ struct Node {
 	double strategy;
 };
 
+std::vector<double> cfr_state_vector(const GameState &g) {
+	std::vector<double> r;
+	for (size_t i = 0; i < 2; i++) {
+		const Player &p = g.players[i];
+		r.push_back(std::max(0, p.hp));
+		r.push_back(p.mp);
+		r.push_back(p.mp_regen);
+		// TODO: charles: scalar for each book
+		r.push_back(p.level());
+	}
+	return r;
+}
+
 std::uniform_real_distribution<double> dis(0.0, 1.0);
 
-CfrStrategy::CfrStrategy() : gen(std::chrono::high_resolution_clock::now().time_since_epoch().count()) {}
+CfrStrategy::CfrStrategy(std::vector<double> weights)
+		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+		, weights(weights) {}
 
 CfrStrategy::~CfrStrategy() {}
 
@@ -35,19 +50,20 @@ size_t get_action_hash(size_t player, const GameAction &a) {
 	return h ^ std::hash<size_t>{}(player);
 }
 
-double score_game_state(const GameState &g) {
-	// Returns an esimate of the probability that the first player will win.
-	if (g.players[0].hp <= 0) return 0;
-	if (g.players[1].hp <= 0) return 1;
-	double x = (double)(g.players[0].hp) / (double)(g.players[1].hp);
-	if (x < 1) {
-		return x * 0.5;
-	} else {
-		return 1 - 1 / x * 0.5;
+double CfrStrategy::score_game_state(const GameState &g) const {
+	double score = 0;
+	std::vector<double> vec = cfr_state_vector(g);
+	for (size_t i = 0; i < weights.size(); i++) {
+		score += weights[i] * vec[i];
 	}
+	return score;
 }
 
-double score_action_pair(const GameState &g, const GameAction &a0, const GameAction &a1, std::unordered_map<size_t, double> &score_map) {
+double CfrStrategy::score_action_pair(
+		const GameState &g,
+		const GameAction &a0,
+		const GameAction &a1,
+		std::unordered_map<size_t, double> &score_map) const {
 	size_t h = get_action_hash(0, a0) ^ get_action_hash(1, a1);
 	auto it = score_map.find(h);
 	if (it != score_map.end()) {

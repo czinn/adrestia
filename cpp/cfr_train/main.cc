@@ -6,8 +6,6 @@
 #include "../game_view.h"
 #include "../strategy.h"
 #include "../cfr_strategy.h"
-#include "../monte_strategy.h"
-#include "../random_strategy.h"
 
 using json = nlohmann::json;
 
@@ -16,26 +14,27 @@ int main() {
 	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration"}, {"conjuration"}});
 	std::vector<Strategy*> strategies;
 	strategies.push_back(new CfrStrategy({10,1,0,5,-10,-1,0,-5}));
-	strategies.push_back(new CfrStrategy({0.079,0.083,0.175,0.094,-0.074,-0.067,-0.041,-0.084}));
+	strategies.push_back(new CfrStrategy({10,1,0,5,-10,-1,0,-5}));
 
+	std::vector<std::vector<double>> state_vectors;
 	while (game.winners().size() == 0) {
 		std::vector<GameAction> actions;
 		for (size_t i = 0; i < 2; i++) {
 			GameView view(game, i);
-			std::cout << game.players[i].hp << " " << game.players[i].mp << " ";
 			actions.push_back(strategies[i]->get_action(view));
 		}
-		std::cout << std::endl << json(actions) << std::endl;
 		game.simulate(actions);
+		state_vectors.push_back(cfr_state_vector(game));
 	}
-
-	std::cout << json(game) << std::endl;
 
 	for (int i = 0; i < strategies.size(); i++) {
 		delete strategies[i];
 	}
 
-	std::cout << json(game.winners()) << std::endl;
+	double value = game.winners().size() == 2 ? 0 : (game.winners()[0] == 0 ? 1 : -1);
+	for (const auto &vec : state_vectors) {
+		std::cout << "[" << json(vec) << "," << value << "]" << std::endl;
+	}
 
 	return 0;
 }
