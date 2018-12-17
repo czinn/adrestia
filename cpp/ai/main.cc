@@ -15,8 +15,8 @@ int main() {
 	GameRules rules("cfr_train/rules.json");
 	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration"}, {"conjuration"}});
 	std::vector<Strategy*> strategies;
-	strategies.push_back(new CfrStrategy({10,1,0,5,-10,-1,0,-5}));
-	strategies.push_back(new CfrStrategy({0.079,0.083,0.175,0.094,-0.074,-0.067,-0.041,-0.084}));
+	strategies.push_back(new CfrStrategy());
+	strategies.push_back(new CfrStrategy());
 
 	while (game.winners().size() == 0) {
 		std::vector<GameAction> actions;

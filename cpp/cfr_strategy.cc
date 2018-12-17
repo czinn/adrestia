@@ -20,16 +20,25 @@ std::vector<double> cfr_state_vector(const GameState &g) {
 	std::vector<double> r;
 	for (size_t i = 0; i < 2; i++) {
 		const Player &p = g.players[i];
-		r.push_back(std::max(0, p.hp));
-		r.push_back(p.mp);
-		r.push_back(p.mp_regen);
-		// TODO: charles: scalar for each book
-		r.push_back(p.level());
+		r.push_back(1.0 * std::max(0, p.hp) / p.max_hp);
+		r.push_back(1.0 * p.mp / g.rules.get_mana_cap());
+		r.push_back(std::min(1.0, 1.0 * p.mp_regen / g.rules.get_mana_cap()));
+		for (const auto &[book_id, book] : g.rules.get_books()) {
+			size_t book_index = p.find_book_idx(book_id);
+			r.push_back(book_index != size_t(-1) ? 1.0 : 0.0);
+			for (size_t tech = 1; tech <= 3; tech++) {
+				r.push_back(p.tech[book_index] >= tech ? 1.0 : 0.0);
+			}
+		}
 	}
 	return r;
 }
 
 std::uniform_real_distribution<double> dis(0.0, 1.0);
+
+CfrStrategy::CfrStrategy()
+		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+		, weights({25 * 5, 10 * 1, 10 * 2, 0, 10, 5, 0, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 0}) {}
 
 CfrStrategy::CfrStrategy(std::vector<double> weights)
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
