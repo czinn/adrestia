@@ -53,5 +53,5 @@ func on_play_button_pressed():
 	g.state = g.GameState.new()
 	g.state.init(g.rules, [selected_book_ids, ['conjuration']])
 	g.ai = g.Strategy.new()
-	g.ai.init_random_strategy()
+	g.ai.init_cfr_strategy()
 	g.scene_loader.goto_scene('game')

@@ -38,7 +38,7 @@ std::uniform_real_distribution<double> dis(0.0, 1.0);
 
 CfrStrategy::CfrStrategy()
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-		, weights({25 * 5, 10 * 1, 10 * 2, 0, 10, 5, 0, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 0}) {}
+		, weights({25 * 5, 10 * 1, 10 * 2, 0, 10, 5, -10, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 10}) {}
 
 CfrStrategy::CfrStrategy(std::vector<double> weights)
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())

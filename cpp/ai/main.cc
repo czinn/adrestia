@@ -12,7 +12,7 @@
 using json = nlohmann::json;
 
 int main() {
-	GameRules rules("cfr_train/rules.json");
+	GameRules rules("rules.json");
 	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration"}, {"conjuration"}});
 	std::vector<Strategy*> strategies;
 	strategies.push_back(new CfrStrategy());
