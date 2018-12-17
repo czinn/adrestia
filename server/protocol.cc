@@ -31,6 +31,7 @@ void write_register_new_account_response(json &j,
 	const std::string &user_name,
 	const std::string &tag)
 {
+	j["api_handler_name"] = "register_new_account";
 	j["api_code"] = 201;
 	j["api_message"] = "Created new account.";
 	j["uuid"] = uuid;

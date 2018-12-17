@@ -156,7 +156,7 @@ json adjust_user_name_in_database(
 			new_account_info["tag"] = tag;
 			break;
 		}
-		catch (pqxx::integrity_constraint_violation) {
+		catch (pqxx::integrity_constraint_violation &) {
 			insertion_transaction.abort();
 			continue;
 		}
@@ -225,7 +225,7 @@ json register_new_account_in_database(
 			new_account["user_name"] = default_user_name;
 			break;
 		}
-		catch (pqxx::integrity_constraint_violation) {
+		catch (pqxx::integrity_constraint_violation &) {
 			insertion_transaction.abort();
 			continue;
 		}
@@ -407,13 +407,11 @@ string read_message (int client_socket) {
 	bool complete = read_message_buffer.find('\n') != string::npos;
 	while (!complete) {
 		int bytes_read = recv(client_socket, buffer, sizeof(buffer) - 2, 0);
-		cout << "Got some data from socket |" << client_socket << "|" << endl;
 		if (bytes_read > 0) {
 			for (const char *c = buffer; c < buffer + bytes_read; c++) {
 				read_message_buffer += *c;
 				if (*c == '\n') complete = true;
 			}
-			cout << endl;
 		} else if (bytes_read == 0) {
 			close (client_socket);
 			throw connection_closed();

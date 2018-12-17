@@ -13,19 +13,16 @@ const GameState = preload('res://native/game_state.gdns')
 const GameView = preload('res://native/game_view.gdns')
 const Strategy = preload('res://native/strategy.gdns')
 
-const Networking = preload('res://global/networking.gd')
-
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
+onready var network = get_node('/root/networking')
 var rules
 var state
 var ai
 var tooltip = null # Currently displayed tooltip
-var network
 
 func _ready():
-	self.network = Networking.new()
 	var rules_file = File.new()
 	rules_file.open('res://data/rules.json', File.READ)
 	rules = GameRules.new()
