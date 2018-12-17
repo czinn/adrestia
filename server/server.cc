@@ -1,17 +1,15 @@
-#include <iostream>
-#include <sstream>
-#include <map>
 #include <algorithm>
-#include <cstdlib>
-#include <ctime>
-#include <cstring>
 #include <cerrno>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <sstream>
-#include <unordered_map>
-#include <fstream>
-#include <string>
 #include <stdexcept>
+#include <string>
+#include <unordered_map>
 using namespace std;
 
 #include <sys/types.h>
@@ -34,10 +32,6 @@ using json = nlohmann::json;
 
 string HANDLER_KEY_NAME("api_handler_name");
 // All responses will be json containing key 'api_code' and 'api_message', possibly other keys.
-
-#define SALT_LENGTH 16
-#define UUID_LENGTH 32
-#define TAG_LENGTH 8
 
 class connection_closed {};
 class socket_error {};
@@ -303,26 +297,16 @@ bool verify_existing_account_in_database(
 }
 
 
-pqxx::connection* establish_psql_connection(const string& connection_config_string) {
-	pqxx::connection* psql_connection = new pqxx::connection(connection_config_string);
+pqxx::connection* establish_psql_connection() {
+	const char *db_conn_string = getenv("DB_CONNECTION_STRING");
+	if (db_conn_string == nullptr) {
+		cerr << "Failed to read DB_CONNECTION_STRING from env." << endl;
+		throw string("Failed to read DB_CONNECTION_STRING from env.");
+	}
+	pqxx::connection* psql_connection = new pqxx::connection(db_conn_string);
 	return psql_connection;
 }
 // DATABASE STUFF ENDS
-
-
-string get_database_connection_config_string() {
-	ifstream f;
-	string connection_config_string;
-	f.open(ENV_FILE_PATH);
-	if (!f.is_open()) {
-		cerr << "Failed to find .env file!";
-		throw string("Failed to find .env file!");
-	}
-	getline(f, connection_config_string);
-	f.close();
-
-	return connection_config_string;
-}
 
 
 int handle_register_new_account(const json& client_json, json &resp) {
@@ -332,7 +316,7 @@ int handle_register_new_account(const json& client_json, json &resp) {
 	cout << "Creating new account with params:" << endl;
 	cout << "    password: |" << password << "|" << endl;
 
-	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
+	pqxx::connection* psql_connection = establish_psql_connection();
 	json new_account = register_new_account_in_database(psql_connection, password);
 	delete psql_connection;
 
@@ -360,7 +344,7 @@ int handle_verify_account(const json& client_json, json &resp) {
 	cout << "Checking authentication for account with:" << endl;
 	cout << "    uuid: |" << uuid << "|" << endl;
 	cout << "    password: |" << password << "|" << endl;
-	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
+	pqxx::connection* psql_connection = establish_psql_connection();
 	bool valid = verify_existing_account_in_database(psql_connection, uuid, password);
 	delete psql_connection;
 
@@ -378,7 +362,7 @@ int handle_change_user_name(const json& client_json, json &resp) {
 	string new_user_name = client_json.at("new_user_name");
 
 	// Authenticate this change.
-	pqxx::connection* psql_connection = establish_psql_connection(get_database_connection_config_string());
+	pqxx::connection* psql_connection = establish_psql_connection();
 	bool authorized_change = verify_existing_account_in_database(psql_connection, uuid, password);
 
 	if (authorized_change) {
@@ -493,7 +477,7 @@ void process_connection(int server_socket, int client_socket) {
 		close(client_socket);
 	}
 	catch (connection_closed) {
-		cout << "[Server] The client closed their connection!" << endl << endl;
+		cout << "[Server] Client |" << client_socket << "| closed the connection." << endl << endl;
 	}
 	catch (socket_error) {
 		cout << "Socket error" << endl;
@@ -559,8 +543,14 @@ int main(int na, char* arg[]) {
 	handler_map["verify_account"] = handle_verify_account;
 	handler_map["change_user_name"] = handle_change_user_name;
 	//handler_map["delete_account"] = delete_account;
+	
+	const char *server_port_env = getenv("SERVER_PORT");
+	int port = DEFAULT_SERVER_PORT;
+	if (server_port_env) {
+		port = atoi(server_port_env);
+	}
 
-	cout << "Listening for connections on port " << SERVER_PORT << "." << endl;
-	listen_for_connections(SERVER_PORT);
+	cout << "Listening for connections on port " << port << "." << endl;
+	listen_for_connections(port);
 	return 0;
 }
