@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -MMD -std=c++17 -g
+CXXFLAGS = -Wall -MMD -std=c++17 -g -Ifdeep-include -Ifplus-include -I.
 OBJECTS = $(patsubst %.cc,%.o,$(filter-out main.cc, $(wildcard *.cc)))
 
 MAIN_EXEC = main

@@ -38,11 +38,17 @@ std::uniform_real_distribution<double> dis(0.0, 1.0);
 
 CfrStrategy::CfrStrategy()
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-		, weights({25 * 5, 10 * 1, 10 * 2, 0, 10, 5, -10, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 10}) {}
+		, weights({25 * 5, 10 * 1, 10 * 2, 0, 10, 5, -10, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 10})
+		, model(nullptr) {}
 
 CfrStrategy::CfrStrategy(std::vector<double> weights)
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-		, weights(weights) {}
+		, weights(weights)
+		, model(nullptr) {}
+
+CfrStrategy::CfrStrategy(fdeep::model *model)
+		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+		, model(model) {}
 
 CfrStrategy::~CfrStrategy() {}
 
@@ -60,12 +66,22 @@ size_t get_action_hash(size_t player, const GameAction &a) {
 }
 
 double CfrStrategy::score_game_state(const GameState &g) const {
-	double score = 0;
 	std::vector<double> vec = cfr_state_vector(g);
-	for (size_t i = 0; i < weights.size(); i++) {
-		score += weights[i] * vec[i];
+	if (model == nullptr) {
+		double score = 0;
+		for (size_t i = 0; i < weights.size(); i++) {
+			score += weights[i] * vec[i];
+		}
+		return score;
+	} else {
+		std::vector<float> float_vec;
+		for (double d : vec) {
+			float_vec.push_back((float)d);
+		}
+		const fdeep::shared_float_vec sv(fplus::make_shared_ref<fdeep::float_vec>(float_vec));
+		const fdeep::tensor5 t(fdeep::shape5(1, 1, 1, 1, 14), sv);
+		return model->predict({t})[0].get(0, 0, 0, 0, 0);
 	}
-	return score;
 }
 
 double CfrStrategy::score_action_pair(
