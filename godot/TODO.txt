@@ -16,7 +16,7 @@
 - [ ] Splash screen and transition to title.
 - [x] Animate book selection.
 - [ ] Animate spell selection.
-- [ ] Animate sequence of events between turns.
+- [x] Animate sequence of events between turns.
 - [x] Replace TabContainer for spells with a custom thing built with
   TextureButtons and visibility.
 - [ ] Player avatars
