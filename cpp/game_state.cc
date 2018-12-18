@@ -107,8 +107,8 @@ void _process_effect_queue(
 			for (const auto &e : generated_effects) {
 				append_to_effect_queue(next_effect_queue, e);
 			}
-			effect_instance.apply(state.rules, target);
 			if (emit_events && !effect_instance.fizzles()) {
+				effect_instance.apply(state.rules, target);
 				events_out.emplace_back(json{
 					{"type", "effect"},
 					{"effect", effect_instance}
@@ -117,6 +117,9 @@ void _process_effect_queue(
 		}
 		std::swap(effect_queue, next_effect_queue);
 		next_effect_queue->clear();
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "effect_queue_cleared"}});
+		}
 	}
 }
 
@@ -155,13 +158,20 @@ bool _simulate(
 	std::deque<EffectInstance> *next_effect_queue = &queue2;
 	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
 		std::vector<const Spell *> spells_in_flight(players.size(), nullptr);
+
+		// Tick down stickies that last for some number of steps.
+		for (size_t player_id = 0; player_id < players.size(); player_id++) {
+			auto &player = players[player_id];
+			emit_events ? player.subtract_step(events_out) : player.subtract_step();
+		}
+
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "step_stickies_ticked"}});
+		}
 		
 		// Fire spells, putting them in flight.
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
-
-			// Tick down stickies that last for some number of steps.
-			emit_events ? caster.subtract_step(events_out) : caster.subtract_step();
 
 			if (spell_idx >= actions[player_id].size()) continue;
 
@@ -194,6 +204,10 @@ bool _simulate(
 					});
 				}
 			}
+		}
+
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "spells_fired"}});
 		}
 
 		// Process effects triggered by spells.
@@ -236,6 +250,10 @@ bool _simulate(
 				{"index", spell_idx},
 				{"caster", player_id},
 			});
+		}
+
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "spells_hit_or_countered"}});
 		}
 
 		// Process effects created by spells.
@@ -349,6 +367,8 @@ void GameState::apply_event(const json &event) {
 		} else if (type == "sticky_expired") {
 			players[player_id].stickies.erase(it);
 		}
+	} else if (type == "time_point") {
+		// State is unchanged, this event is used only for animation.
 	} else {
 		// We should be handling all event types.
 		std::cout << type << std::endl;

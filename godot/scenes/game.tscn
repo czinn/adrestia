@@ -64,7 +64,7 @@ tracks/3/keys = {
 "values": [ -69.0, 212.0 ]
 }
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -140,7 +140,7 @@ margin_bottom = 150.0
 [node name="event_timer" type="Timer" parent="ui" index="7"]
 
 process_mode = 1
-wait_time = 0.1
+wait_time = 1.0
 one_shot = false
 autostart = true
 
