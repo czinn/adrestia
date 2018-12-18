@@ -10,7 +10,7 @@ book = Book('conjuration', 'Book of Conjuration', [
     ),
 
     Spell('shield_1', 'Ripple Shield',
-        'Absorb 8 damage. Breaks at the end of the turn.',
+        'Block 8 damage this turn.',
         tech=1, level=1, cost=3,
         effects=[effect_shield(8)],
     ),

@@ -3,13 +3,41 @@ from rules_schema import *
 book = Book('regulation', 'Book of Regulation', [
     spell_tech(name='Learn Regulation', text='Increase Regulation by 1.'),
     Spell('mana_1', 'Focus',
-        "Increase mana generation by 1.",
+        "Deal 2 damage. Increase mana regeneration by 1.",
+        tech=1, level=1, cost=2,
+        effects=[effect_attack(2), effect_mana_regen(1)],
+    ),
+
+    Spell('mana_2', 'Mana Crystal',
+        "Gain 4 mana next turn.",
+        tech=2, level=2, cost=2,
+        effects=[Effect(EK_mana, ET_special, self=True, amount=4)],
+    ),
+
+    Spell('cancel_1', 'Shieldbreaker',
+        "Counter opponent's spell if it is a shield. Block 4 damage this turn.",
+        tech=3, level=3, cost=2,
+        effects=[effect_shield(4)],
+        counterspell=Selector(effect_type=['shield']),
+    ),
+
+    Spell('attack_1', 'Piercing Shot',
+        "Deal 5 damage. Cannot be blocked by shields.",
+        tech=4, level=4, cost=3,
+        effects=[Effect(EK_health, ET_constant, amount=-5)],
+    ),
+])
+
+old_book = Book('regulation_old', 'Old Book of Regulation', [
+    spell_tech(name='Learn Regulation', text='Increase Regulation by 1.'),
+    Spell('mana_1', 'Focus',
+        "Increase mana regeneration by 1.",
         tech=0, level=1, cost=3,
         effects=[effect_mana_regen(1)],
     ),
 
     Spell('shield_1', 'Hex Shield',
-        "Block 6 damage over the rest of the turn.",
+        "Block 6 damage this turn.",
         tech=1, level=2, cost=4,
         effects=[effect_shield(6)],
     ),

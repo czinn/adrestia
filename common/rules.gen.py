@@ -9,14 +9,16 @@ from stickies import stickies_list
 from book_conjuration import book as book_conjuration
 from book_conjuration_old import book as book_conjuration_old
 from book_regulation import book as book_regulation
+from book_regulation import old_book as book_regulation_old
 from book_contrition import book as book_contrition
 from book_enticement import book as book_enticement
 from book_refinement import book as book_refinement
 
 library: List[Book] = [
     book_conjuration,
-    book_conjuration_old,
+    #book_conjuration_old,
     book_regulation,
+    #book_regulation_old,
     #book_contrition,
     #book_enticement,
     book_refinement,
