@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 int main() {
 	GameRules rules("rules.json");
-	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration"}, {"conjuration"}});
+	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration", "regulation"}, {"conjuration", "regulation"}});
 	std::vector<Strategy*> strategies;
 	fdeep::model model = fdeep::load_model("fdeep_model.json");
 	strategies.push_back(new CfrStrategy());

@@ -38,11 +38,8 @@ class NaiveModel:
 	def predict(self, test_data):
 		return test_data @ self.weights
 
-naive_model = NaiveModel([25 * 5, 10 * 1, 10 * 2, 0, 10, 5, 0, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 0])
+naive_model = NaiveModel([25 * 5, 10 * 1, 10 * 2, 0, 5, 5, 5, 5, 0, 5, 5, 5, 5, 25 * -5, 10 * -1, 10 * -2, 0, -5, -5, -5, -5, 0, -5, -5, -5, -5])
 print(score_model(naive_model))
-
-naiver_model = NaiveModel([25 * 5, 0, 0, 0, 0, 0, 0, 25 * -5, 0, 0, 0, 0, 0, 0])
-print(score_model(naiver_model))
 
 def build_model():
 	model = keras.Sequential([

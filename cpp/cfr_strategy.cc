@@ -26,7 +26,7 @@ std::vector<double> cfr_state_vector(const GameState &g) {
 		for (const auto &[book_id, book] : g.rules.get_books()) {
 			size_t book_index = p.find_book_idx(book_id);
 			r.push_back(book_index != size_t(-1) ? 1.0 : 0.0);
-			for (size_t tech = 1; tech <= 3; tech++) {
+			for (size_t tech = 1; tech <= 4; tech++) {
 				r.push_back(p.tech[book_index] >= tech ? 1.0 : 0.0);
 			}
 		}
@@ -38,7 +38,13 @@ std::uniform_real_distribution<double> dis(0.0, 1.0);
 
 CfrStrategy::CfrStrategy()
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-		, weights({25 * 5, 10 * 1, 10 * 2, 0, 10, 5, -10, 25 * -5, 10 * -1, 10 * -2, 0, -10, -5, 10})
+		, weights({
+				25 * 5, 10 * 1, 10 * 2,
+				0, 5, 5, 5, 5,
+				0, 5, 5, 5, 5,
+				25 * -5, 10 * -1, 10 * -2,
+				0, -5, -5, -5, -5,
+				0, -5, -5, -5, -5})
 		, model(nullptr) {}
 
 CfrStrategy::CfrStrategy(std::vector<double> weights)
@@ -79,7 +85,7 @@ double CfrStrategy::score_game_state(const GameState &g) const {
 			float_vec.push_back((float)d);
 		}
 		const fdeep::shared_float_vec sv(fplus::make_shared_ref<fdeep::float_vec>(float_vec));
-		const fdeep::tensor5 t(fdeep::shape5(1, 1, 1, 1, 14), sv);
+		const fdeep::tensor5 t(fdeep::shape5(1, 1, 1, 1, vec.size()), sv);
 		return model->predict({t})[0].get(0, 0, 0, 0, 0);
 	}
 }
