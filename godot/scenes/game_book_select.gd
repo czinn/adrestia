@@ -51,7 +51,7 @@ func on_play_button_pressed():
 		return
 	var selected_book_ids = g.map_method(selected_books, 'get_id')
 	g.state = g.GameState.new()
-	g.state.init(g.rules, [selected_book_ids, ['conjuration']])
+	g.state.init(g.rules, [selected_book_ids, selected_book_ids])
 	g.ai = g.Strategy.new()
 	g.ai.init_cfr_strategy()
 	g.scene_loader.goto_scene('game')
