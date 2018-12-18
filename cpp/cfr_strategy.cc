@@ -16,6 +16,23 @@ struct Node {
 	double strategy;
 };
 
+std::unordered_map<size_t, std::vector<GameAction>> CfrStrategy::action_cache;
+
+const std::vector<GameAction> *CfrStrategy::get_view_actions(const GameView &view) {
+	const Player &p = view.players[view.view_player_id];
+	size_t h = std::hash<int>{}(p.mp);
+	for (size_t i = 0; i < p.tech.size(); i++) {
+		h += std::hash<std::string>{}(p.books[i]->get_id()) * p.tech[i];
+	}
+	auto it = action_cache.find(h);
+	if (it != action_cache.end()) {
+		return &it->second;
+	} else {
+		action_cache.emplace(h, view.legal_actions());
+		return &action_cache[h];
+	}
+}
+
 std::vector<double> cfr_state_vector(const GameState &g) {
 	std::vector<double> r;
 	for (size_t i = 0; i < 2; i++) {
@@ -57,11 +74,6 @@ CfrStrategy::CfrStrategy(fdeep::model *model)
 		, model(model) {}
 
 CfrStrategy::~CfrStrategy() {}
-
-size_t get_cfr_view_hash(const GameView &v) {
-	// TODO: charles: Figure out a faster hash.
-	return std::hash<std::string>{}(json(v.players[v.view_player_id]).dump());
-}
 
 size_t get_action_hash(size_t player, const GameAction &a) {
 	size_t h = 0;
@@ -158,7 +170,6 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 
 	// Iterations!
 	std::unordered_map<size_t, Node> regret_map;
-	std::unordered_map<size_t, std::vector<GameAction>> action_map;
 	std::unordered_map<size_t, double> score_map;
 	for (int i = 0; i < 100; i++) {
 		// Choose the determinization
@@ -194,17 +205,11 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 		// Create the determinization.
 		GameState g(view, tech, books);
 		// Get the actions available for each player, memoizing them
-		std::vector<std::vector<GameAction>*> actions;
+		std::vector<const std::vector<GameAction>*> actions;
 		for (size_t i = 0; i < 2; i++) {
+			// TODO: Optimize by not converting to a game view first
 			GameView v(g, i);
-			size_t view_hash = get_cfr_view_hash(v);
-			auto it = action_map.find(view_hash);
-			if (it != action_map.end()) {
-				actions.push_back(&it->second);
-			} else {
-				action_map.emplace(view_hash, v.legal_actions());
-				actions.push_back(&action_map[view_hash]);
-			}
+			actions.push_back(CfrStrategy::get_view_actions(v));
 		}
 		// Choose an action for each player, based on regret.
 		std::vector<GameAction> chosen_actions;
@@ -262,7 +267,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 		}
 	}
 	// Choose an action based on strategy.
-	std::vector<GameAction> &actions = action_map[get_cfr_view_hash(view)];
+	const std::vector<GameAction> &actions = *get_view_actions(view);
 	GameAction chosen_action;
 	double total_strategy = 0.0;
 	for (const auto &a : actions) {

@@ -14,6 +14,9 @@ class CfrStrategy : public Strategy {
 	CfrStrategy(fdeep::model *model);
 	virtual ~CfrStrategy();
 	virtual GameAction get_action(const GameView &view);
+
+	static std::unordered_map<size_t, std::vector<GameAction>> action_cache;
+	static const std::vector<GameAction> *get_view_actions(const GameView &view);
  private:
 	double score_game_state(const GameState &) const;
 	double score_action_pair(
