@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scenes/game_book_select.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://art-built/book-select-empty.png" type="Texture" id=3]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=4]
-[ext_resource path="res://components/book_button.tscn" type="PackedScene" id=5]
+[ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=5]
+[ext_resource path="res://components/book_button.tscn" type="PackedScene" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 
@@ -35,7 +36,7 @@ anti_aliasing = true
 anti_aliasing_size = 1
 _sections_unfolded = [ "Border", "Border Width", "Expand Margin", "Shadow" ]
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -203,22 +204,17 @@ expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Margin", "Mouse", "Rect", "Textures" ]
 
-[node name="spell_list_container" type="VBoxContainer" parent="ui" index="3"]
+[node name="spell_button_list" parent="ui" index="3" instance=ExtResource( 5 )]
 
-anchor_left = 0.0
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-margin_top = -596.0
-margin_bottom = -453.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-_sections_unfolded = [ "Anchor", "Margin" ]
+margin_left = -247.0
+margin_top = -600.0
+margin_right = 248.0
+margin_bottom = -450.0
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="panel" type="Panel" parent="ui" index="4"]
 
@@ -263,7 +259,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 1030.0
+margin_right = 930.0
 margin_bottom = 220.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -275,33 +271,33 @@ custom_constants/separation = 0
 alignment = 0
 _sections_unfolded = [ "Margin", "Mouse", "Size Flags", "custom_constants" ]
 
-[node name="control" parent="ui/books_scroll/books_hbox" index="0" instance=ExtResource( 5 )]
+[node name="control" parent="ui/books_scroll/books_hbox" index="0" instance=ExtResource( 6 )]
 
-margin_right = 171.0
+margin_right = 155.0
 
-[node name="control2" parent="ui/books_scroll/books_hbox" index="1" instance=ExtResource( 5 )]
+[node name="control2" parent="ui/books_scroll/books_hbox" index="1" instance=ExtResource( 6 )]
 
-margin_left = 171.0
-margin_right = 342.0
+margin_left = 155.0
+margin_right = 310.0
 
-[node name="control3" parent="ui/books_scroll/books_hbox" index="2" instance=ExtResource( 5 )]
+[node name="control3" parent="ui/books_scroll/books_hbox" index="2" instance=ExtResource( 6 )]
 
-margin_left = 342.0
-margin_right = 513.0
+margin_left = 310.0
+margin_right = 465.0
 
-[node name="control4" parent="ui/books_scroll/books_hbox" index="3" instance=ExtResource( 5 )]
+[node name="control4" parent="ui/books_scroll/books_hbox" index="3" instance=ExtResource( 6 )]
 
-margin_left = 513.0
-margin_right = 684.0
+margin_left = 465.0
+margin_right = 620.0
 
-[node name="control5" parent="ui/books_scroll/books_hbox" index="4" instance=ExtResource( 5 )]
+[node name="control5" parent="ui/books_scroll/books_hbox" index="4" instance=ExtResource( 6 )]
 
-margin_left = 684.0
-margin_right = 855.0
+margin_left = 620.0
+margin_right = 775.0
 
-[node name="control6" parent="ui/books_scroll/books_hbox" index="5" instance=ExtResource( 5 )]
+[node name="control6" parent="ui/books_scroll/books_hbox" index="5" instance=ExtResource( 6 )]
 
-margin_left = 855.0
-margin_right = 1030.0
+margin_left = 775.0
+margin_right = 930.0
 
 

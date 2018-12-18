@@ -5,8 +5,7 @@ signal long_pressed(index, spell)
 
 onready var g = get_node('/root/global')
 
-onready var scroll_container = $scroll_container
-onready var hbox = $scroll_container/hbox
+onready var hbox = $hbox
 var spells = null setget set_spells
 var enabled_filter = null setget set_enabled_filter
 var unlocked_filter = null setget set_unlocked_filter
@@ -14,14 +13,10 @@ var display_filter = null setget set_display_filter
 var show_stats = null setget set_show_stats
 
 func _ready():
-	scroll_container.connect('scroll_started', self, 'on_scroll_started')
 	if spells == null:
 		spells = []
 	g.clear_children(hbox)
 	redraw()
-
-func on_scroll_started():
-	g.close_tooltip()
 
 func set_spells(spells_):
 	spells = spells_

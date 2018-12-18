@@ -3,8 +3,8 @@
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/spell_select.gd" type="Script" id=2]
 [ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
-[ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=4]
-[ext_resource path="res://art-built/close-x.png" type="Texture" id=5]
+[ext_resource path="res://art-built/close-x.png" type="Texture" id=4]
+[ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=5]
 [ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=6]
 [ext_resource path="res://art-built/tech-upvote.png" type="Texture" id=7]
 [ext_resource path="res://fonts/Amaranth-Bold-40.tres" type="DynamicFont" id=8]
@@ -40,7 +40,7 @@ tracks/1/keys = {
 "values": [ 211.0, -161.0, -123.0 ]
 }
 
-[node name="spell_select" type="Control" index="0"]
+[node name="spell_select" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -73,7 +73,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 custom_constants/separation = 10
 alignment = 1
-_sections_unfolded = [ "Grow Direction", "Theme", "custom_constants" ]
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Theme", "custom_constants" ]
 
 [node name="spell_panel" type="Control" parent="." index="1"]
 
@@ -116,63 +116,7 @@ patch_margin_right = 11
 patch_margin_bottom = 11
 _sections_unfolded = [ "Patch Margin", "Rect" ]
 
-[node name="scroll" type="ScrollContainer" parent="spell_panel/ninepatch" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 10.0
-margin_top = 10.0
-margin_right = -10.0
-margin_bottom = -10.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-scroll_horizontal_enabled = true
-scroll_horizontal = 0
-scroll_vertical_enabled = false
-scroll_vertical = 0
-scroll_deadzone = 0
-_sections_unfolded = [ "Margin", "Scroll" ]
-
-[node name="hbox" type="HBoxContainer" parent="spell_panel/ninepatch/scroll" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 492.0
-margin_bottom = 120.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-
-[node name="control" parent="spell_panel/ninepatch/scroll/hbox" index="0" instance=ExtResource( 4 )]
-
-[node name="control2" parent="spell_panel/ninepatch/scroll/hbox" index="1" instance=ExtResource( 4 )]
-
-margin_left = 124.0
-margin_right = 244.0
-
-[node name="control3" parent="spell_panel/ninepatch/scroll/hbox" index="2" instance=ExtResource( 4 )]
-
-margin_left = 248.0
-margin_right = 368.0
-
-[node name="control4" parent="spell_panel/ninepatch/scroll/hbox" index="3" instance=ExtResource( 4 )]
-
-margin_left = 372.0
-margin_right = 492.0
-
-[node name="close_button" type="TextureButton" parent="spell_panel/ninepatch" index="1"]
+[node name="close_button" type="TextureButton" parent="spell_panel/ninepatch" index="0"]
 
 anchor_left = 1.0
 anchor_top = 0.0
@@ -193,10 +137,45 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 5 )
+texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="hbox" type="HBoxContainer" parent="spell_panel/ninepatch" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 502.0
+margin_bottom = 130.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="control" parent="spell_panel/ninepatch/hbox" index="0" instance=ExtResource( 5 )]
+
+[node name="control2" parent="spell_panel/ninepatch/hbox" index="1" instance=ExtResource( 5 )]
+
+margin_left = 124.0
+margin_right = 244.0
+
+[node name="control3" parent="spell_panel/ninepatch/hbox" index="2" instance=ExtResource( 5 )]
+
+margin_left = 248.0
+margin_right = 368.0
+
+[node name="control4" parent="spell_panel/ninepatch/hbox" index="3" instance=ExtResource( 5 )]
+
+margin_left = 372.0
+margin_right = 492.0
 
 [node name="templates" type="Control" parent="." index="2"]
 
@@ -312,7 +291,7 @@ align = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
+_sections_unfolded = [ "Mouse", "custom_colors", "custom_constants", "custom_fonts" ]
 
 [node name="animation_player" type="AnimationPlayer" parent="." index="3"]
 

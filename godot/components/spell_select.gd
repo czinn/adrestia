@@ -16,8 +16,7 @@ var current_book = null
 onready var book_buttons_vbox = $book_buttons
 onready var spell_panel = $spell_panel
 onready var spell_panel_close_button = $spell_panel/ninepatch/close_button
-onready var spell_scroll = $spell_panel/ninepatch/scroll
-onready var spell_grid = $spell_panel/ninepatch/scroll/hbox
+onready var spell_grid = $spell_panel/ninepatch/hbox
 onready var template_book_button = $templates/book_button
 onready var animation_player = $animation_player
 
@@ -90,8 +89,6 @@ func on_open_book(index, book):
 	current_book = book
 	redraw_spells()
 	spell_panel.visible = true
-	spell_scroll.scroll_horizontal = 0
-	spell_scroll.scroll_vertical = 0
 	if old_book == null:
 		animation_player.play('spell_panel_enter')
 
@@ -108,7 +105,9 @@ func on_spell_pressed(index, spell):
 
 func on_book_upgrade(index, book):
 	for spell_id in book.get_spells():
+		print('considering ' + spell_id)
 		var spell = g.rules.get_spell(spell_id)
 		if spell.is_tech_spell():
+			print('casting ' + spell_id)
 			emit_signal('spell_press', spell)
 			return

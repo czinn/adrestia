@@ -21,7 +21,7 @@ library: List[Book] = [
     #book_regulation_old,
     #book_contrition,
     #book_enticement,
-    book_refinement,
+    #book_refinement,
 ]
 
 for book in library:

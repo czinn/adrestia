@@ -3,14 +3,13 @@ extends Node
 onready var g = get_node('/root/global')
 
 onready var book_button_scene = preload('res://components/book_button.tscn')
-onready var spell_button_list_scene = preload('res://components/spell_button_list.tscn')
 onready var book_placeholder_texture = preload('res://art-built/book-select-empty.png')
 onready var Tweener = preload('res://global/tweener.gd')
 
 onready var ui = $ui
 onready var spells_panel = $ui/panel
 onready var books_hbox = $ui/books_scroll/books_hbox
-onready var spell_list_container = $ui/spell_list_container
+onready var spell_button_list = $ui/spell_button_list
 onready var play_button = $ui/play_button
 onready var selected_books_hbox = $ui/selected_books_hbox
 
@@ -34,11 +33,9 @@ func _ready():
 
 func show_book_detail(book):
 	# set spell list
-	var spell_button_list = spell_button_list_scene.instance()
 	spell_button_list.show_stats = true
 	spell_button_list.spells = book.get_spells()
-	g.clear_children(spell_list_container)
-	spell_list_container.add_child(spell_button_list)
+	spell_button_list.display_filter = funcref(self, 'is_not_tech_spell')
 
 func on_lift():
 	print('lift')
@@ -96,7 +93,7 @@ func on_remove_book(i, button):
 	book_button.button.texture_normal = g.get_book_texture(book_id)
 
 	# clear spell list
-	g.clear_children(spell_list_container)
+	spell_button_list.spells = []
 
 func on_remove_book_down(i, button):
 	if chosen_books[i] == null: return
@@ -134,3 +131,6 @@ func on_play_button_pressed():
 	g.ai = g.Strategy.new()
 	g.ai.init_random_strategy()
 	g.scene_loader.goto_scene('game')
+
+func is_not_tech_spell(spell):
+	return not spell.is_tech_spell()

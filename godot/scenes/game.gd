@@ -33,7 +33,7 @@ func _ready():
 	spell_queue.spells = []
 	spell_queue.show_stats = false
 	simulation_state = g.GameState.new()
-	spell_select.display_filter = funcref(self, 'is_tech_spell')
+	spell_select.display_filter = funcref(self, 'is_not_tech_spell')
 	spell_select.enabled_filter = funcref(self, 'player_can_cast')
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 	spell_select.books = g.state.players[0].books
@@ -121,7 +121,7 @@ func player_can_cast(spell):
 		return false
 	return player_has_unlocked_spell(spell) && player_can_afford(spell)
 
-func is_tech_spell(spell):
+func is_not_tech_spell(spell):
 	return not spell.is_tech_spell()
 
 func redraw():

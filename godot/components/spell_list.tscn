@@ -3,7 +3,7 @@
 [ext_resource path="res://components/spell_list.gd" type="Script" id=1]
 [ext_resource path="res://components/spell_display.tscn" type="PackedScene" id=2]
 
-[node name="spell_list" type="Control" index="0"]
+[node name="spell_list" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0

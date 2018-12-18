@@ -21,7 +21,6 @@ var show_stats = true setget set_show_stats
 var show_unlock = true setget set_show_unlock
 
 var was_long_pressed = false
-var down_pos = null
 
 func _ready():
 	texture_button.connect('button_down', self, 'on_down')
@@ -30,20 +29,15 @@ func _ready():
 	redraw()
 
 func on_down():
-	down_pos = get_viewport().get_mouse_position()
 	timer.start()
 
 func on_long_press():
-	if get_viewport().get_mouse_position() != down_pos:
-		return
 	was_long_pressed = true
 	timer.stop()
 	g.summon_spell_tooltip(self, spell)
 
 func on_up():
 	if not was_long_pressed:
-		if get_viewport().get_mouse_position() != down_pos:
-			return
 		timer.stop()
 		if enabled:
 			emit_signal('pressed')
