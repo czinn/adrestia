@@ -32,6 +32,14 @@ func redraw_append(stickies):
 	sticky_display.fadein()
 	sticky_displays.append(sticky_display)
 
+# Like redraw, but assumes the only change is to the amounts or durations
+# of the stickies.
+func redraw_update(stickies):
+	if stickies_hbox == null: return
+	for i in range(len(sticky_displays)):
+		sticky_displays[i].sticky = stickies[i]
+		sticky_displays[i].redraw()
+
 # Like redraw, but assumes that the only change is removing the
 # sticky at the given index
 func redraw_remove(index):

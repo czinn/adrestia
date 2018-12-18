@@ -20,6 +20,12 @@ onready var animation_player = $ui/animation_player
 var events = []
 var simulation_state
 
+enum GameState {
+	CHOOSING_SPELLS,
+	SHOWING_SIMULATION
+}
+var game_state
+
 func _ready():
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
@@ -32,6 +38,7 @@ func _ready():
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 	spell_select.books = g.state.players[0].books
 	spell_select.connect('spell_press', self, 'on_spell_enqueue')
+	game_state = GameState.CHOOSING_SPELLS
 
 	# allow tab container to detect new tabs...
 	yield(get_tree(), 'idle_frame')
@@ -153,6 +160,7 @@ func on_end_turn_button_pressed():
 	yield(animation_player, 'animation_finished')
 
 	events = simulation_state.simulate_events([action, enemy_action])
+	game_state = GameState.SHOWING_SIMULATION
 
 func events_compatible(first_event, second_event):
 	if second_event['type'] == 'time_point':
@@ -170,9 +178,23 @@ func events_compatible(first_event, second_event):
 
 func on_event_timer_timeout():
 	if events.size() == 0:
+		if game_state == GameState.SHOWING_SIMULATION:
+			game_state = GameState.CHOOSING_SPELLS
+
+			g.state.clone(simulation_state)
+			animation_player.play_backwards('end_turn')
+
+			# Clear the spell lists
+			my_spell_list.spells = []
+			enemy_spell_list.spells = []
+			
+			redraw()
+
+			if len(g.state.winners()) > 0:
+				print('Game is over')
+				g.scene_loader.goto_scene('game_results')
+
 		return
-	
-	print('BEGIN STEP')
 
 	var events_to_show = []
 
@@ -191,7 +213,6 @@ func on_event_timer_timeout():
 			break
 
 	for event in events_to_show:
-		print(event)
 		g.state.apply_event(event)
 	
 		var me = g.state.players[0]
@@ -230,35 +251,14 @@ func on_event_timer_timeout():
 			pass # TODO: charles: Animate this
 		elif event['type'] == 'spell_hit':
 			pass # TODO: charles: Maybe animate this
-		elif event['type'] == 'sticky_amount_changed':
+		elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':
 			# TODO: charles Animate this
 			if event['player'] == 0:
-				my_stickies.redraw(me.stickies)
+				my_stickies.redraw_update(me.stickies)
 			else:	
-				enemy_stickies.redraw(them.stickies)
-		elif event['type'] == 'sticky_duration_changed':
-			# TODO: charles Animate this
-			if event['player'] == 0:
-				my_stickies.redraw(me.stickies)
-			else:
-				enemy_stickies.redraw(them.stickies)
+				enemy_stickies.redraw_update(them.stickies)
 		elif event['type'] == 'sticky_expired':
 			if event['player'] == 0:
 				my_stickies.redraw_remove(event['sticky_index'])
 			else:
 				enemy_stickies.redraw_remove(event['sticky_index'])
-
-	if events.size() == 0:
-		# TODO: charles: wait a moment before doing this
-		g.state.clone(simulation_state)
-		animation_player.play_backwards('end_turn')
-
-		# Clear the spell lists
-		my_spell_list.spells = []
-		enemy_spell_list.spells = []
-		
-		redraw()
-
-		if len(g.state.winners()) > 0:
-			print('Game is over')
-			g.scene_loader.goto_scene('game_results')
