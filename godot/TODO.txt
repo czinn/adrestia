@@ -13,21 +13,21 @@
 # Third milestone: others can enjoy the game
 
 - [x] Show sequence of events between turns.
-- [ ] Splash screen and transition to title.
+- [x] Splash screen and transition to title.
 - [x] Animate book selection.
 - [ ] Animate spell selection.
 - [x] Animate sequence of events between turns.
 - [x] Replace TabContainer for spells with a custom thing built with
   TextureButtons and visibility.
-- [ ] Player avatars
-- [ ] Health bar
+- [>] Player avatars
+- [ ] Health bar (but why?)
 - [x] Mana crystal row
 - [ ] Art for all books, spells, and stickies.
-- [ ] Figure out a lightweight set of interfaces that lets us do tutorial /
-  multiplayer games without duplicate code.
 
 # Tutorial
 
+- [ ] Figure out a lightweight set of interfaces that lets us do tutorial /
+  multiplayer games without duplicate code.
 - [ ] Exists
 
 # Networking
@@ -35,6 +35,10 @@
 - [ ] Establish a TCP connection.
 - [ ] Create helper functions for each of the available server endpoints
 - [ ] Add login page
+
+# Post-release improvements
+- [ ] Pretty splash screen (may not be necessary because game loads very fast)
+- [ ] Player avatars
 
 # Campaign / story
 

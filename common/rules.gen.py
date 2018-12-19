@@ -13,6 +13,7 @@ from book_regulation import old_book as book_regulation_old
 from book_contrition import book as book_contrition
 from book_enticement import book as book_enticement
 from book_refinement import book as book_refinement
+from book_tricks import book as book_tricks
 
 library: List[Book] = [
     book_conjuration,
@@ -22,6 +23,7 @@ library: List[Book] = [
     #book_contrition,
     #book_enticement,
     #book_refinement,
+    book_tricks,
 ]
 
 for book in library:
