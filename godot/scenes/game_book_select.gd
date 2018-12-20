@@ -38,7 +38,6 @@ func show_book_detail(book):
 	spell_button_list.display_filter = funcref(self, 'is_not_tech_spell')
 
 func on_lift():
-	print('lift')
 	g.drag_drop.payload.button.texture_normal = book_placeholder_texture
 
 func on_drop(drag_image):

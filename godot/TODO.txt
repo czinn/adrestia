@@ -20,7 +20,7 @@
 - [x] Replace TabContainer for spells with a custom thing built with
   TextureButtons and visibility.
 - [>] Player avatars
-- [ ] Health bar (but why?)
+- [>] Health bar
 - [x] Mana crystal row
 - [ ] Art for all books, spells, and stickies.
 
@@ -37,8 +37,9 @@
 - [ ] Add login page
 
 # Post-release improvements
-- [ ] Pretty splash screen (may not be necessary because game loads very fast)
+- [ ] Pretty splash screen (maybe? game loads very fast)
 - [ ] Player avatars
+- [ ] Health bar (maybe?)
 
 # Campaign / story
 
