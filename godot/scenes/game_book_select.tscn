@@ -210,9 +210,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -247.0
+margin_left = -254.0
 margin_top = -600.0
-margin_right = 248.0
+margin_right = 241.0
 margin_bottom = -450.0
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
