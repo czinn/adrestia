@@ -125,10 +125,7 @@ func on_play_button_pressed():
 	if len(selected_books) < 1 or len(selected_books) > 3:
 		return
 	var selected_book_ids = g.map_method(selected_books, 'get_id')
-	g.state = g.GameState.new()
-	g.state.init(g.rules, [selected_book_ids, ['conjuration']])
-	g.ai = g.Strategy.new()
-	g.ai.init_random_strategy()
+	g.backend.submit_books(selected_book_ids)
 	g.scene_loader.goto_scene('game')
 
 func is_not_tech_spell(spell):

@@ -4,6 +4,8 @@ onready var g = get_node('/root/global')
 onready var play_button = $ui/play_button
 onready var animation_player = $animation_player
 
+const RandomAiBackend = preload('res://backends/random_ai.gd')
+
 func _ready():
 	print('Unique ID is:')
 	print(OS.get_unique_id())
@@ -22,4 +24,7 @@ func on_waifu_pressed():
 	g.summon_tooltip($ui/moge_ko, "Hey now, why are you runniiing? No, no, I wanna play!\n... [i]Oooh, I see, it's tag![/i]\n[b]GYAHAHAHAHAHAA!!!![/b]")
 
 func on_play_button_pressed():
+	g.backend = RandomAiBackend.new(g)
+	yield(get_tree(), 'idle_frame')
+	print(g.backend.rules)
 	g.scene_loader.goto_scene('game_book_select')

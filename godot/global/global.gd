@@ -24,17 +24,17 @@ onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
 onready var drag_drop = get_node('/root/drag_drop')
 var loaded = false
-var rules
-var state
-var ai
+var backend = null
 var tooltip = null # Currently displayed tooltip
+var rules = null setget ,get_rules
 
 func _ready():
-	var rules_file = File.new()
-	rules_file.open('res://data/rules.json', File.READ)
-	rules = GameRules.new()
-	rules.load_json_string(rules_file.get_as_text())
-	rules_file.close()
+	pass
+
+func get_rules():
+	if backend == null:
+		return null
+	return backend.rules
 
 static func sum(list):
 	var result = 0
@@ -93,7 +93,7 @@ static func get_sticky_texture(sticky_id):
 func make_spell_buttons(spells, show_stats = false, display_filter = null, enabled_filter = null, unlocked_filter = null):
 	var result = []
 	for spell_id in spells:
-		var spell = rules.get_spell(spell_id)
+		var spell = get_rules().get_spell(spell_id)
 		if display_filter != null and not display_filter.call_func(spell):
 			continue
 		var spell_button = spell_button_scene.instance()

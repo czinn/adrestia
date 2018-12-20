@@ -31,8 +31,10 @@ GameState::GameState(const GameRules &rules, const json &j)
 	}
 }
 
-GameState::GameState(const GameView &view, std::vector<int> &tech,
-		std::vector<const Book*> &books)
+GameState::GameState(
+		const GameView &view,
+		const std::vector<int> &tech,
+		const std::vector<const Book*> &books)
 	: history(view.history)
 	, players(view.players)
 	, rules(view.rules) {

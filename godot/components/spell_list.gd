@@ -32,7 +32,8 @@ func redraw():
 	g.clear_children(hbox)
 
 	for i in range(len(spells)):
-		var spell = g.rules.get_spell(spells[i])
+		# TODO: charles: Show real placeholder rather than just conjuration_tech
+		var spell = g.rules.get_spell(spells[i] if spells[i] != 'tech' else 'conjuration_tech')
 		var spell_display = spell_display_scene.instance()
 		hbox.add_child(spell_display)
 		spell_display.spell = spell
