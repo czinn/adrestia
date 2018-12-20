@@ -4,7 +4,7 @@
 [ext_resource path="res://components/spell_button.gd" type="Script" id=2]
 [ext_resource path="res://shaders/greyscale.material" type="Material" id=3]
 [ext_resource path="res://art-built/spells/placeholder.png" type="Texture" id=4]
-[ext_resource path="res://fonts/Amaranth-Regular-16.tres" type="DynamicFont" id=5]
+[ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=5]
 [ext_resource path="res://art-built/mana-gem.png" type="Texture" id=6]
 [ext_resource path="res://art-built/level-book.png" type="Texture" id=7]
 
@@ -78,7 +78,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 100.0
 margin_right = 120.0
-margin_bottom = 120.0
+margin_bottom = 147.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -161,7 +161,7 @@ valign = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Mouse", "Rect", "Size Flags" ]
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect" ]
 
 [node name="unlock" type="Control" parent="." index="3"]
 

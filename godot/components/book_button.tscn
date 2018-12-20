@@ -4,7 +4,7 @@
 [ext_resource path="res://components/book_button.gd" type="Script" id=2]
 [ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=3]
 [ext_resource path="res://art-built/check-box.png" type="Texture" id=4]
-[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=5]
+[ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=5]
 
 [node name="control" type="Control"]
 
@@ -12,9 +12,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 125.0
+margin_right = 140.0
 margin_bottom = 220.0
-rect_min_size = Vector2( 155, 220 )
+rect_min_size = Vector2( 140, 220 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -31,8 +31,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -25.0
-rect_min_size = Vector2( 155, 190 )
+margin_bottom = -16.0
+rect_min_size = Vector2( 140, 190 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 1
@@ -48,9 +48,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 155.0
+margin_right = 140.0
 margin_bottom = 155.0
-rect_min_size = Vector2( 125, 155 )
+rect_min_size = Vector2( 140, 155 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -95,8 +95,8 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 159.0
-margin_right = 155.0
-margin_bottom = 214.0
+margin_right = 140.0
+margin_bottom = 204.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2

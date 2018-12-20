@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="190.15049"
+     inkscape:cx="104.28752"
      inkscape:cy="-26.794097"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -49,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -84,5 +84,5 @@
            y="11.979513"
            style="font-size:32px" /></flowRegion><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle"
-         id="flowPara1801-8-3-5">Placerholder</flowPara></flowRoot>  </g>
+         id="flowPara1801-8-3-5">Placeholder</flowPara></flowRoot>  </g>
 </svg>

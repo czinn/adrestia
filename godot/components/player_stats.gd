@@ -4,14 +4,16 @@ onready var g = get_node('/root/global')
 
 onready var hp_label = $hp_label
 onready var mp_label = $mp_label
+onready var mp_gain_label = $mp_gain_label
 onready var mp_icons = $mp_icons
-onready var mp_icon_template = $mp_icon_template
+onready var mp_icon_template = $mp_icons/mp_icon_template
 
 var old_hp = null
 var old_mp = null
 
 func _ready():
 	mp_icon_template.visible = false
+	mp_icons.remove_child(mp_icon_template)
 
 func redraw(player, mp_override = null):
 	if hp_label == null: return
@@ -45,4 +47,5 @@ func redraw(player, mp_override = null):
 		else:
 			mp_icon.texture = load('res://art-built/mana-gem-empty.png')
 	
-	mp_label.text = '%d/%d (+%d)' % [mp_left, mp_max, player.mp_regen]
+	mp_label.text = '%d' % [mp_left]
+	mp_gain_label.text = '+%d' % [player.mp_regen]

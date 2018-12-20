@@ -7,7 +7,7 @@
 [ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=5]
 [ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=6]
 [ext_resource path="res://art-built/tech-upvote.png" type="Texture" id=7]
-[ext_resource path="res://fonts/Amaranth-Bold-40.tres" type="DynamicFont" id=8]
+[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=8]
 
 [sub_resource type="Animation" id=1]
 
@@ -82,16 +82,16 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = 16.0
-margin_top = 158.0
+margin_top = -161.0
 margin_right = 16.0
-margin_bottom = 158.0
+margin_bottom = -161.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 0
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-_sections_unfolded = [ "Margin", "Rect" ]
+_sections_unfolded = [ "Margin", "Mouse", "Rect" ]
 
 [node name="ninepatch" type="NinePatchRect" parent="spell_panel" index="0"]
 
@@ -100,9 +100,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -279.0
-margin_top = -34.0
+margin_top = -56.0
 margin_right = 237.0
-margin_bottom = 111.0
+margin_bottom = 110.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -271,10 +271,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -57.0
-margin_top = -55.0
-margin_right = -4.0
-margin_bottom = -5.0
+margin_left = -58.0
+margin_top = -49.0
+margin_right = -8.0
+margin_bottom = -9.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2

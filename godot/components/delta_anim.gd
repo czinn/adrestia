@@ -11,3 +11,5 @@ func play_text_and_color(text, color, fadeup=true):
 	label.text = text
 	label.add_color_override("font_color", color)
 	animation_player.play("fadeup" if fadeup else "fadedown")
+	yield(animation_player, 'animation_finished')
+	queue_free()

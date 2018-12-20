@@ -179,9 +179,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.50000001"
-     inkscape:cx="1015.0331"
-     inkscape:cy="878.83361"
+     inkscape:zoom="1"
+     inkscape:cx="683.66112"
+     inkscape:cy="362.73877"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1579,11 +1579,11 @@
            height="30.57095"
            x="1463.6553"
            y="11.979513" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan5506">Small</flowSpan>: 16px. <flowSpan
-   style="font-style:italic"
+   style="font-weight:bold;font-size:20px"
+   id="flowSpan5506">Small</flowSpan>: 15pt=20px. <flowSpan
+   style="font-style:italic;font-size:20px"
    id="flowSpan5522">For spell labels, detail text</flowSpan></flowPara></flowRoot>    <rect
        style="opacity:1;vector-effect:none;fill:url(#linearGradient1759);fill-opacity:1;stroke:#000000;stroke-width:4.23333311;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.5;paint-order:markers stroke fill"
        id="rect1154-6-4"
@@ -1612,7 +1612,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801-8"><flowSpan
    style="font-weight:bold"
-   id="flowSpan5508">Normal</flowSpan>: 24px. <flowSpan
+   id="flowSpan5508">Normal</flowSpan>: 24pt=32px. <flowSpan
    style="font-style:italic"
    id="flowSpan5520">For UI elements, small buttons</flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
@@ -1628,11 +1628,11 @@
            height="79.876198"
            x="1463.6553"
            y="11.979513" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;font-size:53.33333387px"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801-8-4"><flowSpan
-   style="font-weight:bold;font-size:53.33333387px"
-   id="flowSpan5510">Large</flowSpan>: 40px. <flowSpan
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic';font-size:53.33333387px"
+   style="font-weight:bold;font-size:48px"
+   id="flowSpan5510">Large</flowSpan>: 36pt=48px. <flowSpan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic'"
    id="flowSpan5518">For large buttons, emotes </flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-4-9"
@@ -1643,16 +1643,16 @@
        inkscape:export-ydpi="96"><flowRegion
          id="flowRegion1410-2-9-45-6-3-2"><rect
            id="rect1412-9-4-2-8-1-0"
-           width="904.75726"
-           height="202.20143"
+           width="1026.7573"
+           height="98.201424"
            x="1463.6553"
            y="11.979513" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;font-size:85.3333342px"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801-8-4-6"><flowSpan
-   style="font-weight:bold;font-size:85.3333342px"
-   id="flowSpan5512">X-Large</flowSpan>: 64px. <flowSpan
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic';font-size:85.3333342px"
-   id="flowSpan5516">For titles</flowSpan></flowPara></flowRoot>    <flowRoot
+   style="font-weight:bold;font-size:80px"
+   id="flowSpan5512">X-Large</flowSpan>: 60pt=80px. <flowSpan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic'"
+   id="flowSpan5516">Titles</flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-4-9-9-4"
        style="font-style:normal;font-weight:normal;font-size:85.33333588px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#03c0ff;fill-opacity:1;stroke:none;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;"
