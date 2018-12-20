@@ -1,0 +1,306 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://theme-default.tres" type="Theme" id=1]
+[ext_resource path="res://components/spell_select.gd" type="Script" id=2]
+[ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
+[ext_resource path="res://art-built/close-x.png" type="Texture" id=4]
+[ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=5]
+[ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=6]
+[ext_resource path="res://art-built/tech-upvote.png" type="Texture" id=7]
+[ext_resource path="res://fonts/Amaranth-Bold-40.tres" type="DynamicFont" id=8]
+
+[sub_resource type="Animation" id=1]
+
+resource_name = "spell_panel_enter"
+length = 0.15
+loop = false
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath("spell_panel:margin_bottom")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.15 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 211.0, -161.0, -123.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("spell_panel:margin_top")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.15, 0.15 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 211.0, -161.0, -123.0 ]
+}
+
+[node name="spell_select" type="Control"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+_sections_unfolded = [ "Theme" ]
+
+[node name="book_buttons" type="HBoxContainer" parent="." index="0"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -270.0
+margin_top = -155.0
+margin_right = 270.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 10
+alignment = 1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Theme", "custom_constants" ]
+
+[node name="spell_panel" type="Control" parent="." index="1"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 16.0
+margin_top = 158.0
+margin_right = 16.0
+margin_bottom = 158.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="ninepatch" type="NinePatchRect" parent="spell_panel" index="0"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -279.0
+margin_top = -34.0
+margin_right = 237.0
+margin_bottom = 111.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 3 )
+patch_margin_left = 11
+patch_margin_top = 11
+patch_margin_right = 11
+patch_margin_bottom = 11
+_sections_unfolded = [ "Patch Margin", "Rect" ]
+
+[node name="close_button" type="TextureButton" parent="spell_panel/ninepatch" index="0"]
+
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_left = -23.0
+margin_top = -14.0
+margin_right = 13.0
+margin_bottom = 20.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="hbox" type="HBoxContainer" parent="spell_panel/ninepatch" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 502.0
+margin_bottom = 130.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="control" parent="spell_panel/ninepatch/hbox" index="0" instance=ExtResource( 5 )]
+
+[node name="control2" parent="spell_panel/ninepatch/hbox" index="1" instance=ExtResource( 5 )]
+
+margin_left = 124.0
+margin_right = 244.0
+
+[node name="control3" parent="spell_panel/ninepatch/hbox" index="2" instance=ExtResource( 5 )]
+
+margin_left = 248.0
+margin_right = 368.0
+
+[node name="control4" parent="spell_panel/ninepatch/hbox" index="3" instance=ExtResource( 5 )]
+
+margin_left = 372.0
+margin_right = 492.0
+
+[node name="templates" type="Control" parent="." index="2"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -270.0
+margin_top = -960.0
+margin_right = -230.0
+margin_bottom = -920.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="book_button" type="Control" parent="templates" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 41.0
+margin_top = 805.0
+margin_right = 499.0
+margin_bottom = 960.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect", "Size Flags" ]
+
+[node name="book" type="TextureButton" parent="templates/book_button" index="0"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -63.0
+margin_top = -155.0
+margin_right = 62.0
+rect_min_size = Vector2( 125, 155 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 6 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
+
+[node name="upgrade_arrow" type="TextureButton" parent="templates/book_button" index="1"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = -70.0
+margin_right = 66.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 7 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Textures" ]
+
+[node name="level" type="Label" parent="templates/book_button" index="2"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -57.0
+margin_top = -55.0
+margin_right = -4.0
+margin_bottom = -5.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 8 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
+custom_constants/shadow_offset_x = 3
+custom_constants/shadow_offset_y = 3
+custom_constants/shadow_as_outline = 1
+text = "0"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Mouse", "custom_colors", "custom_constants", "custom_fonts" ]
+
+[node name="animation_player" type="AnimationPlayer" parent="." index="3"]
+
+root_node = NodePath("..")
+autoplay = ""
+playback_process_mode = 1
+playback_default_blend_time = 0.0
+playback_speed = 1.0
+anims/spell_panel_enter = SubResource( 1 )
+blend_times = [  ]
+
+

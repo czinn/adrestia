@@ -16,6 +16,7 @@ namespace godot {
 		REGISTER_METHOD(get_name)
 		REGISTER_METHOD(get_text)
 		REGISTER_METHOD(get_kind)
+		REGISTER_METHOD(get_stacks)
 		REGISTER_METHOD(get_effects)
 		REGISTER_METHOD(get_trigger_inbound)
 		REGISTER_METHOD(triggers_for_effect)
@@ -29,6 +30,7 @@ namespace godot {
 	FORWARD_AUTO_GETTER(get_name)
 	FORWARD_AUTO_GETTER(get_text)
 	FORWARD_AUTO_GETTER(get_kind)
+	FORWARD_AUTO_GETTER(get_stacks)
 	FORWARD_AUTO_GETTER(get_effects)
 	FORWARD_AUTO_GETTER(get_trigger_inbound)
 	bool Sticky::triggers_for_effect(EffectInstance *effect, bool inbound) const {

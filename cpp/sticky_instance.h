@@ -51,6 +51,10 @@ class StickyInstance {
 				size_t sticky_index,
 				std::vector<json> &events_out);
 
+		// Whether the sticky is still active/functioning. If false, the sticky
+		// should be immediately removed.
+		bool is_active() const;
+
 		friend void to_json(json &j, const StickyInstance &sticky);
 
 		// amount is used differently depending on the kind of sticky. For shields,

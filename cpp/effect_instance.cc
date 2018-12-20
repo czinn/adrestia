@@ -71,7 +71,7 @@ void EffectInstance::apply(const GameRules &rules, Player &player) const {
 			player.mp_regen += amount;
 			break;
 		case EK_STICKY:
-			player.stickies.push_back(
+			player.add_sticky(
 					StickyInstance(
 						spell,
 						rules.get_sticky(sticky_invoker.get_sticky_id()),

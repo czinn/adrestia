@@ -13,7 +13,6 @@ onready var mp_label = $cost/mp_label
 onready var unlock = $unlock
 onready var tech_icon = $unlock/tech_icon
 onready var tech_label = $unlock/tech_label
-onready var level_icon = $unlock/level_icon
 onready var level_label = $unlock/level_label
 
 var spell = null setget set_spell
@@ -22,7 +21,6 @@ var show_stats = true setget set_show_stats
 var show_unlock = true setget set_show_unlock
 
 var was_long_pressed = false
-var down_pos = null
 
 func _ready():
 	texture_button.connect('button_down', self, 'on_down')
@@ -31,21 +29,15 @@ func _ready():
 	redraw()
 
 func on_down():
-	down_pos = get_viewport().get_mouse_position()
 	timer.start()
 
 func on_long_press():
-	if get_viewport().get_mouse_position() != down_pos:
-		return
 	was_long_pressed = true
 	timer.stop()
-	var text = "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()]
-	g.summon_tooltip(self, text)
+	g.summon_spell_tooltip(self, spell)
 
 func on_up():
 	if not was_long_pressed:
-		if get_viewport().get_mouse_position() != down_pos:
-			return
 		timer.stop()
 		if enabled:
 			emit_signal('pressed')
@@ -76,15 +68,12 @@ func redraw():
 	if label == null: return
 	if mp_label == null: return
 
-	texture_button.texture_normal = g.load_or(
-			'res://art-built/spells/%s.png' % spell.get_id(),
-			'res://art-built/spells/placeholder.png')
+	texture_button.texture_normal = g.get_spell_texture(spell.get_id())
 	
 	var material_ = null if enabled else load('res://shaders/greyscale.material')
 	texture_button.material = material_
 	mp_icon.material = material_
-	tech_icon.material = material_
-	level_icon.material = material_
+	#tech_icon.material = material_
 
 	label.set('custom_colors/font_color', null if enabled else Color(0.75, 0.75, 0.75))
 	label.text = spell.get_name()

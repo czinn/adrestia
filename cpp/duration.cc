@@ -6,10 +6,17 @@
 Duration::Duration() {}
 
 bool Duration::operator==(const Duration &other) const {
-	return
-		(  this->unit == other.unit
-		&& (this->unit != FULL_GAME || this->value == other.value)
-		);
+	if (this->unit == FULL_GAME) {
+		return
+			(  this->unit == other.unit
+			&& (this->value > 0) == (other.value > 0)
+			);
+	} else {
+		return
+			(  this->unit == other.unit
+			&& this->value == other.value
+			);
+	}
 }
 
 //------------------------------------------------------------------------------

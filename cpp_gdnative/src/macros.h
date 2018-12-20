@@ -150,6 +150,11 @@ inline godot::Variant to_godot_variant(unsigned long num, godot::Reference *owne
 	return (unsigned int) num;
 }
 
+template<>
+inline godot::Variant to_godot_variant(nlohmann::json j, godot::Reference *owner) {
+	return godot::JSON::parse(j.dump().c_str())->get_result();
+}
+
 // of_godot_variant<T> "writes" a godot::Variant to the T*.
 template<class T>
 inline void of_godot_variant(godot::Variant v, T *t) {
@@ -170,6 +175,17 @@ inline void of_godot_variant(godot::Variant v, std::vector<V> *vec) {
 		V elem;
 		of_godot_variant(a[i], &elem);
 		vec->push_back(elem);
+	}
+}
+
+template<>
+inline void of_godot_variant(godot::Variant v, nlohmann::json *j) {
+	if (v.get_type() == godot::Variant::DICTIONARY || v.get_type() == godot::Variant::ARRAY) {
+		std::string s;
+		of_godot_variant(godot::JSON::print(v), &s);
+		*j = nlohmann::json::parse(s);
+	} else {
+		abort();
 	}
 }
 
