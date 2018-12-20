@@ -18,7 +18,7 @@ var point_down = true
 const triangle_shift = 27
 
 # TODO: jim: autodetect this
-const line_height = 31
+const line_height = 26
 
 func _ready():
 	redraw()
