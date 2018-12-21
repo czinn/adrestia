@@ -5,6 +5,7 @@ onready var play_button = $ui/play_button
 onready var tutorial_button = $ui/tutorial_button
 onready var animation_player = $animation_player
 
+const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
 const RandomAiBackend = preload('res://backends/random_ai.gd')
 const TutorialBackend = preload('res://backends/tutorial.gd')
 
@@ -33,5 +34,8 @@ func on_play_button_pressed():
 
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)
+	var tutorial_overlay = TutorialOverlay.instance()
+	tutorial_overlay.play_tutorial()
+	get_node('/root').add_child(tutorial_overlay)
 	print(g.backend.rules)
 	g.scene_loader.goto_scene('game_book_select')

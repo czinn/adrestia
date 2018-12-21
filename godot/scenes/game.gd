@@ -32,7 +32,6 @@ func _ready():
 	state.of_game_view(g.backend.get_view())
 	ui_state = UiState.CHOOSING_SPELLS
 	g.backend.register_update_callback(funcref(self, 'on_backend_update'))
-
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
 	event_timer.connect('timeout', self, 'on_event_timer_timeout')
@@ -43,8 +42,6 @@ func _ready():
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 	spell_select.books = state.players[0].books
 	spell_select.connect('spell_press', self, 'on_spell_enqueue')
-
-	# allow tab container to detect new tabs...
 	yield(get_tree(), 'idle_frame')
 	redraw()
 
