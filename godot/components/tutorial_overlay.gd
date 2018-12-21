@@ -8,6 +8,7 @@ onready var g = get_node('/root/global')
 onready var mouse_blocker = $mouse_blocker
 onready var big_text_wnd = $nine_patch_rect
 onready var tree_poll_timer = $tree_poll_timer
+onready var big_text = $nine_patch_rect/margin_container/rich_text_label
 
 func _ready():
 	mouse_blocker.connect('gui_input', self, 'blocker_input')
@@ -49,9 +50,16 @@ func acquire_node(path):
 	desire_path = null
 	return node
 
-func play_tutorial():
-	yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
+func show_big_window(text):
+	big_text.bbcode_text = text
 	mouse_blocker.visible = true
 	big_text_wnd.visible = true
+	print('yielding')
 	yield(self, 'popup_closed')
+	print('popup was closed')
+
+func play_tutorial():
+	yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
+	yield(show_big_window('[b]Hello there![/b]\n\nWelcome to Adrestia!'), 'completed')
+	yield(show_big_window('[b]Hi[/b]\n\nThis is the second window.'), 'completed')
 	print('TODO: jim: continue the tutorial')

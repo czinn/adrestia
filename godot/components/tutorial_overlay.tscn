@@ -4,7 +4,7 @@
 [ext_resource path="res://components/tutorial_overlay.gd" type="Script" id=2]
 [ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
 
-[node name="tutorial" type="Control"]
+[node name="tutorial" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -58,16 +58,34 @@ patch_margin_right = 11
 patch_margin_bottom = 11
 _sections_unfolded = [ "Mouse", "Patch Margin" ]
 
-[node name="rich_text_label" type="RichTextLabel" parent="nine_patch_rect" index="0"]
+[node name="margin_container" type="MarginContainer" parent="nine_patch_rect" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 10.0
-margin_top = 11.0
-margin_right = -10.0
-margin_bottom = -9.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/margin_right = 15
+custom_constants/margin_top = 15
+custom_constants/margin_left = 15
+custom_constants/margin_bottom = 15
+_sections_unfolded = [ "Anchor", "Margin", "custom_constants" ]
+
+[node name="rich_text_label" type="RichTextLabel" parent="nine_patch_rect/margin_container" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 406.0
+margin_bottom = 338.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 2
@@ -89,7 +107,7 @@ scroll_active = true
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "BBCode", "Margin" ]
+_sections_unfolded = [ "Anchor", "BBCode", "Margin" ]
 
 [node name="tree_poll_timer" type="Timer" parent="." index="2"]
 
