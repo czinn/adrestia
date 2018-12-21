@@ -1,7 +1,7 @@
 extends Control
 
 signal node_found(node)
-signal popup_closed
+signal popup_closed()
 
 onready var g = get_node('/root/global')
 
