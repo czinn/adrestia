@@ -16,6 +16,8 @@ const Strategy = preload('res://native/strategy.gdns')
 
 const Tweener = preload('res://global/tweener.gd')
 
+signal tooltip_closed()
+
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
@@ -109,6 +111,7 @@ func make_spell_buttons(spells, show_stats = false, display_filter = null, enabl
 func close_tooltip():
 	if tooltip != null:
 		tooltip.get_parent().remove_child(tooltip)
+		emit_signal('tooltip_closed')
 		tooltip = null
 
 func summon_tooltip(target, text):
