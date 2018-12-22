@@ -1,7 +1,6 @@
 extends Control
 
 signal node_found(node)
-signal node_acquired(node)
 signal popup_closed()
 
 onready var g = get_node('/root/global')
@@ -45,12 +44,16 @@ func timeout():
 
 func acquire_node(path):
 	var node = try_get_node(path)
+	yield(get_tree(), 'idle_frame')
 	if node != null:
-		emit_signal('node_acquired', node)
+		print('Got node immediately')
+		return node
 	desire_path = path
+	print('Waiting for node...')
 	node = yield(self, 'node_found')
+	print('Found it')
 	desire_path = null
-	emit_signal('node_acquired', node)
+	return node
 
 func show_big_window(text):
 	big_text.bbcode_text = text
@@ -63,12 +66,10 @@ func show_tooltip(target, text):
 	yield(g, 'tooltip_closed')
 
 func play_tutorial():
-	self.acquire_node('ui/selected_books_hbox')
-	var selected_books_hbox = yield(self, 'node_acquired')
+	var selected_books_hbox = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
 	yield(show_big_window('[b]Hello there![/b]\n\nWelcome to Adrestia!'), 'completed')
 	yield(show_big_window('[b]Hi[/b]\n\nThis is the second window.'), 'completed')
-	self.acquire_node('ui/books_scroll/books_hbox')
-	var books_hbox = yield(self, 'node_acquired')
+	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
 	yield(show_tooltip(books_hbox.get_child(0), 'This is a book. It has spells in it.'), 'completed')
 	print('TODO: jim: continue the tutorial')
 	self.get_parent().remove_child(self)

@@ -35,7 +35,7 @@ func on_play_button_pressed():
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)
 	var tutorial_overlay = TutorialOverlay.instance()
-	tutorial_overlay.play_tutorial()
 	get_node('/root').add_child(tutorial_overlay)
+	tutorial_overlay.play_tutorial()
 	print(g.backend.rules)
 	g.scene_loader.goto_scene('game_book_select')
