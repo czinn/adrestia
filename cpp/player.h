@@ -48,6 +48,8 @@ class Player {
 		void subtract_turn();
 		void subtract_turn(std::vector<json> &events_out);
 
+		void add_sticky(const StickyInstance &);
+
 		friend void to_json(json &, const Player &);
 
 		size_t id;
@@ -61,6 +63,13 @@ class Player {
 
 	private:
 		const GameRules &rules;
+
+		template<bool emit_events>
+		friend void _iterate_stickies(
+				Player &,
+				std::function<bool(StickyInstance &, size_t)> f,
+				bool emit_duration_changes,
+				std::vector<json> &events_out);
 
 		template<bool emit_events>
 		friend std::vector<EffectInstance> _pipe_effect(

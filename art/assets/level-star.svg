@@ -11,9 +11,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="36.672363"
-   height="34.412613"
-   viewBox="0 0 36.672364 34.412613"
+   width="43.13483"
+   height="41.32906"
+   viewBox="0 0 43.134831 41.32906"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.2"
-     inkscape:cx="-8.2492611"
-     inkscape:cy="1.3346427"
+     inkscape:zoom="2.8"
+     inkscape:cx="-0.39701807"
+     inkscape:cy="42.314509"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -37,11 +37,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
+     inkscape:window-width="1440"
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:snap-global="false" />
   <metadata
      id="metadata1715">
@@ -59,10 +59,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-0.57798637,-0.78775188)">
+     transform="translate(2.6621852,2.9287706)">
     <path
        sodipodi:type="star"
-       style="opacity:1;fill:#faf9d6;fill-opacity:1;stroke:#f2cc00;stroke-width:4.61158991;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       style="opacity:1;fill:#faf9d6;fill-opacity:1;stroke:#f2cc00;stroke-width:7.6859827;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
        id="path5128"
        sodipodi:sides="5"
        sodipodi:cx="18.839285"
@@ -73,8 +73,8 @@
        sodipodi:arg2="1.5505802"
        inkscape:flatsided="false"
        inkscape:rounded="0"
-       inkscape:randomized="0.04"
-       d="M 25.650485,26.023004 19.28268,23.748247 12.747149,26.172283 12.621971,19.773322 8.5136831,14.68443 14.628114,12.629771 18.544753,7.0881624 22.17706,12.494585 28.859542,14.49803 25.03184,19.168379 Z"
+       inkscape:randomized="0"
+       d="m 25.267856,26.089286 -6.299484,-2.097652 -6.209547,2.350571 0.04834,-6.639376 -4.1543812,-5.179264 6.3293592,-2.005707 3.641998,-5.5515318 3.86342,5.3997808 6.40526,1.748228 -3.941634,5.342955 z"
        inkscape:transform-center-x="0.086462687"
        inkscape:transform-center-y="-1.2403018"
        transform="matrix(1.3005047,0,0,1.3016351,-5.4536617,-3.1498132)" />

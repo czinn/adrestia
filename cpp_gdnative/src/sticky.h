@@ -20,6 +20,7 @@ namespace godot {
 			Variant get_name() const;
 			Variant get_text() const;
 			Variant get_kind() const;
+			Variant get_stacks() const;
 			Variant get_effects() const;
 			Variant get_trigger_inbound() const;
 			bool triggers_for_effect(EffectInstance *effect, bool inbound) const;

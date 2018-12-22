@@ -12,13 +12,15 @@ config_version=3
 
 config/name="Adrestia Spells"
 run/main_scene="res://scenes/title.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://art-built/splash.png"
+config/icon="res://art-built/app-icon.png"
 
 [autoload]
 
 global="*res://global/global.gd"
 scene_loader="*res://global/scene_loader.gd"
 networking="*res://global/networking.gd"
+drag_drop="*res://global/drag_drop.gd"
 
 [display]
 

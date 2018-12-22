@@ -22,6 +22,42 @@ string SERVER_IP("127.0.0.1")
 class connection_closed {};
 class socket_error {};
 
+string hex_urandom(unsigned int number_of_characters) {
+	// Creates random hexadecimal string of requested length
+	char proto_output[number_of_characters + 1];
+
+	ifstream urandom("/dev/urandom", ios::in|ios::binary);
+
+	if (!urandom) {
+		cerr << "Failed to open urandom!\n";
+		throw;
+	}
+
+	for (int i = 0; i < number_of_characters; i = i + 1) {
+		char next_number = 0;
+
+		urandom.read((char*)(&next_number), sizeof(char));
+		next_number &= 0x0F;  // Ensure we generate only one character at a time.
+
+		if (!urandom) {
+			cerr << "Failed to read from urandom!\n";
+			throw;
+		}
+
+		if (next_number < 10) {  // 0-10
+			proto_output[i] = (char)(next_number + 48);
+		}
+		else {  // A-F
+			proto_output[i] = (char)(next_number + 87);
+		}
+	}
+
+	proto_output[number_of_characters] = '\0';
+
+	string returnVar(proto_output);
+	return returnVar;
+}
+
 
 string read_packet (int client_socket) {
 	// Reads a string sent from the target.
@@ -91,7 +127,6 @@ int socket_to_target(const char* IP, int port) {
 
 	return my_socket;
 }
-
 
 int main(int argc, char* argv[]) {	
 	cout << "Starting sequence.";
@@ -181,7 +216,4 @@ int main(int argc, char* argv[]) {
 
 	// Change user name
 	cout << "Changing user name." << endl;
-	
-
-
 }
