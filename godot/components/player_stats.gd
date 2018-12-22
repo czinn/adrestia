@@ -46,6 +46,6 @@ func redraw(player, mp_override = null):
 			mp_icon.texture = load('res://art-built/mana-gem-potential.png')
 		else:
 			mp_icon.texture = load('res://art-built/mana-gem-empty.png')
-	
+
 	mp_label.text = '%d' % [mp_left]
-	mp_gain_label.text = '+%d' % [player.mp_regen]
+	mp_gain_label.text = '(+%d)' % [player.mp_regen]
