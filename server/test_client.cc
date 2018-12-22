@@ -1,16 +1,8 @@
-#include <iostream>
-#include <sstream>
-#include <map>
-#include <algorithm>
-#include <cstdlib>
-#include <ctime>
-#include <cstring>
-#include <cerrno>
-#include <fstream>
-#include <sstream>
-#include <stdlib.h>
-using namespace std;
+// Adrestia
+#include "adrestia_networking.h"
+#include "adrestia_hexy.h"
 
+// Sockets
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -19,55 +11,16 @@ using namespace std;
 #include <wait.h>
 #include <unistd.h>
 
+// JSON
 #include "../units_cpp/json.h"
 using json = nlohmann::json;
 
-#include "protocol.h"
 
-string SERVER_IP("127.0.0.1");
-const static int SERVER_PORT = 16969;
-
-string HANDLER_KEY_NAME("api_handler_name");
+string SERVER_IP("127.0.0.1")
 
 
 class connection_closed {};
 class socket_error {};
-
-string hex_urandom(unsigned int number_of_characters) {
-	// Creates random hexadecimal string of requested length
-	char proto_output[number_of_characters + 1];
-
-	ifstream urandom("/dev/urandom", ios::in|ios::binary);
-
-	if (!urandom) {
-		cerr << "Failed to open urandom!\n";
-		throw;
-	}
-
-	for (int i = 0; i < number_of_characters; i = i + 1) {
-		char next_number = 0;
-
-		urandom.read((char*)(&next_number), sizeof(char));
-		next_number &= 0x0F;  // Ensure we generate only one character at a time.
-
-		if (!urandom) {
-			cerr << "Failed to read from urandom!\n";
-			throw;
-		}
-
-		if (next_number < 10) {  // 0-10
-			proto_output[i] = (char)(next_number + 48);
-		}
-		else {  // A-F
-			proto_output[i] = (char)(next_number + 87);
-		}
-	}
-
-	proto_output[number_of_characters] = '\0';
-
-	string returnVar(proto_output);
-	return returnVar;
-}
 
 
 string read_packet (int client_socket) {
@@ -140,119 +93,95 @@ int socket_to_target(const char* IP, int port) {
 }
 
 
-// ACTUAL API STARTS HERE
-json register_new_account(const string& password) {
-	/* Returns json containing ["id", "user_name", "tag"]. */
+int main(int argc, char* argv[]) {	
+	cout << "Starting sequence.";
 
-	cout << "register_new_account outbound with:" << endl;
-	cout << "    password: |" << password << "|" << endl;
+	string my_uuid;
+	string my_user_name;
+	string my_tag;
+	string password("test_password");
+	string desired_user_name1("test_user");
+	string desired_user_name2("test_user_again");
 
-	int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
+	json outbound_json;
+	json response_json;
+	string outbound_message;
+	string response_message;
 
+	// Establish connection (socket)
+	cout << "Establishing connection (socket).";
+	int my_socket = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
 	if (my_socket == -1) {
-		cerr << "register_new_account failed to connect." << endl;
-		throw string("register_new_account failed to connect.");
+		cerr << "Failed to establish connection (socket)." << endl;
+		return;
+	}
+	else {
+		cout << "Successfully connected on socket |" << my_socket << "|." << endl;
 	}
 
-	json json_message;
-	write_register_new_account_request(json_message, password);
+	// Establish connection (endpoint)
+	cout << "Establishing connection (endpoint).";
+	outbound_json.clear();
+	response_json.clear();
 
-	string server_send_string = json_message.dump();
-	server_send_string += '\n';
-	send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-	string server_response = read_packet(my_socket);
-	json server_response_json = json::parse(server_response);
+	outbound_json[adrestia_networking::HANDLER_KEY] = "establish_connection";
 
-	cout << "Server reports that it has made for us the following:" << endl;
-	cout << "    uuid: |" << server_response_json["uuid"] << "|" << endl;
-	cout << "    user_name: |" << server_response_json["user_name"] << "|" << endl;
-	cout << "    tag: |" << server_response_json["tag"] << "|" << endl;
-
-	return server_response_json;
-}
-
-
-bool verify_existing_account(const string& uuid, const string& password) {
-	cout << "verify_existing_account outbound with:" << endl;
-	cout << "    uuid: |" << uuid << "|" << endl;
-	cout << "    password: |" << password << "|" << endl;
-
-	int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
-	if (my_socket == -1) {
-		cerr << "verify_existing_account failed to connect." << endl;
-		throw string("verify_existing_account failed to connect.");
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to establish connection (endpoint)." << endl;
+		cerr << "establish_connection says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return;
+	}
+	else {
+		cout "establish_connection says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
 	}
 
-	json json_message;
-	write_verify_account_request(json_message, uuid, password);
+	// Create account
+	cout << "Registering new account." << endl;
+	outbound_json.clear();
+	response_json.clear();
 
-	string server_send_string = json_message.dump();
-	server_send_string += '\n';
-	send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-	string server_response = read_packet(my_socket);
-	json server_response_json = json::parse(server_response);
+	outbound_json[adrestia_networking::HANDLER_KEY] = "register_new_account";
+	outbound_json["password"] = password;
 
-	if (server_response_json["api_code"] == 200) {
-		cout << "verify_existing_account confirms credentials are valid." << endl;
-		return true;
-	} else if (server_response_json["api_code"] == 401) {
-		cout << "verify_existing_account confirms credentials are invalid." << endl;
-		return false;
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 201) {
+		cerr << "Failed to register new account." << endl;
+		cerr << "register_new_account says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return;
+	}
+	else {
+		cout "register_new_account says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		cout << "    uuid: |" << respone_json["uuid"] << "|" << endl;
+		cout << "    user_name: |" << respone_json["user_name"] << "|" << endl;
+		cout << "    tag: |" << response_json["tag"] << "|" << endl;
+
+		my_uuid = response_json["uuid"];
+		my_user_name = response_json["user_name"];
+		my_tag = response_json["tag"];
 	}
 
-	cout << "verify_existing_account returned unexpected result:" << endl;
-	cout << "    code: |" << server_response_json["api_code"] << "|" << endl;
-	cout << "    message: |" << server_response_json["api_message"] << "|" << endl;
-	return false;
-}
+	// Change user name
+	cout << "Changing user name." << endl;
+	
 
 
-json change_user_name(const string& uuid, const string& password, const string& new_user_name) {
-	/* Returns the server's response, which will contain key 'tag' if successful. */
-
-	cout << "change_user_name outbound with:" << endl;
-	cout << "    uuid: |" << uuid << "|" << endl;
-	cout << "    password: |" << password << "|" << endl;
-	cout << "    new_user_name: |" << new_user_name << "|" << endl;
-
-	int my_socket = socket_to_target(SERVER_IP.c_str(), SERVER_PORT);
-	if (my_socket == -1) {
-		cerr << "change_user_name failed to connect." << endl;
-		throw string("change_user_name failed to connect.");
-	}
-
-	json json_message;
-	write_change_user_name_request(json_message, uuid, password, new_user_name);
-
-	string server_send_string = json_message.dump();
-	server_send_string += '\n';
-	send(my_socket, server_send_string.c_str(), server_send_string.length(), MSG_NOSIGNAL);
-	string server_response = read_packet(my_socket);
-	json server_response_json = json::parse(server_response);
-
-	if (server_response_json["api_code"] == 201) {
-		cout << "change_user_name reports name has been successfully changed." << endl;
-		cout << "New tag: |" << server_response_json["tag"] << "|" << endl;
-		return server_response_json;
-	}
-	else if (server_response_json["api_code"] == 401) {
-		cout << "change_user_name reports that the uuid/password given was invalid." << endl;
-		return server_response_json;
-	}
-	cout << "change_user_name reported:" << endl;
-	cout << "    code: |" << server_response_json["code"] << "|" << endl;
-	cout << "    message: |" << server_response_json["message"] << "|" << endl;
-	return server_response_json;
-}
-
-// ACTUAL API ENDS HERE
-
-
-int main(int argc, char* argv[]) {
-	string password("blop");
-	string desired_user_name("stheno");
-
-	json new_account_info = register_new_account(password);
-	bool account_verification = verify_existing_account(new_account_info["uuid"], password);
-	json tag_json = change_user_name(new_account_info["uuid"], password, desired_user_name);
 }
