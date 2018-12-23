@@ -111,8 +111,8 @@ func make_spell_buttons(spells, show_stats = false, display_filter = null, enabl
 func close_tooltip():
 	if tooltip != null:
 		tooltip.get_parent().remove_child(tooltip)
-		emit_signal('tooltip_closed')
 		tooltip = null
+		emit_signal('tooltip_closed')
 
 func summon_tooltip(target, text):
 	close_tooltip()

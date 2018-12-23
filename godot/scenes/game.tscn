@@ -176,10 +176,11 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 margin_left = -270.0
-margin_top = -69.0
+margin_top = -229.0
 margin_right = 270.0
 margin_bottom = -69.0
-_sections_unfolded = [ "Anchor", "Margin", "Theme" ]
+rect_min_size = Vector2( 540, 160 )
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
 
 [node name="animation_player" type="AnimationPlayer" parent="ui" index="10"]
 

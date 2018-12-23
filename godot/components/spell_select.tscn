@@ -40,7 +40,7 @@ tracks/1/keys = {
 "values": [ 211.0, -161.0, -123.0 ]
 }
 
-[node name="spell_select" type="Control" index="0"]
+[node name="spell_select" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
