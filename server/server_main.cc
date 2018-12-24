@@ -142,7 +142,8 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					}
 				}
 				else {
-					// This is all authenticated functions.
+					// This is all authenticated functions. uuid will be added to client_json.
+					client_json["uuid"] = uuid;
 					requested_function(client_json, resp);
 				}
 			}

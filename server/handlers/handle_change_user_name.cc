@@ -20,8 +20,10 @@ int adrestia_networking::handle_change_user_name(const json& client_json, json& 
 	 *
 	 * Accepts keys from client:
 	 *     HANDLER_KEY: <this function>
-	 *     "uuid": The uuid to modify
 	 *     "user_name": The new user_name
+	 *
+	 * Keys inserted by babysitter:
+	 *     "uuid": The uuid to modify
 	 *
 	 * Responds to client with keys:
 	 *     HANDLER_KEY: <this function>
@@ -32,30 +34,23 @@ int adrestia_networking::handle_change_user_name(const json& client_json, json& 
 	 * Always returns 0.
 	 */
 
-	cout << "Triggered change_user_name.
+	cout << "Triggered change_user_name." << endl;
+	string uuid = client_json.at("uuid");
+	string new_user_name = client_json.at("new_user_name");
 
-	cout << "Triggered register_new_account." << endl;
-	string password = client_json.at("password");
+	cout << "Modifying uuid |" << uuid << "| to have user_name |" << user_name << "|..." << endl;
+	json new_account_info = adrestia_database::adjust_user_name_in_database(psql_connection, uuid, new_user_name);
 
-	cout << "Creating new account with params:" << endl;
-	cout << "    password: |" << password << "|" << endl;
-
-	pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
-	json new_account = adrestia_database::register_new_account_in_database(psql_connection, password);
-	delete psql_connection;
-
-	cout << "Created new account with:" << endl;
-	cout << "    uuid: |" << new_account["uuid"] << "|" << endl;
-	cout << "    user_name: |" << new_account["user_name"] << "|" << endl;
-	cout << "    tag: |" << new_account["tag"] << "|" << endl;
+	cout << "New account info is:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+	cout << "    user_name: |" << new_user_name << "|" << endl;
+	cout << "    tag: |" << new_account_info["tag"] << "|" << endl;
 
 	resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-	resp[adrestia_networking::CODE_KEY] = 201;
-	resp[adrestia_networking::MESSAGE_KEY] = "Created new account.";
-	resp["uuid"] = new_account["uuid"];
-	resp["user_name"] = new_account["user_name"];
-	resp["tag"] = new_account["tag"];
+	resp[adrestia_networking::CODE_KEY] = 200;
+	resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
+	resp["tag"] = new_account_info["tag"];
 
-	cout << "register_new_account concluded." << endl;
+	cout << "change_user_name concluded." << endl;
 	return 0;
 }

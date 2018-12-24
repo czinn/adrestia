@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
 	int my_socket = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
 	if (my_socket == -1) {
 		cerr << "Failed to establish connection (socket)." << endl;
-		return;
+		return 0;
 	}
 	else {
 		cout << "Successfully connected on socket |" << my_socket << "|." << endl;
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	outbound_json[adrestia_networking::HANDLER_KEY] = "establish_connection";
+	adrestia_networking::create_establish_connection_call(outbound_json);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
 		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
 		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
 		close(my_socket);
-		return;
+		return 0;
 	}
 	else {
 		cout "establish_connection says:" << endl;
@@ -185,8 +185,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	outbound_json[adrestia_networking::HANDLER_KEY] = "register_new_account";
-	outbound_json["password"] = password;
+	adrestia_networking::create_register_new_account_call(outbound_json, password)
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -199,7 +198,7 @@ int main(int argc, char* argv[]) {
 		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
 		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
 		close(my_socket);
-		return;
+		return 0;
 	}
 	else {
 		cout "register_new_account says:" << endl;
@@ -216,4 +215,102 @@ int main(int argc, char* argv[]) {
 
 	// Change user name
 	cout << "Changing user name." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_change_user_name_call(outbound_json, desired_user_name1)
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to change user name." << endl;
+		cerr << "change_user_name says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout "change_user_name says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		cout << "    tag: |" << response_json["tag"] << "|" << endl;
+
+		my_user_name = desired_user_name1;
+		my_tag = response_json["tag"];
+	}
+
+	// Terminate connection
+	cout << "Closing connection." << endl;
+	close(my_socket);
+
+	// Establish new connection
+	cout << "Establishing new connection (socket)..." << endl;
+	int my_socket = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
+	if (my_socket == -1) {
+		cerr << "Failed to establish connection (socket)." << endl;
+		return 0;
+	}
+	else {
+		cout << "Successfully connected on socket |" << my_socket << "|." << endl;
+	}
+
+	// Establish connection (endpoint)
+	cout << "Establishing connection (endpoint).";
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_establish_connection_call(outbound_json);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to establish connection (endpoint)." << endl;
+		cerr << "establish_connection says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout "establish_connection says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
+	// Authenticate
+	cout << "Attempting to authenticate with |" << my_uuid << ":" << password << "|..." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_authenticate_call(outbound_json, my_uuid, password);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to authenticate." << endl;
+		cerr << "authenticate says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout "authenticate says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
+	// Done.
+	cout << "Done!" << endl;
+	return 0;
 }

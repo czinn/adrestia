@@ -14,8 +14,28 @@ namespace adrestia_networking {
 
 	// Server-side handlers
 	int handle_floop(const json& client_json, json& resp);
+
 	int handle_establish_connection(const json& client_json, json& resp);
-	int handle_change_user_name(const json& client_json, json& resp);
+
 	int handle_register_new_account(const json& client_json, json& resp);
 	int handle_authenticate(const json& client_json, json& resp);
+
+	int handle_change_user_name(const json& client_json, json& resp);
+
+	// Calls
+	void create_floop_call(json& client_json);
+
+	void create_establish_connection_call(json& client_json);
+
+	void create_register_new_account_call(json& client_json,
+	                                      const std::string& password
+	                                     );
+	void create_authenticate_call(json& client_json,
+	                              const std::string& uuid,
+	                              const std::string& password
+	                             );
+
+	void create_change_user_name_call(json& client_json,
+	                                  const std::string& user_name
+	                                 );
 }
