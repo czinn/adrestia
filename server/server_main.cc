@@ -14,6 +14,7 @@
 #include <time.h>
 
 // System headers
+#include <iostream>
 #include <map>
 #include <string>
 using namespace std;
@@ -96,55 +97,71 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 			bool have_valid_function_to_call = true;
 			try {
 				client_json = json::parse(message);
-				requested_function_name = client_json.at(HANDLER_KEY_NAME);
+				requested_function_name = client_json.at(adrestia_networking::HANDLER_KEY);
 				adrestia_networking::request_handler requested_function = handler_map.at(requested_function_name);
 
 				if ((phase == 0) && (requested_function_name.compare("establish_connection") != 0)) {
-					cout << "[Server] received out-of-order request for function |" << requested_function_name << "|." << endl;
+					cout << "[Server] received out-of-order request for function |"
+					     << requested_function_name
+					     << "|."
+					     << endl;
 
 					resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 					resp[adrestia_networking::CODE_KEY] = 400;
-					resp[adrestia_networking::MESSAGE_KEY] = "received out-of-order request for function |" + requested_function_name + "|.";
-					have_valid_function_to_call = false;				
+					resp[adrestia_networking::MESSAGE_KEY] = "received out-of-order request for function |" +
+					                                         requested_function_name +
+					                                         "|.";
+					have_valid_function_to_call = false;
 				}
 				else if ((phase == 1) && !((requested_function_name.compare("register_new_account") == 0) ||
 					                       (requested_function_name.compare("authenticate") == 0)
 					                      )
 					    ) {
-					cout << "[Server] received out-of-order request for function |" << requested_function_name << "|." << endl;
+					cout << "[Server] received out-of-order request for function |"
+				         << requested_function_name << "|."
+				         << endl;
 
 					resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 					resp[adrestia_networking::CODE_KEY] = 400;
-					resp[adrestia_networking::MESSAGE_KEY] = "received out-of-order request for function |" + requested_function_name + "|.";
+					resp[adrestia_networking::MESSAGE_KEY] = "received out-of-order request for function |" + 
+					                                         requested_function_name +
+					                                         "|.";
 					have_valid_function_to_call = false;
 				}
 
-				// We have a function that we can actually work with...
-				cout << "[Server] received valid call for function |" << requested_function_name << "| in phase |" << phase << "|." << endl;
+				if (have_valid_function_to_call) {
+					// We have a function that we can actually work with...
+					cout << "[Server] received valid call for function |"
+					     << requested_function_name
+					     << "| in phase |"
+					     << phase
+					     << "|."
+					     << endl;
 
-				if (requested_function_name.compare("establish_connection") == 0) {
-					requested_function(client_json, resp);
-					phase = 1;
-				}
-				else if (requested_function_name.compare("register_new_account") == 0) {
-					requested_function(client_json, resp);
+					if (requested_function_name.compare("establish_connection") == 0) {
+						requested_function(client_json, resp);
+						phase = 1;
+					}
+					else if (requested_function_name.compare("register_new_account") == 0) {
+						requested_function(client_json, resp);
 
-					// This is a type of authentication (and it always succeeds)
-					uuid = resp["uuid"]
-					phase = 2;
-				}
-				else if (requested_function_name.compare("authenticate") == 0) {
-					int valid_authentication = requested_function(client_json, resp);
-
-					if (valid_authentication) {
-						uuid = client_json["uuid"];
+						// This is a type of authentication (and it always succeeds)
+						uuid = resp["uuid"];
 						phase = 2;
 					}
-				}
-				else {
-					// This is all authenticated functions. uuid will be added to client_json.
-					client_json["uuid"] = uuid;
-					requested_function(client_json, resp);
+					else if (requested_function_name.compare("authenticate") == 0) {
+						int valid_authentication = requested_function(client_json, resp);
+
+						if (valid_authentication) {
+							uuid = client_json["uuid"];
+							phase = 2;
+						}
+					}
+					else {
+						// This is all authenticated functions. uuid will be added to client_json.
+						client_json["uuid"] = uuid;
+						requested_function(client_json, resp);
+					}
 				}
 			}
 			catch (json::parse_error& e) {
@@ -159,15 +176,17 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 				// Does not contain all required fields
 				cout << "[Server] Client json did not have an expected key. " << e.what() << endl;
 				resp[adrestia_networking::HANDLER_KEY] = "generic_error";
-				resp[adretia_networking::CODE_KEY] = 400;
-				resp[adretia_networking::MESSAGE_KEY] = "Could not find an expected key: |" + e.what() + "|.";
+				resp[adrestia_networking::CODE_KEY] = 400;
+				resp[adrestia_networking::MESSAGE_KEY] = "Could not find an expected key: |" + string(e.what()) + "|.";
 			}
 			catch (out_of_range& oor) {
 				// Asked to access non-existent function
 				cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|" << endl;
 				resp[adrestia_networking::HANDLER_KEY] = "generic_error";
 				resp[adrestia_networking::CODE_KEY] = 400;
-				resp[adrestia_networking::MESSAGE_KEY] = "Asked to access non-existent endpoint |" + requested_function_name + "|.";
+				resp[adrestia_networking::MESSAGE_KEY] = "Asked to access non-existent endpoint |" +
+				                                         requested_function_name +
+				                                         "|.";
 			}
 
 			string response_string = resp.dump();
@@ -237,14 +256,19 @@ void adrestia_networking::listen_for_connections(int port) {
 
 int main(int na, char* arg[]) {
 	handler_map["floop"] = adrestia_networking::handle_floop;
-	handler_map["establish_connection"] = adrestia_networking::establish_connection;
+
+	handler_map["establish_connection"] = adrestia_networking::handle_establish_connection;
+
 	handler_map["register_new_account"] = adrestia_networking::handle_register_new_account;
 	handler_map["authenticate"] = adrestia_networking::handle_authenticate;
 
+	handler_map["change_user_name"] = adrestia_networking::handle_change_user_name;
+
+
 	const char* server_port_env = getenv("SERVER_PORT");
-	int port = adrestia_newtorking::DEFAULT_SERVER_PORT;
+	int port = adrestia_networking::DEFAULT_SERVER_PORT;
 	if (server_port_env) {
-		port = atoi(server_port_env)
+		port = atoi(server_port_env);
 	}
 
 	cout << "Listening for connections on port " << port << "." << endl;

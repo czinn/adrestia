@@ -11,6 +11,9 @@
 
 // System modules
 #include <cstdlib>  // getenv
+#include <iostream>
+#include <string>
+using namespace std;
 
 // JSON
 #include "../units_cpp/json.h"
@@ -53,7 +56,7 @@ json adrestia_database::adjust_user_name_in_database(
 	                           update_user_name_command
 	                          );
 	for (int i = 0; i < 1000; i += 1) {
-		string tag = adrestia_hexy::hex_urandom(TAG_LENGTH);
+		string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
 
 		pqxx::work insertion_transaction(psql_connection[0]);
 		try {
@@ -113,10 +116,10 @@ json adrestia_database::register_new_account_in_database(
 	cout << "    password: |" << password << "|" << endl;
 
 	// Get hash of salt and password
-	string salt = adrestia_hexy::hex_urandom(SALT_LENGTH);
+	string salt = adrestia_hexy::hex_urandom(adrestia_database::SALT_LENGTH);
 	string salt_and_password = salt + password;
 	const char* salt_and_password_c_str = salt_and_password.c_str();
-	unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
+	unsigned char* hash_of_salt_and_password = new unsigned char[adrestia_hexy::MAX_HASH_LENGTH];
 	unsigned int hash_of_salt_and_password_length;
 	adrestia_hexy::digest_message(salt_and_password_c_str,
 		                          salt_and_password.length(),
@@ -136,8 +139,8 @@ json adrestia_database::register_new_account_in_database(
 	                           insert_new_account_into_database_command
 	                          );
 	for (int i = 0; i < 1000; i += 1) {
-		string uuid = adrestia_hexy::hex_urandom(UUID_LENGTH);
-		string tag = adrestia_hexy::hex_urandom(TAG_LENGTH);
+		string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
+		string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
 
 		pqxx::work insertion_transaction(psql_connection[0]);
 		try {
@@ -207,11 +210,11 @@ bool adrestia_database::verify_existing_account_in_database(
 	const char* salt_and_password_c_str = salt_and_password.c_str();
 	unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
 	unsigned int hash_of_salt_and_password_length;
-	digest_message(salt_and_password_c_str,
-	               salt_and_password.length(),
-	               &hash_of_salt_and_password,
-	               &hash_of_salt_and_password_length
-	              );
+	adrestia_hexy::digest_message(salt_and_password_c_str,
+	                              salt_and_password.length(),
+	                              &hash_of_salt_and_password,
+	                              &hash_of_salt_and_password_length
+	                             );
 	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
 	                                 (size_t)hash_of_salt_and_password_length
 	                                );

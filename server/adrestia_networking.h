@@ -1,16 +1,28 @@
-#pragma once
+#ifndef ADRESTIA_NETWORKING_INCLUDE_GUARD
+#define ADRESTIA_NETWORKING_INCLUDE_GUARD
 
+// System modules
 #include <string>
+
+// JSON
+#include "../units_cpp/json.h"
+using json = nlohmann::json;
+
 
 namespace adrestia_networking {
 	const int DEFAULT_SERVER_PORT = 18677;
 	const int MESSAGE_MAX_BYTES = 32768;
 
-	const string HANDLER_KEY("server_handler_name");
-	const string CODE_KEY("api_code");
-	const string MESSAGE_KEY("message");
+	const std::string HANDLER_KEY("server_handler_name");
+	const std::string CODE_KEY("api_code");
+	const std::string MESSAGE_KEY("api_message");
 
 	typedef std::function<int(const json&, json&)> request_handler;
+
+	// Server functions
+	std::string read_message(int client_socket);
+	void babysit_client(int server_socket, int client_socket);
+	void listen_for_connections(int port);
 
 	// Server-side handlers
 	int handle_floop(const json& client_json, json& resp);
@@ -39,3 +51,5 @@ namespace adrestia_networking {
 	                                  const std::string& user_name
 	                                 );
 }
+
+#endif

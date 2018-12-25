@@ -9,8 +9,12 @@
 // Database
 #include <pqxx/pqxx>
 
+// System modules
+#include <iostream>
+using namespace std;
+
 // JSON
-#include "../units_cpp/json.h"
+#include "../../units_cpp/json.h"
 using json = nlohmann::json;
 
 
@@ -36,9 +40,10 @@ int adrestia_networking::handle_change_user_name(const json& client_json, json& 
 
 	cout << "Triggered change_user_name." << endl;
 	string uuid = client_json.at("uuid");
-	string new_user_name = client_json.at("new_user_name");
+	string new_user_name = client_json.at("user_name");
 
-	cout << "Modifying uuid |" << uuid << "| to have user_name |" << user_name << "|..." << endl;
+	cout << "Modifying uuid |" << uuid << "| to have user_name |" << new_user_name << "|..." << endl;
+	pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
 	json new_account_info = adrestia_database::adjust_user_name_in_database(psql_connection, uuid, new_user_name);
 
 	cout << "New account info is:" << endl;

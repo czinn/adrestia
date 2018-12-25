@@ -1,16 +1,17 @@
 /* Cryptography and ancillary functions */
 
 // Us
-#include "hexy.h"
+#include "adrestia_hexy.h"
 
 // Crypto modules
 #include <openssl/evp.h>
 
 // System modules
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string>
-
+using namespace std;
 
 void adrestia_hexy::print_hexy(const char* not_hexy, int length) {
 	/* @brief Outputs to cout the hexadecimal form of bytes contained in not_hexy. */
