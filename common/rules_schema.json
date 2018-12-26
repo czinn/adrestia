@@ -8,7 +8,8 @@
 		"stickies": {"type": "array", "items": {"$ref": "#/definitions/sticky"}},
 		"mana_cap": {"type": "integer", "minimum": 1},
 		"initial_mana_regen": {"type": "integer", "minimum": 1},
-		"initial_health": {"type": "integer", "minimum": 1}
+		"initial_health": {"type": "integer", "minimum": 1},
+		"spell_cap": {"type": "integer", "minimum": 1}
 	},
 	"required": ["spells", "books", "stickies", "mana_cap", "initial_mana_regen", "initial_health"],
 	"additionalProperties": false,

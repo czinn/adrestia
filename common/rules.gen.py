@@ -16,35 +16,36 @@ from book_refinement import book as book_refinement
 from book_tricks import book as book_tricks
 
 library: List[Book] = [
-    book_conjuration,
-    #book_conjuration_old,
-    book_regulation,
-    #book_regulation_old,
-    #book_contrition,
-    #book_enticement,
-    #book_refinement,
-    book_tricks,
+	book_conjuration,
+	#book_conjuration_old,
+	book_regulation,
+	#book_regulation_old,
+	#book_contrition,
+	#book_enticement,
+	#book_refinement,
+	book_tricks,
 ]
 
 for book in library:
-    for spell in book.spells:
-        spell.id_ = f'{book.id_}_{spell.sub_id}'
-        spell.book = book.id_
+	for spell in book.spells:
+		spell.id_ = f'{book.id_}_{spell.sub_id}'
+		spell.book = book.id_
 
 stickies_built = [deconstruct(sticky) for sticky in stickies_list]
 spells = deconstruct(
-    sum((book.spells for book in library), []),
-    { Sticky: lambda sticky: sticky.id_ }
+	sum((book.spells for book in library), []),
+	{ Sticky: lambda sticky: sticky.id_ }
 )
 books = deconstruct(library, {Spell: lambda spell: spell.id_})
 
 print(json.dumps({
-    'mana_cap': 10,
-    'initial_mana_regen': 5,
-    'initial_health': 25,
-    'stickies': stickies_built,
-    'spells': spells,
-    'books': books,
+	'mana_cap': 10,
+	'initial_mana_regen': 5,
+	'initial_health': 25,
+	'spell_cap': 3,
+	'stickies': stickies_built,
+	'spells': spells,
+	'books': books,
 }))
 
 print(f'We have {len(stickies_built)} stickies, {len(spells)} spells, and {len(books)} books.', file=sys.stderr)

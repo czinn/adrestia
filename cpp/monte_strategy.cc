@@ -138,7 +138,7 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 					if (!expanded[i] && turn_number == 0) {
 						// ...expand the node.
 						expanded[i] = true;
-						std::vector<GameAction> actions = v.sane_actions();
+						std::vector<GameAction> actions = v.legal_actions();
 						std::cout << "Generated " << actions.size() << " actions" << std::endl;
 						tree[view_hash] = TreeNode { 0, actions, std::vector<int>(actions.size()), std::vector<int>(actions.size()) };
 					} else {

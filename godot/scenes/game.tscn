@@ -49,7 +49,7 @@ tracks/2/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -69.0, 212.0 ]
+"values": [ -229.0, 72.0 ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("spell_select:margin_bottom")
@@ -61,7 +61,7 @@ tracks/3/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -69.0, 212.0 ]
+"values": [ -69.0, 232.0 ]
 }
 
 [node name="root" type="Node" index="0"]

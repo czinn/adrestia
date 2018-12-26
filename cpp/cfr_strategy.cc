@@ -154,7 +154,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 			if (it != action_map.end()) {
 				actions.push_back(&it->second);
 			} else {
-				action_map.emplace(view_hash, v.sane_actions());
+				action_map.emplace(view_hash, v.legal_actions());
 				actions.push_back(&action_map[view_hash]);
 			}
 		}

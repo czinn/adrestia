@@ -143,6 +143,7 @@ bool _simulate(
 	}
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		if (!state.is_valid_action(player_id, actions[player_id])) {
+			std::cout << "player " << player_id << " did a bad" << std::endl;
 			return false;
 		}
 	}
@@ -382,6 +383,10 @@ void GameState::apply_event(const json &event) {
 
 bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	// TODO: Return code or list of codes for why action isn't valid.
+	if (action.size() > rules.get_spell_cap()) {
+		std::cout << "too many actions" << std::endl;
+		return false;
+	}
 	const Player &player = players[player_id];
 	int mp_left = player.mp;
 	// After the player has a cast a tech spell this turn, this is set to the
@@ -391,19 +396,24 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	for (const auto &spell_id : action) {
 		auto [spell, book_idx] = player.find_spell(spell_id);
 		if (spell == nullptr) {
+			std::cout << "spell doesn't exist" << std::endl;
 			return false;
 		}
 		if (player.tech[book_idx] + (turn_tech == book_idx ? 1 : 0) < spell->get_tech()) {
+			std::cout << "not enough tech" << std::endl;
 			return false;
 		}
 		if (spell->is_tech_spell() && turn_tech != -1) {
+			std::cout << "already cast tech" << std::endl;
 			return false;
 		}
 		if (player.level() + (turn_tech != -1 ? 1 : 0) < spell->get_level()) {
+			std::cout << "not enough level" << std::endl;
 			return false;
 		}
 		mp_left -= spell->get_cost();
 		if (mp_left < 0) {
+			std::cout << "not enough mana" << std::endl;
 			return false;
 		}
 		if (spell->is_tech_spell()) {
