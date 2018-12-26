@@ -109,12 +109,14 @@ void _process_effect_queue(
 			for (const auto &e : generated_effects) {
 				append_to_effect_queue(next_effect_queue, e);
 			}
-			if (emit_events && !effect_instance.fizzles()) {
+			if (!effect_instance.fizzles()) {
 				effect_instance.apply(state.rules, target);
-				events_out.emplace_back(json{
-					{"type", "effect"},
-					{"effect", effect_instance}
-				});
+				if (emit_events) {
+					events_out.emplace_back(json{
+						{"type", "effect"},
+						{"effect", effect_instance}
+					});
+				}
 			}
 		}
 		std::swap(effect_queue, next_effect_queue);
