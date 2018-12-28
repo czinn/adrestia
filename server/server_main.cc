@@ -32,12 +32,14 @@ std::map<string, adrestia_networking::request_handler> handler_map;
 string read_message_buffer;
 
 
-string adrestia_networking::read_message (int client_socket) {
+string adrestia_networking::read_message (int client_socket, bool& timed_out) {
 	/* @brief Extracts the message currently waiting on the from the client's socket.
 	 *        Assumes message is terminated with a \n (if it is not, MESSAGE_MAX_BYTES will be read.
 	 */
 	// TODO: Timeouts
 	char buffer[MESSAGE_MAX_BYTES];
+
+	timed_out = false;
 
 	bool complete = read_message_buffer.find('\n') != string::npos;
 	while (!complete) {
@@ -50,6 +52,9 @@ string adrestia_networking::read_message (int client_socket) {
 		} else if (bytes_read == 0) {
 			close (client_socket);
 			throw connection_closed();
+		} else if (bytes_read == -1) {
+			timed_out = true;
+			complete = true;
 		} else {
 			cerr << "Error " << errno << "(" << strerror(errno) << ")" << endl;
 			throw socket_error();
@@ -88,10 +93,18 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 		json resp;
 		
 		while (true) {
-			resp.clear();
-			// read message
-			string message = read_message(client_socket);
+			// Do any pushes
+			cout << "BLEEP BLOOP THIS IS A TEST MESSAGE." << endl;
 
+			// read message
+			bool timed_out = false;
+			string message = read_message(client_socket, timed_out);
+
+			if (timed_out) {
+				continue;
+			}
+
+			resp.clear();
 			string requested_function_name;
 
 			bool have_valid_function_to_call = true;
@@ -211,6 +224,11 @@ void adrestia_networking::listen_for_connections(int port) {
 	struct sockaddr_in client_address;
 	socklen_t client_address_sizeof;
 
+	struct timeval receive_timeout_struct;
+	receive_timeout_struct.tv_sec = adrestia_networking::WAIT_FOR_COMMANDS_SECONDS;
+	struct timeval send_timeout_struct;
+	send_timeout_struct.tv_sec = adrestia_networking::TIMEOUT_SEND_SECONDS;
+
 	server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
 	server_address.sin_family = AF_INET;
@@ -227,6 +245,17 @@ void adrestia_networking::listen_for_connections(int port) {
 	while (true) {
 		client_address_sizeof = sizeof(client_address);
 		client_socket = accept(server_socket, (sockaddr*) &client_address, &client_address_sizeof);
+
+		// Configure our timeouts and keepalives
+		// TODO: KEEPALIVE
+		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&receive_timeout_struct, sizeof (struct timeval)) < 0) {
+			cerr << "ERROR on setsockopt for client socket (recieve timeout)!" << endl;
+			return;
+		}
+		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&send_timeout_struct, sizeof (struct timeval)) < 0) {
+			cerr << "ERROR on setsockopt for client socket (send timeout)!" << endl;
+			return;
+		}
 
 		pid_t pid = fork();
 		if (pid == 0) {

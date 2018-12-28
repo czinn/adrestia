@@ -13,6 +13,9 @@ namespace adrestia_networking {
 	const int DEFAULT_SERVER_PORT = 18677;
 	const int MESSAGE_MAX_BYTES = 32768;
 
+	const time_t WAIT_FOR_COMMANDS_SECONDS = 10;  // We wait for commands for this long
+	const time_t TIMEOUT_SEND_SECONDS = 30;  // When sending data to client, we assume connection dropped after this long
+
 	const std::string HANDLER_KEY("server_handler_name");
 	const std::string CODE_KEY("api_code");
 	const std::string MESSAGE_KEY("api_message");
@@ -20,7 +23,7 @@ namespace adrestia_networking {
 	typedef std::function<int(const json&, json&)> request_handler;
 
 	// Server functions
-	std::string read_message(int client_socket);
+	std::string read_message(int client_socket, bool& timed_out);
 	void babysit_client(int server_socket, int client_socket);
 	void listen_for_connections(int port);
 
