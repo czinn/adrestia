@@ -148,3 +148,7 @@ func tween(thing, to_pos, time):
 	var tw = Tweener.new(get_node('/root'))
 	tw.tween_to(thing, to_pos, time)
 	return tw
+
+func safe_disconnect(object, signal_, target, method):
+	if object.is_connected(signal_, target, method):
+		object.disconnect(signal_, target, method)

@@ -36,7 +36,7 @@ anti_aliasing = true
 anti_aliasing_size = 1
 _sections_unfolded = [ "Border", "Border Width", "Expand Margin", "Shadow" ]
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 

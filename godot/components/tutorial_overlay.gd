@@ -68,17 +68,40 @@ func show_tooltip(target, text):
 	g.summon_tooltip(target, text)
 	yield(g, 'tooltip_closed')
 
+func play_button_pressed_override(select_root):
+	# Check that book list contains Conjuration
+	var contains_conjuration = false
+	for book in select_root.chosen_books:
+		if book == null:
+			continue
+		if book.get_id() == "conjuration":
+			contains_conjuration = true
+			break
+	if contains_conjuration:
+		select_root.on_play_button_pressed()
+	else:
+		show_big_window('Look buddy, you need to include the [i]Book of Conjuration[/i] in your selection or this tutorial isn\'t going to work out.')
+
 func play_tutorial():
+	# Book Select
+
 	var selected_books_hbox = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
+	var select_root = yield(self.acquire_node(''), 'completed')
+	var play_button = yield(self.acquire_node('ui/play_button'), 'completed')
+	# Set up Play button override
+	g.safe_disconnect(play_button, 'pressed', select_root, 'on_play_button_pressed')
+	play_button.connect('pressed', self, 'play_button_pressed_override', [select_root])
+
 	yield(show_big_window('[b]Welcome to Adrestia![/b]\n\nIn Adrestia, players cast spells in order to reduce their opponent\'s health to zero. The first player to do so wins!'), 'completed')
 	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
 	yield(show_tooltip(books_hbox.get_child(0), 'This is a book. Each book contains four spells.\n\nEach player secretly chooses three books at the beginning of the game.'), 'completed')
 	yield(show_big_window('Choose a book by dragging it to one of the slots at the top.'), 'completed')
-	var root = yield(self.acquire_node(''), 'completed')
-	var book = yield(root, 'chose_book')[1]
+	var book = yield(select_root, 'chose_book')[1]
 	yield(show_big_window('The number in the blue icon shows how much each spell costs.\n\nYou can tap and hold a spell to see what it does.'), 'completed')
 	yield(show_big_window('The green book in the corner of each spell shows how much knowledge is required to cast the spell.\n\nYou can get up to one knowledge per turn in the book of your choice.'), 'completed')
-	yield(show_big_window('Finish choosing three books and tap the [b]Play[/b] button.'), 'completed')
+	yield(show_big_window('Finish choosing three books (including the [i]Book of Conjuration[/i]) and tap the [b]Play[/b] button.'), 'completed')
+
+	# First Turn
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
 	yield(show_big_window('Nice work! Let\'s take a look around the game screen.'), 'completed')
 	var my_stats = yield(self.acquire_node('ui/my_stats'), 'completed')
