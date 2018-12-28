@@ -80,7 +80,7 @@ func play_button_pressed_override(select_root):
 	if contains_conjuration:
 		select_root.on_play_button_pressed()
 	else:
-		show_big_window('Look buddy, you need to include the [i]Book of Conjuration[/i] in your selection or this tutorial isn\'t going to work out.')
+		show_big_window('You need to include the [i]Book of Conjuration[/i] in your selection for this tutorial.')
 
 func play_tutorial():
 	# Book Select
@@ -91,7 +91,7 @@ func play_tutorial():
 	# Set up Play button override
 	g.safe_disconnect(play_button, 'pressed', select_root, 'on_play_button_pressed')
 	play_button.connect('pressed', self, 'play_button_pressed_override', [select_root])
-
+	# Show information
 	yield(show_big_window('[b]Welcome to Adrestia![/b]\n\nIn Adrestia, players cast spells in order to reduce their opponent\'s health to zero. The first player to do so wins!'), 'completed')
 	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
 	yield(show_tooltip(books_hbox.get_child(0), 'This is a book. Each book contains four spells.\n\nEach player secretly chooses three books at the beginning of the game.'), 'completed')
@@ -102,6 +102,7 @@ func play_tutorial():
 	yield(show_big_window('Finish choosing three books (including the [i]Book of Conjuration[/i]) and tap the [b]Play[/b] button.'), 'completed')
 
 	# First Turn
+
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
 	yield(show_big_window('Nice work! Let\'s take a look around the game screen.'), 'completed')
 	var my_stats = yield(self.acquire_node('ui/my_stats'), 'completed')
