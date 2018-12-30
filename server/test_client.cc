@@ -316,6 +316,132 @@ int main(int argc, char* argv[]) {
 		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
 	}
 
+	// Matchmake (waiting)
+	cout << "Attempting to matchmake (waiting)..." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_matchmake_me_call(outbound_json);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to enter the matchmaking waiting list." << endl;
+		cerr << "matchmake_me says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout << "matchmake_me says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
+	// We must create a new account in order to be matchmade with the one we just entered.
+	cout << "Closing connection." << endl;
+	close(my_socket);
+
+	// Establish connection (socket)
+	cout << "Establishing connection (socket)." << endl;
+	my_socket = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
+	if (my_socket == -1) {
+		cerr << "Failed to establish connection (socket)." << endl;
+		return 0;
+	}
+	else {
+		cout << "Successfully connected on socket |" << my_socket << "|." << endl;
+	}
+
+	// Establish connection (endpoint)
+	cout << "Establishing connection (endpoint)." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_establish_connection_call(outbound_json);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to establish connection (endpoint)." << endl;
+		cerr << "establish_connection says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout << "establish_connection says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
+	// Create account
+	cout << "Registering new account." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_register_new_account_call(outbound_json, password);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 201) {
+		cerr << "Failed to register new account." << endl;
+		cerr << "register_new_account says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout << "register_new_account says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		cout << "    uuid: |" << response_json["uuid"] << "|" << endl;
+		cout << "    user_name: |" << response_json["user_name"] << "|" << endl;
+		cout << "    tag: |" << response_json["tag"] << "|" << endl;
+
+		my_uuid = response_json["uuid"];
+		my_user_name = response_json["user_name"];
+		my_tag = response_json["tag"];
+	}
+
+	// Matchmake (new game)
+	cout << "Attempting to matchmake (new game)..." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_matchmake_me_call(outbound_json);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 201) {
+		cerr << "Failed to be matchmade." << endl;
+		cerr << "matchmake_me says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket);
+		return 0;
+	}
+	else {
+		cout << "matchmake_me says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
 	// Done.
 	cout << "Done!" << endl;
 	return 0;

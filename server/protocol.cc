@@ -46,3 +46,8 @@ void adrestia_networking::create_change_user_name_call(json& client_json,
 	client_json["user_name"] = user_name;
 }
 
+
+void adrestia_networking::create_matchmake_me_call(json& client_json) {
+	client_json[adrestia_networking::HANDLER_KEY] = "matchmake_me";
+}
+

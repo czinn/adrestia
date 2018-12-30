@@ -18,6 +18,15 @@ namespace adrestia_database {
 	const int SALT_LENGTH = 16;
 	const int TAG_LENGTH = 8;
 	const int UUID_LENGTH = 32;
+	const int GAME_UID_LENGTH = 32;
+
+	/* Adds the user to the waiting list if there are no compatible waiters;
+	 *     otherwise, matches the user to a waiter.
+	 */
+	json matchmake_in_database(
+		pqxx::connection* psql_connection,
+		const std::string& uuid
+	);
 
 	/* Changes the user_name associated with the given uuid in the database.
 	 * Returns a json object with key 'tag' representing the tag.

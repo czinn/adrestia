@@ -36,6 +36,7 @@ namespace adrestia_networking {
 	int handle_authenticate(const json& client_json, json& resp);
 
 	int handle_change_user_name(const json& client_json, json& resp);
+	int matchmake_me(const json& client_json, json& resp);
 
 	// Calls
 	void create_floop_call(json& client_json);
@@ -53,6 +54,7 @@ namespace adrestia_networking {
 	void create_change_user_name_call(json& client_json,
 	                                  const std::string& user_name
 	                                 );
+	void create_matchmake_me_call(json& client_json);
 }
 
 #endif

@@ -93,8 +93,7 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 		json resp;
 		
 		while (true) {
-			// Do any pushes
-			cout << "BLEEP BLOOP THIS IS A TEST MESSAGE." << endl;
+			resp.clear();
 
 			// read message
 			bool timed_out = false;
@@ -102,9 +101,15 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 			if (timed_out) {
 				continue;
+				/*bool found_something = false;
+				found_something = adrestia_
+
+				string response_string = resp.dump();
+				response_string += '\n';
+				send(client_socket, response_string.c_str(), response_string.length(), MSG_NOSIGNAL);
+				*/
 			}
 
-			resp.clear();
 			string requested_function_name;
 
 			bool have_valid_function_to_call = true;
@@ -131,14 +136,17 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					                      )
 					    ) {
 					cout << "[Server] received out-of-order request for function |"
-				         << requested_function_name << "|."
+				         << requested_function_name
+				         << "| in phase |"
+				         << phase
+				         << "|"
 				         << endl;
 
 					resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 					resp[adrestia_networking::CODE_KEY] = 400;
 					resp[adrestia_networking::MESSAGE_KEY] = "received out-of-order request for function |" + 
 					                                         requested_function_name +
-					                                         "|.";
+					                                         "|";
 					have_valid_function_to_call = false;
 				}
 
@@ -153,6 +161,7 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 					if (requested_function_name.compare("establish_connection") == 0) {
 						requested_function(client_json, resp);
+						cout << "[Server] moving to phase 1." << endl;;
 						phase = 1;
 					}
 					else if (requested_function_name.compare("register_new_account") == 0) {
@@ -160,13 +169,15 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 						// This is a type of authentication (and it always succeeds)
 						uuid = resp["uuid"];
+						cout << "[Server] moving to phase 2 via register_new_account." << endl;
 						phase = 2;
 					}
 					else if (requested_function_name.compare("authenticate") == 0) {
 						int valid_authentication = requested_function(client_json, resp);
 
-						if (valid_authentication) {
+						if (valid_authentication == 0) {
 							uuid = client_json["uuid"];
+							cout << "[Server] moving to phase 2 via successful authenticate." << endl;
 							phase = 2;
 						}
 					}
@@ -292,6 +303,7 @@ int main(int na, char* arg[]) {
 	handler_map["authenticate"] = adrestia_networking::handle_authenticate;
 
 	handler_map["change_user_name"] = adrestia_networking::handle_change_user_name;
+	handler_map["matchmake_me"] = adrestia_networking::matchmake_me;
 
 
 	const char* server_port_env = getenv("SERVER_PORT");

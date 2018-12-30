@@ -20,6 +20,122 @@ using namespace std;
 using json = nlohmann::json;
 
 
+json adrestia_database::matchmake_in_database (
+	pqxx::connection* psql_connection,
+	const string& uuid
+) {
+	/* @brief Adds the user's uuid to the list of uuids waiting for matchmaking, if the user's uuid is not already
+	 *        there. If someone else is waiting for matchmaking, and the user can be matched with them, then
+	 *        a new game will be made including both players (and the waiter is removed).
+	 *
+	 * @param psql_connection: The pqxx PostgreSQL connection.
+	 * @param uuid: The uuid of the user making the matchmaking request.
+	 *
+	 * @exception string: In case of failing to create a game - likely due to being unable to generate a
+	 *            random game_uid that is not already in use.
+	 *
+	 * @returns: A json object containing the key "game_uid". If the game_uid is "", then no game was made
+	 *           and the given uuid is waiting for matchmaking. Otherwise, the associated value is the game_uid
+	 *           of the new game that was made.
+	 */
+
+	const string check_for_waiters_command = ""
+	"SELECT uuid"
+	"    FROM adrestia_match_waiters"
+	"    LIMIT 1"
+	"    FOR UPDATE"
+	";";
+
+	const string insert_waiter_command = ""
+	"INSERT INTO adrestia_match_waiters (uuid)"
+	"    VALUES ($1)"
+	";";
+
+	const string remove_waiter_command = ""
+	"DELETE FROM adrestia_match_waiters"
+	"    WHERE uuid = $1"
+	";";
+
+	const string find_game_uid_command = ""
+	"SELECT 1"
+	"    FROM adrestia_games"
+	"    WHERE game_uid = $1"
+	";";
+
+	const string create_game_command = ""
+	"INSERT INTO adrestia_games (game_uid, creator_uuid, involved_uuids, activity_state, player_states)"
+	"    VALUES ($1, $2, $3, 0, $4)"
+	";";
+
+	cout << "matchmake_in_database called with args:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+
+	psql_connection[0].prepare("check_for_waiters_command", check_for_waiters_command);
+	psql_connection[0].prepare("insert_waiter_command", insert_waiter_command);
+	psql_connection[0].prepare("remove_waiter_command", remove_waiter_command);
+	psql_connection[0].prepare("find_game_uid_command", find_game_uid_command);
+	psql_connection[0].prepare("create_game_command", create_game_command);
+
+	pqxx::work work_transaction(psql_connection[0]);
+
+	// Check if there are any waiters...
+	pqxx::result search_result = work_transaction.prepared("check_for_waiters_command").exec();
+	if (search_result.size() == 0) {
+		cout << "No possible matches are waiting. We shall become a waiter." << endl;
+		work_transaction.prepared("insert_waiter_command")(uuid).exec();
+
+		cout << "Commiting transaction." << endl;
+		work_transaction.commit();
+
+		json return_var;
+		return_var["game_uid"] = "";
+		return return_var;
+	}
+
+	string waiting_uuid = search_result[0]["uuid"].as<string>();
+	cout << "uuid |" << waiting_uuid << "| is a matching waiter; we will form a new game with them." << endl;
+
+	// Create game id
+	string game_uid = "";
+	for (int i = 0; i < 1000; i += 1) {
+		game_uid = adrestia_hexy::hex_urandom(adrestia_database::GAME_UID_LENGTH);
+
+		pqxx::result game_uid_search_result = work_transaction.prepared("find_game_uid_command")
+		                                                               (game_uid)
+		                                                               .exec();
+
+		if (game_uid_search_result.size() > 0) {
+			continue;
+		}
+		break;
+	}
+	if (game_uid.compare("") == 0) {
+		cerr << "Failed to create unique game id!" << endl;
+		throw string("Failed to create unique game id!");
+	}
+
+	string uuid_list = "{'" + uuid + "', '" + waiting_uuid + "'}";
+	string states_list = "{0, 0}";
+
+	// Create game
+	cout << "Creating game |" << game_uid << "|..." << endl;
+	work_transaction.prepared("create_game_command")
+	                         (game_uid)(uuid)(uuid_list)(states_list)
+	                         .exec();
+
+	// Remove waiting uuid
+	cout << "Removing waiting uuid |" << waiting_uuid << "|..." << endl;
+	work_transaction.prepared("remove_waiter_command")(waiting_uuid).exec();
+
+	// Commit
+	cout << "Committing transaction..." << endl;
+	work_transaction.commit();
+
+	json return_var;
+	return_var["game_uid"] = game_uid;
+	return return_var;
+}
+
 json adrestia_database::adjust_user_name_in_database(
 	pqxx::connection* psql_connection,
 	const string& uuid,
