@@ -10,6 +10,8 @@ onready var big_text_wnd = $nine_patch_rect
 onready var tree_poll_timer = $tree_poll_timer
 onready var big_text = $nine_patch_rect/margin_container/rich_text_label
 
+var finished_first_turn = false
+
 func _ready():
 	mouse_blocker.connect('gui_input', self, 'blocker_input')
 	tree_poll_timer.connect('timeout', self, 'timeout')
@@ -82,6 +84,23 @@ func play_button_pressed_override(select_root):
 	else:
 		show_big_window('You need to include the [i]Book of Conjuration[/i] in your selection for this tutorial.')
 
+func end_turn_button_pressed_override(game_root):
+	if finished_first_turn:
+		game_root.on_end_turn_button_pressed()
+		return
+
+	# Confirm that the player is doing the right first turn
+	var spells = game_root.spell_queue.spells
+	if len(spells) != 3 or \
+			spells[0] != 'conjuration_tech' or \
+			spells[1] != 'conjuration_shield_1' or \
+			spells[2] != 'conjuration_attack_1':
+		show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].')
+		game_root.spell_queue.spells = []
+		game_root.redraw()
+	else:
+		game_root.on_end_turn_button_pressed()
+
 func play_tutorial():
 	# Book Select
 
@@ -101,13 +120,33 @@ func play_tutorial():
 	yield(show_big_window('The green book in the corner of each spell shows how much knowledge is required to cast the spell.\n\nYou can get up to one knowledge per turn in the book of your choice.'), 'completed')
 	yield(show_big_window('Finish choosing three books (including the [i]Book of Conjuration[/i]) and tap the [b]Play[/b] button.'), 'completed')
 
-	# First Turn
+	# Game
 
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
+	var game_root = yield(self.acquire_node(''), 'completed')
+	var end_turn_button = yield(self.acquire_node('ui/end_turn_button'), 'completed')
+	# Override end turn button
+	g.safe_disconnect(end_turn_button, 'pressed', game_root, 'on_end_turn_button_pressed')
+	end_turn_button.connect('pressed', self, 'end_turn_button_pressed_override', [game_root])
+	# Show information
 	yield(show_big_window('Nice work! Let\'s take a look around the game screen.'), 'completed')
 	var my_stats = yield(self.acquire_node('ui/my_stats'), 'completed')
 	yield(show_tooltip(my_stats, 'Here is your remaining health and mana. The (+5) beside your mana shows you how much mana you get each turn. You can increase this with spells.'), 'completed')
 	yield(show_tooltip(spell_select, 'Here are your books. You can tap a book to see its spells.'), 'completed')
 	yield(show_tooltip(spell_select, 'The number on each book is how much knowledge you have of that book. You can increase your knowledge of a book by tapping the green arrow on the book.'), 'completed')
-	print('TODO: jim: continue the tutorial')
+	yield(show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].'), 'completed')
+	yield(game_root, 'turn_animation_finished')
+	finished_first_turn = true
+	yield(show_big_window('Nice job! So what happened? Your opponent cast two Flame Strikes, both of which were blocked by your shield, and your Flame Strike dealt three damage!'), 'completed')
+	yield(show_big_window('Alright, you\'re on your own now. Feel free to experiment, and good luck!'), 'completed')
+
+	# Results
+	var results_text = yield(self.acquire_node('ui/results_text'), 'completed')
+	var results_root = yield(self.acquire_node(''), 'completed')
+	if results_root.winner == 0:
+		yield(show_big_window('Nice job! You\'re ready to test your skills against a real opponent.'), 'completed')
+	else:
+		yield(show_big_window('Ooh, you didn\'t win. Maybe you should try the tutorial again.'), 'completed')
+
+	# Clean self up
 	self.get_parent().remove_child(self)

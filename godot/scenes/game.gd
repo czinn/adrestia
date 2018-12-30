@@ -1,5 +1,7 @@
 extends Node
 
+signal turn_animation_finished
+
 onready var g = get_node('/root/global')
 
 onready var spell_button_list_scene = preload('res://components/spell_button_list.tscn')
@@ -194,6 +196,8 @@ func on_event_timer_timeout():
 			if len(state.winners()) > 0:
 				print('Game is over')
 				g.scene_loader.goto_scene('game_results')
+			else:
+				emit_signal('turn_animation_finished')
 
 		return
 
