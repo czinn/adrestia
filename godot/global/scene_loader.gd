@@ -9,6 +9,7 @@ extends Node
 # - The giant hexagon covers the screen. During this time, we finish loading
 # the new scene if there's anything left to load.
 # - The old scene is deleted and the new scene is inserted into the tree.
+# - The giant hexagon rolls off the screen, revealing the new scene.
 
 # See
 # http://docs.godotengine.org/en/latest/tutorials/io/background_loading.html

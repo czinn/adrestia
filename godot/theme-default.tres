@@ -167,5 +167,5 @@ VScrollBar/styles/grabber_highlight = null
 VScrollBar/styles/grabber_pressed = null
 VScrollBar/styles/scroll = SubResource( 1 )
 VScrollBar/styles/scroll_focus = null
-_sections_unfolded = [ "HScrollBar/icons", "HScrollBar/styles", "Resource", "RichTextLabel", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
+_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "Resource", "RichTextLabel", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
 

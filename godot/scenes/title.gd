@@ -10,8 +10,11 @@ const RandomAiBackend = preload('res://backends/random_ai.gd')
 const TutorialBackend = preload('res://backends/tutorial.gd')
 
 func _ready():
-	print('Unique ID is:')
-	print(OS.get_unique_id())
+	var unique_id = OS.get_unique_id()
+	if unique_id:
+		print('Unique ID is: %s' % [unique_id])
+	else:
+		print('Failed to get unique id')
 	get_tree().set_auto_accept_quit(true)
 	get_tree().set_quit_on_go_back(true)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
