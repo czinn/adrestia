@@ -1,0 +1,6 @@
+server
+test_client
+.env
+*.d
+*.o
+*.os

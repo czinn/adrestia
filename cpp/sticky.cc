@@ -29,8 +29,8 @@ std::string Sticky::get_id() const { return id; }
 std::string Sticky::get_name() const { return name; }
 std::string Sticky::get_text() const { return text; }
 StickyKind Sticky::get_kind() const { return kind; }
-const std::vector<Effect> &Sticky::get_effects() const { return effects; }
-bool Sticky::get_trigger_inbound() const { return trigger_inbound; }
+bool Sticky::get_stacks() const { return stacks; }
+const std::vector<Effect> &Sticky::get_effects() const { return effects; } bool Sticky::get_trigger_inbound() const { return trigger_inbound; }
 
 //------------------------------------------------------------------------------
 // PREDICATES
@@ -56,6 +56,12 @@ void from_json(const json &j, Sticky &sticky) {
 	sticky.name = j.at("name");
 	sticky.text = j.at("text");
 	sticky.kind = j.at("kind");
+	if (j.find("stacks") != j.end()) {
+		sticky.stacks = j.at("stacks");
+	} else {
+		sticky.stacks = false;
+	}
+	sticky.effects.clear();
 	if (j.find("effects") != j.end()) {
 		for (auto it = j.at("effects").begin(), end = j.at("effects").end(); it != end; it++) {
 			sticky.effects.push_back(*it);
@@ -80,6 +86,9 @@ void to_json(json &j, const Sticky &sticky) {
 	j["name"] = sticky.name;
 	j["text"] = sticky.text;
 	j["kind"] = sticky.kind;
+	if (sticky.stacks) {
+		j["stacks"] = sticky.stacks;
+	}
 	if (sticky.effects.size() != 0) {
 		j["effects"] = sticky.effects;
 	}

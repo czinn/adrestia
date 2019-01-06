@@ -31,8 +31,10 @@ GameState::GameState(const GameRules &rules, const json &j)
 	}
 }
 
-GameState::GameState(const GameView &view, std::vector<int> &tech,
-		std::vector<const Book*> &books)
+GameState::GameState(
+		const GameView &view,
+		const std::vector<int> &tech,
+		const std::vector<const Book*> &books)
 	: history(view.history)
 	, players(view.players)
 	, rules(view.rules) {
@@ -107,16 +109,21 @@ void _process_effect_queue(
 			for (const auto &e : generated_effects) {
 				append_to_effect_queue(next_effect_queue, e);
 			}
-			effect_instance.apply(state.rules, target);
-			if (emit_events && !effect_instance.fizzles()) {
-				events_out.emplace_back(json{
-					{"type", "effect"},
-					{"effect", effect_instance}
-				});
+			if (!effect_instance.fizzles()) {
+				effect_instance.apply(state.rules, target);
+				if (emit_events) {
+					events_out.emplace_back(json{
+						{"type", "effect"},
+						{"effect", effect_instance}
+					});
+				}
 			}
 		}
 		std::swap(effect_queue, next_effect_queue);
 		next_effect_queue->clear();
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "effect_queue_cleared"}});
+		}
 	}
 }
 
@@ -136,6 +143,7 @@ bool _simulate(
 	}
 	for (size_t player_id = 0; player_id < players.size(); player_id++) {
 		if (!state.is_valid_action(player_id, actions[player_id])) {
+			std::cout << "player " << player_id << " did a bad" << std::endl;
 			return false;
 		}
 	}
@@ -155,13 +163,20 @@ bool _simulate(
 	std::deque<EffectInstance> *next_effect_queue = &queue2;
 	for (size_t spell_idx = 0; spell_idx < max_action_length; spell_idx++) {
 		std::vector<const Spell *> spells_in_flight(players.size(), nullptr);
+
+		// Tick down stickies that last for some number of steps.
+		for (size_t player_id = 0; player_id < players.size(); player_id++) {
+			auto &player = players[player_id];
+			emit_events ? player.subtract_step(events_out) : player.subtract_step();
+		}
+
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "step_stickies_ticked"}});
+		}
 		
 		// Fire spells, putting them in flight.
 		for (size_t player_id = 0; player_id < players.size(); player_id++) {
 			auto &caster = players[player_id];
-
-			// Tick down stickies that last for some number of steps.
-			emit_events ? caster.subtract_step(events_out) : caster.subtract_step();
 
 			if (spell_idx >= actions[player_id].size()) continue;
 
@@ -172,6 +187,7 @@ bool _simulate(
 						{"type", "fire_spell"},
 						{"player", player_id},
 						{"spell", spell.get_id()},
+						{"index", spell_idx},
 						{"success", true}
 					});
 				}
@@ -188,10 +204,15 @@ bool _simulate(
 						{"type", "fire_spell"},
 						{"player", player_id},
 						{"spell", spell.get_id()},
+						{"index", spell_idx},
 						{"success", false}
 					});
 				}
 			}
+		}
+
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "spells_fired"}});
 		}
 
 		// Process effects triggered by spells.
@@ -212,6 +233,7 @@ bool _simulate(
 					if (emit_events) {
 						events_out.emplace_back(json{
 							{"type", "spell_countered"},
+							{"index", spell_idx},
 							{"player", player_id},
 						});
 					}
@@ -230,8 +252,13 @@ bool _simulate(
 			}
 			events_out.emplace_back(json{
 				{"type", "spell_hit"},
+				{"index", spell_idx},
 				{"caster", player_id},
 			});
+		}
+
+		if (emit_events) {
+			events_out.emplace_back(json{{"type", "time_point"}, {"point", "spells_hit_or_countered"}});
 		}
 
 		// Process effects created by spells.
@@ -307,7 +334,7 @@ void GameState::apply_event(const json &event) {
 				{
 					StickyInvoker sticky_invoker = effect.at("sticky");
 					const Spell &spell = rules.get_spell(effect.at("spell_id"));
-					player.stickies.push_back(
+					player.add_sticky(
 							StickyInstance(
 								spell,
 								rules.get_sticky(sticky_invoker.get_sticky_id()),
@@ -345,6 +372,8 @@ void GameState::apply_event(const json &event) {
 		} else if (type == "sticky_expired") {
 			players[player_id].stickies.erase(it);
 		}
+	} else if (type == "time_point") {
+		// State is unchanged, this event is used only for animation.
 	} else {
 		// We should be handling all event types.
 		std::cout << type << std::endl;
@@ -354,6 +383,10 @@ void GameState::apply_event(const json &event) {
 
 bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	// TODO: Return code or list of codes for why action isn't valid.
+	if (action.size() > rules.get_spell_cap()) {
+		std::cout << "too many actions" << std::endl;
+		return false;
+	}
 	const Player &player = players[player_id];
 	int mp_left = player.mp;
 	// After the player has a cast a tech spell this turn, this is set to the
@@ -363,19 +396,24 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	for (const auto &spell_id : action) {
 		auto [spell, book_idx] = player.find_spell(spell_id);
 		if (spell == nullptr) {
+			std::cout << "spell doesn't exist" << std::endl;
 			return false;
 		}
 		if (player.tech[book_idx] + (turn_tech == book_idx ? 1 : 0) < spell->get_tech()) {
+			std::cout << "not enough tech" << std::endl;
 			return false;
 		}
 		if (spell->is_tech_spell() && turn_tech != -1) {
+			std::cout << "already cast tech" << std::endl;
 			return false;
 		}
 		if (player.level() + (turn_tech != -1 ? 1 : 0) < spell->get_level()) {
+			std::cout << "not enough level" << std::endl;
 			return false;
 		}
 		mp_left -= spell->get_cost();
 		if (mp_left < 0) {
+			std::cout << "not enough mana" << std::endl;
 			return false;
 		}
 		if (spell->is_tech_spell()) {

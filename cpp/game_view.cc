@@ -72,7 +72,7 @@ void GameView::generate_actions(
 	const Player &p = players[view_player_id];
 	actions.push_back(current);
 	// If we've already cast the max number of spells this turn, we're done.
-	if (current.size() >= 3) {
+	if (current.size() >= rules.get_spell_cap()) {
 		return;
 	}
 	// If we haven't built a tech, we can build a tech.
@@ -119,7 +119,7 @@ GameAction GameView::random_action(std::mt19937 &gen) const {
 	const Player &p = players[view_player_id];
 	int mana = p.mp;
 	int total_spells = 0;
-	while (mana > 0 && total_spells < 3) {
+	while (mana > 0 && total_spells < rules.get_spell_cap()) {
 		int level = p.level() + (turn_tech != -1 ? 1 : 0);
 		std::string chosen_spell = "";
 		int spell_count = 1;
@@ -133,20 +133,21 @@ GameAction GameView::random_action(std::mt19937 &gen) const {
 					spell_count++;
 					if (gen() % spell_count == 0) {
 						chosen_spell = spell_id;
-						mana -= spell.get_cost();
-						if (spell.is_tech_spell()) {
-							turn_tech = i;
-						}
 					}
 				}
 			}
 		}
 		if (chosen_spell == "") break;
 		a.push_back(chosen_spell);
+		const Spell &spell = rules.get_spell(chosen_spell);
+		mana -= spell.get_cost();
+		if (spell.is_tech_spell()) {
+			turn_tech = p.find_book_idx(spell.get_book());
+		}
 		total_spells++;
 	}
-	// If tech_turn is still -1, choose a random new tech anyway
-	if (turn_tech == -1) {
+	// If tech_turn is still -1 and we have space, choose a random new tech
+	if (turn_tech == -1 && total_spells < rules.get_spell_cap()) {
 		a.push_back(p.books[gen() % p.books.size()]->get_id() + "_tech");
 	}
 	return a;

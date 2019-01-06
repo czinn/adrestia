@@ -2,6 +2,7 @@
 
 #include "player.h"
 #include "game_rules.h"
+#include "game_view.h"
 
 #define CLASSNAME GameState
 
@@ -12,6 +13,8 @@ namespace godot {
 
 	void CLASSNAME::_register_methods() {
 		REGISTER_METHOD(init)
+		REGISTER_METHOD(clone)
+		REGISTER_METHOD(of_game_view)
 		REGISTER_METHOD(simulate)
 		REGISTER_METHOD(simulate_events)
 		REGISTER_METHOD(apply_event)
@@ -37,6 +40,18 @@ namespace godot {
 		set_ptr(new ::GameState(*_rules->_ptr, _books));
 	}
 
+	void CLASSNAME::clone(Variant state) {
+		auto *_state = godot::as<GameState>(state);
+		set_ptr(new ::GameState(*_state->_ptr));
+	}
+
+	void CLASSNAME::of_game_view(Variant view) {
+		auto *_view = godot::as<GameView>(view);
+		::GameView &v = *_view->_ptr;
+		size_t i = v.view_player_id;
+		set_ptr(new ::GameState(v, v.players[i].tech, v.players[i].books));
+	}
+
 	bool CLASSNAME::is_valid_action(int player_id, Variant action) const {
 		::GameAction action_;
 		of_godot_variant(action, &action_);
@@ -54,17 +69,12 @@ namespace godot {
 		std::vector<nlohmann::json> events_out;
 		of_godot_variant(actions, &actions_);
 		_ptr->simulate(actions_, events_out);
-		Array a;
-		for (const auto &it : events_out) {
-			a.append(JSON::parse(it.dump().c_str()));
-		}
-		return a;
+		return to_godot_variant(events_out, owner);
 	}
 
 	void CLASSNAME::apply_event(Variant event) {
-		std::string s;
-		of_godot_variant(godot::JSON::print(event), &s);
-		nlohmann::json j = nlohmann::json::parse(s);
+		nlohmann::json j;
+		of_godot_variant(event, &j);
 		_ptr->apply_event(j);
 	}
 

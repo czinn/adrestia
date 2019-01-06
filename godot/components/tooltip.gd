@@ -7,9 +7,11 @@ onready var ninepatch = $background/nine_patch_rect
 onready var label = $background/nine_patch_rect/rich_text_label
 onready var triangle = $background/triangle
 
-var text = null setget set_text
-var x = 0
-var y = 0
+# TODO: jim: I tried to make tooltips editable in the editor but couldn't
+# figure out how to make them update their appearance.
+export(String, MULTILINE) var text = '' setget set_text
+export(int) var x = 0
+export(int) var y = 0
 var point_down = true
 
 # reasoning: triangle height is 20
@@ -18,7 +20,7 @@ var point_down = true
 const triangle_shift = 27
 
 # TODO: jim: autodetect this
-const line_height = 31
+const line_height = 26
 
 func _ready():
 	redraw()
@@ -83,4 +85,4 @@ func redraw():
 		else:
 			background.margin_top = y
 			background.margin_bottom = y + height
-		yield(get_tree(), 'idle_frame')
+		get_tree() && yield(get_tree(), 'idle_frame')

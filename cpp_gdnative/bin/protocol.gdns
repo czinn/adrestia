@@ -1,0 +1,11 @@
+[gd_resource type="NativeScript" load_steps=2 format=2]
+
+[ext_resource path="res://native/adrestia.gdnlib" type="GDNativeLibrary" id=1]
+
+[resource]
+
+resource_name = "protocol"
+class_name = "Protocol"
+library = ExtResource( 1 )
+_sections_unfolded = [ "Resource" ]
+

@@ -1,11 +1,20 @@
 extends Node
 
-# A bit heavy-handed, but opens up the possibility for sick scene-loading
-# transitions.
+# We use this instead of [get_tree().change_scene()] for the sick scene-loading
+# transition.
+# How it works:
+# - Scene change is requested
+# - A giant hexagon starts to roll into the screen. In parallel, we start
+# loading the new scene's resources.
+# - The giant hexagon covers the screen. During this time, we finish loading
+# the new scene if there's anything left to load.
+# - The old scene is deleted and the new scene is inserted into the tree.
+# - The giant hexagon rolls off the screen, revealing the new scene.
 
 # See
 # http://docs.godotengine.org/en/latest/tutorials/io/background_loading.html
 
+onready var g = get_node('/root/global')
 onready var root = get_tree().get_root()
 const transition_scene = preload('res://components/transition_bg.tscn')
 var scene_holder
@@ -48,6 +57,7 @@ func _process(time):
 			break
 
 func goto_scene(scene_name):
+	g.close_tooltip()
 	loader = ResourceLoader.load_interactive('res://scenes/%s.tscn' % [scene_name])
 	set_process(true)
 	transition.visible = true

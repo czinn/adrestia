@@ -14,6 +14,7 @@ LOCAL_LDLIBS := -llog
 
 LOCAL_SRC_FILES := $(wildcard $(abspath $(LOCAL_PATH)/../src/*.cpp))
 LOCAL_SRC_FILES += $(wildcard $(abspath $(LOCAL_PATH)/../../cpp/*.cc))
+LOCAL_SRC_FILES += $(abspath $(LOCAL_PATH)/../../server/protocol.cc)
 
 LOCAL_STATIC_LIBRARIES += godot-cpp
 

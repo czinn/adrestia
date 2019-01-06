@@ -79,27 +79,66 @@ size_t Player::find_book_idx(const std::string &book_id) const {
 }
 
 template<bool emit_events>
+void _iterate_stickies(
+		Player &p,
+		std::function<bool(StickyInstance &, size_t)> f,
+		bool emit_duration_changes,
+		std::vector<json> &events_out) {
+	auto sticky = p.stickies.begin();
+	size_t sticky_index = 0;
+	while (sticky != p.stickies.end()) {
+		Duration initial_duration = sticky->remaining_duration;
+		bool keep_going = f(*sticky, sticky_index);
+		if (!sticky->is_active()) {
+			sticky = p.stickies.erase(sticky);
+			if (emit_events) {
+				events_out.emplace_back(json{
+					{"type", "sticky_expired"},
+					{"player", p.id},
+					{"sticky_index", sticky_index}
+				});
+			}
+			sticky_index--;
+		} else {
+			if (emit_events && emit_duration_changes &&
+					!(sticky->remaining_duration == initial_duration)) {
+				events_out.emplace_back(json{
+					{"type", "sticky_duration_changed"},
+					{"player", p.id},
+					{"sticky_index", sticky_index},
+					{"duration", sticky->remaining_duration}
+				});
+			}
+			sticky++;
+		}
+		if (!keep_going) {
+			break;
+		}
+		sticky_index++;
+	}
+}
+
+template<bool emit_events>
 std::vector<EffectInstance> _pipe_effect(
 		Player &p,
 		EffectInstance &effect,
 		bool inbound,
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
-	size_t sticky_index = 0;
-	for (auto &sticky : p.stickies) {
-		if (sticky.sticky.triggers_for_effect(effect, inbound)) {
-			std::vector<EffectInstance> new_effects =
-				emit_events ?
-				sticky.apply_to_effect(p.id, effect, sticky_index, events_out) :
-				sticky.apply_to_effect(p.id, effect);
-			std::copy(new_effects.begin(), new_effects.end(),
-					std::back_inserter(generated_effects));
-			if (effect.fizzles()) {
-				break;
-			}
-		}
-		sticky_index++;
-	}
+	_iterate_stickies<emit_events>(p, [&](auto &sticky, size_t sticky_index) {
+				if (sticky.sticky.triggers_for_effect(effect, inbound)) {
+					std::vector<EffectInstance> new_effects =
+						emit_events ?
+						sticky.apply_to_effect(p.id, effect, sticky_index, events_out) :
+						sticky.apply_to_effect(p.id, effect);
+					std::copy(new_effects.begin(), new_effects.end(),
+							std::back_inserter(generated_effects));
+					if (effect.fizzles()) {
+						return false;
+					}
+				}
+				return true;
+			}, false, events_out);
 	return generated_effects;
 }
 
@@ -123,18 +162,17 @@ std::vector<EffectInstance> _pipe_spell(
 		const Spell &spell,
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
-	size_t sticky_index = 0;
-	for (auto &sticky : p.stickies) {
-		if (sticky.sticky.triggers_for_spell(spell)) {
-			std::vector<EffectInstance> new_effects =
-				emit_events ?
-				sticky.apply_to_spell(p.id, spell, sticky_index, events_out) :
-				sticky.apply_to_spell(p.id, spell);
-			std::copy(new_effects.begin(), new_effects.end(),
-					std::back_inserter(generated_effects));
-		}
-		sticky_index++;
-	}
+	_iterate_stickies<emit_events>(p, [&](auto &sticky, size_t sticky_index) {
+				if (sticky.sticky.triggers_for_spell(spell)) {
+					std::vector<EffectInstance> new_effects =
+						emit_events ?
+						sticky.apply_to_spell(p.id, spell, sticky_index, events_out) :
+						sticky.apply_to_spell(p.id, spell);
+					std::copy(new_effects.begin(), new_effects.end(),
+							std::back_inserter(generated_effects));
+				}
+				return true;
+			}, false, events_out);
 	return generated_effects;
 }
 
@@ -155,18 +193,17 @@ std::vector<EffectInstance> _pipe_turn(
 		Player &p,
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
-	size_t sticky_index = 0;
-	for (auto &sticky : p.stickies) {
-		if (sticky.sticky.triggers_at_end_of_turn()) {
-			std::vector<EffectInstance> new_effects =
-				emit_events ?
-				sticky.apply_to_turn(p.id, sticky_index, events_out) :
-				sticky.apply_to_turn(p.id);
-			std::copy(new_effects.begin(), new_effects.end(),
-					std::back_inserter(generated_effects));
-		}
-		sticky_index++;
-	}
+	_iterate_stickies<emit_events>(p, [&](auto &sticky, size_t sticky_index) {
+				if (sticky.sticky.triggers_at_end_of_turn()) {
+					std::vector<EffectInstance> new_effects =
+						emit_events ?
+						sticky.apply_to_turn(p.id, sticky_index, events_out) :
+						sticky.apply_to_turn(p.id);
+					std::copy(new_effects.begin(), new_effects.end(),
+							std::back_inserter(generated_effects));
+				}
+				return true;
+			}, false, events_out);
 	return generated_effects;
 }
 
@@ -182,34 +219,20 @@ std::vector<EffectInstance> Player::pipe_turn(
 
 template<bool emit_events>
 void _subtract_step(Player &p, std::vector<json> &events_out) {
-	auto sticky = p.stickies.begin();
-	size_t sticky_index = 0;
-	while (sticky != p.stickies.end()) {
-		Duration initial_duration = sticky->remaining_duration;
-		sticky->remaining_duration.subtract_step();
-		if (!sticky->remaining_duration.is_active()) {
-			sticky = p.stickies.erase(sticky);
-			if (emit_events) {
-				events_out.emplace_back(json{
-					{"type", "sticky_expired"},
-					{"player", p.id},
-					{"sticky_index", sticky_index}
-				});
-			}
-			sticky_index--;
-		} else {
-			sticky++;
-			if (emit_events && !(sticky->remaining_duration == initial_duration)) {
-				events_out.emplace_back(json{
-					{"type", "sticky_duration_changed"},
-					{"player", p.id},
-					{"sticky_index", sticky_index},
-					{"duration", sticky->remaining_duration}
-				});
-			}
-		}
-		sticky_index++;
-	}
+	_iterate_stickies<emit_events>(p, [&](auto &sticky, size_t sticky_index) {
+				Duration initial_duration = sticky.remaining_duration;
+				sticky.remaining_duration.subtract_step();
+				if (emit_events && sticky.remaining_duration.is_active() &&
+						!(sticky.remaining_duration == initial_duration)) {
+					events_out.emplace_back(json{
+						{"type", "sticky_duration_changed"},
+						{"player", p.id},
+						{"sticky_index", sticky_index},
+						{"duration", sticky.remaining_duration}
+					});
+				}
+				return true;
+			}, true, events_out);
 }
 
 void Player::subtract_step() {
@@ -223,34 +246,20 @@ void Player::subtract_step(std::vector<json> &events_out) {
 
 template<bool emit_events>
 void _subtract_turn(Player &p, std::vector<json> &events_out) {
-	auto sticky = p.stickies.begin();
-	size_t sticky_index = 0;
-	while (sticky != p.stickies.end()) {
-		Duration initial_duration = sticky->remaining_duration;
-		sticky->remaining_duration.subtract_turn();
-		if (!sticky->remaining_duration.is_active()) {
-			sticky = p.stickies.erase(sticky);
-			if (emit_events) {
-				events_out.emplace_back(json{
-					{"type", "sticky_expired"},
-					{"player", p.id},
-					{"sticky_index", sticky_index}
-				});
-			}
-			sticky_index--;
-		} else {
-			sticky++;
-			if (emit_events && !(sticky->remaining_duration == initial_duration)) {
-				events_out.emplace_back(json{
-					{"type", "sticky_duration_changed"},
-					{"player", p.id},
-					{"sticky_index", sticky_index},
-					{"duration", sticky->remaining_duration}
-				});
-			}
-		}
-		sticky_index++;
-	}
+	_iterate_stickies<emit_events>(p, [&](auto &sticky, size_t sticky_index) {
+				Duration initial_duration = sticky.remaining_duration;
+				sticky.remaining_duration.subtract_turn();
+				if (emit_events && sticky.remaining_duration.is_active() &&
+						!(sticky.remaining_duration == initial_duration)) {
+					events_out.emplace_back(json{
+						{"type", "sticky_duration_changed"},
+						{"player", p.id},
+						{"sticky_index", sticky_index},
+						{"duration", sticky.remaining_duration}
+					});
+				}
+				return true;
+			}, true, events_out);
 }
 
 void Player::subtract_turn() {
@@ -260,6 +269,27 @@ void Player::subtract_turn() {
 
 void Player::subtract_turn(std::vector<json> &events_out) {
 	return _subtract_turn<true>(*this, events_out);
+}
+
+void Player::add_sticky(const StickyInstance &sticky) {
+	// TODO: charles: Stacking is disabled until we can emit a different event.
+	// Really, I want to make a separate value called "stacks" instead of reusing
+	// quantity and clean up the logic a bit.
+	if (!sticky.sticky.get_stacks() || true) {
+		// Just add it.
+		stickies.push_back(sticky);
+	} else {
+		// Try to find a sticky on which this one can stack.
+		for (auto &it : stickies) {
+			if (it.sticky.get_id() == sticky.sticky.get_id() &&
+					it.remaining_duration == sticky.remaining_duration) {
+				it.amount++;
+				return;
+			}
+		}
+		// Otherwise, just add it.
+		stickies.push_back(sticky);
+	}
 }
 
 //------------------------------------------------------------------------------

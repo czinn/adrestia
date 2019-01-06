@@ -1,12 +1,70 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scenes/game.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
-[ext_resource path="res://components/spell_list.tscn" type="PackedScene" id=3]
-[ext_resource path="res://components/player_stats.tscn" type="PackedScene" id=4]
-[ext_resource path="res://art-built/button-cast.png" type="Texture" id=5]
+[ext_resource path="res://components/player_stats.tscn" type="PackedScene" id=3]
+[ext_resource path="res://components/spell_list.tscn" type="PackedScene" id=4]
+[ext_resource path="res://components/sticky_list.tscn" type="PackedScene" id=5]
+[ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=6]
+[ext_resource path="res://art-built/button-cast.png" type="Texture" id=7]
+[ext_resource path="res://components/spell_select.tscn" type="PackedScene" id=8]
 
-[node name="root" type="Node" index="0"]
+[sub_resource type="Animation" id=1]
+
+resource_name = "end_turn"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("end_turn_button:margin_left")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -125.0, 41.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("end_turn_button:margin_right")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -21.0, 145.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("spell_select:margin_top")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -229.0, 72.0 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("spell_select:margin_bottom")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -69.0, 232.0 ]
+}
+
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -25,130 +83,77 @@ size_flags_vertical = 1
 theme = ExtResource( 2 )
 _sections_unfolded = [ "Mouse", "Theme" ]
 
-[node name="spell_queue" parent="ui" index="0" instance=ExtResource( 3 )]
+[node name="enemy_stats" parent="ui" index="0" instance=ExtResource( 3 )]
+
+margin_left = 10.0
+margin_right = -10.0
+_sections_unfolded = [ "Margin", "Mouse", "Theme" ]
+
+[node name="enemy_spell_list" parent="ui" index="1" instance=ExtResource( 4 )]
 
 anchor_top = 0.5
 anchor_bottom = 0.5
-margin_top = -80.0
-margin_bottom = -80.0
+margin_top = -280.0
+margin_bottom = -124.0
 
-[node name="player_stats" parent="ui" index="1" instance=ExtResource( 4 )]
+[node name="enemy_stickies" parent="ui" index="2" instance=ExtResource( 5 )]
+
+margin_left = 20.0
+margin_top = 54.0
+margin_right = -20.0
+margin_bottom = 54.0
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
+
+[node name="my_stats" parent="ui" index="3" instance=ExtResource( 3 )]
 
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 10.0
-margin_top = -393.0
-margin_right = -8.0
-margin_bottom = -340.0
-
-[node name="enemy_stats" parent="ui" index="2" instance=ExtResource( 4 )]
-
-margin_left = 18.0
-margin_top = 23.0
-margin_right = 296.0
-margin_bottom = 80.0
-
-[node name="spell_select" type="Control" parent="ui" index="3"]
-
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-
-[node name="book_buttons" type="HBoxContainer" parent="ui/spell_select" index="0"]
-
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -229.0
-margin_top = -220.0
-margin_right = 229.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-
-[node name="book_tabs" type="TabContainer" parent="ui/spell_select" index="1"]
-
-editor/display_folded = true
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = -200.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-tab_align = 1
-tabs_visible = true
-_sections_unfolded = [ "Theme", "custom_styles" ]
-
-[node name="book1" type="NinePatchRect" parent="ui/spell_select/book_tabs" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = 42.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
+margin_top = -59.0
+margin_right = -195.0
+margin_bottom = -6.0
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-patch_margin_left = 40
-patch_margin_top = 40
-patch_margin_right = 40
-patch_margin_bottom = 40
-_sections_unfolded = [ "Patch Margin" ]
+_sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
-[node name="spell_list" parent="ui/spell_select/book_tabs/book1" index="0" instance=ExtResource( 3 )]
+[node name="my_spell_list" parent="ui" index="4" instance=ExtResource( 4 )]
 
-[node name="book2" type="NinePatchRect" parent="ui/spell_select/book_tabs" index="1"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_bottom = 156.0
 
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
+[node name="my_stickies" parent="ui" index="5" instance=ExtResource( 5 )]
+
+anchor_top = 1.0
 anchor_bottom = 1.0
-margin_top = 42.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-patch_margin_left = 40
-patch_margin_top = 40
-patch_margin_right = 40
-patch_margin_bottom = 40
-_sections_unfolded = [ "Patch Margin" ]
+margin_left = 20.0
+margin_top = -305.0
+margin_right = -20.0
+margin_bottom = -305.0
+_sections_unfolded = [ "Margin", "Rect", "Theme" ]
 
-[node name="spell_list" parent="ui/spell_select/book_tabs/book2" index="0" instance=ExtResource( 3 )]
+[node name="spell_queue" parent="ui" index="6" instance=ExtResource( 6 )]
 
-[node name="end_turn_button" type="TextureButton" parent="ui/spell_select" index="2"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_bottom = 150.0
+
+[node name="event_timer" type="Timer" parent="ui" index="7"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = true
+
+[node name="end_turn_button" type="TextureButton" parent="ui" index="8"]
 
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -252.0
-margin_top = -370.0
-margin_right = -8.0
-margin_bottom = -296.0
+anchor_bottom = 0.5
+margin_left = -125.0
+margin_top = -94.0
+margin_right = -21.0
+margin_bottom = -6.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -160,25 +165,31 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 5 )
+texture_normal = ExtResource( 7 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Rect", "Textures" ]
+_sections_unfolded = [ "Margin", "Textures" ]
 
-[node name="spell_panel" type="Control" parent="ui/spell_select" index="3"]
+[node name="spell_select" parent="ui" index="9" instance=ExtResource( 8 )]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = -1.0
-margin_right = 40.0
-margin_bottom = 39.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+margin_left = -270.0
+margin_top = -229.0
+margin_right = 270.0
+margin_bottom = -69.0
+rect_min_size = Vector2( 540, 160 )
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
+
+[node name="animation_player" type="AnimationPlayer" parent="ui" index="10"]
+
+root_node = NodePath("..")
+autoplay = ""
+playback_process_mode = 1
+playback_default_blend_time = 0.0
+playback_speed = 1.0
+anims/end_turn = SubResource( 1 )
+blend_times = [  ]
 
 

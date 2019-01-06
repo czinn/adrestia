@@ -1,108 +1,110 @@
 {
-  "$schema": "http://json-schema.org/draft-06/schema#",
-  "description": "Set of Adrestia spells and other configuration options",
-  "type": "object",
-  "properties": {
-    "spells": {"type": "array", "items": {"$ref": "#/definitions/spell"}},
-    "books": {"type": "array", "items": {"$ref": "#/definitions/book"}},
-    "stickies": {"type": "array", "items": {"$ref": "#/definitions/sticky"}},
-    "mana_cap": {"type": "integer", "minimum": 1},
-    "initial_mana_regen": {"type": "integer", "minimum": 1},
-    "initial_health": {"type": "integer", "minimum": 1}
-  },
-  "required": ["spells", "books", "stickies", "mana_cap", "initial_mana_regen", "initial_health"],
-  "additionalProperties": false,
-  "definitions": {
-    "spell": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "name": {"type": "string"},
-        "text": {"type": "string"},
-        "book": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "tech": {"type": "integer", "minimum": 0},
-        "level": {"type": "integer", "minimum": 0},
-        "cost": {"type": "integer", "minimum": 0},
-        "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
-        "counterspell": {"$ref": "#/definitions/selector"}
-      },
-      "additionalProperties": false,
-      "required": ["id", "name", "book", "tech", "level", "cost", "text", "effects"]
-    },
-    "book": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "name": {"type": "string"},
-        "spells": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}}
-      },
-      "additionalProperties": false,
-      "required": ["id", "name", "spells"]
-    },
-    "effect": {
-      "type": "object",
-      "properties": {
-        "kind": {"$ref": "#/definitions/effect_kind"},
-        "self": {"type": "boolean"},
-        "effect_type": {"$ref": "#/definitions/effect_type"},
-        "amount": {"type": "integer"},
-        "sticky": {"$ref": "#/definitions/sticky_invoker"}
-      },
-      "additionalProperties": false,
-      "required": ["kind", "self", "effect_type"]
-    },
-    "effect_kind": {"enum": ["health", "tech", "mana", "mana_regen", "sticky"]},
-    "effect_type": {"enum": ["attack", "shield", "special", "poison", "constant", "counter", "tech", "heal"]},
-    "sticky": {
-      "type": "object",
-      "properties": {
-        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "name": {"type": "string"},
-        "text": {"type": "string"},
-        "kind": {"$ref": "#/definitions/sticky_kind"},
-        "effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
-        "trigger": {"oneOf":
-          [{"type": "object", "additionalProperties": false, "required": ["spell"],
-            "properties": {"spell": {"$ref": "#/definitions/selector"}}},
-           {"type": "object", "additionalProperties": false, "required": ["effect","inbound"],
-            "properties": {"effect": {"$ref": "#/definitions/selector"}, "inbound": {"type": "boolean"}}},
-           {"type": "object", "additionalProperties": false, "required": ["turn"],
-            "properties": {"turn": {"const": true}}}
-          ]}
-      },
-      "additionalProperties": false,
-      "required": ["id", "name", "text", "kind", "trigger"]
-    },
-    "sticky_kind": {"enum": ["delta", "shield", "damper", "super_shield", "id"]},
-    "sticky_invoker": {
-      "type": "object",
-      "properties": {
-        "sticky_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-        "duration": {"$ref": "#/definitions/duration"},
-        "amount": {"type": "integer"}
-      },
-      "additionalProperties": false,
-      "required": ["sticky_id", "duration"]
-    },
-    "duration": {
-      "type": "object",
-      "properties": {
-        "steps": {"type": "integer", "minimum": 1},
-        "turns": {"type": "integer", "minimum": 1},
-        "game": {"const": true}
-      },
-      "additionalProperties": false,
-      "minProperties": 1,
-      "maxProperties": 1
-    },
-    "selector": {
-      "type": "object",
-      "properties": {
-        "book_id": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
-        "spell_id": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
-        "effect_type": {"type": "array", "items": {"$ref": "#/definitions/effect_type"}}
-      },
-      "additionalProperties": false
-    }
-  }
+	"$schema": "http://json-schema.org/draft-06/schema#",
+	"description": "Set of Adrestia spells and other configuration options",
+	"type": "object",
+	"properties": {
+		"spells": {"type": "array", "items": {"$ref": "#/definitions/spell"}},
+		"books": {"type": "array", "items": {"$ref": "#/definitions/book"}},
+		"stickies": {"type": "array", "items": {"$ref": "#/definitions/sticky"}},
+		"mana_cap": {"type": "integer", "minimum": 1},
+		"initial_mana_regen": {"type": "integer", "minimum": 1},
+		"initial_health": {"type": "integer", "minimum": 1},
+		"spell_cap": {"type": "integer", "minimum": 1}
+	},
+	"required": ["spells", "books", "stickies", "mana_cap", "initial_mana_regen", "initial_health"],
+	"additionalProperties": false,
+	"definitions": {
+		"spell": {
+			"type": "object",
+			"properties": {
+				"id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+				"name": {"type": "string"},
+				"text": {"type": "string"},
+				"book": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+				"tech": {"type": "integer", "minimum": 0},
+				"level": {"type": "integer", "minimum": 0},
+				"cost": {"type": "integer", "minimum": 0},
+				"effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
+				"counterspell": {"$ref": "#/definitions/selector"}
+			},
+			"additionalProperties": false,
+			"required": ["id", "name", "book", "tech", "level", "cost", "text", "effects"]
+		},
+		"book": {
+			"type": "object",
+			"properties": {
+				"id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+				"name": {"type": "string"},
+				"spells": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}}
+			},
+			"additionalProperties": false,
+			"required": ["id", "name", "spells"]
+		},
+		"effect": {
+			"type": "object",
+			"properties": {
+				"kind": {"$ref": "#/definitions/effect_kind"},
+				"self": {"type": "boolean"},
+				"effect_type": {"$ref": "#/definitions/effect_type"},
+				"amount": {"type": "integer"},
+				"sticky": {"$ref": "#/definitions/sticky_invoker"}
+			},
+			"additionalProperties": false,
+			"required": ["kind", "self", "effect_type"]
+		},
+		"effect_kind": {"enum": ["health", "tech", "mana", "mana_regen", "sticky"]},
+		"effect_type": {"enum": ["attack", "shield", "special", "poison", "constant", "counter", "tech", "heal"]},
+		"sticky": {
+			"type": "object",
+			"properties": {
+				"id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+				"name": {"type": "string"},
+				"text": {"type": "string"},
+				"kind": {"$ref": "#/definitions/sticky_kind"},
+				"stacks": {"type": "boolean"},
+				"effects": {"type": "array", "items": {"$ref": "#/definitions/effect"}},
+				"trigger": {"oneOf":
+					[{"type": "object", "additionalProperties": false, "required": ["spell"],
+						"properties": {"spell": {"$ref": "#/definitions/selector"}}},
+					 {"type": "object", "additionalProperties": false, "required": ["effect","inbound"],
+						"properties": {"effect": {"$ref": "#/definitions/selector"}, "inbound": {"type": "boolean"}}},
+					 {"type": "object", "additionalProperties": false, "required": ["turn"],
+						"properties": {"turn": {"const": true}}}
+					]}
+			},
+			"additionalProperties": false,
+			"required": ["id", "name", "text", "kind", "trigger"]
+		},
+		"sticky_kind": {"enum": ["delta", "shield", "damper", "super_shield", "id"]},
+		"sticky_invoker": {
+			"type": "object",
+			"properties": {
+				"sticky_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+				"duration": {"$ref": "#/definitions/duration"},
+				"amount": {"type": "integer"}
+			},
+			"additionalProperties": false,
+			"required": ["sticky_id", "duration"]
+		},
+		"duration": {
+			"type": "object",
+			"properties": {
+				"steps": {"type": "integer", "minimum": 1},
+				"turns": {"type": "integer", "minimum": 1},
+				"game": {"const": true}
+			},
+			"additionalProperties": false,
+			"minProperties": 1,
+			"maxProperties": 1
+		},
+		"selector": {
+			"type": "object",
+			"properties": {
+				"book_id": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
+				"spell_id": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
+				"effect_type": {"type": "array", "items": {"$ref": "#/definitions/effect_type"}}
+			},
+			"additionalProperties": false
+		}
+	}
 }

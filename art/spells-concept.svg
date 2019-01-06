@@ -179,9 +179,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284272"
-     inkscape:cx="2773.8195"
-     inkscape:cy="459.28687"
+     inkscape:zoom="1"
+     inkscape:cx="683.66112"
+     inkscape:cy="362.73877"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1579,11 +1579,11 @@
            height="30.57095"
            x="1463.6553"
            y="11.979513" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan5506">Small</flowSpan>: 16px. <flowSpan
-   style="font-style:italic"
+   style="font-weight:bold;font-size:20px"
+   id="flowSpan5506">Small</flowSpan>: 15pt=20px. <flowSpan
+   style="font-style:italic;font-size:20px"
    id="flowSpan5522">For spell labels, detail text</flowSpan></flowPara></flowRoot>    <rect
        style="opacity:1;vector-effect:none;fill:url(#linearGradient1759);fill-opacity:1;stroke:#000000;stroke-width:4.23333311;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.5;paint-order:markers stroke fill"
        id="rect1154-6-4"
@@ -1612,7 +1612,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801-8"><flowSpan
    style="font-weight:bold"
-   id="flowSpan5508">Normal</flowSpan>: 24px. <flowSpan
+   id="flowSpan5508">Normal</flowSpan>: 24pt=32px. <flowSpan
    style="font-style:italic"
    id="flowSpan5520">For UI elements, small buttons</flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
@@ -1628,11 +1628,11 @@
            height="79.876198"
            x="1463.6553"
            y="11.979513" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801-8-4"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan5510">Large</flowSpan>: 40px. <flowSpan
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic'"
+   style="font-weight:bold;font-size:48px"
+   id="flowSpan5510">Large</flowSpan>: 36pt=48px. <flowSpan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:48px;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic'"
    id="flowSpan5518">For large buttons, emotes </flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-4-9"
@@ -1643,16 +1643,16 @@
        inkscape:export-ydpi="96"><flowRegion
          id="flowRegion1410-2-9-45-6-3-2"><rect
            id="rect1412-9-4-2-8-1-0"
-           width="904.75726"
-           height="202.20143"
+           width="1026.7573"
+           height="98.201424"
            x="1463.6553"
            y="11.979513" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:Amaranth;-inkscape-font-specification:Amaranth"
          id="flowPara1801-8-4-6"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan5512">X-Large</flowSpan>: 64px. <flowSpan
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic'"
-   id="flowSpan5516">For titles</flowSpan></flowPara></flowRoot>    <flowRoot
+   style="font-weight:bold;font-size:80px"
+   id="flowSpan5512">X-Large</flowSpan>: 60pt=80px. <flowSpan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:80px;font-family:Amaranth;-inkscape-font-specification:'Amaranth Italic'"
+   id="flowSpan5516">Titles</flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-4-9-9-4"
        style="font-style:normal;font-weight:normal;font-size:85.33333588px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#03c0ff;fill-opacity:1;stroke:none;stroke-width:10;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;"
@@ -1991,21 +1991,21 @@
          id="flowPara1229-0-6-7-8-4-2">Spell evaluation</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2150-7-2"
-       style="font-style:normal;font-weight:normal;font-size:40.28342819px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+       style="font-style:normal;font-weight:bold;font-size:40.28342819px;line-height:1.25;font-family:Amaranth;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;-inkscape-font-specification:'Amaranth Bold';font-stretch:normal;font-variant:normal;"
        transform="matrix(0.56130806,0,0,0.55963944,9.7128459,-381.47168)"
        inkscape:export-filename="/tmp/weh.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"><flowRegion
          id="flowRegion2152-5-4"
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"><rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;-inkscape-font-specification:'Amaranth Bold';font-family:Amaranth;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;"><rect
            id="rect2154-3-6"
            width="357.59399"
            height="46.46703"
            x="30.304577"
            y="44.68692"
-           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" /></flowRegion><flowPara
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;-inkscape-font-specification:'Amaranth Bold';font-family:Amaranth;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;" /></flowRegion><flowPara
          id="flowPara2156-5-0"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill">Adrestia</flowPara></flowRoot>    <flowRoot
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:'Amaranth Bold';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.72071409;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill">Adrestia</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2150-7-6-2"
        style="font-style:normal;font-weight:normal;font-size:37.49808121px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.54877472;stroke-opacity:1"
@@ -2104,7 +2104,7 @@
        inkscape:connector-curvature="0"
        id="use7182"
        d="m 738.23079,250.66003 1.44254,-4.2407 -3.8197,-2.2559 -2.9708,3.27322 1.97664,3.18934 z"
-       style="fill:#dfdfdf;fill-opacity:1;stroke:#a1a2a3;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+       style="fill:#dfdfdf;fill-opacity:1;stroke:#95b7ea;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
     <path
        inkscape:tile-y0="525.52349"
        inkscape:tile-x0="683.58565"
@@ -2553,23 +2553,6 @@
          d="m 430.23406,-238.64359 c -1.65076,0 -2.97971,1.34108 -2.97971,3.00691 v 19.54492 c 0,1.66584 1.32895,3.00692 2.97971,3.00692 h 6.00745 8.89112 2.23477 c 0.4127,0 0.74494,-0.33527 0.74494,-0.75174 v -0.75171 c 0,-0.0326 -0.002,-0.0646 -0.007,-0.0964 v -3.7143 c 0.005,-0.0316 0.007,-0.0636 0.007,-0.096 v -17.14175 -2.25519 c 0,-0.41646 -0.33224,-0.75172 -0.74494,-0.75172 h -2.23477 -8.89112 z"
          id="rect5820-2-9-2"
          inkscape:connector-curvature="0" />
-      <path
-         style="fill:#ebcdff;fill-opacity:1;stroke:#9554cd;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-         d="m 645.2165,-196.45995 -34.5216,13.81765 -9.65444,-8.41388 7.05942,-8.86563 z"
-         id="path1725"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccccc" />
-      <path
-         style="fill:#f6cdff;fill-opacity:1;stroke:#a354cd;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-         d="m 628.92529,-184.77111 -4.66176,8.46382 6.45475,5.70017 19.18493,-9.673 z"
-         id="path1731"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:#d8cdff;fill-opacity:1;stroke:#8554cd;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-         d="m 629.39739,-215.43968 -5.02035,7.94566 6.45474,5.35468 18.82634,-7.25473 z"
-         id="path1733"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccccc" />
       <g
          transform="translate(177.88447,-457.07649)"
          style="stroke-width:0.13229167;stroke-miterlimit:4;stroke-dasharray:none"
