@@ -238,10 +238,10 @@ json adrestia_database::register_new_account_in_database(
 	unsigned char* hash_of_salt_and_password = new unsigned char[adrestia_hexy::MAX_HASH_LENGTH];
 	unsigned int hash_of_salt_and_password_length;
 	adrestia_hexy::digest_message(salt_and_password_c_str,
-		                          salt_and_password.length(),
+	                              salt_and_password.length(),
 	                              &hash_of_salt_and_password,
 	                              &hash_of_salt_and_password_length
-                                 );
+	                             );
 	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
 	                                 (size_t)hash_of_salt_and_password_length
 	                                );
