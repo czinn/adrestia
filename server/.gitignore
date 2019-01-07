@@ -4,3 +4,4 @@ test_client
 *.d
 *.o
 *.os
+server_main

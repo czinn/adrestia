@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS adrestia_accounts;
 CREATE TABLE IF NOT EXISTS adrestia_accounts (
 	uuid VARCHAR NOT NULL,  -- Random hexy
 	user_name VARCHAR NOT NULL,
@@ -11,6 +12,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
 	(user_name, tag)
 ;
 
+DROP TABLE IF EXISTS adrestia_match_waiters;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 	uuid VARCHAR NOT NULL,  -- Random hexy
 	PRIMARY KEY (uuid)
@@ -24,6 +26,7 @@ CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 --     -1: Aborted; Someone aborted and the game cannot continue.
 --     0: In progress; this game is in progress.
 --     1: Concluded; the game reached its conclusion, with someone winning.
+DROP TABLE IF EXISTS adrestia_games;
 CREATE TABLE IF NOT EXISTS adrestia_games (
 	game_uid VARCHAR NOT NULL,
 	creator_uuid VARCHAR NOT NULL, -- Who made this?
@@ -34,3 +37,13 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
 	game_state VARCHAR,
 	PRIMARY KEY (game_uid)
 );
+
+DROP TABLE IF EXISTS adrestia_active_users;
+CREATE TABLE IF NOT EXISTS adrestia_active_users
+( account_uuid VARCHAR NOT NULL
+, checkin_time TIMESTAMP NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_adrestia_active_users_account_uuid
+	on adrestia_active_users
+	(account_uuid)
+;

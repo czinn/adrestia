@@ -346,6 +346,26 @@ bool adrestia_database::verify_existing_account_in_database(
 }
 
 
+void adrestia_database::add_user_checkin(
+	pqxx::connection* conn,
+	const std::string &uuid
+) {
+	static const string add_user_checkin_command =
+	"INSERT INTO adrestia_active users (account_uuid, checkin_time)"
+	"VALUES ($1, NOW());";
+
+	// Find account of given name
+	conn->prepare("add_user_checkin_command", add_user_checkin_command);
+	pqxx::work transaction(*conn);
+	try {
+		transaction.prepared("add_user_checkin_command")(uuid).exec();
+		transaction.commit();
+	} catch (pqxx::pqxx_exception &e) {
+		cerr << e.base().what() << endl;
+	}
+}
+
+
 pqxx::connection* adrestia_database::establish_psql_connection() {
 	/* Returns a pointer to a pqxx::connection in the heap.
 	 * Connection parameters specified via environment variable (DB_CONNECTION_STRING)

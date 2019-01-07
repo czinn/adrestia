@@ -57,6 +57,12 @@ namespace adrestia_database {
 	);
 
 
+	void add_user_checkin(
+		pqxx::connection* conn,
+		const std::string &uuid
+	);
+
+
 	/* Returns an established pqxx::connection object,
 	 *     connection parameters specified via environment variable.
 	 */
