@@ -15,7 +15,7 @@ namespace godot {
 			static void _register_methods();
 
 			void init_random_strategy();
-			void init_cfr_strategy();
+			void init_cfr_strategy(Variant rules);
 			Variant get_action(Variant game_view);
 
 			INTF_NULLABLE

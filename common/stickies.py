@@ -78,4 +78,15 @@ stickies_list: List[Sticky] = [
 		trigger=trigger_spell(),
 		effects=[Effect(EK_health, ET_constant, self=True, amount=-6)],
 	),
+
+	Sticky(id_='bloodlust', name='Bloodlust', kind=SK_id,
+		text='All spells you cast deal an additional 2 damage.',
+		trigger=trigger_spell(),
+		effects=[Effect(EK_health, ET_attack, self=True, amount=-2)],
+	),
+
+	Sticky(id_='fury', name='Fury', kind=SK_delta,
+		text="Your attacks deal 3 extra damage.",
+		trigger=trigger_inbound(effect_type=['attack']),
+	),
 ]

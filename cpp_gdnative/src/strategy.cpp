@@ -1,5 +1,6 @@
 #include "strategy.h"
 
+#include "game_rules.h"
 #include "game_action.h"
 #include "game_view.h"
 
@@ -21,8 +22,9 @@ namespace godot {
 		set_ptr(new ::RandomStrategy());
 	}
 
-	void CLASSNAME::init_cfr_strategy() {
-		set_ptr(new ::CfrStrategy());
+	void CLASSNAME::init_cfr_strategy(Variant rules) {
+		auto *_rules = godot::as<GameRules>(rules);
+		set_ptr(new ::CfrStrategy(*_rules->_ptr));
 	}
 
 	Variant CLASSNAME::get_action(Variant view) {

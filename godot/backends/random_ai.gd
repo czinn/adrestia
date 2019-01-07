@@ -17,7 +17,7 @@ func _init(g_):
 	rules.load_json_string(rules_file.get_as_text())
 	rules_file.close()
 	ai = g.Strategy.new()
-	ai.init_random_strategy()
+	ai.init_cfr_strategy(rules)
 
 func get_view():
 	var view = g.GameView.new()

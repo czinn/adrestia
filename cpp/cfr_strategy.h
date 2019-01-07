@@ -1,5 +1,6 @@
 #pragma once
 #include <random>
+#include "game_rules.h"
 #include "game_action.h"
 #include "game_view.h"
 #include "strategy.h"
@@ -9,7 +10,7 @@ std::vector<double> cfr_state_vector(const GameState &g);
 
 class CfrStrategy : public Strategy {
  public:
-	CfrStrategy();
+	CfrStrategy(const GameRules &);
 	CfrStrategy(std::vector<double> weights);
 	CfrStrategy(fdeep::model *model);
 	virtual ~CfrStrategy();

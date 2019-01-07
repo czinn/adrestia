@@ -22,7 +22,7 @@ const std::vector<GameAction> *CfrStrategy::get_view_actions(const GameView &vie
 	const Player &p = view.players[view.view_player_id];
 	size_t h = std::hash<int>{}(p.mp);
 	for (size_t i = 0; i < p.tech.size(); i++) {
-		h += std::hash<std::string>{}(p.books[i]->get_id()) * p.tech[i];
+		h += std::hash<std::string>{}(p.books[i]->get_id()) * (1 + p.tech[i]);
 	}
 	auto it = action_cache.find(h);
 	if (it != action_cache.end()) {
@@ -43,7 +43,7 @@ std::vector<double> cfr_state_vector(const GameState &g) {
 		for (const auto &[book_id, book] : g.rules.get_books()) {
 			size_t book_index = p.find_book_idx(book_id);
 			r.push_back(book_index != size_t(-1) ? 1.0 : 0.0);
-			for (size_t tech = 1; tech <= 4; tech++) {
+			for (size_t tech = 1; tech <= 3; tech++) {
 				r.push_back(p.tech[book_index] >= tech ? 1.0 : 0.0);
 			}
 		}
@@ -53,16 +53,22 @@ std::vector<double> cfr_state_vector(const GameState &g) {
 
 std::uniform_real_distribution<double> dis(0.0, 1.0);
 
-CfrStrategy::CfrStrategy()
+CfrStrategy::CfrStrategy(const GameRules &rules)
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-		, weights({
-				25 * 5, 10 * 1, 10 * 2,
-				0, 5, 5, 5, 5,
-				0, 5, 5, 5, 5,
-				25 * -5, 10 * -1, 10 * -2,
-				0, -5, -5, -5, -5,
-				0, -5, -5, -5, -5})
-		, model(nullptr) {}
+		, model(nullptr) {
+	for (size_t i = 0; i < 2; i++) {
+		int multiplier = i == 0 ? 1 : -1;
+		weights.push_back(25 * 5 * multiplier); // health
+		weights.push_back(10 * 1 * multiplier); // mana
+		weights.push_back(10 * 2 * multiplier); // mana regen
+		for (size_t book = 0; book < rules.get_books().size(); book++) {
+			weights.push_back(0);
+			for (size_t tech = 1; tech <= 3; tech++) {
+				weights.push_back(5 * multiplier);
+			}
+		}
+	}
+}
 
 CfrStrategy::CfrStrategy(std::vector<double> weights)
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())

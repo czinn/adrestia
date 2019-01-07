@@ -17,7 +17,7 @@ int main() {
 	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration", "regulation"}, {"conjuration", "regulation"}});
 	std::vector<Strategy*> strategies;
 	fdeep::model model = fdeep::load_model("fdeep_model.json");
-	strategies.push_back(new CfrStrategy());
+	strategies.push_back(new CfrStrategy(rules));
 	strategies.push_back(new CfrStrategy(&model));
 
 	while (game.winners().size() == 0) {
