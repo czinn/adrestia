@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="96"
+   height="96"
+   viewBox="0 0 25.399997 25.399999"
+   version="1.1"
+   id="svg1718"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="regulation_cancel_1.svg">
+  <defs
+     id="defs1712">
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask1853">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.64583325;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         id="rect1855"
+         width="14.616189"
+         height="42.31002"
+         x="545.13489"
+         y="-163.02531" />
+    </mask>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="-241.30706"
+     inkscape:cy="-120.4388"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1052"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false"
+     units="px" />
+  <metadata
+     id="metadata1715">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-59.067602,-118.91057)">
+    <path
+       style="opacity:1;vector-effect:none;fill:#c6f9fd;fill-opacity:1;stroke:#2b94ff;stroke-width:2.64583397;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.99926471;paint-order:markers stroke fill"
+       d="m 78.557953,132.17576 -5.200267,1.87526 1.699204,1.01572 c 0.432285,0.25771 0.367731,0.90216 -0.107058,1.06884 l -10.187463,3.55199 c 0.963326,1.20323 3.771286,1.39873 8.513946,1.16532 9.537103,-0.46938 10.131141,-0.16461 5.367187,-8.53024 -0.02985,-0.0526 -0.05595,-0.0952 -0.08555,-0.14689 z"
+       id="path1523-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccscc" />
+    <path
+       style="opacity:1;vector-effect:none;fill:#c6f9fd;fill-opacity:1;stroke:#2b94ff;stroke-width:2.64583373;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       d="m 69.252646,122.71294 c -1.788645,-0.1091 -2.994419,2.29883 -5.07881,7.16033 -1.393793,3.2508 -1.98846,5.40394 -1.697112,6.69846 l 8.152622,-4.88659 -1.852447,-0.64256 c -0.474797,-0.16274 -0.545642,-0.80421 -0.117779,-1.06646 l 5.593045,-3.43377 c -2.255484,-2.47516 -3.76987,-3.75441 -4.999519,-3.82941 z"
+       id="path1523"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="sscccccs" />
+  </g>
+</svg>
