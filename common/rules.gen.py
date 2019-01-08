@@ -19,7 +19,7 @@ from book_tricks import book as book_tricks
 library: List[Book] = [
 	book_conjuration, # Midrange
 	book_regulation, # Control
-	book_contrition, # ??? (it's not healing)
+	book_contrition, # Self-harm
 	book_enticement, # Lifestealing and Mana Manipulation
 	book_refinement, # Eco
 	book_bloodlust, # Aggro
