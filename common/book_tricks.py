@@ -28,7 +28,7 @@ book = Book ('tricks', 'Book of Deception', [
 	),
 
 	Spell('antitech', 'Censure',
-			'Your opponent loses 5 health if they cast a tech spell next turn.',
+			'Your opponent loses 5 health if they gain knowledge of a book next turn.',
 			tech=3, level=3, cost=2,
 			effects=[
 				Effect(EK_sticky, ET_special, self=False,
