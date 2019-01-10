@@ -6,7 +6,7 @@ uniform vec2 position = vec2(100.0, 100.0);
 varying vec2 world_pos;
 
 void vertex() {
-	world_pos = (vec4(VERTEX, 1.0, 1.0)).xy;
+	world_pos = VERTEX;
 }
 
 void fragment() {
