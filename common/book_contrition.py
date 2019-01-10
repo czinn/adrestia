@@ -14,7 +14,7 @@ book = Book('contrition', 'Book of Contrition', [
 
 	Spell('explosion', 'Explosion',
 		"Deal 6 damage to both players.",
-		tech=1, level=1, cost=2,
+		tech=2, level=2, cost=2,
 		effects=[
 			Effect(EK_health, ET_attack, self=True, amount=-6),
 						effect_attack(6),
@@ -23,7 +23,7 @@ book = Book('contrition', 'Book of Contrition', [
 
 	Spell('damage', 'Harm',
 		"Deal 10 damage. Decrease your mana regeneration by 1.",
-		tech=2, level=2, cost=3,
+		tech=3, level=3, cost=3,
 		effects=[
 			Effect(EK_mana_regen, ET_special, self=True, amount=-1),
 						effect_attack(10),
@@ -32,7 +32,7 @@ book = Book('contrition', 'Book of Contrition', [
 
 	Spell('shield', 'Blood Wall',
 		"Block 11 damage this turn. Poison yourself, dealing 1 daamge per turn for the rest of the game.",
-		tech=2, level=2, cost=3,
+		tech=4, level=4, cost=3,
 		effects=[
 			Effect(EK_sticky, ET_poison, self=True,
 				sticky=StickyInvoker('poison', duration_game)),

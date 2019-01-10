@@ -23,7 +23,7 @@ book = Book('conjuration', 'Book of Conjuration', [
 
     Spell('attack_2', 'Erupt',
         'Deal 7 damage.',
-        tech=2, level=2, cost=3,
+        tech=4, level=4, cost=3,
         effects=[effect_attack(7)],
     ),
 ])

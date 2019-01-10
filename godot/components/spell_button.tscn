@@ -165,6 +165,7 @@ _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect" ]
 
 [node name="unlock" type="Control" parent="." index="3"]
 
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0

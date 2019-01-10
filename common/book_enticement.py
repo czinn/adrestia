@@ -14,7 +14,7 @@ book = Book('enticement', 'Book of Enticement', [
 
 	Spell('attack_1', 'Vampiric Blast',
 		'Deal 8 damage. Gain 4 health.',
-		tech=1, level=1, cost=4,
+		tech=2, level=2, cost=4,
 		effects=[
 			effect_attack(8),
 			Effect(EK_health, ET_special, self=True, amount=4),
@@ -23,13 +23,13 @@ book = Book('enticement', 'Book of Enticement', [
 
 	Spell('mana_2', 'Mana Flux',
 		'Destroy 3 of your opponent\'s mana.',
-		tech=2, level=2, cost=3,
+		tech=3, level=3, cost=3,
 		effects=[Effect(EK_mana, ET_special, self=False, amount=-3)],
 	),
 
 	Spell('attack_2', 'Mana Blast',
 		'Deal 12 damage. Your opponent gains 10 mana.',
-		tech=2, level=2, cost=3,
+		tech=4, level=4, cost=3,
 		effects=[
 			effect_attack(12),
 			Effect(EK_mana, ET_special, self=False, amount=10),

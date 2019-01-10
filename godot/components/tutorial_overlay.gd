@@ -70,8 +70,7 @@ func show_tooltip(target, text):
 	g.summon_tooltip(target, text)
 	var rect = target.get_global_rect()
 	mouse_blocker.material.set_shader_param('radius', max(rect.size.x, rect.size.y) / 2.0);
-	mouse_blocker.material.set_shader_param('x', rect.position.x + rect.size.x / 2.0);
-	mouse_blocker.material.set_shader_param('y', rect.position.y + rect.size.y / 2.0);
+	mouse_blocker.material.set_shader_param('position', rect.position + (rect.size / 2.0));
 	mouse_blocker.visible = true
 	yield(g, 'tooltip_closed')
 	mouse_blocker.visible = false
@@ -121,15 +120,28 @@ func play_tutorial():
 	yield(show_big_window("[b]Welcome to Adrestia![/b]\n\nIn this world, it's kill or be killed. You must use your spells and your wit to dominate the enemy."), 'completed')
 	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
 	#yield(show_tooltip(books_hbox.get_child(0), 'A book contains four spells.\n\nEach player secretly chooses three books at the beginning of the game.'), 'completed')
-	yield(show_tooltip(books_hbox.get_child(0).get_child(0), 'Tap a book to see what spells it contains.'), 'completed')
+	yield(show_tooltip(books_hbox.get_child(1).get_child(0), 'Tap this book to see what spells it contains.'), 'completed')
 	#yield(show_big_window('Choose a book by dragging it to one of the slots at the top.'), 'completed')
-	var book = yield(select_root, 'chose_book')[1]
+	while true:
+		var book = yield(select_root, 'show_book_detail')
+		if book.get_id() == 'conjuration':
+			break
+	
+	var spell_preview = yield(self.acquire_node('ui/spell_button_list'), 'completed')
+	yield(show_tooltip(spell_preview, 'Each book has four spells.'), 'completed')
+	var spell_button = spell_preview.get_child(0).get_child(1)
+	var mana_indicator = spell_button.get_node('cost/mp_icon')
+	yield(show_tooltip(mana_indicator, "This is the spell's mana cost."), 'completed')
+	yield(show_tooltip(spell_button, 'Hold down the spell to see what it does.'), 'completed')
+	yield(g, 'tooltip_closed')
 	#yield(show_big_window('The number in the blue icon shows how much each spell costs.\n\nYou can tap and hold a spell to see what it does.'), 'completed')
 	#yield(show_big_window('The green book in the corner of each spell shows how much knowledge is required to cast the spell.\n\nYou can get up to one knowledge per turn in the book of your choice.'), 'completed')
-	yield(show_big_window('Finish choosing three books (including the [i]Book of Conjuration[/i]) and tap the [b]Play[/b] button.'), 'completed')
+	var book_slot = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
+	yield(show_tooltip(book_slot, 'The [b]Book of Conjuration[/b] is a good book for beginners. Drag it up here to bring it into battle.'), 'completed')
+	yield(select_root, 'chose_book')
+	yield(show_tooltip(play_button, 'Now press the play button to fight against an AI opponent.'), 'completed')
 
 	# Game
-
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
 	var game_root = yield(self.acquire_node(''), 'completed')
 	var end_turn_button = yield(self.acquire_node('ui/end_turn_button'), 'completed')

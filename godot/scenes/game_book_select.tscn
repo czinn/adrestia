@@ -58,7 +58,6 @@ _sections_unfolded = [ "Mouse", "Rect", "Theme" ]
 
 [node name="selected_books_hbox" type="HBoxContainer" parent="ui" index="0"]
 
-editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0

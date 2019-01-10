@@ -12,13 +12,13 @@ book = Book ('tricks', 'Book of Deception', [
 
 	Spell('shield', 'Flickering Shield',
 			'Block 13 damage. Lasts one step.',
-			tech=1, level=1, cost=3,
+			tech=2, level=2, cost=3,
 			effects=[effect_shield(13, duration=duration_steps(1))],
 	),
 
 	Spell('antispell', 'Interdict',
 			'Both players lose 6 health for each additional spell they cast this turn.',
-			tech=2, level=2, cost=4,
+			tech=3, level=3, cost=4,
 			effects=[
 				Effect(EK_sticky, ET_special, self=True,
 					sticky=StickyInvoker('antispell', duration=duration_turns(1))),
@@ -29,7 +29,7 @@ book = Book ('tricks', 'Book of Deception', [
 
 	Spell('antitech', 'Censure',
 			'Your opponent loses 5 health if they gain knowledge of a book next turn.',
-			tech=3, level=3, cost=2,
+			tech=4, level=4, cost=2,
 			effects=[
 				Effect(EK_sticky, ET_special, self=False,
 					sticky=StickyInvoker('antitech_next', duration=duration_turns(1)))

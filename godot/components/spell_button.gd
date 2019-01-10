@@ -81,7 +81,7 @@ func redraw():
 	var show_cost = enabled or spell.is_tech_spell()
 
 	cost.visible = show_stats
-	unlock.visible = show_stats and show_unlock
+	#unlock.visible = show_stats and show_unlock
 
 	mp_label.text = str(spell.get_cost())
 	tech_label.text = str(spell.get_tech())
