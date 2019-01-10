@@ -48,27 +48,33 @@ func timeout():
 	emit_signal('node_found', node)
 
 func acquire_node(path):
-	var node = try_get_node(path)
 	yield(get_tree(), 'idle_frame')
+	# Try to get the node immediately for efficiency
+	var node = try_get_node(path)
 	if node != null:
-		print('Got node immediately')
 		return node
+	# If not found, poll for it
 	desire_path = path
-	print('Waiting for node...')
 	node = yield(self, 'node_found')
-	print('Found it')
 	desire_path = null
 	return node
 
 func show_big_window(text):
 	big_text.bbcode_text = text
 	mouse_blocker.visible = true
+	mouse_blocker.material.set_shader_param('radius', 0.0);
 	big_text_wnd.visible = true
 	yield(self, 'popup_closed')
 
 func show_tooltip(target, text):
 	g.summon_tooltip(target, text)
+	var rect = target.get_global_rect()
+	mouse_blocker.material.set_shader_param('radius', max(rect.size.x, rect.size.y) / 2.0);
+	mouse_blocker.material.set_shader_param('x', rect.position.x + rect.size.x / 2.0);
+	mouse_blocker.material.set_shader_param('y', rect.position.y + rect.size.y / 2.0);
+	mouse_blocker.visible = true
 	yield(g, 'tooltip_closed')
+	mouse_blocker.visible = false
 
 func play_button_pressed_override(select_root):
 	# Check that book list contains Conjuration
@@ -82,7 +88,7 @@ func play_button_pressed_override(select_root):
 	if contains_conjuration:
 		select_root.on_play_button_pressed()
 	else:
-		show_big_window('You need to include the [i]Book of Conjuration[/i] in your selection for this tutorial.')
+		show_big_window('You need to select the [i]Book of Conjuration[/i] for this tutorial.')
 
 func end_turn_button_pressed_override(game_root):
 	if finished_first_turn:
@@ -111,13 +117,15 @@ func play_tutorial():
 	g.safe_disconnect(play_button, 'pressed', select_root, 'on_play_button_pressed')
 	play_button.connect('pressed', self, 'play_button_pressed_override', [select_root])
 	# Show information
-	yield(show_big_window('[b]Welcome to Adrestia![/b]\n\nIn Adrestia, players cast spells in order to reduce their opponent\'s health to zero. The first player to do so wins!'), 'completed')
+	#yield(show_big_window('[b]Welcome to Adrestia![/b]\n\nIn Adrestia, players cast spells in order to reduce their opponent\'s health to zero. The first player to do so wins!'), 'completed')
+	yield(show_big_window("[b]Welcome to Adrestia![/b]\n\nIn this world, it's kill or be killed. You must use your spells and your wit to dominate the enemy."), 'completed')
 	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
-	yield(show_tooltip(books_hbox.get_child(0), 'This is a book. Each book contains four spells.\n\nEach player secretly chooses three books at the beginning of the game.'), 'completed')
-	yield(show_big_window('Choose a book by dragging it to one of the slots at the top.'), 'completed')
+	#yield(show_tooltip(books_hbox.get_child(0), 'A book contains four spells.\n\nEach player secretly chooses three books at the beginning of the game.'), 'completed')
+	yield(show_tooltip(books_hbox.get_child(0).get_child(0), 'Tap a book to see what spells it contains.'), 'completed')
+	#yield(show_big_window('Choose a book by dragging it to one of the slots at the top.'), 'completed')
 	var book = yield(select_root, 'chose_book')[1]
-	yield(show_big_window('The number in the blue icon shows how much each spell costs.\n\nYou can tap and hold a spell to see what it does.'), 'completed')
-	yield(show_big_window('The green book in the corner of each spell shows how much knowledge is required to cast the spell.\n\nYou can get up to one knowledge per turn in the book of your choice.'), 'completed')
+	#yield(show_big_window('The number in the blue icon shows how much each spell costs.\n\nYou can tap and hold a spell to see what it does.'), 'completed')
+	#yield(show_big_window('The green book in the corner of each spell shows how much knowledge is required to cast the spell.\n\nYou can get up to one knowledge per turn in the book of your choice.'), 'completed')
 	yield(show_big_window('Finish choosing three books (including the [i]Book of Conjuration[/i]) and tap the [b]Play[/b] button.'), 'completed')
 
 	# Game
@@ -146,7 +154,7 @@ func play_tutorial():
 	if results_root.winner == 0:
 		yield(show_big_window('Nice job! You\'re ready to test your skills against a real opponent.'), 'completed')
 	else:
-		yield(show_big_window('Ooh, you didn\'t win. Maybe you should try the tutorial again.'), 'completed')
+		yield(show_big_window('Looks like you didn\'t win. Maybe you should try the tutorial again.'), 'completed')
 
 	# Clean self up
 	self.get_parent().remove_child(self)

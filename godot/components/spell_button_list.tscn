@@ -4,7 +4,7 @@
 [ext_resource path="res://components/spell_button_list.gd" type="Script" id=2]
 [ext_resource path="res://components/spell_button.tscn" type="PackedScene" id=3]
 
-[node name="spell_button_list" type="Control"]
+[node name="spell_button_list" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
