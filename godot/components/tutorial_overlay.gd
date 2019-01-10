@@ -96,11 +96,9 @@ func end_turn_button_pressed_override(game_root):
 
 	# Confirm that the player is doing the right first turn
 	var spells = game_root.spell_queue.spells
-	if len(spells) != 3 or \
-			spells[0] != 'conjuration_tech' or \
-			spells[1] != 'conjuration_shield_1' or \
-			spells[2] != 'conjuration_attack_1':
-		show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].')
+	if spells != ['conjuration_tech', 'conjuration_attack_1']:
+		#show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].')
+		show_big_window('For your first turn, level up the [b]Book of Conjuration[/b], then cast [b]Flame Strike[/b].')
 		game_root.spell_queue.spells = []
 		game_root.redraw()
 	else:
@@ -153,12 +151,36 @@ func play_tutorial():
 	var my_stats = yield(self.acquire_node('ui/my_stats'), 'completed')
 	yield(show_tooltip(my_stats, 'Here is your remaining health and mana. The (+5) beside your mana shows you how much mana you get each turn. You can increase this with spells.'), 'completed')
 	yield(show_tooltip(spell_select, 'Here are your books. You can tap a book to see its spells.'), 'completed')
-	yield(show_tooltip(spell_select, 'The number on each book is how much knowledge you have of that book. You can increase your knowledge of a book by tapping the green arrow on the book.'), 'completed')
-	yield(show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].'), 'completed')
+
+	var book_button = spell_select.get_node('book_buttons').get_child(0)
+	var tech_level = book_button.get_node('level')
+	var upgrade_arrow = book_button.get_node('upgrade_arrow')
+	#yield(show_tooltip(tech_level, "This is the number of spells you've learned from this book so far."))
+	#yield(show_tooltip(spell_select, 'The number on each book is how much knowledge you have of that book. You can learn the next spell from a book by tapping the green arrow.'), 'completed')
+	#yield(show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].'), 'completed')
+	yield(show_tooltip(upgrade_arrow, 'Press this arrow to learn the next spell from the book.'), 'completed')
+	while true:
+		var spell = yield(spell_select, 'spell_press')
+		if spell.get_id() == 'conjuration_tech':
+			break
+	yield(show_tooltip(book_button, 'Great! Now tap the book to open it up.'), 'completed')
+	while true:
+		var book = yield(spell_select, 'book_opened')[1]
+		if book.get_id() == 'conjuration':
+			break
+	var buy_spell_buttons = spell_select.get_node('spell_panel/ninepatch/hbox')
+	var flame_strike_button = buy_spell_buttons.get_child(0)
+	yield(show_tooltip(flame_strike_button, 'For your first turn, you only have one mana, so cast this flame strike.'), 'completed')
+	while true:
+		var spell = yield(spell_select, 'spell_press')
+		if spell.get_id() == 'conjuration_attack_1':
+			break
+	yield(show_tooltip(end_turn_button, 'Now, end your turn.'), 'completed')
+	yield(end_turn_button, 'pressed')
 	yield(game_root, 'turn_animation_finished')
 	finished_first_turn = true
-	yield(show_big_window('Nice job! So what happened? Your opponent cast two Flame Strikes, both of which were blocked by your shield, and your Flame Strike dealt three damage!'), 'completed')
-	yield(show_big_window('Alright, you\'re on your own now. Feel free to experiment, and good luck!'), 'completed')
+	#yield(show_big_window('Nice job! So what happened? Your opponent cast two Flame Strikes, both of which were blocked by your shield, and your Flame Strike dealt three damage!'), 'completed')
+	yield(show_big_window('Nice job! You\'re on your own now. Good luck!'), 'completed')
 
 	# Results
 	var results_text = yield(self.acquire_node('ui/results_text'), 'completed')

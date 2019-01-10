@@ -9,9 +9,9 @@ var callback = null
 
 var turn = 0
 var scripted_actions = [
-	['conjuration_tech', 'conjuration_attack_1', 'conjuration_attack_1'],
-	['conjuration_tech', 'conjuration_attack_2'],
-	['conjuration_attack_2', 'conjuration_attack_1', 'conjuration_attack_1']
+	['conjuration_tech', 'conjuration_attack_1'],
+	['conjuration_tech', 'conjuration_attack_1'],
+	['conjuration_attack_1'],
 ]
 
 # Public
