@@ -15,7 +15,7 @@
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="background-title.svg">
+   sodipodi:docname="background-game.svg">
   <defs
      id="defs1712">
     <mask
@@ -49,7 +49,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="73.212465"
+     inkscape:cx="13.108388"
      inkscape:cy="48.749845"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -73,7 +73,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -83,7 +83,7 @@
      id="layer1"
      transform="translate(-82.692381,-66.440763)">
     <rect
-       style="opacity:1;vector-effect:none;fill:#fffaea;fill-opacity:1;stroke:none;stroke-width:5.00000048;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       style="opacity:1;vector-effect:none;fill:#fceaff;fill-opacity:1;stroke:none;stroke-width:5.00000048;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
        id="rect6577"
        width="39.6875"
        height="39.6875"
@@ -91,7 +91,7 @@
        y="66.440765" />
     <path
        sodipodi:type="star"
-       style="opacity:1;vector-effect:none;fill:#fffaea;fill-opacity:1;stroke:#ffdfb5;stroke-width:2.20583439;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       style="opacity:1;vector-effect:none;fill:#fceaff;fill-opacity:1;stroke:#f1dcff;stroke-width:2.20583439;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
        id="path1035-3"
        sodipodi:sides="6"
        sodipodi:cx="161.56442"
@@ -113,6 +113,6 @@
        inkscape:connector-curvature="0"
        id="use7168"
        d="m 115.9947,102.53919 2.49044,-7.538231 -6.82796,-3.930887 -5.22342,5.85051 3.56838,5.616478 z"
-       style="fill:#fffaea;fill-opacity:1;stroke:#ffdfb5;stroke-width:2.64583349;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+       style="fill:#fceaff;fill-opacity:1;stroke:#f2ddff;stroke-width:2.64583349;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
   </g>
 </svg>
