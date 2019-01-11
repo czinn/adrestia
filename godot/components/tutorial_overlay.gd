@@ -170,7 +170,7 @@ func play_tutorial():
 			break
 	var buy_spell_buttons = spell_select.get_node('spell_panel/ninepatch/hbox')
 	var flame_strike_button = buy_spell_buttons.get_child(0)
-	yield(show_tooltip(flame_strike_button, 'For your first turn, you only have one mana, so cast this flame strike.'), 'completed')
+	yield(show_tooltip(flame_strike_button, 'Cast a flame strike.'), 'completed')
 	while true:
 		var spell = yield(spell_select, 'spell_press')
 		if spell.get_id() == 'conjuration_attack_1':
