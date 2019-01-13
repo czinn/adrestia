@@ -31,9 +31,13 @@ for book in library:
 		spell.id_ = f'{book.id_}_{spell.sub_id}'
 		spell.book = book.id_
 
+tech_placeholder = spell_tech(name='Learn Spell', text='Increase knowledge of some book.')
+tech_placeholder.id_ = 'tech'
+tech_placeholder.book = 'none' # should probably not cause problems
+
 stickies_built = [deconstruct(sticky) for sticky in stickies_list]
 spells = deconstruct(
-	sum((book.spells for book in library), []),
+	sum((book.spells for book in library), [tech_placeholder]),
 	{ Sticky: lambda sticky: sticky.id_ }
 )
 books = deconstruct(library, {Spell: lambda spell: spell.id_})

@@ -9,10 +9,9 @@ onready var spell_button_list_scene = preload('res://components/spell_button_lis
 onready var game = $ui
 onready var spell_select = $ui/spell_select
 onready var end_turn_button = $ui/end_turn_button
-onready var spell_queue = $ui/spell_queue
+onready var my_spell_list = $ui/my_spell_list
 onready var my_stats = $ui/my_stats
 onready var my_stickies = $ui/my_stickies
-onready var my_spell_list = $ui/my_spell_list
 onready var enemy_stats = $ui/enemy_stats
 onready var enemy_spell_list = $ui/enemy_spell_list
 onready var enemy_stickies = $ui/enemy_stickies
@@ -35,10 +34,10 @@ func _ready():
 	ui_state = UiState.CHOOSING_SPELLS
 	g.backend.register_update_callback(funcref(self, 'on_backend_update'))
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
-	spell_queue.connect('pressed', self, 'on_spell_queue_pressed')
+	my_spell_list.connect('pressed', self, 'on_my_spell_list_pressed')
 	event_timer.connect('timeout', self, 'on_event_timer_timeout')
-	spell_queue.spells = []
-	spell_queue.show_stats = false
+	my_spell_list.spells = []
+	enemy_spell_list.immediately_show_tooltip = true
 	spell_select.display_filter = funcref(self, 'is_not_tech_spell')
 	spell_select.enabled_filter = funcref(self, 'player_can_cast')
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
@@ -48,29 +47,30 @@ func _ready():
 	redraw()
 
 func on_spell_enqueue(spell):
-	var action = spell_queue.spells.duplicate()
+	var action = my_spell_list.spells.duplicate()
 	action.append(spell.get_id())
 	if not state.is_valid_action(0, action):
 		return
-	spell_queue.spells = action
+	my_spell_list.spells = action
 	redraw()
 
 func on_book_upgrade(index, book):
 	print(index)
 	print(book)
 
-func on_spell_queue_pressed(index, spell):
-	var action = spell_queue.spells.duplicate()
-	action.remove(index)
-	if not state.is_valid_action(0, action):
-		return
-	spell_queue.spells = action
-	redraw()
+func on_my_spell_list_pressed(index, spell):
+	if ui_state == CHOOSING_SPELLS:
+		var action = my_spell_list.spells.duplicate()
+		action.remove(index)
+		if not state.is_valid_action(0, action):
+			return
+		my_spell_list.spells = action
+		redraw()
 
 # TODO: jim: All the player_* functions duplicate some part of our game logic.
 # Move these to helper functions in C++ and wrap them?
 func player_upgraded_book_id():
-	for spell_id in spell_queue.spells:
+	for spell_id in my_spell_list.spells:
 		var spell = g.backend.rules.get_spell(spell_id)
 		if spell.is_tech_spell():
 			return spell.get_book()
@@ -81,7 +81,7 @@ func player_upgraded_book_id():
 func player_mp_left():
 	var me = state.players[0]
 	var mp_left = me.mp
-	for spell_id in spell_queue.spells:
+	for spell_id in my_spell_list.spells:
 		var spell = g.backend.rules.get_spell(spell_id)
 		mp_left -= spell.get_cost()
 	return mp_left
@@ -136,20 +136,20 @@ func redraw():
 	my_stats.redraw(me, mp_left)
 	my_stickies.redraw(me.stickies)
 	spell_select.tech_levels = player_effective_tech()
-	spell_queue.redraw()
+	my_spell_list.redraw()
 	spell_select.redraw_spells()
 	spell_select.redraw_tech_upgrades(player_upgraded_book_id())
 
 func on_end_turn_button_pressed():
 	spell_select.on_close_book()
-	var action = spell_queue.spells
+	var action = my_spell_list.spells
 
 	ui_state = UiState.WAITING_FOR_UPDATE
 
 	animation_player.play('end_turn')
 	yield(animation_player, 'animation_finished')
 
-	spell_queue.spells = []
+	my_spell_list.immediately_show_tooltip = true
 	redraw()
 
 	if not g.backend.submit_action(action):
@@ -193,8 +193,9 @@ func on_event_timer_timeout():
 
 			# Clear the spell lists
 			my_spell_list.spells = []
+			my_spell_list.immediately_show_tooltip = false
 			enemy_spell_list.spells = []
-			
+
 			redraw()
 
 			if len(state.winners()) > 0:

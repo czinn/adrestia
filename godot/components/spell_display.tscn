@@ -111,6 +111,7 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Size Flags" ]
 
 [node name="glow_texture" type="TextureRect" parent="vbox/texture" index="0"]
 
+visible = false
 modulate = Color( 1, 1, 1, 0.501961 )
 show_behind_parent = true
 material = ExtResource( 3 )
