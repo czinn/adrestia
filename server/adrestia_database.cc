@@ -13,11 +13,157 @@
 #include <cstdlib>  // getenv
 #include <iostream>
 #include <string>
+#include <string.h>
 using namespace std;
 
 // JSON
 #include "../units_cpp/json.h"
 using json = nlohmann::json;
+
+
+vector<string> sql_array_to_vector(const string& sql_array) {
+	/* @brief Converts a 1-D sql array string like "{'fleep', 'floop'}" into a vector of strings. */
+
+	if (sql_array.length() < 2) {
+		return vector<string>();
+	}
+
+	// Remove capping {}
+	const char* sql_interior_string_const = sql_array.substr(1,sql_array.length()-2).c_str();
+	char* sql_interior_string = strdup(sql_interior_string_const);
+
+	vector<string> return_vector;
+	const char* pch = strtok(sql_interior_string,",");
+	while (pch != NULL) {
+		return_vector.push_back(string(pch));
+		pch = strtok(NULL,",");
+	}
+
+	return return_vector;
+}
+
+
+string adrestia_database::retrieve_gamestate_from_database (
+	pqxx::connection* psql_connection,
+	const string& game_uid
+) {
+	/* @brief Retrieves the gamestate of a target game.
+	 *
+	 * @param psql_connection: The pqxx PostgreSQL connection.
+	 * @param game_uid: The game_uid whose game_state will be returned.
+	 *                  If there is no such game, or the game has no state,
+	 *                      this will be an empty string.
+	 *
+	 * @returns: A string representation of the requested gamestate.
+	 */
+
+	const string select_gamestate_command = ""
+	"SELECT game_state"
+	"    FROM adrestia_games"
+	"    WHERE game_uid = $1"
+	";";
+
+	cout << "retrieve_gamestate_from_database called with args:" << endl;
+	cout << "    game_uid: |" << game_uid << "|" << endl;
+
+	psql_connection[0].prepare("select_gamestate_command", select_gamestate_command);
+
+	pqxx::work select_transaction(psql_connection[0]);
+
+	pqxx::result search_result = select_transaction.prepared("select_gamestate_command")
+	                                                        (game_uid)
+	                                                        .exec();
+
+	if (search_result.size() > 0) {
+		return "";
+	}
+
+	string game_state = "";
+	if (search_result.size() > 0) {
+		game_state = search_result[0][0].as<std::string>();
+	}
+
+	return game_state;
+}
+
+
+json adrestia_database::check_for_active_games_in_database (
+    pqxx::connection* psql_connection,
+    const string& uuid
+) {
+	/* @brief Checks the database to see if the given user is part of any active games, and returns the game_uids of
+	 *        those games. Also returns which games are waiting for this uuid to make a move.
+     *
+     * @param psql_connection: The pqxx PostgreSQL connection.
+     * @param uuid: We will be looking for games involving this uuid.
+     *
+     * @returns: A json object with the following tags:
+     *               "active_game_uids": An array of active game_uids that the given uuid is part of
+     *               "waiting_game_uids": An array of active game_uids that are waiting for the given uuid to make a
+     *                                    move. This is, of course, a subset of active_game_uids.
+     */
+
+	const string find_active_games_command = ""
+	"SELECT game_uid, involved_uuids, player_states"
+	"    FROM adrestia_games"
+	"    WHERE activity_state = 0"
+	"        AND $1 = ANY(involved_uuids)"
+	";";
+
+	cout << "check_for_active_games_in_database called with args:" << endl;
+	cout << "    uuid: |" << uuid << "|" << endl;
+
+	psql_connection[0].prepare("find_active_games_command", find_active_games_command);
+
+	pqxx::work select_transaction(psql_connection[0]);
+
+	pqxx::result search_result = select_transaction.prepared("find_active_games_command")
+	                                                        (uuid)
+	                                                        .exec();
+
+	vector<string> active_game_uids;
+	vector<string> waiting_game_uids;
+
+	for (unsigned int row_index = 0; row_index < search_result.size(); row_index += 1) {
+		// This is an active game that we are in.
+		string game_uid = search_result[row_index]["game_uid"].as<string>();
+		active_game_uids.push_back(game_uid);
+
+		cout << "uuid |" << uuid << "| has active game |" << game_uid << "|." << endl;
+
+		string involved_uuids_array_string = search_result[row_index]["involved_uuids"].as<string>();
+		string player_states_array_string = search_result[row_index]["player_states"].as<string>();
+
+		vector<string> involved_uuids_vector = sql_array_to_vector(involved_uuids_array_string);
+		vector<string> player_states_vector = sql_array_to_vector(player_states_array_string);
+
+		// Find our state within this game...
+		for (unsigned int vector_index = 0; vector_index < involved_uuids_vector.size(); vector_index += 1) {
+			// If the current vector_index represents our uuid...
+			if (involved_uuids_vector[vector_index].compare(uuid) == 0) {
+				// If the current player_state is 0 (the state is an integer, but we needed to convert it to a string
+				//     to use sql_array_to_vector
+				if (player_states_vector[vector_index].compare("0") == 0) {
+					// We need to make a move.
+					waiting_game_uids.push_back(game_uid);
+					cout << "Waiting for uuid |" << uuid << "| to make a move in game |" << game_uid << "|..." << endl;
+				}
+
+				break;
+			}
+		}
+	}
+
+	cout << "Commiting transaction..." << endl;
+	select_transaction.commit();
+
+	json return_var;
+	return_var["active_game_uids"] = active_game_uids;
+	return_var["waiting_game_uids"] = waiting_game_uids;
+
+	cout << "check_for_games concluded." << endl;
+	return return_var;
+}
 
 
 json adrestia_database::matchmake_in_database (
@@ -238,10 +384,10 @@ json adrestia_database::register_new_account_in_database(
 	unsigned char* hash_of_salt_and_password = new unsigned char[adrestia_hexy::MAX_HASH_LENGTH];
 	unsigned int hash_of_salt_and_password_length;
 	adrestia_hexy::digest_message(salt_and_password_c_str,
-	                              salt_and_password.length(),
+		                          salt_and_password.length(),
 	                              &hash_of_salt_and_password,
 	                              &hash_of_salt_and_password_length
-	                             );
+                                 );
 	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
 	                                 (size_t)hash_of_salt_and_password_length
 	                                );
@@ -343,26 +489,6 @@ bool adrestia_database::verify_existing_account_in_database(
 
 	cout << "Received an incorrect password for this known uuid." << endl;
 	return false;
-}
-
-
-void adrestia_database::add_user_checkin(
-	pqxx::connection* conn,
-	const std::string &uuid
-) {
-	static const string add_user_checkin_command =
-	"INSERT INTO adrestia_active users (account_uuid, checkin_time)"
-	"VALUES ($1, NOW());";
-
-	// Find account of given name
-	conn->prepare("add_user_checkin_command", add_user_checkin_command);
-	pqxx::work transaction(*conn);
-	try {
-		transaction.prepared("add_user_checkin_command")(uuid).exec();
-		transaction.commit();
-	} catch (pqxx::pqxx_exception &e) {
-		cerr << e.base().what() << endl;
-	}
 }
 
 

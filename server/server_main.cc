@@ -31,7 +31,6 @@ std::map<string, adrestia_networking::request_handler> handler_map;
 
 string read_message_buffer;
 
-
 string adrestia_networking::read_message (int client_socket, bool& timed_out) {
 	/* @brief Extracts the message currently waiting on the from the client's socket.
 	 *        Assumes message is terminated with a \n (if it is not, MESSAGE_MAX_BYTES will be read.
@@ -87,27 +86,42 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 	unsigned int phase = 0;
 	string uuid = "";  // The uuid of the client we are babysitting
+	map<string, string> games_I_am_aware_of; // game_uid to game_state
+	vector<string> active_game_uids_I_am_aware_of;
 
 	try {
 		json client_json;
 		json resp;
 		
 		while (true) {
-			resp.clear();
+			// Pushers
+			if (phase == 2) {
+				cout << "[Server] Processing pushers..." << endl;
+
+				json message_json;
+				message_json.clear();
+				adrestia_networking::push_active_games(message_json,
+					                                   uuid,
+					                                   games_I_am_aware_of,
+					                                   active_game_uids_I_am_aware_of
+					                                  );
+
+				if (message_json.at(adrestia_networking::MESSAGE_KEY) == 200) {
+					// We should push the json to the client.
+					cout << "[Server] Pushing new/changed game notification to client." << endl;
+					string message_json_string = message_json.dump();
+					message_json_string += '\n';
+					send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
+				}
+			}
 
 			// read message
+			resp.clear();
 			bool timed_out = false;
 			string message = read_message(client_socket, timed_out);
 
 			if (timed_out) {
 				continue;
-				/*bool found_something = false;
-				found_something = adrestia_
-
-				string response_string = resp.dump();
-				response_string += '\n';
-				send(client_socket, response_string.c_str(), response_string.length(), MSG_NOSIGNAL);
-				*/
 			}
 
 			string requested_function_name;

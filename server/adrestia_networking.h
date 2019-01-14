@@ -2,6 +2,7 @@
 #define ADRESTIA_NETWORKING_INCLUDE_GUARD
 
 // System modules
+#include <map>
 #include <string>
 
 // JSON
@@ -16,7 +17,7 @@ namespace adrestia_networking {
 	const time_t WAIT_FOR_COMMANDS_SECONDS = 10;  // We wait for commands for this long
 	const time_t TIMEOUT_SEND_SECONDS = 30;  // When sending data to client, we assume connection dropped after this long
 
-	const std::string HANDLER_KEY("server_handler_name");
+	const std::string HANDLER_KEY("api_handler_name");
 	const std::string CODE_KEY("api_code");
 	const std::string MESSAGE_KEY("api_message");
 
@@ -38,7 +39,7 @@ namespace adrestia_networking {
 	int handle_change_user_name(const json& client_json, json& resp);
 	int matchmake_me(const json& client_json, json& resp);
 
-	// Calls
+	// Calls to handlers
 	void create_floop_call(json& client_json);
 
 	void create_establish_connection_call(json& client_json);
@@ -55,6 +56,13 @@ namespace adrestia_networking {
 	                                  const std::string& user_name
 	                                 );
 	void create_matchmake_me_call(json& client_json);
+
+	// Server-side pushers
+	void push_active_games(json& message_json,
+	                       const std::string& uuid,
+	                       std::map<std::string, std::string>& games_I_am_aware_of,
+	                       std::vector<std::string>& active_game_uids_I_am_aware_of
+	                      );
 }
 
 #endif

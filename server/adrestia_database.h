@@ -20,6 +20,20 @@ namespace adrestia_database {
 	const int UUID_LENGTH = 32;
 	const int GAME_UID_LENGTH = 32;
 
+	/* Fetches from the database the game_state associated with the given game_uid. */
+	std::string retrieve_gamestate_from_database(
+		pqxx::connection* psql_connection,
+		const std::string& game_uid
+	);
+
+	/* Checks for active games in the database associated with the given uuid, and returns them.
+	 *     Also returns if any are waiting for this player's move in particular.
+	 */
+	json check_for_active_games_in_database (
+		pqxx::connection* psql_connection,
+		const std::string& uuid
+	);
+
 	/* Adds the user to the waiting list if there are no compatible waiters;
 	 *     otherwise, matches the user to a waiter.
 	 */
@@ -54,12 +68,6 @@ namespace adrestia_database {
 		pqxx::connection* psql_connection,
 		const std::string& uuid,
 		const std::string& password
-	);
-
-
-	void add_user_checkin(
-		pqxx::connection* conn,
-		const std::string &uuid
 	);
 
 
