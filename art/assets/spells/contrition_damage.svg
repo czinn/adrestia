@@ -14,7 +14,7 @@
    viewBox="0 0 25.399997 25.399999"
    version="1.1"
    id="svg1718"
-   inkscape:version="0.92.2 2405546, 2018-03-11"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
    sodipodi:docname="contrition_damage.svg">
   <defs
      id="defs1712" />
@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="27.558794"
+     inkscape:cx="-19.160761"
      inkscape:cy="61.304305"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -36,9 +36,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1052"
+     inkscape:window-height="1035"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="1"
      inkscape:window-maximized="1"
      inkscape:snap-global="false"
      units="px" />
@@ -60,7 +60,7 @@
      id="layer1"
      transform="translate(-59.067602,-118.91057)">
     <path
-       style="fill:#ff525d;fill-opacity:1;stroke:#aa0000;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:40;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+       style="fill:#fbf8ae;fill-opacity:1;stroke:#cdb900;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:40;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
        d="m 63.772546,140.98753 c 1.756194,-2.60828 3.738427,-4.00647 5.60764,-6.0097 -1.756295,0.74658 -1.852022,0.87968 -3.538101,1.12624 2.121331,-2.74453 5.38268,-5.16249 8.07402,-7.74373 -0.61724,0.25505 -1.602885,0.48666 -2.821551,0.33285 2.931491,-1.46997 6.424626,-2.69225 9.734575,-3.0028 -1.197624,1.59375 -3.136028,2.20963 -4.704042,3.31445 1.431913,-0.46766 2.570962,-0.45073 3.382976,-0.45603 -3.580668,2.76843 -7.02164,4.83268 -10.742007,8.30528 1.101981,0.0248 1.952873,-0.28513 3.168665,-0.0194 -2.566877,2.01176 -5.544075,3.33772 -8.162175,4.15284 z"
        id="path1638"
        inkscape:connector-curvature="0"
