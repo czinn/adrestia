@@ -95,11 +95,11 @@ func end_turn_button_pressed_override(game_root):
 		return
 
 	# Confirm that the player is doing the right first turn
-	var spells = game_root.spell_queue.spells
+	var spells = game_root.my_spell_list.spells
 	if spells != ['conjuration_tech', 'conjuration_attack_1']:
 		#show_big_window('For your first turn, level up your knowledge of the [i]Book of Conjuration[/i], and then cast [i]Ripple Shield[/i] followed by [i]Flame Strike[/i].')
 		show_big_window('For your first turn, level up the [b]Book of Conjuration[/b], then cast [b]Flame Strike[/b].')
-		game_root.spell_queue.spells = []
+		game_root.my_spell_list.spells = []
 		game_root.redraw()
 	else:
 		game_root.on_end_turn_button_pressed()

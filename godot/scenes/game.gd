@@ -170,12 +170,17 @@ func events_compatible(first_event, second_event):
 		return true
 	if first_event['type'] == 'time_point' and (first_event['point'] != 'spells_fired' && first_event['point'] != 'spells_hit_or_countered'):
 		return false
-	if first_event['type'] == 'effect' && \
-			first_event['effect']['kind'] == 'sticky' && \
-			(second_event['type'] == 'sticky_amount_changed' || \
-					second_event['type'] == 'sticky_duration_changed' || \
-					second_event['type'] == 'sticky_expired') && \
-			first_event['effect']['target_player'] == second_event['player']:
+	if (second_event['type'] == 'sticky_amount_changed' || \
+				 second_event['type'] == 'sticky_duration_changed' || \
+				 second_event['type'] == 'sticky_expired') && \
+			( \
+				 (first_event['type'] == 'effect' && \
+						first_event['effect']['kind'] == 'sticky' && \
+						first_event['effect']['target_player'] == second_event['player']) || \
+				 (first_event['type'] == 'sticky_amount_changed' && \
+					 	first_event['player'] == second_event['player'] && \
+						first_event['sticky_index'] == second_event['sticky_index']) \
+			):
 		return false
 	if first_event['type'] == 'effect' && second_event['type'] == 'effect' && \
 			first_event['effect']['kind'] == second_event['effect']['kind'] && \
@@ -189,7 +194,6 @@ func on_event_timer_timeout():
 			ui_state = UiState.CHOOSING_SPELLS
 
 			state.of_game_view(g.backend.get_view())
-			animation_player.play_backwards('end_turn')
 
 			# Clear the spell lists
 			my_spell_list.spells = []
@@ -202,6 +206,7 @@ func on_event_timer_timeout():
 				print('Game is over')
 				g.scene_loader.goto_scene('game_results')
 			else:
+				animation_player.play_backwards('end_turn')
 				emit_signal('turn_animation_finished')
 
 		return
@@ -262,7 +267,6 @@ func on_event_timer_timeout():
 		elif event['type'] == 'spell_hit':
 			pass # TODO: charles: Maybe animate this
 		elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':
-			# TODO: charles Animate this
 			if event['player'] == 0:
 				my_stickies.redraw_update(me.stickies)
 			else:	

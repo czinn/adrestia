@@ -1,7 +1,5 @@
 extends Object
 
-# TODO jim: make this at all different from random_ai.gd
-
 # Private, do not touch
 var g = null
 var state = null
