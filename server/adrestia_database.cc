@@ -88,20 +88,20 @@ string adrestia_database::retrieve_gamestate_from_database (
 
 
 json adrestia_database::check_for_active_games_in_database (
-    pqxx::connection* psql_connection,
-    const string& uuid
+	pqxx::connection* psql_connection,
+	const string& uuid
 ) {
 	/* @brief Checks the database to see if the given user is part of any active games, and returns the game_uids of
 	 *        those games. Also returns which games are waiting for this uuid to make a move.
-     *
-     * @param psql_connection: The pqxx PostgreSQL connection.
-     * @param uuid: We will be looking for games involving this uuid.
-     *
-     * @returns: A json object with the following tags:
-     *               "active_game_uids": An array of active game_uids that the given uuid is part of
-     *               "waiting_game_uids": An array of active game_uids that are waiting for the given uuid to make a
-     *                                    move. This is, of course, a subset of active_game_uids.
-     */
+	 *
+	 * @param psql_connection: The pqxx PostgreSQL connection.
+	 * @param uuid: We will be looking for games involving this uuid.
+	 *
+	 * @returns: A json object with the following tags:
+	 *               "active_game_uids": An array of active game_uids that the given uuid is part of
+	 *               "waiting_game_uids": An array of active game_uids that are waiting for the given uuid to make a
+	 *                                    move. This is, of course, a subset of active_game_uids.
+	 */
 
 	const string find_active_games_command = ""
 	"SELECT game_uid, involved_uuids, player_states"
@@ -384,10 +384,10 @@ json adrestia_database::register_new_account_in_database(
 	unsigned char* hash_of_salt_and_password = new unsigned char[adrestia_hexy::MAX_HASH_LENGTH];
 	unsigned int hash_of_salt_and_password_length;
 	adrestia_hexy::digest_message(salt_and_password_c_str,
-		                          salt_and_password.length(),
+	                              salt_and_password.length(),
 	                              &hash_of_salt_and_password,
 	                              &hash_of_salt_and_password_length
-                                 );
+	                             );
 	string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
 	                                 (size_t)hash_of_salt_and_password_length
 	                                );
