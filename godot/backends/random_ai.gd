@@ -24,6 +24,12 @@ func get_view():
 	view.init(state, 0)
 	return view
 
+func get_state():
+	if state.winners().size() != 0:
+		return state
+	else:
+		return null
+
 func register_update_callback(callback_):
 	callback = callback_
 
