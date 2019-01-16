@@ -16,7 +16,7 @@
 resource_name = "end_turn"
 length = 0.5
 loop = false
-step = 0.1
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("end_turn_button:margin_left")
 tracks/0/interp = 2
@@ -24,10 +24,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ -52.0, -82.0, -82.0, 318.0 ]
+"values": [ -124.0, -162.0, 64.0 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("end_turn_button:margin_right")
@@ -36,10 +36,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ 52.0, 22.0, 22.0, 422.0 ]
+"values": [ 57.0, 19.0, 245.0 ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("spell_select:margin_top")
@@ -51,7 +51,7 @@ tracks/2/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -229.0, 72.0 ]
+"values": [ -173.0, 72.0 ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("spell_select:margin_bottom")
@@ -63,7 +63,7 @@ tracks/3/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -69.0, 232.0 ]
+"values": [ -13.0, 232.0 ]
 }
 
 [node name="root" type="Node" index="0"]
@@ -97,10 +97,13 @@ _sections_unfolded = [ "Animation", "Offset", "Region" ]
 
 [node name="enemy_avatar" parent="ui" index="1" instance=ExtResource( 5 )]
 
+margin_top = 57.0
+margin_bottom = 97.0
+
 [node name="enemy_stats" parent="ui" index="2" instance=ExtResource( 6 )]
 
-margin_left = 202.0
-margin_right = -10.0
+margin_left = 20.0
+margin_right = -20.0
 _sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
 [node name="enemy_stickies" parent="ui" index="3" instance=ExtResource( 7 )]
@@ -116,26 +119,30 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -185.0
-margin_top = 160.0
+margin_top = 232.0
 margin_right = 185.0
-margin_bottom = 310.0
+margin_bottom = 382.0
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="my_avatar" parent="ui" index="5" instance=ExtResource( 5 )]
 
-margin_left = 343.0
-margin_top = 579.0
-margin_right = 383.0
-margin_bottom = 619.0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -197.0
+margin_top = -381.0
+margin_right = -157.0
+margin_bottom = -341.0
 
 [node name="my_stats" parent="ui" index="6" instance=ExtResource( 6 )]
 
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 10.0
-margin_top = -260.0
+margin_top = -235.0
 margin_right = -195.0
-margin_bottom = -207.0
+margin_bottom = -182.0
 mouse_filter = 2
 _sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
@@ -156,9 +163,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -185.0
-margin_top = -532.0
+margin_top = -537.0
 margin_right = 185.0
-margin_bottom = -382.0
+margin_bottom = -387.0
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="event_timer" type="Timer" parent="ui" index="9"]
@@ -170,14 +177,14 @@ autostart = true
 
 [node name="end_turn_button" type="TextureButton" parent="ui" index="10"]
 
-anchor_left = 0.5
+anchor_left = 1.0
 anchor_top = 0.5
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 0.5
-margin_left = -52.0
-margin_top = -147.0
-margin_right = 52.0
-margin_bottom = -59.0
+margin_left = -124.0
+margin_top = -141.0
+margin_right = 57.0
+margin_bottom = -53.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -200,11 +207,11 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 margin_left = -270.0
-margin_top = -183.0
+margin_top = -173.0
 margin_right = 270.0
-margin_bottom = -23.0
+margin_bottom = -13.0
 rect_min_size = Vector2( 540, 160 )
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
+_sections_unfolded = [ "Anchor", "Margin", "Theme" ]
 
 [node name="animation_player" type="AnimationPlayer" parent="ui" index="12"]
 
