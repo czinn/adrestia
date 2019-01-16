@@ -69,7 +69,7 @@ func show_big_window(text):
 func show_tooltip(target, text):
 	g.summon_tooltip(target, text)
 	var rect = target.get_global_rect()
-	mouse_blocker.material.set_shader_param('radius', max(rect.size.x, rect.size.y) / 2.0);
+	mouse_blocker.material.set_shader_param('radius', max(rect.size.x, rect.size.y) / 2.0 + 15.0);
 	mouse_blocker.material.set_shader_param('position', rect.position + (rect.size / 2.0));
 	mouse_blocker.visible = true
 	yield(g, 'tooltip_closed')
@@ -137,7 +137,7 @@ func play_tutorial():
 	var book_slot = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
 	yield(show_tooltip(book_slot, 'The [b]Book of Conjuration[/b] is a good book for beginners. Drag it up here to bring it into battle.'), 'completed')
 	yield(select_root, 'chose_book')
-	yield(show_tooltip(play_button, 'Now press the play button to fight against an AI opponent.'), 'completed')
+	yield(show_tooltip(play_button, "Good job! Pick two more books if you'd like, then press the play button to fight against an AI opponent."), 'completed')
 
 	# Game
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
@@ -149,7 +149,8 @@ func play_tutorial():
 	# Show information
 	yield(show_big_window('Nice work! Let\'s take a look around the game screen.'), 'completed')
 	var my_stats = yield(self.acquire_node('ui/my_stats'), 'completed')
-	yield(show_tooltip(my_stats, 'Here is your remaining health and mana. The (+5) beside your mana shows you how much mana you get each turn. You can increase this with spells.'), 'completed')
+	# TODO jim: Demonstrate that spells can increase mana regen.
+	yield(show_tooltip(my_stats, 'Here is your remaining health and mana. The (+3) beside your mana shows your mana regeneration.'), 'completed')
 	yield(show_tooltip(spell_select, 'Here are your books. You can tap a book to see its spells.'), 'completed')
 
 	var book_button = spell_select.get_node('book_buttons').get_child(0)
