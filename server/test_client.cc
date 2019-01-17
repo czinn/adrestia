@@ -440,7 +440,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Socket 1 should now receive a notification...
-	response_message = read_packet(my_socket_2);
+	response_message = read_packet(my_socket_1);
 	response_json = json::parse(response_message);
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to receive matchmaking notification on socket 1." << endl;
@@ -459,5 +459,9 @@ int main(int argc, char* argv[]) {
 
 	// Done.
 	cout << "Done!" << endl;
+
+	close(my_socket_1);
+	close(my_socket_2);
+
 	return 0;
 }

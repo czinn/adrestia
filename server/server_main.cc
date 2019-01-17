@@ -106,12 +106,14 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					                                   active_game_uids_I_am_aware_of
 					                                  );
 
-				if (message_json.at(adrestia_networking::MESSAGE_KEY) == 200) {
+				if (message_json.at(adrestia_networking::CODE_KEY) == 200) {
 					// We should push the json to the client.
 					cout << "[Server] Pushing new/changed game notification to client." << endl;
 					string message_json_string = message_json.dump();
 					message_json_string += '\n';
 					send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
+				} else {
+					cout << "[Server] Not pushing new/changed game notification to client due to code |" << message_json.at(adrestia_networking::CODE_KEY) << "|" << endl;
 				}
 			}
 

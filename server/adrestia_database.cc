@@ -141,6 +141,8 @@ json adrestia_database::check_for_active_games_in_database (
 		for (unsigned int vector_index = 0; vector_index < involved_uuids_vector.size(); vector_index += 1) {
 			// If the current vector_index represents our uuid...
 			if (involved_uuids_vector[vector_index].compare(uuid) == 0) {
+				cout << "uuid |" << uuid << "|'s state in game |" << game_uid << "| is |" << player_states_vector[vector_index] << "|" << endl;
+
 				// If the current player_state is 0 (the state is an integer, but we needed to convert it to a string
 				//     to use sql_array_to_vector
 				if (player_states_vector[vector_index].compare("0") == 0) {
@@ -260,7 +262,7 @@ json adrestia_database::matchmake_in_database (
 		throw string("Failed to create unique game id!");
 	}
 
-	string uuid_list = "{'" + uuid + "', '" + waiting_uuid + "'}";
+	string uuid_list = "{" + uuid + ", " + waiting_uuid + "}";
 	string states_list = "{0, 0}";
 
 	// Create game

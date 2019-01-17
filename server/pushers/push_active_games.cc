@@ -97,6 +97,7 @@ void adrestia_networking::push_active_games(json& message_json,
 	// Detect any new games, or games whose states have changed...
 	for (unsigned int i = 0; i < active_game_uids.size(); i += 1) {
 		string current_game_uid = active_game_uids[i];
+        cout << "Looking at current game with uid |" << current_game_uid << "|..." << endl;
 		string current_game_state = adrestia_database::retrieve_gamestate_from_database(psql_connection, 
 			                                                                            current_game_uid
 			                                                                           );
@@ -114,6 +115,9 @@ void adrestia_networking::push_active_games(json& message_json,
 				games_I_am_aware_of[current_game_uid] = current_game_state;
 				active_game_uids_I_am_aware_of.push_back(current_game_uid);
 			}
+            else {
+                cout << "game_uid |" << current_game_uid << "| has no changes to its state." << endl;
+            }
 		}
 		catch (out_of_range& oor) {
             cout << "New active game with game_uid |" << current_game_uid << "|" << endl;
@@ -151,6 +155,8 @@ void adrestia_networking::push_active_games(json& message_json,
 	else {
 		api_message = "You have changed games!";
 	}
+
+    cout << "Message going in as: |" << api_message << "|" << endl;
 
 	// Construct our json!
 	message_json[adrestia_networking::HANDLER_KEY] = "push_active_games";
