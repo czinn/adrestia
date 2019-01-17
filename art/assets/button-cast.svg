@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="27.516666mm"
-   height="23.283335mm"
-   viewBox="0 0 27.516667 23.283336"
+   width="47.832886mm"
+   height="23.283342mm"
+   viewBox="0 0 47.832887 23.283344"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.919596"
-     inkscape:cx="53.094414"
-     inkscape:cy="39.553567"
+     inkscape:zoom="2.8"
+     inkscape:cx="159.46111"
+     inkscape:cy="1.6573287"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,13 +39,20 @@
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:snap-global="false">
+     inkscape:window-maximized="0"
+     inkscape:snap-global="true"
+     showguides="true"
+     inkscape:guide-bbox="true">
     <inkscape:grid
        type="xygrid"
        id="grid10781"
-       originx="1.3363475"
-       originy="1.7395857" />
+       originx="1.3363477"
+       originy="1.7395873" />
+    <sodipodi:guide
+       position="31.844496,23.718009"
+       orientation="1,0"
+       id="guide2192"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <metadata
      id="metadata1715">
@@ -55,7 +62,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -63,16 +70,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(1.7346469,-103.45765)">
-    <rect
-       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.64583302;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+     transform="translate(1.734647,-103.45764)">
+    <path
+       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.64583325;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       d="M 1.8750416,104.78056 H 31.09824 42.488553 c 1.266872,0 2.286771,0.98791 2.286771,2.21504 v 16.20742 c 0,1.22714 -1.019899,2.21505 -2.286771,2.21505 H 31.09824 1.8750416 c -1.26687166,0 -2.28677199,-0.98791 -2.28677199,-2.21505 V 106.9956 c 0,-1.22713 1.01990033,-2.21504 2.28677199,-2.21504 z"
        id="rect1367-2-0-1"
-       width="24.870834"
-       height="20.637503"
-       x="-0.41173038"
-       y="104.78056"
-       ry="2.2150414"
-       rx="2.2150414" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="scsssscssss" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-7-2-2"
@@ -89,6 +93,6 @@
            x="1463.6553"
            y="11.979513"
            style="line-height:0.89999998;fill:#0057e7;fill-opacity:1" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.89999998;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle;fill:#0057e7;fill-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.89999998;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle;fill:#0057e7;fill-opacity:1"
          id="flowPara826">End Turn</flowPara></flowRoot>  </g>
 </svg>
