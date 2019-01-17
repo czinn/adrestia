@@ -18,7 +18,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::matchmake_me(const json& client_json, json& resp) {
+int adrestia_networking::matchmake_me(const string& log_id, const json& client_json, json& resp) {
 	/* Adds this user to the waiting list for matchmaking, if there are no possible matches already waiting.
 	 * If there /are/ matches already waiting, the user is matched with them and a game is made.
 	 *
@@ -38,17 +38,17 @@ int adrestia_networking::matchmake_me(const json& client_json, json& resp) {
 	 * Should always return 0.
 	 */
 
-	cout << "Triggered matchmake_me." << endl;
+	cout << "[" << log_id << "] Triggered matchmake_me." << endl;
 	string uuid = client_json.at("uuid");
 
-	cout << "Matchmaking client with uuid |" << uuid << "|..." << endl;
+	cout << "[" << log_id << "] Matchmaking client with uuid |" << uuid << "|..." << endl;
 
 	pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
-	json database_json = adrestia_database::matchmake_in_database(psql_connection, uuid);
+	json database_json = adrestia_database::matchmake_in_database(log_id, psql_connection, uuid);
 
 	string game_uid = database_json["game_uid"];
 	if (game_uid.compare("") != 0) {
-		cout << "A new game has been made (game_id |" << database_json["game_uid"] << "|)!" << endl;
+		cout << "[" << log_id << "] A new game has been made (game_id |" << database_json["game_uid"] << "|)!" << endl;
 		resp["game_uid"] = database_json.at("game_uid");
 		resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 		resp[adrestia_networking::CODE_KEY] = 201;
@@ -56,7 +56,7 @@ int adrestia_networking::matchmake_me(const json& client_json, json& resp) {
 		return 0;
 	} else {
 		// No new game was made
-		cout << "UUID |" << uuid << "| is now on the waiting list." << endl;
+		cout << "[" << log_id << "] UUID |" << uuid << "| is now on the waiting list." << endl;
 		resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 		resp[adrestia_networking::CODE_KEY] = 200;
 		resp[adrestia_networking::MESSAGE_KEY] = "You have been put on the wait list.";

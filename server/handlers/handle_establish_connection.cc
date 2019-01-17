@@ -12,7 +12,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_establish_connection(const json& client_json, json& resp) {
+int adrestia_networking::handle_establish_connection(const string& log_id, const json& client_json, json& resp) {
 	/* Responds with a message.
 	 *
 	 * Accepts keys from client:

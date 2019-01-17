@@ -22,6 +22,7 @@ namespace adrestia_database {
 
 	/* Fetches from the database the game_state associated with the given game_uid. */
 	std::string retrieve_gamestate_from_database(
+		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& game_uid
 	);
@@ -30,6 +31,7 @@ namespace adrestia_database {
 	 *     Also returns if any are waiting for this player's move in particular.
 	 */
 	json check_for_active_games_in_database (
+		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& uuid
 	);
@@ -38,6 +40,7 @@ namespace adrestia_database {
 	 *     otherwise, matches the user to a waiter.
 	 */
 	json matchmake_in_database(
+		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& uuid
 	);
@@ -46,6 +49,7 @@ namespace adrestia_database {
 	 * Returns a json object with key 'tag' representing the tag.
 	 */
 	json adjust_user_name_in_database(
+		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& uuid,
 		const std::string& user_name
@@ -56,6 +60,7 @@ namespace adrestia_database {
 	 * Returns a json object with keys 'id', 'user_name', and 'tag'.
 	 */
 	json register_new_account_in_database(
+		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& password
 	);
@@ -65,6 +70,7 @@ namespace adrestia_database {
 	 *     false otherwise.
 	 */
 	bool verify_existing_account_in_database(
+		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& uuid,
 		const std::string& password

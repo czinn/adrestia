@@ -2,6 +2,7 @@
 
 // Us
 #include "adrestia_networking.h"
+#include "adrestia_hexy.h"
 
 // Networking
 #include <sys/types.h>
@@ -84,6 +85,10 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 	 *     MESSAGE_KEY: <A message describing the problem>
 	 */
 
+	// We keep an id for logging purposes
+	const string babysitter_id = adrestia_hexy::hex_urandom(8);
+	cout << "Babysitter |" << babysitter_id << "| starting sequence." << endl;
+
 	unsigned int phase = 0;
 	string uuid = "";  // The uuid of the client we are babysitting
 	map<string, string> games_I_am_aware_of; // game_uid to game_state
@@ -96,11 +101,12 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 		while (true) {
 			// Pushers
 			if (phase == 2) {
-				cout << "[Server] Processing pushers..." << endl;
+				cout << "[" << babysitter_id << "] Processing pushers..." << endl;
 
 				json message_json;
 				message_json.clear();
-				adrestia_networking::push_active_games(message_json,
+				adrestia_networking::push_active_games(babysitter_id,
+					                                   message_json,
 					                                   uuid,
 					                                   games_I_am_aware_of,
 					                                   active_game_uids_I_am_aware_of
@@ -108,12 +114,12 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 				if (message_json.at(adrestia_networking::CODE_KEY) == 200) {
 					// We should push the json to the client.
-					cout << "[Server] Pushing new/changed game notification to client." << endl;
+					cout << "[" << babysitter_id << "] Pushing new/changed game notification to client." << endl;
 					string message_json_string = message_json.dump();
 					message_json_string += '\n';
 					send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
 				} else {
-					cout << "[Server] Not pushing new/changed game notification to client due to code |" << message_json.at(adrestia_networking::CODE_KEY) << "|" << endl;
+					cout << "[" << babysitter_id << "] Not pushing new/changed game notification to client due to code |" << message_json.at(adrestia_networking::CODE_KEY) << "|" << endl;
 				}
 			}
 
@@ -135,7 +141,7 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 				adrestia_networking::request_handler requested_function = handler_map.at(requested_function_name);
 
 				if ((phase == 0) && (requested_function_name.compare("establish_connection") != 0)) {
-					cout << "[Server] received out-of-order request for function |"
+					cout << "[" << babysitter_id << "] received out-of-order request for function |"
 					     << requested_function_name
 					     << "|."
 					     << endl;
@@ -151,7 +157,7 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					                       (requested_function_name.compare("authenticate") == 0)
 					                      )
 					    ) {
-					cout << "[Server] received out-of-order request for function |"
+					cout << "[" << babysitter_id << "] received out-of-order request for function |"
 				         << requested_function_name
 				         << "| in phase |"
 				         << phase
@@ -168,7 +174,7 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 				if (have_valid_function_to_call) {
 					// We have a function that we can actually work with...
-					cout << "[Server] received valid call for function |"
+					cout << "[" << babysitter_id << "] received valid call for function |"
 					     << requested_function_name
 					     << "| in phase |"
 					     << phase
@@ -176,37 +182,37 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					     << endl;
 
 					if (requested_function_name.compare("establish_connection") == 0) {
-						requested_function(client_json, resp);
-						cout << "[Server] moving to phase 1." << endl;;
+						requested_function(babysitter_id, client_json, resp);
+						cout << "[" << babysitter_id << "] moving to phase 1." << endl;;
 						phase = 1;
 					}
 					else if (requested_function_name.compare("register_new_account") == 0) {
-						requested_function(client_json, resp);
+						requested_function(babysitter_id, client_json, resp);
 
 						// This is a type of authentication (and it always succeeds)
 						uuid = resp["uuid"];
-						cout << "[Server] moving to phase 2 via register_new_account." << endl;
+						cout << "[" << babysitter_id << "] moving to phase 2 via register_new_account." << endl;
 						phase = 2;
 					}
 					else if (requested_function_name.compare("authenticate") == 0) {
-						int valid_authentication = requested_function(client_json, resp);
+						int valid_authentication = requested_function(babysitter_id, client_json, resp);
 
 						if (valid_authentication == 0) {
 							uuid = client_json["uuid"];
-							cout << "[Server] moving to phase 2 via successful authenticate." << endl;
+							cout << "[" << babysitter_id << "] moving to phase 2 via successful authenticate." << endl;
 							phase = 2;
 						}
 					}
 					else {
 						// This is all authenticated functions. uuid will be added to client_json.
 						client_json["uuid"] = uuid;
-						requested_function(client_json, resp);
+						requested_function(babysitter_id, client_json, resp);
 					}
 				}
 			}
 			catch (json::parse_error& e) {
 				// Not parsable to json
-				cout << "[Server] Did not receive json-y message. " << e.what() << endl;
+				cout << "[" << babysitter_id << "] Did not receive json-y message. " << e.what() << endl;
 				resp.clear();
 				resp[adrestia_networking::HANDLER_KEY] = "generic_error";
 				resp[adrestia_networking::CODE_KEY] = 400;
@@ -214,14 +220,14 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 			}
 			catch (json::out_of_range& e) {
 				// Does not contain all required fields
-				cout << "[Server] Client json did not have an expected key. " << e.what() << endl;
+				cout << "[" << babysitter_id << "] Client json did not have an expected key. " << e.what() << endl;
 				resp[adrestia_networking::HANDLER_KEY] = "generic_error";
 				resp[adrestia_networking::CODE_KEY] = 400;
 				resp[adrestia_networking::MESSAGE_KEY] = "Could not find an expected key: |" + string(e.what()) + "|.";
 			}
 			catch (out_of_range& oor) {
 				// Asked to access non-existent function
-				cout << "[Server] Asked to access non-existent function |" << requested_function_name << "|" << endl;
+				cout << "[" << babysitter_id << "] Asked to access non-existent function |" << requested_function_name << "|" << endl;
 				resp[adrestia_networking::HANDLER_KEY] = "generic_error";
 				resp[adrestia_networking::CODE_KEY] = 400;
 				resp[adrestia_networking::MESSAGE_KEY] = "Asked to access non-existent endpoint |" +
@@ -235,10 +241,10 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 		}
 	}
 	catch (connection_closed) {
-		cout << "[Server] Client |" << client_socket << "| closed the connection." << endl << endl;
+		cout << "[" << babysitter_id << "] Client closed the connection." << endl << endl;
 	}
 	catch (socket_error) {
-		cout << "Socket error." << endl;
+		cout << "[" << babysitter_id << "] terminating due to socket error." << endl;
 	}
 }
 

@@ -18,7 +18,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_authenticate(const json& client_json, json& resp) {
+int adrestia_networking::handle_authenticate(const string& log_id, const json& client_json, json& resp) {
 	/* Checks if a given account/password combination exists in the database.
 	 *
 	 * Accepts keys from client:
@@ -34,15 +34,15 @@ int adrestia_networking::handle_authenticate(const json& client_json, json& resp
 	 * Returns 0 if authentication succeeded, 1 otherwise.
 	 */
 
-	cout << "Triggered authenticate." << endl;
+	cout << "[" << log_id << "] Triggered authenticate." << endl;
 	string uuid = client_json.at("uuid");
 	string password = client_json.at("password");
 
-	cout << "Checking authentication for account with:" << endl;
-	cout << "    uuid: |" << uuid << "|" << endl;
-	cout << "    password: |" << password << "|" << endl;
+	cout << "[" << log_id << "] Checking authentication for account with:" << endl
+         << "    uuid: |" << uuid << "|" << endl
+	     << "    password: |" << password << "|" << endl;
 	pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
-	bool valid = adrestia_database::verify_existing_account_in_database(psql_connection, uuid, password);
+	bool valid = adrestia_database::verify_existing_account_in_database(log_id, psql_connection, uuid, password);
 	delete psql_connection;
 
 	resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
