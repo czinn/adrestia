@@ -71,7 +71,10 @@ func set_show_unlock(show_unlock_):
 	redraw()
 
 func flash():
-	animation_player.play("glow")
+	animation_player.play('glow')
+
+func countered():
+	animation_player.play('countered')
 
 func redraw():
 	if spell == null: return

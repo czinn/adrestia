@@ -263,7 +263,8 @@ func on_event_timer_timeout():
 				else:
 					enemy_stickies.redraw_append(them.stickies)
 		elif event['type'] == 'spell_countered':
-			pass # TODO: charles: Animate this
+			var player_spell_list = my_spell_list if event['player'] == 0 else enemy_spell_list
+			player_spell_list.spell_countered(event['index'])
 		elif event['type'] == 'spell_hit':
 			pass # TODO: charles: Maybe animate this
 		elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':

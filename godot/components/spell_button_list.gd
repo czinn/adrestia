@@ -46,6 +46,9 @@ func set_immediately_show_tooltip(show_):
 func flash_spell(index):
 	hbox.get_children()[index].flash()
 
+func spell_countered(index):
+	hbox.get_children()[index].countered()
+
 func redraw():
 	if hbox == null: return
 	if spells == null: return
