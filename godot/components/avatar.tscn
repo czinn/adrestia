@@ -14,11 +14,12 @@ margin_right = 40.0
 margin_bottom = 40.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 0
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 script = ExtResource( 1 )
+_sections_unfolded = [ "Mouse" ]
 
 [node name="light_2d" type="Light2D" parent="." index="0"]
 
@@ -56,14 +57,14 @@ margin_right = 180.0
 margin_bottom = 180.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 1
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Rect", "Visibility" ]
+_sections_unfolded = [ "Mouse", "Rect", "Visibility" ]
 
 [node name="avatar" type="TextureRect" parent="." index="2"]
 
@@ -76,13 +77,13 @@ margin_right = 180.0
 margin_bottom = 180.0
 rect_pivot_offset = Vector2( 90, 0 )
 rect_clip_content = false
-mouse_filter = 1
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 texture = ExtResource( 3 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = [ "Mouse", "Rect" ]
 
 

@@ -111,7 +111,7 @@ _sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 margin_left = 207.0
 margin_top = 54.0
 margin_right = -20.0
-margin_bottom = 54.0
+margin_bottom = 126.0
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
 
 [node name="enemy_spell_list" parent="ui" index="4" instance=ExtResource( 8 )]
@@ -150,10 +150,10 @@ _sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 20.0
-margin_top = -277.0
-margin_right = -222.0
-margin_bottom = -272.0
+margin_left = 18.0
+margin_top = -317.0
+margin_right = -224.0
+margin_bottom = -245.0
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
 
 [node name="my_spell_list" parent="ui" index="8" instance=ExtResource( 8 )]
