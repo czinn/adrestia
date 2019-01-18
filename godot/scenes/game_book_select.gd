@@ -15,6 +15,7 @@ onready var books_hbox = $ui/books_scroll/books_hbox
 onready var spell_button_list = $ui/spell_button_list
 onready var play_button = $ui/play_button
 onready var selected_books_hbox = $ui/selected_books_hbox
+onready var back_button = $ui/back_button
 
 var chosen_books = [null, null, null]
 var book_buttons = {}
@@ -28,10 +29,17 @@ func _ready():
 		book_button.button.connect('button_down', self, 'on_book_down', [book_button])
 		book_buttons[book.get_id()] = book_button
 	play_button.connect('pressed', self, 'on_play_button_pressed')
+	back_button.connect('pressed', self, 'on_back_button_pressed')
+	get_tree().set_auto_accept_quit(false)
 	for i in range(selected_books_hbox.get_child_count()):
 		var button = selected_books_hbox.get_child(i)
 		button.connect('pressed', self, 'on_remove_book', [i, button])
 		button.connect('button_down', self, 'on_remove_book_down', [i, button])
+
+func _notification(what):
+	print(what)
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		self.call_deferred('on_back_button_pressed')
 
 func show_book_detail(book):
 	emit_signal('show_book_detail', book)
@@ -118,6 +126,12 @@ func on_play_button_pressed():
 	var selected_book_ids = g.map_method(selected_books, 'get_id')
 	g.backend.submit_books(selected_book_ids)
 	g.scene_loader.goto_scene('game')
+
+func on_back_button_pressed():
+	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to go back?[/center]'), 'popup_closed')
+	if confirmed:
+		g.backend = null
+		g.scene_loader.goto_scene('title', true)
 
 func is_not_tech_spell(spell):
 	return not spell.is_tech_spell()

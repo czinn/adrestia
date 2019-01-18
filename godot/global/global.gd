@@ -21,6 +21,7 @@ signal tooltip_closed()
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
+onready var confirm_popup_scene = preload('res://components/confirm_popup.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
@@ -138,6 +139,12 @@ func summon_delta(target, value, color):
 	delta.margin_left = pos.x + (target.rect_size.x / 2) - 25
 	get_node("/root").add_child(delta)
 	delta.play_text_and_color(("+" if value > 0 else "") + str(value), color, fadeup)
+
+func summon_confirm(text):
+	var confirm = confirm_popup_scene.instance()
+	confirm.text = text
+	get_node("/root").add_child(confirm)
+	return confirm
 
 func event_is_pressed(event):
 	return event is InputEventMouseButton \

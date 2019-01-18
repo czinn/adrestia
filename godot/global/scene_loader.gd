@@ -21,6 +21,7 @@ var scene_holder
 var transition
 var loader
 var current_scene
+var playing_backwards = false
 
 func _ready():
 	transition = transition_scene.instance()
@@ -56,13 +57,17 @@ func _process(time):
 			loader = null
 			break
 
-func goto_scene(scene_name):
+func goto_scene(scene_name, backwards=false):
 	g.close_tooltip()
 	loader = ResourceLoader.load_interactive('res://scenes/%s.tscn' % [scene_name])
 	set_process(true)
 	transition.visible = true
 	root.add_child(transition)
-	transition.animation_player.play('slide_in')
+	playing_backwards = backwards
+	if not backwards:
+		transition.animation_player.play('slide_in')
+	else:
+		transition.animation_player.play_backwards('slide_out')
 
 func update_progress():
 	var progress = float(loader.get_stage()) / loader.get_stage_count()
@@ -75,6 +80,9 @@ func set_new_scene(scene_resource):
 	current_scene = scene_resource.instance()
 	scene_holder.add_child(current_scene)
 
-	transition.animation_player.play('slide_out')
+	if not playing_backwards:
+		transition.animation_player.play('slide_out')
+	else:
+		transition.animation_player.play_backwards('slide_in')
 	yield(transition.animation_player, 'animation_finished')
 	root.remove_child(transition)
