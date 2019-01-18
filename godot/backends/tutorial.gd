@@ -56,3 +56,6 @@ func submit_action(action):
 		callback.call_func(get_view(), events)
 
 	return true
+
+func forfeit_game():
+	pass

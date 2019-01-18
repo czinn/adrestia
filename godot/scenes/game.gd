@@ -17,6 +17,7 @@ onready var enemy_spell_list = $ui/enemy_spell_list
 onready var enemy_stickies = $ui/enemy_stickies
 onready var event_timer = $ui/event_timer
 onready var animation_player = $ui/animation_player
+onready var back_button = $ui/back_button
 
 var state
 var events = []
@@ -43,8 +44,23 @@ func _ready():
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 	spell_select.books = state.players[0].books
 	spell_select.connect('spell_press', self, 'on_spell_enqueue')
+	back_button.connect('pressed', self, 'on_back_button_pressed')
+	get_tree().set_auto_accept_quit(false)
 	yield(get_tree(), 'idle_frame')
 	redraw()
+
+func _notification(what):
+	print(what)
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		self.call_deferred('on_back_button_pressed')
+
+func on_back_button_pressed():
+	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to forfeit?[/center]'), 'popup_closed')
+	if confirmed:
+		g.backend.forfeit_game()
+		g.backend = null
+		# TODO: charles: Possibly go to game-end screen instead.
+		g.scene_loader.goto_scene('title', true)
 
 func on_spell_enqueue(spell):
 	var action = my_spell_list.spells.duplicate()
