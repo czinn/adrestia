@@ -13,6 +13,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
 
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 	uuid VARCHAR NOT NULL,  -- Random hexy
+	selected_books VARCHAR ARRAY NOT NULL,
 	PRIMARY KEY (uuid)
 );
 

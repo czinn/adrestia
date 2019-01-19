@@ -52,10 +52,10 @@ namespace adrestia_networking {
                               const json& client_json,
                               json& resp
                              );
-  int matchmake_me(const std::string& log_id,
-                   const json& client_json,
-                   json& resp
-                  );
+  int handle_matchmake_me(const std::string& log_id,
+                          const json& client_json,
+                          json& resp
+                         );
 
   // Calls to handlers
   void create_floop_call(json& client_json);
@@ -73,7 +73,9 @@ namespace adrestia_networking {
   void create_change_user_name_call(json& client_json,
                                     const std::string& user_name
                                    );
-  void create_matchmake_me_call(json& client_json);
+  void create_matchmake_me_call(json& client_json,
+                                const std::vector<std::string>& selected_books
+                               );
 
   // Server-side pushers
   void push_active_games(const std::string& log_id,

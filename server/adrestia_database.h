@@ -42,7 +42,8 @@ namespace adrestia_database {
 	json matchmake_in_database(
 		const std::string& log_id,
 		pqxx::connection* psql_connection,
-		const std::string& uuid
+		const std::string& uuid,
+		const std::vector<std::string>& selected_books
 	);
 
 	/* Changes the user_name associated with the given uuid in the database.
