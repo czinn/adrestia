@@ -57,7 +57,7 @@ func _notification(what):
 func on_back_button_pressed():
 	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to forfeit?[/center]'), 'popup_closed')
 	if confirmed:
-		g.backend.forfeit_game()
+		g.backend.leave_game()
 		g.backend = null
 		# TODO: charles: Possibly go to game-end screen instead.
 		g.scene_loader.goto_scene('title', true)

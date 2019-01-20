@@ -125,7 +125,10 @@ func on_play_button_pressed():
 		return
 	var selected_book_ids = g.map_method(selected_books, 'get_id')
 	g.backend.submit_books(selected_book_ids)
-	g.scene_loader.goto_scene('game')
+	if g.backend.get_view() != null:
+		g.scene_loader.goto_scene('game')
+	else:
+		g.scene_loader.goto_scene('game_waiting')
 
 func on_back_button_pressed():
 	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to go back?[/center]'), 'popup_closed')

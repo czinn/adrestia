@@ -58,6 +58,8 @@ func _process(time):
 			break
 
 func goto_scene(scene_name, backwards=false):
+	if transition and transition.animation_player and transition.animation_player.is_playing():
+		yield(transition.animation_player, 'animation_finished')
 	g.close_tooltip()
 	loader = ResourceLoader.load_interactive('res://scenes/%s.tscn' % [scene_name])
 	set_process(true)

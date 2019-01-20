@@ -1,0 +1,85 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/game_waiting.gd" type="Script" id=1]
+[ext_resource path="res://theme-default.tres" type="Theme" id=2]
+[ext_resource path="res://art-built/9patch/background-book-select.png" type="Texture" id=3]
+[ext_resource path="res://scripts/background.gd" type="Script" id=4]
+[ext_resource path="res://art-built/close-x.png" type="Texture" id=5]
+[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
+
+[node name="root" type="Node" index="0"]
+
+script = ExtResource( 1 )
+
+[node name="ui" type="Control" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+_sections_unfolded = [ "Mouse", "Rect", "Theme" ]
+
+[node name="bg" type="Sprite" parent="ui" index="0"]
+
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 540, 960 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Animation", "Offset", "Region" ]
+
+[node name="back_button" type="TextureButton" parent="ui" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_left = 488.0
+margin_top = 11.0
+margin_right = -12.0
+margin_bottom = 51.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 5 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Anchor", "Rect", "Textures" ]
+
+[node name="label" type="Label" parent="ui" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 6 )
+text = "Waiting for opponent..."
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "custom_fonts" ]
+
+

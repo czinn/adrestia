@@ -3,7 +3,8 @@ extends Object
 # Private, do not touch
 var g = null
 var state = null
-var callback = null
+var started_callback = null
+var update_callback = null
 
 var turn = 0
 var scripted_actions = [
@@ -24,22 +25,31 @@ func _init(g_):
 	rules_file.close()
 
 func get_view():
+	if state == null:
+		return null
 	var view = g.GameView.new()
 	view.init(state, 0)
 	return view
 
 func get_state():
+	if state == null:
+		return null
 	if state.get_winners().size() != 0:
 		return state
 	else:
 		return null
 
+func register_started_callback(callback_):
+	started_callback = callback_
+
 func register_update_callback(callback_):
-	callback = callback_
+	update_callback = callback_
 
 func submit_books(selected_book_ids):
 	state = g.GameState.new()
 	state.init(g.rules, [selected_book_ids, ['conjuration']])
+	if started_callback != null:
+		started_callback.call_func()
 
 func submit_action(action):
 	if not state.is_valid_action(0, action):
@@ -52,10 +62,10 @@ func submit_action(action):
 
 	var events = state.simulate_events([action, ai_action])
 
-	if callback != null:
-		callback.call_func(get_view(), events)
+	if update_callback != null:
+		update_callback.call_func(get_view(), events)
 
 	return true
 
-func forfeit_game():
+func leave_game():
 	pass
