@@ -50,8 +50,8 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
 
   string game_uid = database_json["game_uid"];
   if (game_uid.compare("") != 0) {
-    cout << "[" << log_id << "] A new game has been made (game_id |" << database_json["game_uid"] << "|)!" << endl;
-    resp["game_uid"] = database_json.at("game_uid");
+    cout << "[" << log_id << "] A new game has been made (game_id |" << game_uid << "|)!" << endl;
+    resp["game_uid"] = game_uid;
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 201;
     resp[adrestia_networking::MESSAGE_KEY] = "You are now in a game!";
