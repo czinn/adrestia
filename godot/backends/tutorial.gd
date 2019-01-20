@@ -34,7 +34,7 @@ func get_view():
 func get_state():
 	if state == null:
 		return null
-	if state.get_winners().size() != 0:
+	if state.winners().size() != 0:
 		return state
 	else:
 		return null

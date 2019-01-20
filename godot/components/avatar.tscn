@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://components/avatar.gd" type="Script" id=1]
-[ext_resource path="res://art-built/avatar_frame.png" type="Texture" id=2]
-[ext_resource path="res://art-built/avatar/salter.png" type="Texture" id=3]
-[ext_resource path="res://art-built/health-heart.png" type="Texture" id=4]
-[ext_resource path="res://art-built/mana-gem.png" type="Texture" id=5]
+[ext_resource path="res://theme-default.tres" type="Theme" id=1]
+[ext_resource path="res://components/avatar.gd" type="Script" id=2]
+[ext_resource path="res://art-built/avatar_frame.png" type="Texture" id=3]
+[ext_resource path="res://art-built/avatar/salter.png" type="Texture" id=4]
+[ext_resource path="res://art-built/health-heart.png" type="Texture" id=5]
+[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=6]
+[ext_resource path="res://art-built/mana-gem.png" type="Texture" id=7]
 
 [node name="avatar" type="Control" index="0"]
 
@@ -20,8 +22,9 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-script = ExtResource( 1 )
-_sections_unfolded = [ "Mouse" ]
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+_sections_unfolded = [ "Mouse", "Theme" ]
 flipped = false
 
 [node name="light_2d" type="Light2D" parent="." index="0"]
@@ -29,7 +32,7 @@ flipped = false
 position = Vector2( 90, 90 )
 enabled = true
 editor_only = false
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 offset = Vector2( 0, 0 )
 texture_scale = 0.5
 color = Color( 1, 1, 1, 1 )
@@ -64,7 +67,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Mouse", "Rect", "Visibility" ]
@@ -84,10 +87,10 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 3 )
+texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Mouse", "Rect" ]
+_sections_unfolded = [ "Mouse", "Rect", "Visibility" ]
 
 [node name="heatlh_heart" type="TextureRect" parent="." index="3"]
 
@@ -96,18 +99,47 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 17.0
-margin_top = 129.0
+margin_top = 127.0
 margin_right = 70.0
-margin_bottom = 182.0
+margin_bottom = 180.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 expand = true
 stretch_mode = 6
+_sections_unfolded = [ "Visibility" ]
+
+[node name="label" type="Label" parent="heatlh_heart" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 11.0
+margin_top = 3.0
+margin_right = 51.0
+margin_bottom = 43.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 6 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_shadow = Color( 1, 0.0196078, 0.294118, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+custom_constants/shadow_as_outline = 1
+text = "25"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
 
 [node name="mana_gem" type="TextureRect" parent="." index="4"]
 
@@ -125,7 +157,7 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 5 )
+texture = ExtResource( 7 )
 expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Rect" ]

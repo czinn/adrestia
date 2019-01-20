@@ -136,7 +136,6 @@ margin_left = -197.0
 margin_top = -381.0
 margin_right = -157.0
 margin_bottom = -341.0
-flipped = false
 
 [node name="my_stats" parent="ui" index="6" instance=ExtResource( 6 )]
 
