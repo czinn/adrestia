@@ -14,7 +14,7 @@
    viewBox="0 0 48.947917 17.462501"
    version="1.1"
    id="svg1718"
-   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="button-no.svg">
   <defs
      id="defs1712" />
@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.570528"
-     inkscape:cx="145.07658"
-     inkscape:cy="61.118978"
+     inkscape:cx="79.579288"
+     inkscape:cy="-36.841973"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -35,11 +35,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1035"
+     inkscape:window-width="1248"
+     inkscape:window-height="1052"
      inkscape:window-x="0"
-     inkscape:window-y="1"
-     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
      inkscape:snap-global="false"
      units="px" />
   <metadata
@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,40 +58,26 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(42.7028,-131.64526)">
+     transform="translate(42.766795,-131.70926)">
     <rect
-       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.51784372;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.64583349;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
        id="rect1367"
-       width="46.430077"
-       height="14.944656"
+       width="46.302086"
+       height="14.816667"
        x="-41.443878"
-       y="132.90419"
+       y="133.03218"
        ry="1.1608337"
        rx="1.0128317" />
-    <flowRoot
+    <text
        xml:space="preserve"
-       id="flowRoot2150-4-6-27"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1"
-       transform="matrix(0.45294181,0,0,0.45294181,-22.659017,101.73586)"><flowRegion
-         id="flowRegion2152-2-5-09"
-         style="fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1"><rect
-           id="rect2154-0-7-36"
-           width="357.59399"
-           height="46.46703"
-           x="30.304577"
-           y="44.68692"
-           style="fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1" /></flowRegion><flowPara
-         id="flowPara2156-1-4-06"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40.50066757px;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1">Play</flowPara></flowRoot>    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-25.214722"
-       y="143.25371"
+       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-24.692284"
+       y="143.68933"
        id="text838"><tspan
          sodipodi:role="line"
          id="tspan836"
-         x="-25.214722"
-         y="143.25371"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;stroke-width:0.26458335px">No</tspan></text>
+         x="-24.692284"
+         y="143.68933"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#0057e7;fill-opacity:1;stroke-width:0.26458335px">No</tspan></text>
   </g>
 </svg>
