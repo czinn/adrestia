@@ -20,7 +20,8 @@ bool GameRules::operator==(const GameRules &other) const {
 		this->books == other.books &&
 		this->mana_cap == other.mana_cap &&
 		this->initial_health == other.initial_health &&
-		this->initial_mana_regen == other.initial_mana_regen
+		this->initial_mana_regen == other.initial_mana_regen &&
+		this->spell_cap == other.spell_cap
 	);
 }
 
@@ -34,6 +35,7 @@ const std::map<std::string, Book> &GameRules::get_books() const { return books; 
 int GameRules::get_mana_cap() const { return mana_cap; }
 int GameRules::get_initial_health() const { return initial_health; }
 int GameRules::get_initial_mana_regen() const { return initial_mana_regen; }
+int GameRules::get_spell_cap() const { return spell_cap; }
 
 //------------------------------------------------------------------------------
 // SERIALIZATION
@@ -51,6 +53,7 @@ void from_json(const json &j, GameRules &rules) {
 	rules.mana_cap = j.at("mana_cap");
 	rules.initial_health = j.at("initial_health");
 	rules.initial_mana_regen = j.at("initial_mana_regen");
+	rules.spell_cap = j.at("spell_cap");
 }
 
 void to_json(json &j, const GameRules &rules) {
@@ -66,4 +69,5 @@ void to_json(json &j, const GameRules &rules) {
 	j["mana_cap"] = rules.mana_cap;
 	j["initial_health"] = rules.initial_health;
 	j["initial_mana_regen"] = rules.initial_mana_regen;
+	j["spell_cap"] = rules.spell_cap;
 }

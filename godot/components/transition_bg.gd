@@ -5,8 +5,7 @@ onready var texture_rect = $texture_rect
 
 const margin = 40
 
-# TODO: jim: Handle screen resizes.
-func _ready():
+func on_resize():
 	var window_size = get_global_rect().size
 	var texture_size = texture_rect.texture.get_size()
 
@@ -35,3 +34,7 @@ func _ready():
 	var slide_out = animation_player.get_animation('slide_out')
 	slide_out.track_set_key_value(0, 0, pos_1)
 	slide_out.track_set_key_value(0, 1, pos_2)
+
+func _ready():
+	self.on_resize()
+	get_tree().get_root().connect('size_changed', self, 'on_resize')

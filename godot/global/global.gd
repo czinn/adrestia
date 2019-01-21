@@ -16,6 +16,8 @@ const Strategy = preload('res://native/strategy.gdns')
 
 const Tweener = preload('res://global/tweener.gd')
 
+signal tooltip_closed()
+
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
@@ -24,17 +26,17 @@ onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
 onready var drag_drop = get_node('/root/drag_drop')
 var loaded = false
-var rules
-var state
-var ai
+var backend = null
 var tooltip = null # Currently displayed tooltip
+var rules = null setget ,get_rules
 
 func _ready():
-	var rules_file = File.new()
-	rules_file.open('res://data/rules.json', File.READ)
-	rules = GameRules.new()
-	rules.load_json_string(rules_file.get_as_text())
-	rules_file.close()
+	pass
+
+func get_rules():
+	if backend == null:
+		return null
+	return backend.rules
 
 static func sum(list):
 	var result = 0
@@ -93,7 +95,7 @@ static func get_sticky_texture(sticky_id):
 func make_spell_buttons(spells, show_stats = false, display_filter = null, enabled_filter = null, unlocked_filter = null):
 	var result = []
 	for spell_id in spells:
-		var spell = rules.get_spell(spell_id)
+		var spell = get_rules().get_spell(spell_id)
 		if display_filter != null and not display_filter.call_func(spell):
 			continue
 		var spell_button = spell_button_scene.instance()
@@ -110,6 +112,7 @@ func close_tooltip():
 	if tooltip != null:
 		tooltip.get_parent().remove_child(tooltip)
 		tooltip = null
+		emit_signal('tooltip_closed')
 
 func summon_tooltip(target, text):
 	close_tooltip()
@@ -145,3 +148,7 @@ func tween(thing, to_pos, time):
 	var tw = Tweener.new(get_node('/root'))
 	tw.tween_to(thing, to_pos, time)
 	return tw
+
+func safe_disconnect(object, signal_, target, method):
+	if object.is_connected(signal_, target, method):
+		object.disconnect(signal_, target, method)

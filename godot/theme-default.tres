@@ -1,8 +1,8 @@
 [gd_resource type="Theme" load_steps=10 format=2]
 
-[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=1]
-[ext_resource path="res://fonts/Amaranth-Italic-24.tres" type="DynamicFont" id=2]
-[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=3]
+[ext_resource path="res://fonts/Amaranth-Bold-15.tres" type="DynamicFont" id=1]
+[ext_resource path="res://fonts/Amaranth-Italic-15.tres" type="DynamicFont" id=2]
+[ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=3]
 [ext_resource path="res://fonts/Amaranth-Regular.ttf" type="DynamicFontData" id=4]
 
 [sub_resource type="StyleBoxEmpty" id=1]
@@ -167,5 +167,5 @@ VScrollBar/styles/grabber_highlight = null
 VScrollBar/styles/grabber_pressed = null
 VScrollBar/styles/scroll = SubResource( 1 )
 VScrollBar/styles/scroll_focus = null
-_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "Resource", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
+_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "Resource", "RichTextLabel", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
 

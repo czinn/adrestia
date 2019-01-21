@@ -1,5 +1,8 @@
 extends Node
 
+signal show_book_detail(book)
+signal chose_book(i, book)
+
 onready var g = get_node('/root/global')
 
 onready var book_button_scene = preload('res://components/book_button.tscn')
@@ -32,6 +35,7 @@ func _ready():
 		button.connect('button_down', self, 'on_remove_book_down', [i, button])
 
 func show_book_detail(book):
+	emit_signal('show_book_detail', book)
 	# set spell list
 	spell_button_list.show_stats = true
 	spell_button_list.spells = book.get_spells()
@@ -49,6 +53,7 @@ func on_drop(drag_image):
 		button.button.texture_normal = drag_image.texture
 		drag_image.queue_free()
 		return
+	emit_signal('chose_book', i, book)
 	chosen_books[i] = book
 	var chosen_book_icon = selected_books_hbox.get_child(i)
 	yield(g.tween(drag_image, chosen_book_icon.get_global_position(), 0.3), 'done')
@@ -56,6 +61,8 @@ func on_drop(drag_image):
 	selected_books_hbox.get_child(i).texture_normal = g.get_book_texture(book.get_id())
 
 func on_book_down(book_button):
+	if chosen_books.find(book_button.book) >= 0:
+		return
 	show_book_detail(book_button.book)
 	g.drag_drop.set_dead_zone(-20, null, null, null)
 	g.drag_drop.on_lift = funcref(self, 'on_lift')
@@ -68,6 +75,7 @@ func on_press_book(book_button):
 	var i = chosen_books.find(null)
 	if i == -1 or chosen_books.find(book) >= 0:
 		return
+	emit_signal('chose_book', i, book)
 	chosen_books[i] = book
 
 	# animate book going to slot
@@ -125,10 +133,7 @@ func on_play_button_pressed():
 	if len(selected_books) < 1 or len(selected_books) > 3:
 		return
 	var selected_book_ids = g.map_method(selected_books, 'get_id')
-	g.state = g.GameState.new()
-	g.state.init(g.rules, [selected_book_ids, ['conjuration']])
-	g.ai = g.Strategy.new()
-	g.ai.init_random_strategy()
+	g.backend.submit_books(selected_book_ids)
 	g.scene_loader.goto_scene('game')
 
 func is_not_tech_spell(spell):

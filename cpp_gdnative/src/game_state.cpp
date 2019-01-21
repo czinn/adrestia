@@ -2,6 +2,7 @@
 
 #include "player.h"
 #include "game_rules.h"
+#include "game_view.h"
 
 #define CLASSNAME GameState
 
@@ -13,6 +14,7 @@ namespace godot {
 	void CLASSNAME::_register_methods() {
 		REGISTER_METHOD(init)
 		REGISTER_METHOD(clone)
+		REGISTER_METHOD(of_game_view)
 		REGISTER_METHOD(simulate)
 		REGISTER_METHOD(simulate_events)
 		REGISTER_METHOD(apply_event)
@@ -41,6 +43,13 @@ namespace godot {
 	void CLASSNAME::clone(Variant state) {
 		auto *_state = godot::as<GameState>(state);
 		set_ptr(new ::GameState(*_state->_ptr));
+	}
+
+	void CLASSNAME::of_game_view(Variant view) {
+		auto *_view = godot::as<GameView>(view);
+		::GameView &v = *_view->_ptr;
+		size_t i = v.view_player_id;
+		set_ptr(new ::GameState(v, v.players[i].tech, v.players[i].books));
 	}
 
 	bool CLASSNAME::is_valid_action(int player_id, Variant action) const {

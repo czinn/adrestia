@@ -49,7 +49,7 @@ tracks/2/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -69.0, 212.0 ]
+"values": [ -229.0, 72.0 ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("spell_select:margin_bottom")
@@ -61,7 +61,7 @@ tracks/3/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -69.0, 212.0 ]
+"values": [ -69.0, 232.0 ]
 }
 
 [node name="root" type="Node"]
@@ -176,10 +176,11 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 margin_left = -270.0
-margin_top = -69.0
+margin_top = -229.0
 margin_right = 270.0
 margin_bottom = -69.0
-_sections_unfolded = [ "Anchor", "Margin", "Theme" ]
+rect_min_size = Vector2( 540, 160 )
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
 
 [node name="animation_player" type="AnimationPlayer" parent="ui" index="10"]
 

@@ -51,4 +51,9 @@ margin_right = 245.0
 margin_left = 250.0
 margin_right = 370.0
 
+[node name="control4" parent="hbox" index="3" instance=ExtResource( 3 )]
+
+margin_left = 375.0
+margin_right = 495.0
+
 

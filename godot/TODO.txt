@@ -26,9 +26,9 @@
 
 # Tutorial
 
-- [ ] Figure out a lightweight set of interfaces that lets us do tutorial /
+- [x] Figure out a lightweight set of interfaces that lets us do tutorial /
   multiplayer games without duplicate code.
-- [ ] Exists
+- [x] Exists
 
 # Networking
 

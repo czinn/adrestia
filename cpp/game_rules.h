@@ -26,6 +26,7 @@ class GameRules {
 		int get_mana_cap() const;
 		int get_initial_health() const;
 		int get_initial_mana_regen() const;
+		int get_spell_cap() const;
 
 		friend void from_json(const json &j, GameRules &rules);
 		friend void to_json(json &j, const GameRules &rules);
@@ -40,4 +41,5 @@ class GameRules {
 		int mana_cap;
 		int initial_health;
 		int initial_mana_regen;
+		int spell_cap;
 };

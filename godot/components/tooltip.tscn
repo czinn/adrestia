@@ -5,7 +5,7 @@
 [ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
 [ext_resource path="res://art-built/panel-triangle.png" type="Texture" id=4]
 
-[node name="control" type="Control"]
+[node name="tooltip" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -24,6 +24,9 @@ __meta__ = {
 "_edit_horizontal_guides_": [  ],
 "_edit_vertical_guides_": [ 270.0 ]
 }
+text = ""
+x = 0
+y = 0
 
 [node name="background" type="Control" parent="." index="0"]
 
@@ -93,7 +96,6 @@ scroll_active = false
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "Anchor", "BBCode", "Margin", "Rect" ]
 
 [node name="triangle" type="TextureRect" parent="background" index="1"]
 

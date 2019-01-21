@@ -19,7 +19,10 @@ class GameState {
 		GameState(const GameRules &rules, const json &j);
 		// Creates a determinization of the game view, with the tech and books for
 		// the other player given by the other parameters.
-		GameState(const GameView &view, std::vector<int> &tech, std::vector<const Book*> &books);
+		GameState(
+				const GameView &view,
+				const std::vector<int> &tech,
+				const std::vector<const Book*> &books);
 		bool operator==(const GameState &) const;
 		// Pretty print for debugging purposes.
 		friend std::ostream &operator<<(std::ostream &os, const GameState &);
