@@ -202,6 +202,10 @@ func events_compatible(first_event, second_event):
 			first_event['effect']['kind'] == second_event['effect']['kind'] && \
 			first_event['effect']['target_player'] == second_event['effect']['target_player']:
 		return false
+	if first_event['type'] == 'fire_spell' && second_event['type'] == 'effect' && \
+			second_event['effect']['kind'] == 'mana' && \
+			first_event['player'] == second_event['effect']['target_player']:
+		return false
 	return true
 
 func on_event_timer_timeout():
