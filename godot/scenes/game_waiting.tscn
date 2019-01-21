@@ -37,14 +37,14 @@ _sections_unfolded = [ "Animation", "Offset", "Region" ]
 
 [node name="back_button" type="TextureButton" parent="ui" index="1"]
 
-anchor_left = 0.0
+anchor_left = 1.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_left = 488.0
-margin_top = 11.0
-margin_right = -12.0
-margin_bottom = 51.0
+margin_left = -50.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = 50.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -59,7 +59,7 @@ group = null
 texture_normal = ExtResource( 5 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Anchor", "Rect", "Textures" ]
+_sections_unfolded = [ "Anchor", "Margin", "Textures" ]
 
 [node name="label" type="Label" parent="ui" index="2"]
 
