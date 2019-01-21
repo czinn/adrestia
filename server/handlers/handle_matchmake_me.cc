@@ -5,6 +5,8 @@
 
 // Our related modules
 #include "../adrestia_database.h"
+#include "../../cpp/book.h"
+#include "../../cpp/game_rules.h"
 
 // Database
 #include <pqxx/pqxx>
@@ -16,6 +18,9 @@ using namespace std;
 // JSON
 #include "../../units_cpp/json.h"
 using json = nlohmann::json;
+
+
+const string RULES_JSON_FILE("../../common/rules.json");
 
 
 int adrestia_networking::handle_matchmake_me(const string& log_id, const json& client_json, json& resp) {
@@ -31,8 +36,11 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
    *
    * Responds to client with keys:
    *     HANDLER_KEY: <this function>
-   *     CODE_KEY: 200 if waiting, 201 if game has been made
-   *     MESSAGE_KEY: "You have been put on the wait list." if waiting; "You are now in a game!" if a game made
+   *     CODE_KEY: 200 if waiting, 201 if game has been made, 400 if bad books
+   *     MESSAGE_KEY: "You have been put on the wait list." if waiting
+   *                  "You are now in a game!" if a game made
+   *                  "Incorrect number of books (got |[X]|, expected |[Y]|)" if incorrect number of books
+   *                  "Invalid book: |[book_name]|" if invalid book name
    *     (Optional) "game_uid": The game_uid of the game that was made. If no game made, this will not be in the
    *                            response.
    *
@@ -45,13 +53,51 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
 
   cout << "[" << log_id << "] Matchmaking client with uuid |" << uuid << "|..." << endl;
 
+  cout << "[" << log_id << "] checking number of books..." << endl;
+  if (selected_books.size() != 3) {
+    cout << "[" << log_id << "] Incorrect number of selected books: |" << selected_books.size() << "|" << endl;
+    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+    resp[adrestia_networking::CODE_KEY] = 400;
+    resp[adrestia_networking::MESSAGE_KEY] = "Incorrect number of books (got |" + to_string(selected_books.size()) + "|, expected |3|)";
+    return 0;
+  }
+  cout << "[" << log_id << "] got good number of books." << endl;
+
+
+  // Checking books
+  cout << "[" << log_id << "] checking book names..." << endl;
+
+  GameRules game_rules(RULES_JSON_FILE);
+  const std::map<string, Book>& book_map = game_rules.get_books();
+
+  bool incorrect_book = false;
+  string bad_book;
+  for (unsigned int i = 0; i < selected_books.size(); i += 1) {
+    string selected_book = selected_books[i];
+    if (book_map.find(selected_book) == book_map.end()) {
+      incorrect_book = true;
+      bad_book = selected_book;
+      break;
+    }
+  }
+
+  if (incorrect_book) {
+    cout << "[" << log_id << "] got invalid requested book |" << bad_book << "|." << endl;
+    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+    resp[adrestia_networking::CODE_KEY] = 400;
+    resp[adrestia_networking::MESSAGE_KEY] = "Invalid book: |" + bad_book + "|";
+    return 0;
+  }
+  cout << "[" << log_id << "] Selected books all seem okay." << endl;
+  cout << "[" << log_id << "] Matchmaking uuid |" << uuid << "| in database." << endl;
+
   pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
   json database_json = adrestia_database::matchmake_in_database(log_id, psql_connection, uuid, selected_books);
 
   string game_uid = database_json["game_uid"];
   if (game_uid.compare("") != 0) {
-    cout << "[" << log_id << "] A new game has been made (game_id |" << game_uid << "|)!" << endl;
-    resp["game_uid"] = game_uid;
+    cout << "[" << log_id << "] A new game has been made (game_id |" << database_json["game_uid"] << "|)!" << endl;
+    resp["game_uid"] = database_json.at("game_uid");
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 201;
     resp[adrestia_networking::MESSAGE_KEY] = "You are now in a game!";

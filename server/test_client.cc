@@ -149,6 +149,23 @@ int main(int argc, char* argv[]) {
 	selected_books.push_back("contrition");
 	selected_books.push_back("conjuration");
 
+	vector<string> selected_books_bad1;
+	selected_books_bad1("refinement");
+	selected_books_bad1("contrition");
+	selected_books_bad1("conjuration");
+	selected_books_bad1("bloodlust");
+
+	vector<string> selected_books_bad1;
+	selected_books_bad1("refinement");
+	selected_books_bad1("contrition");
+	selected_books_bad1("conjuration");
+	selected_books_bad1("bloodlust");
+
+	vector<string> selected_books_bad2;
+	selected_books_bad1("floop");
+	selected_books_bad1("flop");
+	selected_books_bad1("fleep");
+
 	json outbound_json;
 	json response_json;
 	string outbound_message;
@@ -416,6 +433,58 @@ int main(int argc, char* argv[]) {
 		my_uuid = response_json["uuid"];
 		my_user_name = response_json["user_name"];
 		my_tag = response_json["tag"];
+	}
+
+	// Matchmake (bad number of selected books)
+	cout << "Attempting to matchmake (bad number of selected books)..." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_matchmake_me_call(outbound_json, selected_books_bad1);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket_2);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 400) {
+		cerr << "Matchmaking incorrectly succeeded." << endl;
+		cerr << "matchmake_me says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket_2);
+		return 0;
+	}
+	else {
+		cout << "matchmake_me correctly rejected attempt. It says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
+	// Matchmake (bad selected books)
+	cout << "Attempting to matchmake (bad selected books)..." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_matchmake_me_call(outbound_json, selected_books_bad2);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_message = read_packet(my_socket_2);
+	response_json = json::parse(response_message);
+	if (response_json[adrestia_networking::CODE_KEY] != 400) {
+		cerr << "Matchmaking incorrectly succeeded." << endl;
+		cerr << "matchmake_me says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket_2);
+		return 0;
+	}
+	else {
+		cout << "matchmake_me correctly rejected attempt. It says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
 	}
 
 	// Matchmake (new game)
