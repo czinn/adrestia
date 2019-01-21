@@ -158,11 +158,11 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					                      )
 					    ) {
 					cout << "[" << babysitter_id << "] received out-of-order request for function |"
-				         << requested_function_name
-				         << "| in phase |"
-				         << phase
-				         << "|"
-				         << endl;
+					     << requested_function_name
+					     << "| in phase |"
+					     << phase
+					     << "|"
+					     << endl;
 
 					resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 					resp[adrestia_networking::CODE_KEY] = 400;
