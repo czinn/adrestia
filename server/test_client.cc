@@ -150,21 +150,15 @@ int main(int argc, char* argv[]) {
 	selected_books.push_back("conjuration");
 
 	vector<string> selected_books_bad1;
-	selected_books_bad1("refinement");
-	selected_books_bad1("contrition");
-	selected_books_bad1("conjuration");
-	selected_books_bad1("bloodlust");
-
-	vector<string> selected_books_bad1;
-	selected_books_bad1("refinement");
-	selected_books_bad1("contrition");
-	selected_books_bad1("conjuration");
-	selected_books_bad1("bloodlust");
+	selected_books_bad1.push_back("refinement");
+	selected_books_bad1.push_back("contrition");
+	selected_books_bad1.push_back("conjuration");
+	selected_books_bad1.push_back("bloodlust");
 
 	vector<string> selected_books_bad2;
-	selected_books_bad1("floop");
-	selected_books_bad1("flop");
-	selected_books_bad1("fleep");
+	selected_books_bad2.push_back("floop");
+	selected_books_bad2.push_back("flop");
+	selected_books_bad2.push_back("fleep");
 
 	json outbound_json;
 	json response_json;

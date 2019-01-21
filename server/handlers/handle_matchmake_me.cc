@@ -20,7 +20,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-const string RULES_JSON_FILE("../../common/rules.json");
+const string RULES_JSON_FILE("../common/rules.json");  // File path relative to Makefile
 
 
 int adrestia_networking::handle_matchmake_me(const string& log_id, const json& client_json, json& resp) {
