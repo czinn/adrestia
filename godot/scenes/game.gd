@@ -9,6 +9,7 @@ onready var spell_button_list_scene = preload('res://components/spell_button_lis
 onready var game = $ui
 onready var spell_select = $ui/spell_select
 onready var end_turn_button = $ui/end_turn_button
+onready var my_mana_bar = $ui/my_mana_bar
 onready var my_spell_list = $ui/my_spell_list
 onready var my_avatar = $ui/my_avatar
 onready var my_stickies = $ui/my_stickies
@@ -149,6 +150,7 @@ func redraw():
 	var mp_left = player_mp_left()
 	enemy_avatar.redraw(them)
 	enemy_stickies.redraw(them.stickies)
+	my_mana_bar.redraw(me, mp_left)
 	my_avatar.redraw(me, mp_left)
 	my_stickies.redraw(me.stickies)
 	spell_select.tech_levels = player_effective_tech()
@@ -258,11 +260,13 @@ func on_event_timer_timeout():
 			player_spell_list.flash_spell(event['index'])
 			# We need to update mana here because spells cost mana
 			if event['player'] == 0:
+				my_mana_bar.redraw(me)
 				my_avatar.redraw(me)
 			else:
 				enemy_avatar.redraw(them)
 		elif event['type'] == 'player_mp':
 			if event['player'] == 0:
+				my_mana_bar.redraw(me)
 				my_avatar.redraw(me)
 			else:
 				enemy_avatar.redraw(them)
@@ -270,8 +274,9 @@ func on_event_timer_timeout():
 			var effect = event['effect']
 			var target_player = effect['target_player']
 			var kind = effect['kind']
-			if kind == 'health' or kind =='mana_regen' or kind == 'mana':
+			if kind == 'health' or kind == 'mana_regen' or kind == 'mana':
 				if target_player == 0:
+					my_mana_bar.redraw(me)
 					my_avatar.redraw(me)
 				else:
 					enemy_avatar.redraw(them)
