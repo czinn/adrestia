@@ -56,7 +56,7 @@ func submit_books(selected_book_ids):
 		var timer = Timer.new()
 		timer.set_one_shot(true)
 		timer.set_timer_process_mode(0)
-		timer.set_wait_time(5.0)
+		timer.set_wait_time(2.0)
 		timer.connect('timeout', self, 'emit_debug_timer')
 		g.get_node('/root').add_child(timer)
 		timer.start()

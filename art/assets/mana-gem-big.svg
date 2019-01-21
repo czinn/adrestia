@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="50.000004"
-   height="50.000366"
-   viewBox="0 0 13.229167 13.229263"
+   width="49.999817"
+   height="48.000038"
+   viewBox="0 0 13.229117 12.70001"
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   sodipodi:docname="health-heart.svg">
+   sodipodi:docname="mana-gem-big.svg">
   <defs
      id="defs1712" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.0370273"
-     inkscape:cx="37.268664"
-     inkscape:cy="55.158747"
+     inkscape:zoom="5.8336864"
+     inkscape:cx="4.0117626"
+     inkscape:cy="-8.6512157"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -35,7 +35,7 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1440"
+     inkscape:window-width="1344"
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -58,14 +58,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-56.814274,-129.59412)">
+     transform="translate(-60.882448,-129.8462)">
     <path
-       inkscape:tile-y0="517.94011"
-       inkscape:tile-x0="729.26344"
-       sodipodi:nodetypes="csscssc"
+       inkscape:tile-y0="525.52349"
+       inkscape:tile-x0="683.58565"
        inkscape:connector-curvature="0"
-       id="use549"
-       d="m 63.460949,133.44805 c 0.374975,-1.69957 1.16355,-2.49016 2.790084,-2.485 1.437488,0.005 2.446918,0.91706 2.468828,2.31133 0.05558,3.5371 -3.063795,4.9384 -5.1949,7.51766 -2.427007,-2.72496 -5.416155,-3.80611 -5.387594,-7.4258 0.01053,-1.3343 0.917964,-2.56451 2.859093,-2.44155 1.265803,0.0801 2.177825,0.80514 2.464489,2.52336 z"
-       style="fill:#ffd7e5;fill-opacity:1;stroke:#ff054b;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+       id="use7168"
+       d="m 70.458301,141.22295 2.066388,-6.36437 -5.665323,-3.31873 -4.334004,4.93943 2.960773,4.74188 z"
+       style="fill:#d7f3ff;fill-opacity:1;stroke:#458bff;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
   </g>
 </svg>

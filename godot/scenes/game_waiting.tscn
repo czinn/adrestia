@@ -7,7 +7,7 @@
 [ext_resource path="res://art-built/close-x.png" type="Texture" id=5]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
