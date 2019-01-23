@@ -165,9 +165,15 @@ int main(int argc, char* argv[]) {
 	string outbound_message;
 	string response_message;
 
+	const char* server_port_env = getenv("SERVER_PORT");
+	int port = adrestia_networking::DEFAULT_SERVER_PORT;
+	if (server_port_env) {
+		port = atoi(server_port_env);
+	}
+
 	// Establish connection (socket)
 	cout << "Establishing connection (socket)." << endl;
-	int my_socket_1 = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
+	int my_socket_1 = socket_to_target(SERVER_IP.c_str(), port);
 	if (my_socket_1 == -1) {
 		cerr << "Failed to establish connection (socket)." << endl;
 		return 0;
@@ -271,7 +277,7 @@ int main(int argc, char* argv[]) {
 
 	// Establish new connection
 	cout << "Establishing new connection (socket)..." << endl;
-	my_socket_1 = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
+	my_socket_1 = socket_to_target(SERVER_IP.c_str(), port);
 	if (my_socket_1 == -1) {
 		cerr << "Failed to establish connection (socket)." << endl;
 		return 0;
@@ -361,7 +367,7 @@ int main(int argc, char* argv[]) {
 	// We must create a new account in order to be matchmade with the one we just entered.
 	// Establish connection (socket)
 	cout << "Establishing new connection (socket)." << endl;
-	int my_socket_2 = socket_to_target(SERVER_IP.c_str(), adrestia_networking::DEFAULT_SERVER_PORT);
+	int my_socket_2 = socket_to_target(SERVER_IP.c_str(), port);
 	if (my_socket_2 == -1) {
 		cerr << "Failed to establish connection (socket)." << endl;
 		return 0;
