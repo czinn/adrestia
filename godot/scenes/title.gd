@@ -1,6 +1,7 @@
 extends Node
 
 onready var g = get_node('/root/global')
+onready var online_status = $ui/online_status
 onready var play_button = $ui/play_button
 onready var placeholder_button = $ui/placeholder_button
 onready var tutorial_button = $ui/tutorial_button
@@ -47,24 +48,23 @@ func account_created(response):
 	print(response)
 	g.auth_uuid = response.uuid
 	g.save()
+	after_authenticated(response.user_name, response.tag)
 
 func authenticated(response):
+	# TODO: jim: handle failure
 	print('authenticated')
 	print(response)
+	after_authenticated(response.user_name, response.tag)
+
+func after_authenticated(user_name, tag):
+	online_status.text = 'Online as %s [%s].' % [user_name, tag]
+	placeholder_button.connect('pressed', self, 'test_network')
 
 func test_network():
-	g.network.floop(funcref(self, 'floop_done_1'))
+	g.network.floop(funcref(self, 'floop_done'))
 
-func floop_done_1(response):
-	print('Floop is done!')
-	g.network.floop(funcref(self, 'floop_done_2'))
-
-func floop_done_2(response):
-	print('Other floop is done!')
-	g.network.register_new_account('yolo', funcref(self, 'registered'))
-
-func registered(response):
-	print('Omg guys we registered an account!')
+func floop_done(response):
+	print('Floop response received.')
 	print(response)
 
 func on_play_button_pressed():

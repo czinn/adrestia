@@ -460,19 +460,21 @@ json adrestia_database::register_new_account_in_database(
 }
 
 
-bool adrestia_database::verify_existing_account_in_database(
+json adrestia_database::verify_existing_account_in_database(
   const string& log_id,
   pqxx::connection* psql_connection,
   const string& uuid,
   const string& password
 ) {
-  /* @brief Returns true if an account with the given uuid and password exists in the database, false otherwise. */
+  /* @brief Returns json {'success': bool, 'user_name': string, 'tag': string } */
 
   const string select_password_from_database_command = ""
-  "SELECT hash_of_salt_and_password, salt"
+  "SELECT hash_of_salt_and_password, salt, user_name, tag"
   "    FROM adrestia_accounts"
   "    WHERE uuid = $1"
   ";";
+  
+  json result;
 
   cout << "[" << log_id << "] verify_existing_account_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl
@@ -487,7 +489,8 @@ bool adrestia_database::verify_existing_account_in_database(
 
   if (search_result.size() == 0) {
     cout << "[" << log_id << "] This uuid not found in database.";
-    return false;
+    result["valid"] = false;
+    return result;
   }
 
   pqxx::binarystring database_hash_of_salt_and_password(search_result[0]["hash_of_salt_and_password"]);
@@ -511,11 +514,15 @@ bool adrestia_database::verify_existing_account_in_database(
 
   if (expected_hash_of_salt_and_password == database_hash_of_salt_and_password) {
     cout << "[" << log_id << "] This uuid and password have been verified." << endl;
-    return true;
+    result["valid"] = true;
+    result["user_name"] = std::string(search_result[0]["user_name"].c_str());
+    result["tag"] = std::string(search_result[0]["tag"].c_str());
+    return result;
   }
 
   cout << "[" << log_id << "] Received an incorrect password for this known uuid." << endl;
-  return false;
+  result["valid"] = false;
+  return result;
 }
 
 

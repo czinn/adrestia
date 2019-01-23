@@ -67,10 +67,9 @@ namespace adrestia_database {
 	);
 
 
-	/* Returns true if an account with the given uuid and password exists in the database,
-	 *     false otherwise.
+	/* Returns json with keys 'valid', 'user_name', 'tag'.
 	 */
-	bool verify_existing_account_in_database(
+	json verify_existing_account_in_database(
 		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& uuid,

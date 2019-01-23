@@ -93,7 +93,7 @@ expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Anchor", "Margin", "Material", "Rect" ]
 
-[node name="rich_text_label" type="RichTextLabel" parent="ui" index="2"]
+[node name="online_status" type="RichTextLabel" parent="ui" index="2"]
 
 anchor_left = 0.5
 anchor_top = 0.5
