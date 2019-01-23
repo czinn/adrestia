@@ -98,9 +98,10 @@ func player_upgraded_book_id():
 func player_mp_left():
 	var me = state.players[0]
 	var mp_left = me.mp
-	for spell_id in my_spell_list.spells:
-		var spell = g.backend.rules.get_spell(spell_id)
-		mp_left -= spell.get_cost()
+	if ui_state == UiState.CHOOSING_SPELLS:
+		for spell_id in my_spell_list.spells:
+			var spell = g.backend.rules.get_spell(spell_id)
+			mp_left -= spell.get_cost()
 	return mp_left
 
 func player_can_afford(spell):
@@ -116,21 +117,26 @@ func player_effective_tech_in(book_id):
 	var me = state.players[0]
 	for i in range(len(me.tech)):
 		if me.books[i].get_id() == book_id:
-			return me.tech[i] + (1 if player_upgraded_book_id() == book_id else 0)
+			return me.tech[i] + \
+				(1 if player_upgraded_book_id() == book_id && \
+					ui_state == UiState.CHOOSING_SPELLS else 0)
 	return 0
 
 func player_effective_tech():
 	var me = state.players[0]
 	var result = me.tech
 	var upgraded_book_id = player_upgraded_book_id()
-	for i in range(len(result)):
-		if me.books[i].get_id() == upgraded_book_id:
-			result[i] += 1
+	if ui_state == UiState.CHOOSING_SPELLS:
+		for i in range(len(result)):
+			if me.books[i].get_id() == upgraded_book_id:
+				result[i] += 1
 	return result
 
 func player_effective_level():
 	var me = state.players[0]
-	return g.sum(me.tech) + (1 if player_upgraded_book_id() != null else 0)
+	return g.sum(me.tech) + \
+		(1 if player_upgraded_book_id() != null && \
+			ui_state == UiState.CHOOSING_SPELLS else 0)
 
 func player_has_unlocked_spell(spell):
 	return (player_effective_level() >= spell.get_level() and
@@ -164,11 +170,14 @@ func on_end_turn_button_pressed():
 
 	ui_state = UiState.WAITING_FOR_UPDATE
 
+	# Reset state to start-of-turn view
+	state.of_game_view(g.backend.get_view())
+	redraw()
+
 	animation_player.play('end_turn')
 	yield(animation_player, 'animation_finished')
 
 	my_spell_list.immediately_show_tooltip = true
-	redraw()
 
 	if not g.backend.submit_action(action):
 		# TODO: charles: Show error message; this should never happen
