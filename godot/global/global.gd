@@ -159,3 +159,29 @@ func tween(thing, to_pos, time):
 func safe_disconnect(object, signal_, target, method):
 	if object.is_connected(signal_, target, method):
 		object.disconnect(signal_, target, method)
+
+const save_path = 'user://saved_data.json'
+var auth_uuid = null
+var auth_pwd = null
+
+func save():
+	var data = {
+		'auth_uuid': auth_uuid,
+		'auth_pwd': auth_pwd,
+	}
+	var file = File.new()
+	file.open(save_path, File.WRITE)
+	file.store_line(to_json(data))
+	file.close()
+
+func load():
+	var file = File.new()
+	if not file.file_exists(save_path):
+		print('No save data.')
+		return
+	
+	file.open(save_path, File.READ)
+	var data = parse_json(file.get_line())
+	auth_uuid = data['auth_uuid']
+	auth_pwd = data['auth_pwd']
+	file.close()
