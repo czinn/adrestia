@@ -37,7 +37,6 @@ func _ready():
 		button.connect('button_down', self, 'on_remove_book_down', [i, button])
 
 func _notification(what):
-	print(what)
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.call_deferred('on_back_button_pressed')
 

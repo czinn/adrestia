@@ -2,6 +2,9 @@ extends Node
 
 const Protocol = preload('res://native/protocol.gdns')
 
+const host = '127.0.0.1'
+const port = 16969
+
 var peer
 var data_buffer
 var protocol
@@ -36,7 +39,7 @@ func _ready():
 	set_process(true)
 	self.protocol = Protocol.new()
 	self.peer = StreamPeerTCP.new()
-	self.peer.connect_to_host('127.0.0.1', 16969)
+	self.peer.connect_to_host(host, port)
 	self.data_buffer = PoolByteArray()
 
 func to_packet(s):
@@ -44,8 +47,6 @@ func to_packet(s):
 
 func floop():
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-		print(self.peer.get_status())
 		return false
-
 	self.peer.put_data(to_packet(protocol.make_floop_request()))
 	return true
