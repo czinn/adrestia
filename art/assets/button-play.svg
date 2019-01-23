@@ -14,7 +14,7 @@
    viewBox="0 0 104.18744 31.162436"
    version="1.1"
    id="svg1718"
-   inkscape:version="0.92.2 2405546, 2018-03-11"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="button-play.svg">
   <defs
      id="defs1712" />
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="101.46041"
-     inkscape:cy="61.118978"
+     inkscape:zoom="1.4"
+     inkscape:cx="381.39529"
+     inkscape:cy="69.03439"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,8 +39,9 @@
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:snap-global="false" />
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false"
+     showguides="false" />
   <metadata
      id="metadata1715">
     <rdf:RDF>

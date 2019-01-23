@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -MMD -std=c++17 -g
+CXXFLAGS = -Wall -MMD -std=c++17 -Ifdeep-include -Ifplus-include -I. -O2
 OBJECTS = $(patsubst %.cc,%.o,$(filter-out main.cc, $(wildcard *.cc)))
 
 MAIN_EXEC = main
@@ -14,7 +14,11 @@ AI_EXEC = skynet
 AI_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard ai/*.cc))
 AI_DEPS = ${TEST_OBJS:.o=.d}
 
-EXECS = ${MAIN_EXEC} ${TEST_EXEC} ${AI_EXEC}
+CFR_EXEC = train
+CFR_OBJS = ${OBJECTS} $(patsubst %.cc, %.o, $(wildcard cfr_train/*.cc))
+CFR_DEPS = ${TEST_OBJS:.o=.d}
+
+EXECS = ${MAIN_EXEC} ${TEST_EXEC} ${AI_EXEC} ${CFR_EXEC}
 
 all: ${EXECS}
 
@@ -27,7 +31,10 @@ ${TEST_EXEC}: ${TEST_OBJS}
 ${AI_EXEC}: ${AI_OBJS}
 	${CXX} ${CXXFLAGS} $^ -o $@
 
--include ${MAIN_DEPS} ${TEST_DEPS} ${AI_DEPS}
+${CFR_EXEC}: ${CFR_OBJS}
+	${CXX} ${CXXFLAGS} $^ -o $@
+
+-include ${MAIN_DEPS} ${TEST_DEPS} ${AI_DEPS} ${CFR_DEPS}
 
 clean:
-	rm -f {.,tests,ai}/*.{o,d} ${EXECS}
+	rm -f {.,tests,ai,cfr_train}/*.{o,d} ${EXECS}

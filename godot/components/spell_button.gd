@@ -5,6 +5,7 @@ signal pressed
 onready var g = get_node('/root/global')
 
 onready var texture_button = $vbox/texture_button
+onready var glow_texture = $vbox/texture_button/glow_texture
 onready var label = $vbox/label
 onready var timer = $timer
 onready var cost = $cost
@@ -14,11 +15,13 @@ onready var unlock = $unlock
 onready var tech_icon = $unlock/tech_icon
 onready var tech_label = $unlock/tech_label
 onready var level_label = $unlock/level_label
+onready var animation_player = $animation_player
 
 var spell = null setget set_spell
 var enabled = true setget set_enabled
 var show_stats = true setget set_show_stats
 var show_unlock = true setget set_show_unlock
+var immediately_show_tooltip = false
 
 var was_long_pressed = false
 
@@ -29,6 +32,7 @@ func _ready():
 	redraw()
 
 func on_down():
+	was_long_pressed = false
 	timer.start()
 
 func on_long_press():
@@ -38,9 +42,12 @@ func on_long_press():
 
 func on_up():
 	if not was_long_pressed:
-		timer.stop()
-		if enabled:
-			emit_signal('pressed')
+		if immediately_show_tooltip:
+			on_long_press()
+		else:
+			timer.stop()
+			if enabled:
+				emit_signal('pressed')
 	else:
 		# Charles thinks auto-dismiss-on-release is nice based on testing on
 		# desktop, but if mobile experience is different, remove this line.
@@ -63,12 +70,19 @@ func set_show_unlock(show_unlock_):
 	show_unlock = show_unlock_
 	redraw()
 
+func flash():
+	animation_player.play('glow')
+
+func countered():
+	animation_player.play('countered')
+
 func redraw():
 	if spell == null: return
 	if label == null: return
 	if mp_label == null: return
 
 	texture_button.texture_normal = g.get_spell_texture(spell.get_id())
+	glow_texture.texture = texture_button.texture_normal
 	
 	var material_ = null if enabled else load('res://shaders/greyscale.material')
 	texture_button.material = material_
@@ -81,7 +95,7 @@ func redraw():
 	var show_cost = enabled or spell.is_tech_spell()
 
 	cost.visible = show_stats
-	unlock.visible = show_stats and show_unlock
+	#unlock.visible = show_stats and show_unlock
 
 	mp_label.text = str(spell.get_cost())
 	tech_label.text = str(spell.get_tech())

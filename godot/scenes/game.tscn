@@ -1,20 +1,51 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scenes/game.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
-[ext_resource path="res://components/player_stats.tscn" type="PackedScene" id=3]
-[ext_resource path="res://components/spell_list.tscn" type="PackedScene" id=4]
-[ext_resource path="res://components/sticky_list.tscn" type="PackedScene" id=5]
-[ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=6]
-[ext_resource path="res://art-built/button-cast.png" type="Texture" id=7]
-[ext_resource path="res://components/spell_select.tscn" type="PackedScene" id=8]
+[ext_resource path="res://art-built/9patch/background-game.png" type="Texture" id=3]
+[ext_resource path="res://scripts/background.gd" type="Script" id=4]
+[ext_resource path="res://components/avatar.tscn" type="PackedScene" id=5]
+[ext_resource path="res://components/sticky_list.tscn" type="PackedScene" id=6]
+[ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=7]
+[ext_resource path="res://components/mana_bar.tscn" type="PackedScene" id=8]
+[ext_resource path="res://art-built/button-cast.png" type="Texture" id=9]
+[ext_resource path="res://components/spell_select.tscn" type="PackedScene" id=10]
+[ext_resource path="res://art-built/close-x.png" type="Texture" id=11]
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="StyleBoxFlat" id=1]
 
-resource_name = "end_turn"
-length = 1.0
+content_margin_left = -1.0
+content_margin_right = -1.0
+content_margin_top = -1.0
+content_margin_bottom = -1.0
+bg_color = Color( 1, 1, 1, 0.501961 )
+draw_center = true
+border_width_left = 0
+border_width_top = 2
+border_width_right = 0
+border_width_bottom = 2
+border_color = Color( 0.8, 0.8, 0.8, 1 )
+border_blend = false
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+corner_detail = 8
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+expand_margin_top = 0.0
+expand_margin_bottom = 0.0
+shadow_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+shadow_size = 3
+anti_aliasing = true
+anti_aliasing_size = 1
+_sections_unfolded = [ "Border", "Border Width", "Expand Margin", "Shadow" ]
+
+[sub_resource type="Animation" id=2]
+
+length = 0.5
 loop = false
-step = 0.1
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("end_turn_button:margin_left")
 tracks/0/interp = 2
@@ -22,10 +53,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ -125.0, 41.0 ]
+"values": [ -124.0, -130.0, 64.0 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("end_turn_button:margin_right")
@@ -34,37 +65,37 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ -21.0, 145.0 ]
+"values": [ 57.0, 51.0, 245.0 ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("spell_select:margin_top")
 tracks/2/interp = 2
 tracks/2/loop_wrap = true
 tracks/2/imported = false
-tracks/2/enabled = true
+tracks/2/enabled = false
 tracks/2/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -229.0, 72.0 ]
+"values": [ -173.0, 72.0 ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("spell_select:margin_bottom")
 tracks/3/interp = 2
 tracks/3/loop_wrap = true
 tracks/3/imported = false
-tracks/3/enabled = true
+tracks/3/enabled = false
 tracks/3/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ -69.0, 232.0 ]
+"values": [ -13.0, 232.0 ]
 }
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -83,77 +114,118 @@ size_flags_vertical = 1
 theme = ExtResource( 2 )
 _sections_unfolded = [ "Mouse", "Theme" ]
 
-[node name="enemy_stats" parent="ui" index="0" instance=ExtResource( 3 )]
+[node name="bg" type="Sprite" parent="ui" index="0"]
+
+position = Vector2( -1.70459, 1.70459 )
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 540, 960 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Animation", "Offset", "Region" ]
+
+[node name="panel" type="Panel" parent="ui" index="1"]
+
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -177.0
+margin_bottom = 15.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_styles/panel = SubResource( 1 )
+_sections_unfolded = [ "Anchor", "Rect", "custom_styles" ]
+
+[node name="enemy_avatar" parent="ui" index="2" instance=ExtResource( 5 )]
+
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -214.0
+margin_top = 39.0
+margin_right = -174.0
+margin_bottom = 79.0
+
+[node name="enemy_stickies" parent="ui" index="3" instance=ExtResource( 6 )]
 
 margin_left = 10.0
-margin_right = -10.0
-_sections_unfolded = [ "Margin", "Mouse", "Theme" ]
+margin_top = 138.0
+margin_right = -217.0
+margin_bottom = 210.0
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
-[node name="enemy_spell_list" parent="ui" index="1" instance=ExtResource( 4 )]
+[node name="enemy_spell_list" parent="ui" index="4" instance=ExtResource( 7 )]
 
-anchor_top = 0.5
-anchor_bottom = 0.5
-margin_top = -280.0
-margin_bottom = -124.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -185.0
+margin_top = 232.0
+margin_right = 185.0
+margin_bottom = 382.0
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
-[node name="enemy_stickies" parent="ui" index="2" instance=ExtResource( 5 )]
-
-margin_left = 20.0
-margin_top = 54.0
-margin_right = -20.0
-margin_bottom = 54.0
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
-
-[node name="my_stats" parent="ui" index="3" instance=ExtResource( 3 )]
+[node name="my_mana_bar" parent="ui" index="5" instance=ExtResource( 8 )]
 
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 10.0
-margin_top = -59.0
-margin_right = -195.0
-margin_bottom = -6.0
-mouse_filter = 2
-_sections_unfolded = [ "Margin", "Mouse", "Theme" ]
+margin_left = 224.0
+margin_top = -245.0
+margin_right = 264.0
+margin_bottom = -205.0
 
-[node name="my_spell_list" parent="ui" index="4" instance=ExtResource( 4 )]
-
-anchor_top = 0.5
-anchor_bottom = 0.5
-margin_bottom = 156.0
-
-[node name="my_stickies" parent="ui" index="5" instance=ExtResource( 5 )]
+[node name="my_avatar" parent="ui" index="6" instance=ExtResource( 5 )]
 
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 20.0
-margin_top = -305.0
-margin_right = -20.0
-margin_bottom = -305.0
-_sections_unfolded = [ "Margin", "Rect", "Theme" ]
+margin_left = 21.0
+margin_top = -382.0
+margin_right = 61.0
+margin_bottom = -342.0
+flipped = true
 
-[node name="spell_queue" parent="ui" index="6" instance=ExtResource( 6 )]
+[node name="my_stickies" parent="ui" index="7" instance=ExtResource( 6 )]
 
-anchor_top = 0.5
-anchor_bottom = 0.5
-margin_bottom = 150.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 221.0
+margin_top = -376.0
+margin_right = -21.0
+margin_bottom = -304.0
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
-[node name="event_timer" type="Timer" parent="ui" index="7"]
+[node name="my_spell_list" parent="ui" index="8" instance=ExtResource( 7 )]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -185.0
+margin_top = -537.0
+margin_right = 185.0
+margin_bottom = -387.0
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
+
+[node name="event_timer" type="Timer" parent="ui" index="9"]
 
 process_mode = 1
 wait_time = 1.0
 one_shot = false
 autostart = true
 
-[node name="end_turn_button" type="TextureButton" parent="ui" index="8"]
+[node name="end_turn_button" type="TextureButton" parent="ui" index="10"]
 
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-margin_left = -125.0
-margin_top = -94.0
-margin_right = -21.0
-margin_bottom = -6.0
+margin_left = -124.0
+margin_top = -162.0
+margin_right = 57.0
+margin_bottom = -74.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -165,31 +237,57 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 7 )
+texture_normal = ExtResource( 9 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Margin", "Textures" ]
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="spell_select" parent="ui" index="9" instance=ExtResource( 8 )]
+[node name="spell_select" parent="ui" index="11" instance=ExtResource( 10 )]
 
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 margin_left = -270.0
-margin_top = -229.0
+margin_top = -173.0
 margin_right = 270.0
-margin_bottom = -69.0
+margin_bottom = -13.0
 rect_min_size = Vector2( 540, 160 )
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Theme" ]
+_sections_unfolded = [ "Anchor", "Margin", "Theme" ]
 
-[node name="animation_player" type="AnimationPlayer" parent="ui" index="10"]
+[node name="animation_player" type="AnimationPlayer" parent="ui" index="12"]
 
 root_node = NodePath("..")
 autoplay = ""
 playback_process_mode = 1
 playback_default_blend_time = 0.0
 playback_speed = 1.0
-anims/end_turn = SubResource( 1 )
+anims/end_turn = SubResource( 2 )
 blend_times = [  ]
+
+[node name="back_button" type="TextureButton" parent="ui" index="13"]
+
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_left = -50.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = 50.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 11 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
 

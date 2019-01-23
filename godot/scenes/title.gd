@@ -25,6 +25,7 @@ func _ready():
 		g.loaded = true
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
+	get_tree().set_auto_accept_quit(true)
 
 func on_waifu_pressed():
 	print(g.network.floop())

@@ -34,7 +34,7 @@ func _input(event):
 				state = STATE_IDLE
 			elif event is InputEventMouseMotion:
 				var pos = event.position
-				var tracked_rect = tracked_node.get_global_rect()
+				var tracked_rect = Rect2(drag_start, Vector2(0, 0))
 				tracked_rect = tracked_rect.grow_individual(self.dead_left, self.dead_top, self.dead_right, self.dead_bottom)
 				if not tracked_rect.has_point(pos):
 					self.drag_image = self.clone_image(tracked_node)
@@ -49,19 +49,6 @@ func _input(event):
 			elif event is InputEventMouseMotion:
 				var pos = event.position
 				self.drag_image.rect_position = pos + self.drag_image_ofs
-
-func _ready():
-	set_process(false)
-
-func _process(delta):
-	var pos = get_viewport().get_mouse_position()
-	match state:
-		STATE_IDLE:
-			set_process(false)
-		STATE_TRACKING:
-			pass
-		STATE_DRAGGING:
-			pass
 	
 func clone_image(node):
 	var image = TextureRect.new()
@@ -85,13 +72,11 @@ func track_drag(node):
 	self.drag_start = get_viewport().get_mouse_position()
 	self.drag_image_ofs = node.get_global_position() - self.drag_start
 	state = STATE_TRACKING
-	set_process(true)
 
 func end_drag():
 	if self.drag_image:
 		self.drag_end = get_viewport().get_mouse_position()
 		self.drag_image = null
-		set_process(false)
 
 func set_dead_zone(top, left, right, bottom):
 	if top == null: top = 9999

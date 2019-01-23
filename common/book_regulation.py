@@ -10,20 +10,20 @@ book = Book('regulation', 'Book of Regulation', [
 
 	Spell('mana_2', 'Mana Crystal',
 		"Gain 4 mana next turn.",
-		tech=1, level=1, cost=2,
+		tech=2, level=2, cost=2,
 		effects=[Effect(EK_mana, ET_special, self=True, amount=4)],
 	),
 
 	Spell('cancel_1', 'Shieldbreaker',
 		"Counter opponent's spell if it is a shield. Block 4 damage this turn.",
-		tech=2, level=2, cost=2,
+		tech=3, level=3, cost=2,
 		effects=[effect_shield(4)],
 		counterspell=Selector(effect_type=['shield']),
 	),
 
 	Spell('attack_1', 'Piercing Shot',
 		"Deal 6 damage. Cannot be blocked by shields.",
-		tech=3, level=3, cost=3,
+		tech=4, level=4, cost=3,
 		effects=[Effect(EK_health, ET_constant, amount=-6)],
 	),
 ])

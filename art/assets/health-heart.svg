@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="9.4930344mm"
-   height="9.5831099mm"
-   viewBox="0 0 9.4930336 9.5831099"
+   width="50.000004"
+   height="50.000366"
+   viewBox="0 0 13.229167 13.229263"
    version="1.1"
    id="svg1718"
-   inkscape:version="0.92.2 2405546, 2018-03-11"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="health-heart.svg">
   <defs
      id="defs1712" />
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="14.515884"
-     inkscape:cy="17.55544"
+     inkscape:zoom="3.0370273"
+     inkscape:cx="37.268664"
+     inkscape:cy="55.158747"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -35,12 +35,13 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
+     inkscape:window-width="1440"
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:snap-global="false" />
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false"
+     units="px" />
   <metadata
      id="metadata1715">
     <rdf:RDF>
@@ -57,14 +58,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-61.232553,-133.13628)">
+     transform="translate(-56.814274,-129.59412)">
     <path
        inkscape:tile-y0="517.94011"
        inkscape:tile-x0="729.26344"
-       sodipodi:nodetypes="ccccccc"
+       sodipodi:nodetypes="csscssc"
        inkscape:connector-curvature="0"
        id="use549"
-       d="m 66.060772,136.06598 c -0.46142,-0.77657 -0.75237,-1.51981 -1.80193,-1.56265 -1.34575,-0.009 -1.61684,0.98955 -1.69411,1.68718 -0.20255,2.64549 2.078359,2.87168 3.454699,4.49362 1.437461,-1.66736 3.095191,-1.74015 3.379831,-4.47482 0.0591,-1.131 -0.57302,-1.77315 -1.62725,-1.74959 -0.81906,0.01 -1.266991,0.8764 -1.71124,1.60626 z"
-       style="fill:#ffd7e5;fill-opacity:1;stroke:#ff054b;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+       d="m 63.460949,133.44805 c 0.374975,-1.69957 1.16355,-2.49016 2.790084,-2.485 1.437488,0.005 2.446918,0.91706 2.468828,2.31133 0.05558,3.5371 -3.063795,4.9384 -5.1949,7.51766 -2.427007,-2.72496 -5.416155,-3.80611 -5.387594,-7.4258 0.01053,-1.3343 0.917964,-2.56451 2.859093,-2.44155 1.265803,0.0801 2.177825,0.80514 2.464489,2.52336 z"
+       style="fill:#ffd7e5;fill-opacity:1;stroke:#ff054b;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
   </g>
 </svg>

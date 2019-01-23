@@ -16,45 +16,110 @@ struct Node {
 	double strategy;
 };
 
+std::unordered_map<size_t, std::vector<GameAction>> CfrStrategy::action_cache;
+
+const std::vector<GameAction> *CfrStrategy::get_view_actions(const GameView &view) {
+	const Player &p = view.players[view.view_player_id];
+	size_t h = std::hash<int>{}(p.mp);
+	for (size_t i = 0; i < p.tech.size(); i++) {
+		h += std::hash<std::string>{}(p.books[i]->get_id()) * (1 + p.tech[i]);
+	}
+	auto it = action_cache.find(h);
+	if (it != action_cache.end()) {
+		return &it->second;
+	} else {
+		action_cache.emplace(h, view.legal_actions());
+		return &action_cache[h];
+	}
+}
+
+std::vector<double> cfr_state_vector(const GameState &g) {
+	std::vector<double> r;
+	for (size_t i = 0; i < 2; i++) {
+		const Player &p = g.players[i];
+		r.push_back(1.0 * std::max(0, p.hp) / p.max_hp);
+		r.push_back(1.0 * p.mp / g.rules.get_mana_cap());
+		r.push_back(std::min(1.0, 1.0 * p.mp_regen / g.rules.get_mana_cap()));
+		for (const auto &[book_id, book] : g.rules.get_books()) {
+			size_t book_index = p.find_book_idx(book_id);
+			r.push_back(book_index != size_t(-1) ? 1.0 : 0.0);
+			for (size_t tech = 1; tech <= 3; tech++) {
+				r.push_back(p.tech[book_index] >= tech ? 1.0 : 0.0);
+			}
+		}
+	}
+	return r;
+}
+
 std::uniform_real_distribution<double> dis(0.0, 1.0);
 
-CfrStrategy::CfrStrategy() : gen(std::chrono::high_resolution_clock::now().time_since_epoch().count()) {}
+CfrStrategy::CfrStrategy(const GameRules &rules)
+		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+		, model(nullptr) {
+	for (size_t i = 0; i < 2; i++) {
+		int multiplier = i == 0 ? 1 : -1;
+		weights.push_back(25 * 5 * multiplier); // health
+		weights.push_back(10 * 1 * multiplier); // mana
+		weights.push_back(10 * 2 * multiplier); // mana regen
+		for (size_t book = 0; book < rules.get_books().size(); book++) {
+			weights.push_back(0);
+			for (size_t tech = 1; tech <= 3; tech++) {
+				weights.push_back(5 * multiplier);
+			}
+		}
+	}
+}
+
+CfrStrategy::CfrStrategy(std::vector<double> weights)
+		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+		, weights(weights)
+		, model(nullptr) {}
+
+CfrStrategy::CfrStrategy(fdeep::model *model)
+		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+		, model(model) {}
 
 CfrStrategy::~CfrStrategy() {}
 
-size_t get_cfr_view_hash(const GameView &v) {
-	// TODO: charles: Figure out a faster hash.
-	return std::hash<std::string>{}(json(v.players[v.view_player_id]).dump());
-}
-
 size_t get_action_hash(size_t player, const GameAction &a) {
-	size_t h = player;
+	size_t h = 0;
 	for (const auto &s : a) {
 		h = (h << 4) ^ std::hash<std::string>{}(s);
 	}
-	return h;
+	return h ^ std::hash<size_t>{}(player);
 }
 
-double score_game_state(const GameState &g) {
-	// Returns an esimate of the probability that the first player will win.
-	if (g.players[0].hp <= 0) return 0;
-	if (g.players[1].hp <= 0) return 1;
-	double x = (double)(g.players[0].hp) / (double)(g.players[1].hp);
-	if (x < 1) {
-		return x * 0.5;
+double CfrStrategy::score_game_state(const GameState &g) const {
+	std::vector<double> vec = cfr_state_vector(g);
+	if (model == nullptr) {
+		double score = 0;
+		for (size_t i = 0; i < weights.size(); i++) {
+			score += weights[i] * vec[i];
+		}
+		return score;
 	} else {
-		return 1 - 1 / x * 0.5;
+		std::vector<float> float_vec;
+		for (double d : vec) {
+			float_vec.push_back((float)d);
+		}
+		const fdeep::shared_float_vec sv(fplus::make_shared_ref<fdeep::float_vec>(float_vec));
+		const fdeep::tensor5 t(fdeep::shape5(1, 1, 1, 1, vec.size()), sv);
+		return model->predict({t})[0].get(0, 0, 0, 0, 0);
 	}
 }
 
-double score_action_pair(const GameState &g, const GameAction &a0, const GameAction &a1, std::unordered_map<size_t, double> &score_map) {
+double CfrStrategy::score_action_pair(
+		const GameState &g,
+		const GameAction &a0,
+		const GameAction &a1,
+		std::unordered_map<size_t, double> &score_map) const {
 	size_t h = get_action_hash(0, a0) ^ get_action_hash(1, a1);
 	auto it = score_map.find(h);
 	if (it != score_map.end()) {
 		return it->second;
 	} else {
 		GameState gp(g);
-		gp.simulate({a0, a1});
+		assert(gp.simulate({a0, a1}));
 		double score = score_game_state(gp);
 		score_map.emplace(h, score);
 		return score;
@@ -63,6 +128,7 @@ double score_action_pair(const GameState &g, const GameAction &a0, const GameAct
 
 GameAction CfrStrategy::get_action(const GameView &view) {
 	const Player &view_player = view.players[view.view_player_id];
+
 	// Determine which techs are possible for the opponent.
 	std::map<std::string, int> visible_tech[view.players.size()];
 	int unknown_techs[view.players.size()];
@@ -110,9 +176,8 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 
 	// Iterations!
 	std::unordered_map<size_t, Node> regret_map;
-	std::unordered_map<size_t, std::vector<GameAction>> action_map;
 	std::unordered_map<size_t, double> score_map;
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 100; i++) {
 		// Choose the determinization
 		// For now, don't do self-determinizations.
 		size_t op = 1 - view.view_player_id;
@@ -146,37 +211,53 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 		// Create the determinization.
 		GameState g(view, tech, books);
 		// Get the actions available for each player, memoizing them
-		std::vector<std::vector<GameAction>*> actions;
+		std::vector<const std::vector<GameAction>*> actions;
 		for (size_t i = 0; i < 2; i++) {
+			// TODO: Optimize by not converting to a game view first
 			GameView v(g, i);
-			size_t view_hash = get_cfr_view_hash(v);
-			auto it = action_map.find(view_hash);
-			if (it != action_map.end()) {
-				actions.push_back(&it->second);
-			} else {
-				action_map.emplace(view_hash, v.legal_actions());
-				actions.push_back(&action_map[view_hash]);
-			}
+			actions.push_back(CfrStrategy::get_view_actions(v));
 		}
+		// Choose an action for each player, based on regret.
 		std::vector<GameAction> chosen_actions;
 		double total_regret[2] = {0};
+		double total_count[2] = {0};
+		bool made_choice[2] = {0};
 		for (size_t i = 0; i < 2; i++) {
 			GameAction chosen_action;
+			GameAction random_action;
 			for (const auto &a : *actions[i]) {
 				size_t h = get_action_hash(i, a);
-				double regret = 1.0;
+				double regret = 0.0;
 				auto it = regret_map.find(h);
 				if (it != regret_map.end()) {
 					regret = it->second.regret;
 				}
 				total_regret[i] += std::max(0.0, regret);
-				if (dis(gen) <= regret / total_regret[i]) {
+				if (total_regret[i] > 0 && dis(gen) <= regret / total_regret[i]) {
+					made_choice[i] = true;
 					chosen_action = a;
 				}
+				total_count[i] += 1.0;
+				if (dis(gen) <= 1.0 / total_count[i]) {
+					random_action = a;
+				}
 			}
-			chosen_actions.push_back(chosen_action);
+			chosen_actions.push_back(made_choice[i] ? chosen_action : random_action);
 		}
+		// Update strategies.
+		for (size_t i = 0; i < 2; i++) {
+			for (const auto &a : *actions[i]) {
+				size_t h = get_action_hash(i, a);
+				Node &n = regret_map[h];
+				n.strategy +=
+					made_choice[i] ?
+					std::max(0.0, n.regret) / total_regret[i] :
+					1.0 / actions[i]->size();
+			}
+		}
+		// Determine the actual result of the game.
 		double actual_score = score_action_pair(g, chosen_actions[0], chosen_actions[1], score_map);
+		// Update regrets.
 		for (size_t i = 0; i < 2; i++) {
 			for (const auto &a : *actions[i]) {
 				size_t h = get_action_hash(i, a);
@@ -186,17 +267,17 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 					i == 0 ?
 					score_action_pair(g, a, chosen_actions[1], score_map) :
 					score_action_pair(g, chosen_actions[0], a, score_map);
-				n.strategy += std::max(0.0, n.regret) / total_regret[i];
-				n.regret += i == 0 ? score - actual_score : actual_score - score;
+				double regret_delta = i == 0 ? (score - actual_score) : (actual_score - score);
+				n.regret += regret_delta;
 			}
 		}
 	}
 	// Choose an action based on strategy.
-	std::vector<GameAction> &actions = action_map[get_cfr_view_hash(view)];
+	const std::vector<GameAction> &actions = *get_view_actions(view);
 	GameAction chosen_action;
 	double total_strategy = 0.0;
 	for (const auto &a : actions) {
-		size_t h = get_action_hash(0, a);
+		size_t h = get_action_hash(view.view_player_id, a);
 		double strategy = std::max(0.0, regret_map[h].strategy);
 		total_strategy += strategy;
 		if (dis(gen) <= strategy / total_strategy) {

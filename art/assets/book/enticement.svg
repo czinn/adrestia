@@ -14,7 +14,7 @@
    viewBox="0 0 33.072918 41.010412"
    version="1.1"
    id="svg1718"
-   inkscape:version="0.92.2 2405546, 2018-03-11"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="enticement.svg">
   <defs
      id="defs1712" />
@@ -25,18 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="46.611032"
-     inkscape:cy="15.444948"
+     inkscape:zoom="1.4"
+     inkscape:cx="67.324892"
+     inkscape:cy="27.687706"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g5824-3-1"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1344"
-     inkscape:window-height="1052"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -75,23 +75,17 @@
          id="rect5820-6-2-7"
          inkscape:connector-curvature="0" />
       <path
-         style="opacity:1;vector-effect:none;fill:#ffa5cf;fill-opacity:1;stroke:none;stroke-width:0.13229167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         style="opacity:1;vector-effect:none;fill:#ffd5f5;fill-opacity:1;stroke:none;stroke-width:0.13229167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
          d="m 162.63417,256.99055 c -2.93158,0 -5.29165,2.36009 -5.29165,5.29167 v 27.78125 c 0,2.93158 2.36007,5.29167 5.29165,5.29167 h 23.81262 c 0.73289,0 1.32291,-0.59002 1.32291,-1.32292 v -1.32292 c 0,-0.70604 -0.61101,-1.32291 -1.32291,-1.32291 H 163.4579 c -1.17054,0.003 -2.12038,-0.94665 -2.12038,-2.1172 0,-1.17051 0.94984,-2.11894 2.12038,-2.11717 h 22.98889 c 0.71487,0 1.32291,-0.6129 1.32291,-1.31773 v -27.52082 c 0,-0.7329 -0.59002,-1.32292 -1.32291,-1.32292 z"
          id="rect1865-0-2-6-9"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cssccscccscccccc" />
+      <path
+         style="fill:#ffe7fa;fill-opacity:1;stroke:#ff0b7d;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+         d="m 173.41793,269.70003 c -0.94798,-3.18039 -4.94379,-7.33861 -7.95127,-2.73952 -3.51806,5.37988 4.5113,7.81999 8.10643,11.99807 1.35422,-4.93768 10.45352,-10.46611 7.51541,-13.60979 -2.6091,-2.79165 -6.59326,0.3016 -7.67057,4.35124 z"
+         id="path952"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cscsc" />
     </g>
-    <path
-       style="fill:#ffffff;fill-opacity:1;stroke:#512c66;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       d="m 83.971491,145.04951 c 3.785787,-5.39247 9.139418,-3.52541 16.771159,-0.93545 -5.077704,4.95231 -13.280904,3.77658 -16.771159,0.93545 z"
-       id="path12350"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccc" />
-    <circle
-       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#ff7dde;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-       id="path12352"
-       cx="92.69381"
-       cy="144.59158"
-       r="1.6370257" />
   </g>
 </svg>

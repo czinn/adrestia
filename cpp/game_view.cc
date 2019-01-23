@@ -71,6 +71,7 @@ void GameView::generate_actions(
 		) const {
 	const Player &p = players[view_player_id];
 	actions.push_back(current);
+	// If we've already cast the max number of spells this turn, we're done.
 	if (current.size() >= rules.get_spell_cap()) {
 		return;
 	}
@@ -110,6 +111,8 @@ std::vector<GameAction> GameView::legal_actions() const {
 	return actions;
 }
 
+// Note, this is not uniformly random; it is slightly biased towards casting
+// less than the maximum number of spells.
 GameAction GameView::random_action(std::mt19937 &gen) const {
 	GameAction a;
 	int turn_tech = -1;

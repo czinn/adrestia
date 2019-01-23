@@ -1,6 +1,7 @@
 extends Control
 
 signal spell_press(spell)
+signal book_opened(i, book)
 
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 
@@ -91,6 +92,7 @@ func on_open_book(index, book):
 	spell_panel.visible = true
 	if old_book == null:
 		animation_player.play('spell_panel_enter')
+	emit_signal('book_opened', index, book)
 
 func set_tech_levels(tech_levels_):
 	tech_levels = tech_levels_

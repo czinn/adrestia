@@ -78,4 +78,14 @@ stickies_list: List[Sticky] = [
 		trigger=trigger_spell(),
 		effects=[Effect(EK_health, ET_constant, self=True, amount=-6)],
 	),
+
+	Sticky(id_='fury', name='Fury', kind=SK_delta,
+		text="Your attacks deal extra damage.",
+		trigger=trigger_outbound(effect_type=['attack']),
+	),
+
+	Sticky(id_='bloodlust', name='Bloodlust', kind=SK_delta,
+		text="Your attacks deal extra damage.",
+		trigger=trigger_outbound(effect_type=['attack']),
+	),
 ]
