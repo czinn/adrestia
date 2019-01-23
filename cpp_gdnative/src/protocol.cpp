@@ -4,14 +4,6 @@
 
 #define CLASSNAME Protocol
 
-#define FORWARD_API_CALL(name, ...)\
-  String Protocol::create_ ## name ## _call() {\
-    nlohmann::json j;\
-    adrestia_networking::create_ ## name ## _call(j);\
-    String s(j.dump().c_str());\
-    return s;\
-  }
-
 using namespace godot;
 
 namespace godot {
@@ -47,6 +39,13 @@ namespace godot {
     std::string uuid_; of_godot_variant(uuid, &uuid_);
     std::string password_; of_godot_variant(password, &password_);
     adrestia_networking::create_authenticate_call(j, uuid_, password_);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_register_new_account_call(String password) {
+    nlohmann::json j;
+    std::string password_; of_godot_variant(password, &password_);
+    adrestia_networking::create_register_new_account_call(j, password_);
     return String(j.dump().c_str());
   }
 
