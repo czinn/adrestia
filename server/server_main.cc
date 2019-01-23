@@ -253,14 +253,16 @@ void adrestia_networking::listen_for_connections(int port) {
 	int server_socket;
 	int client_socket;
 
-	struct sockaddr_in server_address;
-	struct sockaddr_in client_address;
+	sockaddr_in server_address;
+	sockaddr_in client_address;
 	socklen_t client_address_sizeof;
 
-	struct timeval receive_timeout_struct;
-	receive_timeout_struct.tv_sec = adrestia_networking::WAIT_FOR_COMMANDS_SECONDS;
-	struct timeval send_timeout_struct;
-	send_timeout_struct.tv_sec = adrestia_networking::TIMEOUT_SEND_SECONDS;
+	timeval recv_timeout;
+	recv_timeout.tv_sec = adrestia_networking::WAIT_FOR_COMMANDS_SECONDS;
+	recv_timeout.tv_usec = 0;
+	timeval send_timeout;
+	send_timeout.tv_sec = adrestia_networking::TIMEOUT_SEND_SECONDS;
+	send_timeout.tv_usec = 0;
 
 	server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -281,11 +283,11 @@ void adrestia_networking::listen_for_connections(int port) {
 
 		// Configure our timeouts and keepalives
 		// TODO: KEEPALIVE
-		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&receive_timeout_struct, sizeof (struct timeval)) < 0) {
+		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(timeval)) < 0) {
 			cerr << "ERROR on setsockopt for client socket (recieve timeout)!" << endl;
 			return;
 		}
-		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&send_timeout_struct, sizeof (struct timeval)) < 0) {
+		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, &send_timeout, sizeof(timeval)) < 0) {
 			cerr << "ERROR on setsockopt for client socket (send timeout)!" << endl;
 			return;
 		}
