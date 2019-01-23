@@ -170,10 +170,12 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="my_mana_bar" parent="ui" index="5" instance=ExtResource( 8 )]
 
+anchor_top = 1.0
+anchor_bottom = 1.0
 margin_left = 224.0
-margin_top = 715.0
+margin_top = -245.0
 margin_right = 264.0
-margin_bottom = 755.0
+margin_bottom = -205.0
 
 [node name="my_avatar" parent="ui" index="6" instance=ExtResource( 5 )]
 
