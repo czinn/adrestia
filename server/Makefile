@@ -25,5 +25,4 @@ ${CLIENT_EXEC}: ${CLIENT_OBJS}
 -include ${MAIN_DEPS} ${CLIENT_DEPS}
 
 clean:
-	rm -f *.o *.d ${EXECS}
-	rm -f handlers/*.o handlers/*.d
+	rm -f handlers/*.o handlers/*.d pushers/*.o pushers/*.d *.o *.d ${EXECS}
