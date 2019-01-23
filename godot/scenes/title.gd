@@ -28,7 +28,16 @@ func _ready():
 	get_tree().set_auto_accept_quit(true)
 
 func test_network():
-	print(g.network.floop())
+	g.network.floop(funcref(self, 'floop_done_1'))
+
+func floop_done_1(response):
+	print('Floop is done!')
+	print(response)
+	g.network.floop(funcref(self, 'floop_done_2'))
+
+func floop_done_2(response):
+	print('Other floop is done!')
+	print(response)
 
 func on_play_button_pressed():
 	g.backend = RandomAiBackend.new(g)

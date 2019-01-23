@@ -4,38 +4,42 @@ const Protocol = preload('res://native/protocol.gdns')
 
 const host = '127.0.0.1'
 const port = 16969
+const handler_key = 'api_handler_name'
 
 var peer
 var data_buffer
 var protocol
+var handlers = {}
 
 func _process(time):
 	var bytes = self.peer.get_available_bytes()
 	if bytes > 0:
-		print('Got %d bytes from server' % [bytes])
-
 		match self.peer.get_partial_data(bytes):
 			[var err, var data]:
-				print(data)
 				self.data_buffer.append_array(data)
 
+		# TODO: jim: n^2 if we have many small chunks of data. Hopefully that
+		# doesn't happen.
 		var i = 0
 		while i < self.data_buffer.size():
 			if self.data_buffer[i] == 10: # newline
 				var message = self.data_buffer.subarray(0, i - 1).get_string_from_utf8()
-				print(message)
+				var json = JSON.parse(message).result
+				var handler = json[handler_key]
+				if handler in handlers:
+					if handlers[handler].call_func(json):
+						handlers.erase(handler)
 				break
 			i += 1
 
 		if i + 1 >= self.data_buffer.size():
 			# Edge case for when we consume ALL of the available data
-			# (which is actually the case most of the time)
+			# (this actually happens most of the time)
 			self.data_buffer.resize(0)
 		else:
 			self.data_buffer = self.data_buffer.subarray(i + 1, -1)
 
 func _ready():
-	print('ready')
 	set_process(true)
 	self.protocol = Protocol.new()
 	self.peer = StreamPeerTCP.new()
@@ -45,8 +49,18 @@ func _ready():
 func to_packet(s):
 	return (s + '\n').to_utf8()
 
-func floop():
+func handler_name(request):
+	return JSON.parse(request).result[handler_key]
+
+# Actual API starts here.
+# If a callback returns true, it will only be used to handle a single response.
+# Otherwise it will stick around.
+
+func floop(callback):
+	var request = protocol.create_floop_call()
+	var handler = handler_name(request)
+	handlers[handler] = callback
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		return false
-	self.peer.put_data(to_packet(protocol.make_floop_request()))
+	self.peer.put_data(to_packet(request))
 	return true
