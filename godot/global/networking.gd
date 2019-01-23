@@ -18,7 +18,7 @@ func _process(time):
 			[var err, var data]:
 				self.data_buffer.append_array(data)
 
-		# TODO: jim: n^2 if we have many small chunks of data. Hopefully that
+		# TODO: jim: n^2 work if we have many small chunks of data. Hopefully that
 		# doesn't happen.
 		var i = 0
 		while i < self.data_buffer.size():
@@ -56,11 +56,20 @@ func handler_name(request):
 # If a callback returns true, it will only be used to handle a single response.
 # Otherwise it will stick around.
 
-func floop(callback):
-	var request = protocol.create_floop_call()
+func api_call_base(name, args, callback):
+	var request = protocol.callv('create_%s_call' % [name], args)
 	var handler = handler_name(request)
 	handlers[handler] = callback
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		return false
 	self.peer.put_data(to_packet(request))
 	return true
+
+func floop(callback):
+	return api_call_base('floop', [], callback)
+
+func establish_connection(callback):
+	return api_call_base('establish_connection', [], callback)
+
+func register_new_account(password, callback):
+	return api_call_base('register_new_account', [password], callback)

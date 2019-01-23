@@ -20,23 +20,29 @@ func _ready():
 	get_tree().set_quit_on_go_back(true)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	tutorial_button.connect('pressed', self, 'on_tutorial_button_pressed')
-	placeholder_button.connect('pressed', self, 'test_network')
+	g.network.establish_connection(funcref(self, 'network_ready'))
 	if not g.loaded:
 		g.loaded = true
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
 	get_tree().set_auto_accept_quit(true)
 
+func network_ready(_response):
+	placeholder_button.connect('pressed', self, 'test_network')
+
 func test_network():
 	g.network.floop(funcref(self, 'floop_done_1'))
 
 func floop_done_1(response):
 	print('Floop is done!')
-	print(response)
 	g.network.floop(funcref(self, 'floop_done_2'))
 
 func floop_done_2(response):
 	print('Other floop is done!')
+	g.network.register_new_account('yolo', funcref(self, 'registered'))
+
+func registered(response):
+	print('Omg guys we registered an account!')
 	print(response)
 
 func on_play_button_pressed():
