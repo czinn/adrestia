@@ -126,8 +126,8 @@ std::vector<EffectInstance> _pipe_effect(
 		std::vector<json> &events_out) {
 	std::vector<EffectInstance> generated_effects;
 	// Handle special case for tricks_fury
-	if (effect.spell.get_id() == "tricks_fury") {
-		effect.amount = p.rules.get_initial_health() - p.hp;
+	if (!inbound && effect.spell.get_id() == "tricks_fury") {
+		effect.amount = -(p.rules.get_initial_health() - p.hp);
 	}
 	// Do normal effect handling
 	_iterate_stickies<emit_events>(p, [&](auto &sticky, size_t sticky_index) {

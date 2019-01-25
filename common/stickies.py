@@ -85,7 +85,7 @@ stickies_list: List[Sticky] = [
 		trigger=trigger_turn,
 		effects=[
 			Effect(EK_sticky, ET_special, self=True,
-				sticky=StickyInvoker('antitech', duration=duration_turns(1)))
+				sticky=StickyInvoker('antitech', duration=duration_turns(2)))
 		],
 	),
 
