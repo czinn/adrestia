@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/refinement_boost.png-629ee3d84424f99d350b7d124e0ba965.stex"
+path="res://.import/conjuration_attack_3.png-217e5b79e7295c09e933bd42ac34bed6.stex"
 
 [deps]
 
-source_file="res://art-built/spells/refinement_boost.png"
-dest_files=[ "res://.import/refinement_boost.png-629ee3d84424f99d350b7d124e0ba965.stex" ]
+source_file="res://art-built/spells/conjuration_attack_3.png"
+dest_files=[ "res://.import/conjuration_attack_3.png-217e5b79e7295c09e933bd42ac34bed6.stex" ]
 
 [params]
 

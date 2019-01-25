@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-#include "../../server/protocol.h"
+#include "../../server/adrestia_networking.h"
 
 #define CLASSNAME Protocol
 
@@ -14,12 +14,10 @@ namespace godot {
   }
 
   void Protocol::_register_methods() {
-    register_method("make_floop_request", &Protocol::make_floop_request);
   }
 
   String Protocol::make_floop_request() {
     nlohmann::json j;
-    ::write_floop_request(j);
     String s(j.dump().c_str());
     return s;
   }

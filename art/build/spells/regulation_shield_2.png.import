@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/regulation_mana_2.png-8836cb9d3941dc994dfe625e6a80824a.stex"
+path="res://.import/regulation_shield_2.png-10b4d613480618af24b946961ea0bf86.stex"
 
 [deps]
 
-source_file="res://art-built/spells/regulation_mana_2.png"
-dest_files=[ "res://.import/regulation_mana_2.png-8836cb9d3941dc994dfe625e6a80824a.stex" ]
+source_file="res://art-built/spells/regulation_shield_2.png"
+dest_files=[ "res://.import/regulation_shield_2.png-10b4d613480618af24b946961ea0bf86.stex" ]
 
 [params]
 

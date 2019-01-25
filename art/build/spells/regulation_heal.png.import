@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/refinement_long_shield.png-4071a73c982a5aa248df81ac74d4113e.stex"
+path="res://.import/regulation_heal.png-1495ac37fdb8a4a37f90d51da4a27467.stex"
 
 [deps]
 
-source_file="res://art-built/spells/refinement_long_shield.png"
-dest_files=[ "res://.import/refinement_long_shield.png-4071a73c982a5aa248df81ac74d4113e.stex" ]
+source_file="res://art-built/spells/regulation_heal.png"
+dest_files=[ "res://.import/regulation_heal.png-1495ac37fdb8a4a37f90d51da4a27467.stex" ]
 
 [params]
 

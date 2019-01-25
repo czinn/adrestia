@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/regulation_attack_1.png-c6de54521f2861fbcc62c1d9016ceba7.stex"
+path="res://.import/enticement_mana.png-7c8707674347572a10f0aa3dedc186ce.stex"
 
 [deps]
 
-source_file="res://art-built/spells/regulation_attack_1.png"
-dest_files=[ "res://.import/regulation_attack_1.png-c6de54521f2861fbcc62c1d9016ceba7.stex" ]
+source_file="res://art-built/spells/enticement_mana.png"
+dest_files=[ "res://.import/enticement_mana.png-7c8707674347572a10f0aa3dedc186ce.stex" ]
 
 [params]
 

@@ -3,28 +3,31 @@ from rules_schema import *
 book = Book('refinement', 'Book of Refinement', [
 	spell_tech(name='Learn Refinement', text='Increase Refinement by 1.'),
 
-	Spell('mana', 'Greater Forge',
-		'Increase mana regeneration by 2.',
-		tech=1, level=1, cost=4,
-		effects=[effect_mana_regen(2)],
+	Spell('mana', 'Forge',
+		'Increase mana regeneration by 1.',
+		tech=1, level=1, cost=2,
+		effects=[effect_mana_regen(1)],
 	),
 
-	Spell('long_shield', 'Ablative Matrix',
-		'Block 6 damage. Lasts until destroyed.',
-		tech=2, level=2, cost=3,
-		effects=[effect_shield(6, duration_game)],
+	Spell('attack', 'Burning Hammer',
+		'Deal 2 damage per turn for the rest of the game.',
+		tech=2, level=2, cost=4,
+		effects=[Effect(EK_sticky, ET_attack, self=False, sticky=StickyInvoker('burning', duration_game))],
 	),
 		
-	Spell('boost', 'Dragonskin',
-		'Reduce incoming attacks by 1 damage for the rest of the game.',
-		tech=3, level=3, cost=6,
-		effects=[Effect(EK_sticky, ET_shield, self=True, sticky=StickyInvoker('damper', duration_game, 1))],
+	Spell('shield', 'Dragonskin',
+		'Lose 4 health. Block 11 damage this turn.',
+		tech=3, level=3, cost=1,
+		effects=[
+			effect_shield(11),
+			Effect(EK_health, ET_special, self=True, amount=-3),
+		],
 	),
 
-	Spell('attack', 'Hellhammer',
-		'Deal 9 damage.',
-		tech=4, level=4, cost=4,
-		effects=[effect_attack(9)],
+	Spell('mana_2', 'Mana Crystal',
+		'Increase mana regeneration by 10.',
+		tech=4, level=4, cost=10,
+		effects=[effect_mana_regen(10)],
 	),
 ])
 
