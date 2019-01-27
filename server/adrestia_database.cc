@@ -21,25 +21,85 @@ using namespace std;
 using json = nlohmann::json;
 
 
+// Performs a query using [work] with printf-style substitutions.
+// You must escape values yourself when using this.
+pqxx::result run_query(pqxx::work& work, const char* query_format, ...) {
+  va_list args;
+
+  // First, use [vsnprintf] to figure out how long the query needs to be.
+  va_start(args, query_format);
+  size_t needed = vsnprintf(nullptr, 0, query_format, args) + 1;
+  va_end(args);
+
+  // Then, use [vsprintf] to format it and run it.
+  va_start(args, query_format);
+  char *query = new char[needed];
+  vsprintf(query, query_format, args);
+  cout << query << endl;
+
+  pqxx::result result;
+  result = work.exec(query);
+
+  delete[] query;
+  va_end(args);
+  return result;
+}
+
+
+string hash_password(const string& password, const string& salt) {
+  // Get expected hashed password.
+  // The hashing of the password only in the case that the account exists is bad for security, but good for speed!
+  string salt_and_password = salt + password;
+  unsigned char* hash_of_salt_and_password;
+  unsigned int hash_of_salt_and_password_length;
+  adrestia_hexy::digest_message(salt_and_password.c_str(),
+                                salt_and_password.length(),
+                                &hash_of_salt_and_password,
+                                &hash_of_salt_and_password_length
+                               );
+  string good_string = string(reinterpret_cast<const char *>(hash_of_salt_and_password),
+                                   (size_t)hash_of_salt_and_password_length);
+  // Matches the OPENSSL_malloc in adrestia_hexy::digest_message.
+  OPENSSL_free(hash_of_salt_and_password);
+
+  return good_string;
+}
+
+
 vector<string> sql_array_to_vector(const string& sql_array) {
-  /* @brief Converts a 1-D sql array string like "{'fleep', 'floop'}" into a vector of strings. */
+  /* @brief Converts a 1-D sql array string like '{"fleep", "floop"}' into a vector of strings. */
 
   if (sql_array.length() < 2) {
     return vector<string>();
   }
 
   // Remove capping {}
-  const char* sql_interior_string_const = sql_array.substr(1,sql_array.length()-2).c_str();
+  const char* sql_interior_string_const = sql_array.substr(1, sql_array.length() - 2).c_str();
   char* sql_interior_string = strdup(sql_interior_string_const);
 
-  vector<string> return_vector;
+  vector<string> result;
   const char* pch = strtok(sql_interior_string,",");
   while (pch != NULL) {
-    return_vector.push_back(string(pch));
-    pch = strtok(NULL,",");
+    result.push_back(string(pch));
+    pch = strtok(NULL, ",");
   }
 
-  return return_vector;
+  return result;
+}
+
+
+template<typename T>
+string vector_to_sql_array(pqxx::work& work, const vector<T>& vec) {
+  string result = "ARRAY[";
+  for (size_t i = 0; i < vec.size(); i += 1) {
+    if (i > 0) {
+      // First element has no comma before it.
+      result += ',';
+    }
+    result += work.quote(vec[i]);
+  }
+  result += ']';
+  return result;
 }
 
 
@@ -59,33 +119,20 @@ string adrestia_database::retrieve_gamestate_from_database (
    * @returns: A string representation of the requested gamestate.
    */
 
-  const string select_gamestate_command = ""
-  "SELECT game_state"
-  "    FROM adrestia_games"
-  "    WHERE game_uid = $1"
-  ";";
-
   cout << "[" << log_id << "] retrieve_gamestate_from_database called with args:" << endl
        << "    game_uid: |" << game_uid << "|" << endl;
 
-  psql_connection[0].prepare("select_gamestate_command", select_gamestate_command);
+  pqxx::work work(*psql_connection);
 
-  pqxx::work select_transaction(psql_connection[0]);
+  auto search_result = run_query(work, R"sql(
+    SELECT game_state FROM adrestia_games WHERE game_uid = %s
+    )sql", work.quote(game_uid).c_str());
 
-  pqxx::result search_result = select_transaction.prepared("select_gamestate_command")
-                                                          (game_uid)
-                                                          .exec();
-
-  if (search_result.size() > 0) {
+  if (search_result.size() == 0) {
     return "";
+  } else {
+    return search_result[0][0].as<string>("");
   }
-
-  string game_state = "";
-  if (search_result.size() > 0) {
-    game_state = search_result[0][0].as<std::string>();
-  }
-
-  return game_state;
 }
 
 
@@ -107,23 +154,17 @@ json adrestia_database::check_for_active_games_in_database (
    *                                    move. This is, of course, a subset of active_game_uids.
    */
 
-  const string find_active_games_command = ""
-  "SELECT game_uid, involved_uuids, player_states"
-  "    FROM adrestia_games"
-  "    WHERE activity_state = 0"
-  "        AND $1 = ANY(involved_uuids)"
-  ";";
-
   cout << "[" << log_id << "] check_for_active_games_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl;
 
-  psql_connection[0].prepare("find_active_games_command", find_active_games_command);
+  pqxx::work work(*psql_connection);
 
-  pqxx::work select_transaction(psql_connection[0]);
-
-  pqxx::result search_result = select_transaction.prepared("find_active_games_command")
-                                                          (uuid)
-                                                          .exec();
+  auto search_result = run_query(work, R"sql(
+    SELECT game_uid, involved_uuids, player_states
+    FROM adrestia_games
+    WHERE activity_state = 0
+    AND %s = ANY(involved_uuids)
+  )sql", work.quote(uuid).c_str());
 
   vector<string> active_game_uids;
   vector<string> waiting_game_uids;
@@ -161,7 +202,7 @@ json adrestia_database::check_for_active_games_in_database (
   }
 
   cout << "[" << log_id << "] Commiting transaction..." << endl;
-  select_transaction.commit();
+  work.commit();
 
   json return_var;
   return_var["active_game_uids"] = active_game_uids;
@@ -195,64 +236,28 @@ json adrestia_database::matchmake_in_database (
    *           of the new game that was made.
    */
 
-  const string check_for_waiters_command = ""
-  "SELECT uuid"
-  "    FROM adrestia_match_waiters"
-  "    LIMIT 1"
-  "    FOR UPDATE"
-  ";";
-
-  const string insert_waiter_command = ""
-  "INSERT INTO adrestia_match_waiters (uuid, selected_books)"
-  "    VALUES ($1, $2)"
-  ";";
-
-  const string remove_waiter_command = ""
-  "DELETE FROM adrestia_match_waiters"
-  "    WHERE uuid = $1"
-  ";";
-
-  const string find_game_uid_command = ""
-  "SELECT 1"
-  "    FROM adrestia_games"
-  "    WHERE game_uid = $1"
-  ";";
-
-  const string create_game_command = ""
-  "INSERT INTO adrestia_games (game_uid, creator_uuid, involved_uuids, activity_state, player_states)"
-  "    VALUES ($1, $2, $3, 0, $4)"
-  ";";
-
   cout << "[" << log_id << "] matchmake_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl;
 
-  psql_connection[0].prepare("check_for_waiters_command", check_for_waiters_command);
-  psql_connection[0].prepare("insert_waiter_command", insert_waiter_command);
-  psql_connection[0].prepare("remove_waiter_command", remove_waiter_command);
-  psql_connection[0].prepare("find_game_uid_command", find_game_uid_command);
-  psql_connection[0].prepare("create_game_command", create_game_command);
-
-  pqxx::work work_transaction(psql_connection[0]);
+  pqxx::work work(psql_connection[0]);
 
   // Check if there are any waiters...
-  pqxx::result search_result = work_transaction.prepared("check_for_waiters_command").exec();
+  auto search_result = run_query(work, R"sql(
+    SELECT uuid
+    FROM adrestia_match_waiters
+    LIMIT 1
+    FOR UPDATE
+  )sql");
   if (search_result.size() == 0) {
     cout << "[" << log_id << "] No possible matches are waiting. We shall become a waiter." << endl;
 
-    string selected_books_string = "{";
-    for (unsigned int i = 0; i < selected_books.size(); i += 1) {
-      if ((i > 0) && (i + 1 < selected_books.size())) {
-        // Not the first element, not the last
-        selected_books_string += ',';
-      }
-      selected_books_string += selected_books[i];
-    }
-    selected_books_string += '}';
-
-    work_transaction.prepared("insert_waiter_command")(uuid)(selected_books_string).exec();
+    run_query(work, R"sql(
+      INSERT INTO adrestia_match_waiters (uuid, selected_books)
+      VALUES (%s, %s)
+    )sql", work.quote(uuid).c_str(), vector_to_sql_array(work, selected_books).c_str());
 
     cout << "[" << log_id << "] Commiting transaction." << endl;
-    work_transaction.commit();
+    work.commit();
 
     json return_var;
     return_var["game_uid"] = "";
@@ -267,9 +272,9 @@ json adrestia_database::matchmake_in_database (
   for (int i = 0; i < 1000; i += 1) {
     game_uid = adrestia_hexy::hex_urandom(adrestia_database::GAME_UID_LENGTH);
 
-    pqxx::result game_uid_search_result = work_transaction.prepared("find_game_uid_command")
-                                                                   (game_uid)
-                                                                   .exec();
+    auto game_uid_search_result = run_query(work, R"sql(
+      SELECT 1 FROM adrestia_games WHERE game_uid = %s
+    )sql", work.quote(game_uid).c_str());
 
     if (game_uid_search_result.size() > 0) {
       continue;
@@ -281,22 +286,24 @@ json adrestia_database::matchmake_in_database (
     throw string("Failed to create unique game id!");
   }
 
-  string uuid_list = "{" + uuid + ", " + waiting_uuid + "}";
-  string states_list = "{0, 0}";
-
   // Create game
   cout << "[" << log_id << "] Creating game |" << game_uid << "|..." << endl;
-  work_transaction.prepared("create_game_command")
-                           (game_uid)(uuid)(uuid_list)(states_list)
-                           .exec();
+  run_query(work, R"sql(
+    INSERT INTO adrestia_games (game_uid, creator_uuid, involved_uuids, activity_state, player_states)
+    VALUES (%s, %s, ARRAY[%s, %s], 0, ARRAY[0, 0])
+  )sql",
+      work.quote(game_uid).c_str(),
+      work.quote(uuid).c_str(),
+      work.quote(uuid).c_str(),
+      work.quote(waiting_uuid).c_str());
 
   // Remove waiting uuid
   cout << "[" << log_id << "] Removing waiting uuid |" << waiting_uuid << "|..." << endl;
-  work_transaction.prepared("remove_waiter_command")(waiting_uuid).exec();
+  run_query(work, "DELETE FROM adrestia_match_waiters WHERE uuid = %s", work.quote(waiting_uuid).c_str());
 
   // Commit
   cout << "[" << log_id << "] Committing transaction..." << endl;
-  work_transaction.commit();
+  work.commit();
 
   json return_var;
   return_var["game_uid"] = game_uid;
@@ -324,44 +331,38 @@ json adrestia_database::adjust_user_name_in_database(
    * @returns A json object containing "tag": the new tag generated.
    */
 
-  const string update_user_name_command = ""
-  "UPDATE adrestia_accounts"
-  "    SET user_name = $1, tag = $2"
-  "    WHERE uuid = $3"
-  ";";
-
   cout << "[" << log_id << "] adjust_user_name_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl
        << "    user_name: |" << user_name << "|" << endl;
 
   json new_account_info;
 
-  bool successfully_updated = false;
-  psql_connection[0].prepare("update_user_name_command",
-                             update_user_name_command
-                            );
+  bool success = false;
+
   for (int i = 0; i < 1000; i += 1) {
     string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
 
-    pqxx::work insertion_transaction(psql_connection[0]);
+    pqxx::work work(psql_connection[0]);
     try {
-      pqxx::result statement_result = insertion_transaction.prepared("update_user_name_command")
-                                                                    (user_name)(tag)(uuid)
-                                                                    .exec();
-      insertion_transaction.commit();
+      pqxx::result result = run_query(work, R"sql(
+        UPDATE adrestia_accounts
+        SET user_name = %s, tag = %s
+        WHERE uuid = %s
+      )sql", work.quote(user_name).c_str(), work.quote(tag).c_str(), work.quote(uuid).c_str());
+      work.commit();
 
       cout << "[" << log_id << "] Successfully adjustment of user_name in database." << endl;
-      successfully_updated = true;
+      success = true;
       new_account_info["tag"] = tag;
       break;
     }
     catch (pqxx::integrity_constraint_violation &) {
-      insertion_transaction.abort();
+      work.abort();
       continue;
     }
   }
 
-  if (!successfully_updated) {
+  if (!success) {
     cout << "[" << log_id << "] Failed to update the user_name!";
     throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + user_name + "|!");
   }
@@ -392,49 +393,34 @@ json adrestia_database::register_new_account_in_database(
    *               "tag": The tag of the new account
    */
 
-  const string insert_new_account_into_database_command = ""
-  "INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)"
-  "    VALUES ($1, $2, $3, $4, $5)"
-  ";";
-
-  const string default_user_name = "Initiate";
+  const string default_user_name = "Guest";
 
   cout << "[" << log_id << "] register_new_account_in_database called with args:" << endl
        << "    password: |" << password << "|" << endl;
 
-  // Get hash of salt and password
   string salt = adrestia_hexy::hex_urandom(adrestia_database::SALT_LENGTH);
-  string salt_and_password = salt + password;
-  const char* salt_and_password_c_str = salt_and_password.c_str();
-  unsigned char* hash_of_salt_and_password = new unsigned char[adrestia_hexy::MAX_HASH_LENGTH];
-  unsigned int hash_of_salt_and_password_length;
-  adrestia_hexy::digest_message(salt_and_password_c_str,
-                                salt_and_password.length(),
-                                &hash_of_salt_and_password,
-                                &hash_of_salt_and_password_length
-                               );
-  string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
-                                   (size_t)hash_of_salt_and_password_length
-                                  );
-  pqxx::binarystring bstring(good_string);
+  pqxx::binarystring password_hash(hash_password(password, salt));
 
   json new_account;
   bool actually_created_account = false;
 
   // Keep making up ids/tags until we get a successful insertion.
-  psql_connection[0].prepare("insert_new_account_into_database_command",
-                             insert_new_account_into_database_command
-                            );
   for (int i = 0; i < 1000; i += 1) {
     string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
     string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
 
-    pqxx::work insertion_transaction(psql_connection[0]);
+    pqxx::work work(psql_connection[0]);
     try {
-      pqxx::result statement_result = insertion_transaction.prepared("insert_new_account_into_database_command")
-                                                                    (uuid)(default_user_name)(tag)(bstring)(salt)
-                                                                    .exec();
-      insertion_transaction.commit();
+      run_query(work, R"sql(
+        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)
+        VALUES (%s, %s, %s, %s, %s)
+      )sql",
+          work.quote(uuid).c_str(),
+          work.quote(default_user_name).c_str(),
+          work.quote(tag).c_str(),
+          work.quote(password_hash).c_str(),
+          work.quote(salt).c_str());
+      work.commit();
 
       cout << "[" << log_id << "] Successfully finished insertion of new account into database." << endl;
       actually_created_account = true;
@@ -444,17 +430,15 @@ json adrestia_database::register_new_account_in_database(
       break;
     }
     catch (pqxx::integrity_constraint_violation &) {
-      insertion_transaction.abort();
+      work.abort();
       continue;
     }
   }
 
   if (!actually_created_account) {
     cerr << "[" << log_id << "] Failed to create a non-conflicting uuid/tag pair!" << endl;
-    throw string("Failed to generate non-conflicing uuid/tag pair.");
+    throw string("Failed to generate non-conflicting uuid/tag pair.");
   }
-
-  delete hash_of_salt_and_password;
 
   return new_account;
 }
@@ -468,55 +452,35 @@ json adrestia_database::verify_existing_account_in_database(
 ) {
   /* @brief Returns json {'success': bool, 'user_name': string, 'tag': string } */
 
-  const string select_password_from_database_command = ""
-  "SELECT hash_of_salt_and_password, salt, user_name, tag"
-  "    FROM adrestia_accounts"
-  "    WHERE uuid = $1"
-  ";";
-  
-  json result;
-
   cout << "[" << log_id << "] verify_existing_account_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl
        << "    password: |" << password << "|" << endl;
+  
+  json result;
+
+  pqxx::work work(*psql_connection);
+  pqxx::result search_result = run_query(work, R"sql(
+  SELECT hash_of_salt_and_password, salt, user_name, tag
+    FROM adrestia_accounts
+    WHERE uuid = %s
+  )sql", work.quote(uuid).c_str());
 
   // Find account of given name
-  psql_connection[0].prepare("select_password_from_database_command", select_password_from_database_command);
-  pqxx::work select_transaction(psql_connection[0]);
-  pqxx::result search_result = select_transaction.prepared("select_password_from_database_command")
-                                                          (uuid).exec();
-  select_transaction.commit();
-
   if (search_result.size() == 0) {
     cout << "[" << log_id << "] This uuid not found in database.";
     result["valid"] = false;
     return result;
   }
 
-  pqxx::binarystring database_hash_of_salt_and_password(search_result[0]["hash_of_salt_and_password"]);
-  string database_salt(search_result[0]["salt"].c_str());
+  pqxx::binarystring expected_hash(search_result[0]["hash_of_salt_and_password"]);
+  string salt = search_result[0]["salt"].as<string>();
+  pqxx::binarystring actual_hash(hash_password(password, salt));
 
-  // Get expected hashed password.
-  // The hashing of the password only in the case that the account exists is bad for security, but good for speed!
-  string salt_and_password = database_salt + password;
-  const char* salt_and_password_c_str = salt_and_password.c_str();
-  unsigned char* hash_of_salt_and_password = new unsigned char[EVP_MAX_MD_SIZE];
-  unsigned int hash_of_salt_and_password_length;
-  adrestia_hexy::digest_message(salt_and_password_c_str,
-                                salt_and_password.length(),
-                                &hash_of_salt_and_password,
-                                &hash_of_salt_and_password_length
-                               );
-  string good_string = std::string(reinterpret_cast<const char *>(hash_of_salt_and_password),
-                                   (size_t)hash_of_salt_and_password_length
-                                  );
-  pqxx::binarystring expected_hash_of_salt_and_password(good_string);
-
-  if (expected_hash_of_salt_and_password == database_hash_of_salt_and_password) {
+  if (actual_hash == expected_hash) {
     cout << "[" << log_id << "] This uuid and password have been verified." << endl;
     result["valid"] = true;
-    result["user_name"] = std::string(search_result[0]["user_name"].c_str());
-    result["tag"] = std::string(search_result[0]["tag"].c_str());
+    result["user_name"] = search_result[0]["user_name"].as<string>();
+    result["tag"] = search_result[0]["tag"].as<string>();
     return result;
   }
 

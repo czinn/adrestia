@@ -107,7 +107,7 @@ string read_packet (int client_socket) {
 
 		else
 		{
-			cerr << "Error " << errno << "(" << strerror(errno) << ")" << endl;
+			cerr << "Error " << errno << " (" << strerror(errno) << ")" << endl;
 			throw socket_error();
 		}
 	}
