@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Amaranth:400,700');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Amaranth', sans-serif;
+}
+
+body {
+  background: url('img/background-title.png');
+  background-repeat: repeat;
+  background-size: 130px auto;
+  font-size: 24px;
+}
+
+.content {
+  max-width: 600px;
+  margin: 5vh auto;
+  padding: 5vh 10px;
+  box-sizing: border-box;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.5);
+  border: 5px solid rgba(0, 0, 0, 1.0);
+  border-radius: 10px;
+}
+
+h1 {
+  font-size: 50px;
+}
+
+p {
+  padding: 5vh 0;
+}
+
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  max-width: 100%;
+}
