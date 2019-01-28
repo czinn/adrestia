@@ -57,7 +57,7 @@ func authenticated(response):
 	after_authenticated(response.user_name, response.tag)
 
 func after_authenticated(user_name, tag):
-	online_status.text = 'Online as %s [%s].' % [user_name, tag]
+	online_status.text = 'Online as %s [%s]' % [user_name, tag]
 	placeholder_button.connect('pressed', self, 'test_network')
 
 func test_network():
@@ -68,6 +68,12 @@ func floop_done(response):
 	print(response)
 
 func on_play_button_pressed():
+	if g.first_play:
+		g.first_play = false
+		g.save()
+		if yield(g.summon_confirm('It looks like this is your first time playing. Play the tutorial?'), 'popup_closed') == true:
+			on_tutorial_button_pressed()
+			return
 	g.backend = RandomAiBackend.new(g)
 	print(g.backend.rules)
 	g.scene_loader.goto_scene('game_book_select')

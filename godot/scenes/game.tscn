@@ -208,6 +208,7 @@ margin_top = -537.0
 margin_right = 185.0
 margin_bottom = -387.0
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
+slots_to_show = 3
 
 [node name="event_timer" type="Timer" parent="ui" index="9"]
 

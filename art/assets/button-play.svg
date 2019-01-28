@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="381.39529"
-     inkscape:cy="69.03439"
+     inkscape:cx="374.96672"
+     inkscape:cy="76.891533"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -36,7 +36,7 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1052"
+     inkscape:window-height="1080"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -60,7 +60,7 @@
      id="layer1"
      transform="translate(42.7028,-117.94533)">
     <rect
-       style="opacity:1;vector-effect:none;fill:#f2faff;fill-opacity:1;stroke:#0057e7;stroke-width:2.64583349;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       style="opacity:1;vector-effect:none;fill:#fcfcfc;fill-opacity:1;stroke:#000205;stroke-width:2.64600006;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
        id="rect1367"
        width="101.54161"
        height="28.516603"
@@ -71,16 +71,16 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot2150-4-6-27"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1;"
        transform="matrix(0.45294181,0,0,0.45294181,-22.659017,101.73586)"><flowRegion
          id="flowRegion2152-2-5-09"
-         style="fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1"><rect
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1;"><rect
            id="rect2154-0-7-36"
            width="357.59399"
            height="46.46703"
            x="30.304577"
            y="44.68692"
-           style="fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1" /></flowRegion><flowPara
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1;" /></flowRegion><flowPara
          id="flowPara2156-1-4-06"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40.50066757px;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#0057e7;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1">Play</flowPara></flowRoot>  </g>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40.50066757px;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1;">Play</flowPara></flowRoot>  </g>
 </svg>
