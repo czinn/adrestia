@@ -16,7 +16,7 @@ flags = 4
 gradient = SubResource( 1 )
 width = 20
 
-[node name="game_history" type="Control" index="0"]
+[node name="game_history" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0

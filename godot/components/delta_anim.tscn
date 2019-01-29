@@ -3,7 +3,7 @@
 [ext_resource path="res://components/delta_anim.gd" type="Script" id=1]
 [ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=2]
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=1]
 
 resource_name = "fadedown"
 length = 1.0
@@ -45,10 +45,21 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("label:custom_colors/font_color_shadow")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.5, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="Animation" id=2]
 
-resource_name = "fadeup"
 length = 1.0
 loop = false
 step = 0.1
@@ -88,8 +99,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("label:custom_colors/font_color_shadow")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.5, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
 
-[node name="delta_anim" type="Control"]
+[node name="delta_anim" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -111,7 +134,7 @@ _sections_unfolded = [ "Margin", "Rect" ]
 
 modulate = Color( 1, 1, 1, 0 )
 anchor_left = 0.0
-anchor_top = 0.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = 30.0
@@ -123,12 +146,17 @@ size_flags_horizontal = 1
 size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 1, 1, 1, 0 )
+custom_constants/shadow_offset_x = 2
+custom_constants/line_spacing = 0
+custom_constants/shadow_offset_y = 2
+custom_constants/shadow_as_outline = 1
 text = "+5"
 align = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Anchor", "Margin", "Visibility", "custom_colors", "custom_fonts" ]
+_sections_unfolded = [ "Anchor", "Margin", "Visibility", "custom_colors", "custom_constants", "custom_fonts" ]
 
 [node name="animation_player" type="AnimationPlayer" parent="." index="1"]
 
@@ -137,8 +165,8 @@ autoplay = ""
 playback_process_mode = 1
 playback_default_blend_time = 0.0
 playback_speed = 1.0
-anims/fadedown = SubResource( 2 )
-anims/fadeup = SubResource( 1 )
+anims/fadedown = SubResource( 1 )
+anims/fadeup = SubResource( 2 )
 blend_times = [  ]
 _sections_unfolded = [ "Playback Options" ]
 
