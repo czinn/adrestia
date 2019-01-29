@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/enticement_attack_2.png-8aeda86a915f3e321dc6e1d6c99c4043.stex"
+path="res://.import/storm.png-d08c952d1c67e698bcf01604cb32b7fa.stex"
 
 [deps]
 
-source_file="res://art-built/spells/enticement_attack_2.png"
-dest_files=[ "res://.import/enticement_attack_2.png-8aeda86a915f3e321dc6e1d6c99c4043.stex" ]
+source_file="res://art-built/stickies/storm.png"
+dest_files=[ "res://.import/storm.png-d08c952d1c67e698bcf01604cb32b7fa.stex" ]
 
 [params]
 

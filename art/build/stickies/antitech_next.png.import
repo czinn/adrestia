@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/regulation_cancel_1.png-57c18d9084309c0991ef894282257ccf.stex"
+path="res://.import/antitech_next.png-de524684b1c0df73ddb569f2fd3db58d.stex"
 
 [deps]
 
-source_file="res://art-built/spells/regulation_cancel_1.png"
-dest_files=[ "res://.import/regulation_cancel_1.png-57c18d9084309c0991ef894282257ccf.stex" ]
+source_file="res://art-built/stickies/antitech_next.png"
+dest_files=[ "res://.import/antitech_next.png-de524684b1c0df73ddb569f2fd3db58d.stex" ]
 
 [params]
 

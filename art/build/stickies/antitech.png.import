@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/enticement_attack_1.png-9b713a916ec08e9d7074f04791af2584.stex"
+path="res://.import/antitech.png-e897707e3bcb2df373f2151af35deeb2.stex"
 
 [deps]
 
-source_file="res://art-built/spells/enticement_attack_1.png"
-dest_files=[ "res://.import/enticement_attack_1.png-9b713a916ec08e9d7074f04791af2584.stex" ]
+source_file="res://art-built/stickies/antitech.png"
+dest_files=[ "res://.import/antitech.png-e897707e3bcb2df373f2151af35deeb2.stex" ]
 
 [params]
 

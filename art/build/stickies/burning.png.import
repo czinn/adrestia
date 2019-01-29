@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tricks_antispell.png-4029d8d8e0b2d472a2319dae628e11b9.stex"
+path="res://.import/burning.png-791811543b97329cb91026d5167f66d8.stex"
 
 [deps]
 
-source_file="res://art-built/spells/tricks_antispell.png"
-dest_files=[ "res://.import/tricks_antispell.png-4029d8d8e0b2d472a2319dae628e11b9.stex" ]
+source_file="res://art-built/stickies/burning.png"
+dest_files=[ "res://.import/burning.png-791811543b97329cb91026d5167f66d8.stex" ]
 
 [params]
 

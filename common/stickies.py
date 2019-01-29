@@ -36,6 +36,7 @@ stickies_list: List[Sticky] = [
 
 	Sticky(id_='storm', name='Storm', kind=SK_delta,
 		text="Increase Gathering Storm's damage by 1.",
+		stacks=True,
 		trigger=trigger_outbound(spell_id=['bloodlust_attack_2']),
 		# jim: how would we make this increase damage by 2?
 		# charles: Change amount in the sticky invoker
@@ -81,7 +82,7 @@ stickies_list: List[Sticky] = [
 	),
 
 	Sticky(id_='antitech_next', name='Censure', kind=SK_id,
-		text="Lose 5 health if you cast a tech spell next turn.",
+		text="Lose 6 health if you learn a spell next turn.",
 		trigger=trigger_turn,
 		effects=[
 			Effect(EK_sticky, ET_special, self=True,
@@ -90,13 +91,15 @@ stickies_list: List[Sticky] = [
 	),
 
 	Sticky(id_='antitech', name='Censure', kind=SK_id,
-		text="Lose 6 health if you cast a tech spell.",
+		text="Lose 6 health if you learn a spell this turn.",
+		stacks=True,
 		trigger=trigger_spell(effect_type=['tech']),
 		effects=[Effect(EK_health, ET_constant, self=True, amount=-6)],
 	),
 
 	Sticky(id_='antispell', name='Interdict', kind=SK_id,
 		text='Lose 6 health for each spell you cast this turn.',
+		stacks=True,
 		trigger=trigger_spell(),
 		effects=[Effect(EK_health, ET_constant, self=True, amount=-6)],
 	),
@@ -107,7 +110,8 @@ stickies_list: List[Sticky] = [
 	),
 
 	Sticky(id_='bloodlust', name='Bloodlust', kind=SK_delta,
-		text="Your attacks deal extra damage.",
-		trigger=trigger_outbound(effect_type=['attack']),
+		text="Your attacks deal an extra 2 damage damage.",
+		stacks=True,
+		trigger=trigger_outbound(effect_type=['attack', 'constant']),
 	),
 ]

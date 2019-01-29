@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/conjuration_mana_1.png-23884437ed98de4846f9dd1ed472c7cf.stex"
+path="res://.import/bloodlust.png-cd962b21d8dab233f680b2aadece9f37.stex"
 
 [deps]
 
-source_file="res://art-built/spells/conjuration_mana_1.png"
-dest_files=[ "res://.import/conjuration_mana_1.png-23884437ed98de4846f9dd1ed472c7cf.stex" ]
+source_file="res://art-built/stickies/bloodlust.png"
+dest_files=[ "res://.import/bloodlust.png-cd962b21d8dab233f680b2aadece9f37.stex" ]
 
 [params]
 

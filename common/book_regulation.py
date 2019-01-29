@@ -15,10 +15,9 @@ book = Book('regulation', 'Book of Regulation', [
 	),
 
 	Spell('shield_2', 'Fading Shield',
-		'Block 12 damage. Shield loses 6 durability per turn.',
+		'Block 12 damage. Lasts two turns.',
 		tech=3, level=3, cost=3,
 		effects=[effect_shield(12, duration_turns(2))],
-		# TODO: charles: Implement durability loss
 	),
 
 	Spell('heal', 'Heal',

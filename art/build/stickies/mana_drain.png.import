@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/enticement_mana_2.png-46b3845783fc57365c48d4ee4eab0352.stex"
+path="res://.import/mana_drain.png-5572cfb862e55c9da17246f30bd52ecf.stex"
 
 [deps]
 
-source_file="res://art-built/spells/enticement_mana_2.png"
-dest_files=[ "res://.import/enticement_mana_2.png-46b3845783fc57365c48d4ee4eab0352.stex" ]
+source_file="res://art-built/stickies/mana_drain.png"
+dest_files=[ "res://.import/mana_drain.png-5572cfb862e55c9da17246f30bd52ecf.stex" ]
 
 [params]
 
