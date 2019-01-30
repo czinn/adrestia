@@ -112,7 +112,7 @@ tracks/3/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[node name="delta_anim" type="Control" index="0"]
+[node name="delta_anim" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0

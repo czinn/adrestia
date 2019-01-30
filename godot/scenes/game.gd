@@ -35,6 +35,8 @@ func _ready():
 	state.of_game_view(g.backend.get_view())
 	ui_state = UiState.CHOOSING_SPELLS
 	g.backend.register_update_callback(funcref(self, 'on_backend_update'))
+	# Hacky method of displaying health in end-of-game history
+	g.health_history = []
 	end_turn_button.connect('pressed', self, 'on_end_turn_button_pressed')
 	my_spell_list.connect('pressed', self, 'on_my_spell_list_pressed')
 	event_timer.connect('timeout', self, 'on_event_timer_timeout')
@@ -174,6 +176,8 @@ func on_end_turn_button_pressed():
 	state.of_game_view(g.backend.get_view())
 	redraw()
 
+	g.health_history.append([state.players[0].hp, state.players[1].hp])
+
 	animation_player.play('end_turn')
 	yield(animation_player, 'animation_finished')
 
@@ -235,6 +239,7 @@ func on_event_timer_timeout():
 
 			if len(state.winners()) > 0:
 				print('Game is over')
+				g.health_history.append([state.players[0].hp, state.players[1].hp])
 				g.scene_loader.goto_scene('game_results')
 			else:
 				animation_player.play_backwards('end_turn')

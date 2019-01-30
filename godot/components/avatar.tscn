@@ -9,7 +9,7 @@
 [ext_resource path="res://art-built/mana-gem-big.png" type="Texture" id=7]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=8]
 
-[node name="avatar" type="Control" index="0"]
+[node name="avatar" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -142,7 +142,7 @@ align = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Mouse" ]
+_sections_unfolded = [ "Mouse", "custom_colors", "custom_constants", "custom_fonts" ]
 
 [node name="mana" type="TextureRect" parent="." index="5"]
 

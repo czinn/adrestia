@@ -31,6 +31,8 @@ var backend = null
 var tooltip = null # Currently displayed tooltip
 var rules = null setget ,get_rules
 
+var health_history
+
 func _ready():
 	pass
 

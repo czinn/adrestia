@@ -6,7 +6,7 @@ book = Book('bloodlust', 'Book of Bloodlust', [
 	Spell('attack_1', 'Razor Wind',
 		'Deal 5 damage.',
 		tech=1, level=1, cost=2,
-		effects=[effect_attack(4)],
+		effects=[effect_attack(5)],
 	),
 
 	Spell('attack_2', 'Gathering Storm',
