@@ -35,3 +35,8 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
 	game_state VARCHAR,
 	PRIMARY KEY (game_uid)
 );
+
+CREATE TABLE IF NOT EXISTS adrestia_rules (
+	id SERIAL PRIMARY KEY,
+	game_rules JSON
+);

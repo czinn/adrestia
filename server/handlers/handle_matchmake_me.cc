@@ -19,10 +19,6 @@ using namespace std;
 #include "../../cpp/json.h"
 using json = nlohmann::json;
 
-
-const string RULES_JSON_FILE("../common/rules.json");  // File path relative to Makefile
-
-
 int adrestia_networking::handle_matchmake_me(const string& log_id, const json& client_json, json& resp) {
   /* Adds this user to the waiting list for matchmaking, if there are no possible matches already waiting.
    * If there /are/ matches already waiting, the user is matched with them and a game is made.
@@ -67,7 +63,9 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   // Checking books
   cout << "[" << log_id << "] checking book names..." << endl;
 
-  GameRules game_rules(RULES_JSON_FILE);
+  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
+
+  GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, psql_connection, 0);
   const std::map<string, Book>& book_map = game_rules.get_books();
 
   bool incorrect_book = false;
@@ -91,7 +89,6 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   cout << "[" << log_id << "] Selected books all seem okay." << endl;
   cout << "[" << log_id << "] Matchmaking uuid |" << uuid << "| in database." << endl;
 
-  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
   json database_json = adrestia_database::matchmake_in_database(log_id, psql_connection, uuid, selected_books);
 
   string game_uid = database_json["game_uid"];

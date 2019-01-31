@@ -3,6 +3,9 @@
 #ifndef ADRESTIA_DATABASE_INCLUDE_GUARD
 #define ADRESTIA_DATABASE_INCLUDE_GUARD
 
+// Our related modules
+#include "../cpp/game_rules.h"
+
 // Database modules
 #include <pqxx/pqxx>
 
@@ -19,6 +22,13 @@ namespace adrestia_database {
 	const int TAG_LENGTH = 8;
 	const int UUID_LENGTH = 32;
 	const int GAME_UID_LENGTH = 32;
+
+	/* Gets game rules from the database. */
+	GameRules retrieve_game_rules(
+			const std::string& log_id,
+			pqxx::connection* psql_connection,
+			int id
+	);
 
 	/* Fetches from the database the game_state associated with the given game_uid. */
 	std::string retrieve_gamestate_from_database(
