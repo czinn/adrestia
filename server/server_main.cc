@@ -10,7 +10,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
+#ifdef __APPLE__
+#include <sys/wait.h>
+#define MSG_NOSIGNAL 0
+#else
 #include <wait.h>
+#endif
 #include <unistd.h>
 #include <time.h>
 
@@ -270,7 +275,7 @@ void adrestia_networking::listen_for_connections(int port) {
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	server_address.sin_port = htons(port);
 
-	if (bind(server_socket, (sockaddr*) &server_address, sizeof(server_address)) == -1) {
+	if (::bind(server_socket, (sockaddr*) &server_address, sizeof(server_address)) == -1) {
 		cout << "Could not bind socket to address:port: |" << strerror(errno) << "|" << endl;
 		throw socket_error();
 	}

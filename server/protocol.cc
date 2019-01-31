@@ -16,8 +16,9 @@ void adrestia_networking::create_floop_call(json& client_json) {
 }
 
 
-void adrestia_networking::create_establish_connection_call(json& client_json) {
+void adrestia_networking::create_establish_connection_call(json& client_json, const std::string &version) {
   client_json[adrestia_networking::HANDLER_KEY] = "establish_connection";
+	client_json["client_version"] = version;
 }
 
 
