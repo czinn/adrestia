@@ -127,7 +127,7 @@ func play_tutorial():
 	
 	var spell_preview = yield(self.acquire_node('ui/spell_button_list'), 'completed')
 	yield(show_tooltip(spell_preview, 'Each book has four spells.'), 'completed')
-	var spell_button = spell_preview.get_child(0).get_child(1)
+	var spell_button = spell_preview.get_child(1).get_child(1)
 	var mana_indicator = spell_button.get_node('cost/mp_icon')
 	yield(show_tooltip(mana_indicator, "This is the spell's mana cost."), 'completed')
 	yield(show_tooltip(spell_button, 'Hold down the spell to see what it does.'), 'completed')

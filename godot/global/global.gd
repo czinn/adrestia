@@ -191,15 +191,20 @@ func dict_has(dict, key, default):
 
 func load():
 	var file = File.new()
-	if not file.file_exists(save_path):
+	var data
+	if file.file_exists(save_path):
+		file.open(save_path, File.READ)
+		data = parse_json(file.get_line())
+	else:
 		print('No save data.')
-		return
-	
-	file.open(save_path, File.READ)
-	var data = parse_json(file.get_line())
+		data = {}
+
+	# Default values for persisted data
 	auth_uuid = dict_has(data, 'auth_uuid', null)
 	auth_pwd = dict_has(data, 'auth_pwd', null)
 	first_play = dict_has(data, 'first_play', true)
 	user_name = dict_has(data, 'user_name', null)
 	tag = dict_has(data, 'tag', null)
-	file.close()
+
+	if file.is_open():
+		file.close()
