@@ -8,7 +8,16 @@ const Protocol = preload('res://native/protocol.gdns')
 const host = '127.0.0.1'
 const port = 16969
 const handler_key = 'api_handler_name'
+
+# jim: So the keepalive works as follows.
+# - We keep track of the when we've last sent and received data.
+# - If we don't receive data for [timeout_ms], we're disconnected.
+# - If we haven't sent data for [floop_interval_ms], we send a floop to ensure
+# that we're still connected.
+# - If we get disconnected, we retry on [retry_sec] intervals.
+
 const timeout_ms = 10000
+const floop_interval_ms = 2000
 const retry_sec = 5.0
 
 onready var g = get_node('/root/global')
@@ -20,6 +29,7 @@ var handlers = {}
 
 var connect_timer
 var last_recv_ms = 0
+var last_send_ms = 0
 
 func _ready():
 	connect_timer = Timer.new()
@@ -34,12 +44,12 @@ func _ready():
 
 func _process(time):
 	if not is_online():
-		print('Not online. Will attempt to reconnect in %.1f seconds.' % [retry_sec])
-		self.peer.disconnect_from_host()
-		emit_signal('disconnected')
-		connect_timer.start()
 		set_process(false)
+		reconnect()
 		return
+
+	if OS.get_ticks_msec() - last_send_ms > 2000:
+		floop(funcref(self, 'on_floop'))
 
 	var bytes = self.peer.get_available_bytes()
 	if bytes > 0:
@@ -79,15 +89,16 @@ func reconnect():
 	print('Attempting to reconnect.')
 	self.peer.connect_to_host(host, port)
 	self.data_buffer = PoolByteArray()
+	last_send_ms = OS.get_ticks_msec()
 	last_recv_ms = OS.get_ticks_msec()
 	if is_online():
 		print('Success!')
 		establish_connection(funcref(self, 'on_network_ready'))
-		emit_signal('connected')
 		set_process(true)
 	else:
-		print('Failed.')
+		print('Failed. Will retry in %.1f seconds.' % [retry_sec])
 		emit_signal('disconnected')
+		connect_timer.start()
 
 func on_network_ready(response):
 	if g.auth_uuid != null:
@@ -116,6 +127,10 @@ func on_authenticated(response):
 	g.tag = response.tag
 	emit_signal('connected')
 
+func on_floop(response):
+	#print('got a floop')
+	pass
+
 func is_online():
 	return (
 		self.peer.get_status() == StreamPeerTCP.STATUS_CONNECTED
@@ -135,10 +150,12 @@ func api_call_base(name, args, callback):
 	handlers[handler] = callback
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		return false
+	last_send_ms = OS.get_ticks_msec()
 	self.peer.put_data(to_packet(request))
 	return true
 
 func floop(callback):
+	#print('sending floop')
 	return api_call_base('floop', [], callback)
 
 func establish_connection(callback):
