@@ -7,7 +7,6 @@ onready var placeholder_button = $ui/placeholder_button
 onready var animation_player = $animation_player
 
 const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
-const RandomAiBackend = preload('res://backends/random_ai.gd')
 const TutorialBackend = preload('res://backends/tutorial.gd')
 
 func _ready():
@@ -19,6 +18,7 @@ func _ready():
 	get_tree().set_auto_accept_quit(true)
 	get_tree().set_quit_on_go_back(true)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
+	placeholder_button.connect('pressed', self, 'test_network')
 	if not g.loaded:
 		g.loaded = true
 		initialize()
@@ -29,35 +29,15 @@ func _ready():
 func initialize():
 	g.load()
 	print(OS.get_user_data_dir())
-	g.network.establish_connection(funcref(self, 'network_ready'))
+	g.network.connect('connected', self, 'on_connected')
+	g.network.connect('disconnected', self, 'on_disconnected')
 
-func network_ready(_response):
-	if g.auth_uuid != null:
-		g.network.authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'authenticated'))
-	else:
-		g.auth_pwd = ''
-		for _i in range(24):
-			g.auth_pwd += char(randi() % 26 + 0x61) # Random lowercase letter
-		print(g.auth_pwd)
-		g.network.register_new_account(g.auth_pwd, funcref(self, 'account_created'))
+func on_connected():
+	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]
+
+func on_disconnected():
+	online_status.text = 'Offline.'
 	
-func account_created(response):
-	print('account created')
-	print(response)
-	g.auth_uuid = response.uuid
-	g.save()
-	after_authenticated(response.user_name, response.tag)
-
-func authenticated(response):
-	# TODO: jim: handle failure
-	print('authenticated')
-	print(response)
-	after_authenticated(response.user_name, response.tag)
-
-func after_authenticated(user_name, tag):
-	online_status.text = 'Online as %s [%s]' % [user_name, tag]
-	placeholder_button.connect('pressed', self, 'test_network')
-
 func test_network():
 	g.network.floop(funcref(self, 'floop_done'))
 
@@ -72,7 +52,6 @@ func on_play_button_pressed():
 		if yield(g.summon_confirm('It looks like this is your first time playing. Play the tutorial?'), 'popup_closed') == true:
 			on_tutorial_button_pressed()
 			return
-	g.backend = RandomAiBackend.new(g)
 	g.scene_loader.goto_scene('game_mode_select')
 
 func on_tutorial_button_pressed():

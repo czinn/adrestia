@@ -167,12 +167,16 @@ const save_path = 'user://saved_data.json'
 var auth_uuid
 var auth_pwd
 var first_play
+var user_name
+var tag
 
 func save():
 	var data = {
 		'auth_uuid': auth_uuid,
 		'auth_pwd': auth_pwd,
 		'first_play': first_play,
+		'user_name': user_name,
+		'tag': tag,
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -196,4 +200,6 @@ func load():
 	auth_uuid = dict_has(data, 'auth_uuid', null)
 	auth_pwd = dict_has(data, 'auth_pwd', null)
 	first_play = dict_has(data, 'first_play', true)
+	user_name = dict_has(data, 'user_name', null)
+	tag = dict_has(data, 'tag', null)
 	file.close()
