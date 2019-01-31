@@ -5,7 +5,7 @@ signal disconnected
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const host = '127.0.0.1'
+const host = 'adrestia.neynt.ca'
 const port = 16969
 const handler_key = 'api_handler_name'
 
@@ -31,6 +31,12 @@ var connect_timer
 var last_recv_ms = 0
 var last_send_ms = 0
 
+const OFFLINE = 0
+const CONNECTING = 1
+const ONLINE = 2
+
+var status = OFFLINE
+
 func _ready():
 	connect_timer = Timer.new()
 	connect_timer.set_one_shot(true)
@@ -43,10 +49,20 @@ func _ready():
 	reconnect()
 
 func _process(time):
-	if not is_online():
+	if peer.get_status() == StreamPeerTCP.STATUS_CONNECTING: return
+	if (peer.get_status() != StreamPeerTCP.STATUS_CONNECTED
+			|| OS.get_ticks_msec() - last_recv_ms > timeout_ms):
+		status = OFFLINE
+		emit_signal('disconnected')
+		print('Disconnected. Will retry in %.1f seconds.' % [retry_sec])
+		connect_timer.start()
 		set_process(false)
-		reconnect()
 		return
+	
+	if status == OFFLINE:
+		status = CONNECTING
+		print('Connecting...')
+		establish_connection(funcref(self, 'on_network_ready'))
 
 	if OS.get_ticks_msec() - last_send_ms > 2000:
 		floop(funcref(self, 'on_floop'))
@@ -91,56 +107,50 @@ func reconnect():
 	self.data_buffer = PoolByteArray()
 	last_send_ms = OS.get_ticks_msec()
 	last_recv_ms = OS.get_ticks_msec()
-	if is_online():
-		print('Success!')
-		establish_connection(funcref(self, 'on_network_ready'))
-		set_process(true)
-	else:
-		print('Failed. Will retry in %.1f seconds.' % [retry_sec])
-		emit_signal('disconnected')
-		connect_timer.start()
+	set_process(true)
 
 func on_network_ready(response):
 	if g.auth_uuid != null:
-		g.network.authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
+		authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 	else:
-		g.auth_pwd = ''
-		for _i in range(24):
-			g.auth_pwd += char(randi() % 26 + 0x61) # Random lowercase letter
-		print(g.auth_pwd)
-		g.network.register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+		gen_auth_pwd()
+		register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+
+func gen_auth_pwd():
+	g.auth_pwd = ''
+	for _i in range(24):
+		g.auth_pwd += char(randi() % 26 + 0x61) # Random lowercase letter
 
 func on_account_created(response):
-	print('account created')
-	print(response)
 	g.auth_uuid = response.uuid
 	g.user_name = response.user_name
 	g.tag = response.tag
-	g.save()
-	emit_signal('connected')
+	after_auth()
 
 func on_authenticated(response):
-	# TODO: jim: handle failure
-	print('authenticated')
-	print(response)
+	if response.api_code == 401:
+		# TODO: jim: this should not happen unless we clear the database. warn user
+		# that their account has been nuked in that case?
+		gen_auth_pwd()
+		register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+		return
 	g.user_name = response.user_name
 	g.tag = response.tag
+	after_auth()
+
+func after_auth():
+	g.save()
+	status = ONLINE
+	print('Connected!')
 	emit_signal('connected')
 
 func on_floop(response):
-	#print('got a floop')
 	pass
-
-func is_online():
-	return (
-		self.peer.get_status() == StreamPeerTCP.STATUS_CONNECTED
-		&& OS.get_ticks_msec() - last_recv_ms < timeout_ms
-	)
 
 func register_handlers(obj, on_connected, on_disconnected):
 	self.connect('connected', obj, on_connected)
 	self.connect('disconnected', obj, on_disconnected)
-	if is_online():
+	if status == ONLINE:
 		obj.call(on_connected)
 	else:
 		obj.call(on_disconnected)
@@ -150,7 +160,8 @@ func register_handlers(obj, on_connected, on_disconnected):
 # Otherwise it will stick around.
 
 func api_call_base(name, args, callback):
-	if not is_online():
+	last_send_ms = OS.get_ticks_msec()
+	if status == OFFLINE:
 		print('Network call %s failed because disconnected.' % [name])
 		return false
 	var request = protocol.callv('create_%s_call' % [name], args)
@@ -158,12 +169,10 @@ func api_call_base(name, args, callback):
 	handlers[handler] = callback
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		return false
-	last_send_ms = OS.get_ticks_msec()
 	self.peer.put_data(to_packet(request))
 	return true
 
 func floop(callback):
-	#print('sending floop')
 	return api_call_base('floop', [], callback)
 
 func establish_connection(callback):

@@ -25,12 +25,11 @@ func _ready():
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
 	get_tree().set_auto_accept_quit(true)
+	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
 
 func initialize():
 	g.load()
-	print(OS.get_user_data_dir())
-	g.network.connect('connected', self, 'on_connected')
-	g.network.connect('disconnected', self, 'on_disconnected')
+	print('User data dir is %s' % [OS.get_user_data_dir()])
 
 func on_connected():
 	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]

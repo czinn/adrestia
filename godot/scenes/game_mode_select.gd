@@ -16,15 +16,12 @@ func _ready():
 	button_ai.connect('pressed', self, 'on_button_ai_pressed')
 	button_tutorial.connect('pressed', self, 'on_button_tutorial_pressed')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
-
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
 
 func on_connected():
-	print('game mode: connected')
 	button_multiplayer.material = null
 
 func on_disconnected():
-	print('game mode: disconnected')
 	button_multiplayer.material = load('res://shaders/greyscale.material')
 
 func _notification(what):
