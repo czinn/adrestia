@@ -137,6 +137,14 @@ func is_online():
 		&& OS.get_ticks_msec() - last_recv_ms < timeout_ms
 	)
 
+func register_handlers(obj, on_connected, on_disconnected):
+	self.connect('connected', obj, on_connected)
+	self.connect('disconnected', obj, on_disconnected)
+	if is_online():
+		obj.call(on_connected)
+	else:
+		obj.call(on_disconnected)
+
 # Actual API starts here.
 # If a callback returns true, it will only be used to handle a single response.
 # Otherwise it will stick around.

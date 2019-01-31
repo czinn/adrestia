@@ -63,7 +63,7 @@ group = null
 texture_normal = ExtResource( 5 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Rect", "Textures" ]
+_sections_unfolded = [ "Material", "Rect", "Textures" ]
 
 [node name="button_ai" type="TextureButton" parent="ui" index="2"]
 

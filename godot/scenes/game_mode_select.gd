@@ -17,13 +17,26 @@ func _ready():
 	button_tutorial.connect('pressed', self, 'on_button_tutorial_pressed')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
 
+	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
+
+func on_connected():
+	print('game mode: connected')
+	button_multiplayer.material = null
+
+func on_disconnected():
+	print('game mode: disconnected')
+	button_multiplayer.material = load('res://shaders/greyscale.material')
+
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.call_deferred('on_back_button_pressed')
 
 func on_button_multiplayer_pressed():
-	g.backend = OnlineBackend.new(g)
-	g.scene_loader.goto_scene('game_book_select')
+	if g.network.is_online():
+		g.backend = OnlineBackend.new(g)
+		g.scene_loader.goto_scene('game_book_select')
+	else:
+		print('not online')
 
 func on_button_ai_pressed():
 	g.backend = RandomAiBackend.new(g)
