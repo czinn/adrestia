@@ -28,9 +28,10 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_establish_connection_call() {
+  String Protocol::create_establish_connection_call(String version) {
     nlohmann::json j;
-    adrestia_networking::create_establish_connection_call(j);
+    std::string version_; of_godot_variant(version, &version_);
+    adrestia_networking::create_establish_connection_call(j, version_);
     return String(j.dump().c_str());
   }
 

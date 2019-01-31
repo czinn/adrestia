@@ -5,8 +5,9 @@ signal disconnected
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const host = 'adrestia.neynt.ca'
+const host = 'localhost'
 const port = 16969
+const version = '1.0.0'
 const handler_key = 'api_handler_name'
 
 # jim: So the keepalive works as follows.
@@ -62,7 +63,7 @@ func _process(time):
 	if status == OFFLINE:
 		status = CONNECTING
 		print('Connecting...')
-		establish_connection(funcref(self, 'on_network_ready'))
+		establish_connection(version, funcref(self, 'on_network_ready'))
 
 	if OS.get_ticks_msec() - last_send_ms > 2000:
 		floop(funcref(self, 'on_floop'))
@@ -144,6 +145,9 @@ func after_auth():
 	print('Connected!')
 	emit_signal('connected')
 
+func is_online():
+	return status == ONLINE
+
 func on_floop(response):
 	pass
 
@@ -175,8 +179,8 @@ func api_call_base(name, args, callback):
 func floop(callback):
 	return api_call_base('floop', [], callback)
 
-func establish_connection(callback):
-	return api_call_base('establish_connection', [], callback)
+func establish_connection(version, callback):
+	return api_call_base('establish_connection', [version], callback)
 
 func register_new_account(password, callback):
 	return api_call_base('register_new_account', [password], callback)
