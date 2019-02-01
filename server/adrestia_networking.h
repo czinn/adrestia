@@ -2,6 +2,7 @@
 #define ADRESTIA_NETWORKING_INCLUDE_GUARD
 
 #include "versioning.h"
+#include "../cpp/game_rules.h"
 
 // System modules
 #include <map>
@@ -80,6 +81,7 @@ namespace adrestia_networking {
                                     const std::string& user_name
                                    );
   void create_matchmake_me_call(json& client_json,
+															  const GameRules &rules,
                                 const std::vector<std::string>& selected_books
                                );
 

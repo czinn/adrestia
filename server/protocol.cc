@@ -2,6 +2,7 @@
 
 // Us
 #include "adrestia_networking.h"
+#include "../cpp/game_rules.h"
 
 // System modules
 #include <string>
@@ -49,9 +50,11 @@ void adrestia_networking::create_change_user_name_call(json& client_json,
 
 
 void adrestia_networking::create_matchmake_me_call(json& client_json,
+	const GameRules &game_rules,
   const std::vector<std::string>& selected_books
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "matchmake_me";
+  client_json["game_rules"] = json(game_rules);
   client_json["selected_books"] = selected_books;
 }
 
