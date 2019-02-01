@@ -111,6 +111,8 @@ func reconnect():
 	set_process(true)
 
 func on_network_ready(response):
+	print(response.game_rules)
+	g.get_default_rules().load_json_string(JSON.print(response.game_rules))
 	if g.auth_uuid != null:
 		authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 	else:

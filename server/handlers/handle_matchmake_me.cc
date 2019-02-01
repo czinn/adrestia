@@ -64,7 +64,6 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   cout << "[" << log_id << "] checking book names..." << endl;
 
   pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
-
   GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, psql_connection, 0);
   const std::map<string, Book>& book_map = game_rules.get_books();
 

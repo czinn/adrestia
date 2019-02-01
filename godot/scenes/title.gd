@@ -28,8 +28,8 @@ func _ready():
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
 
 func initialize():
-	g.load()
 	print('User data dir is %s' % [OS.get_user_data_dir()])
+	g.load()
 
 func on_connected():
 	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]

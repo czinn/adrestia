@@ -187,9 +187,12 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					     << endl;
 
 					if (requested_function_name.compare("establish_connection") == 0) {
-						requested_function(babysitter_id, client_json, resp);
-						cout << "[" << babysitter_id << "] moving to phase 1." << endl;;
-						phase = 1;
+						int valid_connection = requested_function(babysitter_id, client_json, resp);
+
+						if (valid_connection == 0) {
+							cout << "[" << babysitter_id << "] moving to phase 1." << endl;;
+							phase = 1;
+						}
 					}
 					else if (requested_function_name.compare("register_new_account") == 0) {
 						requested_function(babysitter_id, client_json, resp);

@@ -1,8 +1,13 @@
 /* Handling requests for 'establish_connection'. */
 
 // Us
+#include "../adrestia_database.h"
 #include "../adrestia_networking.h"
 #include "../versioning.h"
+#include "../../cpp/game_rules.h"
+
+// Database
+#include <pqxx/pqxx>
 
 // System modules
 #include <iostream>
@@ -11,7 +16,6 @@ using namespace std;
 // JSON
 #include "../../cpp/json.h"
 using json = nlohmann::json;
-
 
 int adrestia_networking::handle_establish_connection(const string& log_id, const json& client_json, json& resp) {
 	/* Responds with a message.
@@ -46,9 +50,14 @@ int adrestia_networking::handle_establish_connection(const string& log_id, const
 		     << ", which is newer than the newest client. Update the server?" << std::endl;
 		return 1;
 	}
+
+  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
+  GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, psql_connection, 0);
+
 	resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 	resp[adrestia_networking::CODE_KEY] = 200;
 	resp[adrestia_networking::MESSAGE_KEY] = "Adrestia is listening.";
+	resp["game_rules"] = json(game_rules);
 
 	return 0;
 }
