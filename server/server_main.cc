@@ -96,8 +96,10 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 	unsigned int phase = 0;
 	string uuid = "";  // The uuid of the client we are babysitting
-	map<string, string> games_I_am_aware_of; // game_uid to game_state
-	vector<string> active_game_uids_I_am_aware_of;
+	
+	// Create pushers
+	PushActiveGames push_active_games;
+	std::vector<Pusher*> pushers = { &push_active_games };
 
 	try {
 		json client_json;
@@ -108,23 +110,14 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 			if (phase == 2) {
 				cout << "[" << babysitter_id << "] Processing pushers..." << endl;
 
-				json message_json;
-				message_json.clear();
-				adrestia_networking::push_active_games(babysitter_id,
-					                                   message_json,
-					                                   uuid,
-					                                   games_I_am_aware_of,
-					                                   active_game_uids_I_am_aware_of
-					                                  );
-
-				if (message_json.at(adrestia_networking::CODE_KEY) == 200) {
-					// We should push the json to the client.
-					cout << "[" << babysitter_id << "] Pushing new/changed game notification to client." << endl;
-					string message_json_string = message_json.dump();
-					message_json_string += '\n';
-					send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
-				} else {
-					cout << "[" << babysitter_id << "] Not pushing new/changed game notification to client due to code |" << message_json.at(adrestia_networking::CODE_KEY) << "|" << endl;
+				for (auto pusher : pushers) {
+					for (auto message_json : pusher->push(babysitter_id, uuid)) {
+						// We should push the json to the client.
+						cout << "[" << babysitter_id << "] Pushing new/changed game notification to client." << endl;
+						string message_json_string = message_json.dump();
+						message_json_string += '\n';
+						send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
+					}
 				}
 			}
 

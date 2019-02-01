@@ -3,6 +3,7 @@
 
 #include "versioning.h"
 #include "../cpp/game_rules.h"
+#include "pushers/push_active_games.h"
 
 // System modules
 #include <map>
@@ -84,14 +85,6 @@ namespace adrestia_networking {
 															  const GameRules &rules,
                                 const std::vector<std::string>& selected_books
                                );
-
-  // Server-side pushers
-  void push_active_games(const std::string& log_id,
-                         json& message_json,
-                         const std::string& uuid,
-                         std::map<std::string, std::string>& games_I_am_aware_of,
-                         std::vector<std::string>& active_game_uids_I_am_aware_of
-                        );
 }
 
 #endif

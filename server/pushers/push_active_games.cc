@@ -20,40 +20,29 @@ using namespace std;
 #include "../../cpp/json.h"
 using json = nlohmann::json;
 
+adrestia_networking::PushActiveGames::PushActiveGames() {}
 
-void adrestia_networking::push_active_games(const string& log_id,
-                                            json& message_json,
-                                            const string& uuid,
-                                            map<string, string>& games_I_am_aware_of,
-                                            vector<string>& active_game_uids_I_am_aware_of
-                                           )
-{
-  /* @brief Modifies message_json based on whether or not it found any new/changed games associated with the given
-   *        uuid.
+std::vector<json> adrestia_networking::PushActiveGames::push(const string& log_id, const string& uuid) {
+  /* @brief Returns a list of messages for any new/changed games associated with the given uuid.
    *
-     * @param log_id: A string prepended to diagnostics
-   * @param message_json: The push's data contents will be stored here.
+   * @param log_id: A string prepended to diagnostics
    * @param uuid: The uuid for which games will be checked.
-   * @param games_I_am_aware_of: A map of game_uid to game_state that the client being babysat is already aware of.
    *
    * @sideeffect: games_I_am_aware of will be updated to contain all things that have already been pushed to the
    *              client.
    * @sideeffect: active_game_uids_I_am_aware_of will be updated to reflect active games that have already been
    *              pushed to the client.
-   * @sideeffect: message_json will be modified to contain the relevant data.
-   *              The json contains the following keys:
-   *                  HANDLER_KEY: <this function>
-   *                  CODE_KEY: 200 (if something changed), 204 (if nothing changed)
-   *                  MESSAGE_KEY: "You have [new|changed|new and changed|] games!" (depending on situation), or
-   *                               "Nothing changed." (if nothing changed).
-   *                  "game_uids": A list of the new/changed game_uids
-   *                  "game_states": A list of the states of the new/changed game_uids. New games have no state
-   *                                 and are an empty string.
-   *              Note that it follows that reported game_uids that do not represent concluded games are waiting
-   *                  for the player to make a move.
-     *
-     * @returns Nothing
-     */
+	 *
+   * @returns: If there are new/changed games, the result will contain a message with the following keys:
+   *             HANDLER_KEY: <this function>
+   *             CODE_KEY: 200
+   *             MESSAGE_KEY: "You have [new|changed|new and changed|] games!" (depending on situation)
+   *             "game_uids": A list of the new/changed game_uids
+   *             "game_states": A list of the states of the new/changed game_uids. New games have no state
+   *                            and are an empty string.
+   *           Note that it follows that reported game_uids that do not represent concluded games are waiting
+   *               for the player to make a move.
+	 */
 
   // TODO: This pushes the whole gamestate! We must hide hidden information!
 
@@ -139,13 +128,12 @@ void adrestia_networking::push_active_games(const string& log_id,
 
   delete psql_connection;
 
+	std::vector<json> message_list;
+
   // If there is nothing to report, make an empty message and conclude.
   if (game_uids_to_report.empty()) {
     cout << "[" << log_id << "] No new/changed games for uuid |" << uuid << "|." << endl;
-    message_json[adrestia_networking::HANDLER_KEY] = "push_active_games";
-    message_json[adrestia_networking::CODE_KEY] = 204;
-    message_json[adrestia_networking::MESSAGE_KEY] = "Nothing changed.";
-    return;
+    return message_list;
   }
 
   // Decide what our message should be
@@ -162,10 +150,12 @@ void adrestia_networking::push_active_games(const string& log_id,
   cout << "[" << log_id << "] Message going in as: |" << api_message << "|" << endl;
 
   // Construct our json!
+	json message_json;
   message_json[adrestia_networking::HANDLER_KEY] = "push_active_games";
   message_json[adrestia_networking::CODE_KEY] = 200;
   message_json[adrestia_networking::MESSAGE_KEY] = api_message;
   message_json["game_uids"] = game_uids_to_report;
   message_json["game_states"] = game_states_to_report;
-  return;
+	message_list.push_back(message_json);
+  return message_list;
 }
