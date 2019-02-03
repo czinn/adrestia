@@ -5,7 +5,7 @@ signal disconnected
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const host = 'localhost'
+const host = '127.0.0.1'
 const port = 16969
 const version = '1.0.0'
 const handler_key = 'api_handler_name'
@@ -44,6 +44,7 @@ func _ready():
 	connect_timer.set_timer_process_mode(0)
 	connect_timer.set_wait_time(retry_sec)
 	connect_timer.connect('timeout', self, 'reconnect')
+	handlers['push_notifications'] = funcref(self, 'on_notification')
 	add_child(connect_timer)
 	self.protocol = Protocol.new()
 	self.peer = StreamPeerTCP.new()
@@ -59,7 +60,7 @@ func _process(time):
 		connect_timer.start()
 		set_process(false)
 		return
-	
+
 	if status == OFFLINE:
 		status = CONNECTING
 		print('Connecting...')
@@ -75,6 +76,7 @@ func _process(time):
 			[var err, var data]:
 				self.data_buffer.append_array(data)
 
+	while true:
 		# TODO: jim: n^2 work if we have many small chunks of data. Hopefully that
 		# doesn't happen.
 		var i = 0
@@ -89,10 +91,13 @@ func _process(time):
 				break
 			i += 1
 
-		if i + 1 >= self.data_buffer.size():
-			# Edge case for when we consume ALL of the available data
-			# (this actually happens most of the time)
+		if i == self.data_buffer.size():
+			# Edge case: when there is no complete packet in the buffer
+			break
+		elif i + 1 == self.data_buffer.size():
+			# Edge case: we consumed the entire buffer
 			self.data_buffer.resize(0)
+			break
 		else:
 			self.data_buffer = self.data_buffer.subarray(i + 1, -1)
 
@@ -105,13 +110,13 @@ func handler_name(request):
 func reconnect():
 	print('Attempting to reconnect.')
 	self.peer.connect_to_host(host, port)
+	self.peer.set_no_delay(true)
 	self.data_buffer = PoolByteArray()
 	last_send_ms = OS.get_ticks_msec()
 	last_recv_ms = OS.get_ticks_msec()
 	set_process(true)
 
 func on_network_ready(response):
-	print(response.game_rules)
 	g.get_default_rules().load_json_string(JSON.print(response.game_rules))
 	if g.auth_uuid != null:
 		authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
@@ -141,6 +146,12 @@ func on_authenticated(response):
 	g.tag = response.tag
 	after_auth()
 
+func on_floop(response):
+	pass
+
+func on_notification(response):
+	print('I got a notification: ' + response.message)
+
 func after_auth():
 	g.save()
 	status = ONLINE
@@ -149,9 +160,6 @@ func after_auth():
 
 func is_online():
 	return status == ONLINE
-
-func on_floop(response):
-	pass
 
 func register_handlers(obj, on_connected, on_disconnected):
 	self.connect('connected', obj, on_connected)
