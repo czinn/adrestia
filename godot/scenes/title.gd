@@ -25,7 +25,7 @@ func _ready():
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
 	get_tree().set_auto_accept_quit(true)
-	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
+	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
 
 func initialize():
 	print('User data dir is %s' % [OS.get_user_data_dir()])
@@ -36,7 +36,10 @@ func on_connected():
 
 func on_disconnected():
 	online_status.text = 'Offline.'
-	
+
+func on_out_of_date():
+	online_status.text = 'Out-of-date client. Update the app to play online!'
+
 func test_network():
 	g.network.floop(funcref(self, 'floop_done'))
 

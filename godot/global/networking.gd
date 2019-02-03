@@ -2,6 +2,7 @@ extends Node
 
 signal connected
 signal disconnected
+signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
@@ -9,6 +10,7 @@ const host = '127.0.0.1'
 const port = 16969
 const version = '1.0.0'
 const handler_key = 'api_handler_name'
+const code_key = 'api_code'
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
@@ -35,6 +37,7 @@ var last_send_ms = 0
 const OFFLINE = 0
 const CONNECTING = 1
 const ONLINE = 2
+const OUT_OF_DATE = 3
 
 var status = OFFLINE
 
@@ -117,12 +120,16 @@ func reconnect():
 	set_process(true)
 
 func on_network_ready(response):
-	g.get_default_rules().load_json_string(JSON.print(response.game_rules))
-	if g.auth_uuid != null:
-		authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
+	if response[code_key] == 200:
+		g.get_default_rules().load_json_string(JSON.print(response.game_rules))
+		if g.auth_uuid != null:
+			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
+		else:
+			gen_auth_pwd()
+			register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
 	else:
-		gen_auth_pwd()
-		register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+		status = OUT_OF_DATE
+		emit_signal('out_of_date')
 
 func gen_auth_pwd():
 	g.auth_pwd = ''
@@ -161,11 +168,14 @@ func after_auth():
 func is_online():
 	return status == ONLINE
 
-func register_handlers(obj, on_connected, on_disconnected):
+func register_handlers(obj, on_connected, on_disconnected, on_out_of_date):
 	self.connect('connected', obj, on_connected)
 	self.connect('disconnected', obj, on_disconnected)
+	self.connect('out_of_date', obj, on_out_of_date)
 	if status == ONLINE:
 		obj.call(on_connected)
+	elif status == OUT_OF_DATE:
+		obj.call(on_out_of_date)
 	else:
 		obj.call(on_disconnected)
 
