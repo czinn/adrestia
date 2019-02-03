@@ -5,7 +5,8 @@ signal disconnected
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const host = 'adrestia.neynt.ca'
+#const host = 'adrestia.neynt.ca'
+const host = 'localhost'
 const port = 16969
 const handler_key = 'api_handler_name'
 
@@ -85,6 +86,9 @@ func _process(time):
 				if handler in handlers:
 					if handlers[handler].call_func(json):
 						handlers.erase(handler)
+				else:
+					print('Unhandled message')
+					print(json)
 				break
 			i += 1
 
@@ -98,7 +102,7 @@ func _process(time):
 func to_packet(s):
 	return (s + '\n').to_utf8()
 
-func handler_name(request):
+func get_handler_name(request):
 	return JSON.parse(request).result[handler_key]
 
 func reconnect():
@@ -159,14 +163,17 @@ func register_handlers(obj, on_connected, on_disconnected):
 # If a callback returns true, it will only be used to handle a single response.
 # Otherwise it will stick around.
 
+func register_handler(handler_name, callback):
+	handlers[handler_name] = callback
+
 func api_call_base(name, args, callback):
 	last_send_ms = OS.get_ticks_msec()
 	if status == OFFLINE:
 		print('Network call %s failed because disconnected.' % [name])
 		return false
 	var request = protocol.callv('create_%s_call' % [name], args)
-	var handler = handler_name(request)
-	handlers[handler] = callback
+	var handler_name = get_handler_name(request)
+	handlers[handler_name] = callback
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		return false
 	self.peer.put_data(to_packet(request))

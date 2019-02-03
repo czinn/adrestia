@@ -32,17 +32,20 @@ func get_state():
 	else:
 		return null
 
-func register_started_callback(callback_):
-	started_callback = callback_
-
-func register_update_callback(callback_):
-	update_callback = callback_
+func register_started_callback(callback_): started_callback = callback_
+func register_update_callback(callback_): update_callback = callback_
 
 func submit_books(selected_book_ids):
-	state = g.GameState.new()
-	state.init(g.rules, [selected_book_ids, ['conjuration']])
-	if started_callback != null:
-		started_callback.call_func()
+	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
+	g.network.matchmake_me(selected_book_ids, funcref(self, 'on_matchmake_queue'))
+	started_callback and started_callback.call_func()
+
+func on_matchmake_queue(response):
+	print('We have entered the matchmaking queue:')
+	print(response)
+
+func on_push_active_games(response):
+	print('We are now in a game: %s' % [response.game_uids])
 
 func submit_action(action):
 	if not state.is_valid_action(0, action):

@@ -54,7 +54,7 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   cout << "[" << log_id << "] Matchmaking client with uuid |" << uuid << "|..." << endl;
 
   cout << "[" << log_id << "] checking number of books..." << endl;
-  if (selected_books.size() != 3) {
+  if (selected_books.size() == 0 || selected_books.size() > 3) {
     cout << "[" << log_id << "] Incorrect number of selected books: |" << selected_books.size() << "|" << endl;
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 400;

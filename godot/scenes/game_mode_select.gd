@@ -29,7 +29,7 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_button_multiplayer_pressed():
-	if g.network.is_online():
+	if g.network.status == g.network.ONLINE:
 		g.backend = OnlineBackend.new(g)
 		g.scene_loader.goto_scene('game_book_select')
 	else:

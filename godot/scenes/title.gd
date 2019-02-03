@@ -10,24 +10,18 @@ const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
 const TutorialBackend = preload('res://backends/tutorial.gd')
 
 func _ready():
-	var unique_id = OS.get_unique_id()
-	if unique_id:
-		print('Unique ID is: %s' % [unique_id])
-	else:
-		print('Failed to get unique id')
-	get_tree().set_auto_accept_quit(true)
-	get_tree().set_quit_on_go_back(true)
-	play_button.connect('pressed', self, 'on_play_button_pressed')
-	placeholder_button.connect('pressed', self, 'test_network')
 	if not g.loaded:
 		g.loaded = true
 		initialize()
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
-	get_tree().set_auto_accept_quit(true)
+	play_button.connect('pressed', self, 'on_play_button_pressed')
+	placeholder_button.connect('pressed', self, 'test_network')
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
 
 func initialize():
+	get_tree().set_auto_accept_quit(true)
+	get_tree().set_quit_on_go_back(true)
 	g.load()
 	print('User data dir is %s' % [OS.get_user_data_dir()])
 
