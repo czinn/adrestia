@@ -99,7 +99,8 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 	
 	// Create pushers
 	PushActiveGames push_active_games;
-	std::vector<Pusher*> pushers = { &push_active_games };
+	PushNotifications push_notifications;
+	std::vector<Pusher*> pushers = { &push_active_games, &push_notifications };
 
 	try {
 		json client_json;

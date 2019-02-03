@@ -1,13 +1,12 @@
 #pragma once
-/* Pushes active games to the client */
+/* Pushes notifications */
 
 // Us
 #include "../adrestia_networking.h"
 #include "pusher.h"
 
 // System modules
-#include <map>
-#include <string>
+#include <set>
 #include <vector>
 
 // JSON
@@ -15,13 +14,12 @@
 using json = nlohmann::json;
 
 namespace adrestia_networking {
-	class PushActiveGames : public Pusher {
+	class PushNotifications : public Pusher {
 		public:
-			PushActiveGames();
+			PushNotifications();
 			virtual std::vector<json> push(const std::string &log_id, const std::string &uuid);
 		
 		private:
-			std::map<std::string, std::string> games_I_am_aware_of; // game_uid to game_state
-			std::vector<std::string> active_game_uids_I_am_aware_of;
+			int latest_notification_already_sent;
 	};
 }

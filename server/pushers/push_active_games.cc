@@ -1,9 +1,10 @@
 /* Pushes active games to the client */
 
 // Us
-#include "../adrestia_networking.h"
+#include "push_active_games.h"
 
 // Our related modules
+#include "../adrestia_networking.h"
 #include "../adrestia_database.h"
 
 // Database
@@ -34,7 +35,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const string& log_i
    *              pushed to the client.
 	 *
    * @returns: If there are new/changed games, the result will contain a message with the following keys:
-   *             HANDLER_KEY: <this function>
+   *             HANDLER_KEY: "push_active_games"
    *             CODE_KEY: 200
    *             MESSAGE_KEY: "You have [new|changed|new and changed|] games!" (depending on situation)
    *             "game_uids": A list of the new/changed game_uids

@@ -529,6 +529,41 @@ json adrestia_database::verify_existing_account_in_database(
 }
 
 
+std::vector<std::string> adrestia_database::get_notifications(
+	const std::string& log_id,
+	pqxx::connection* psql_connection,
+	const std::string& uuid,
+	int &latest_notification_already_sent
+) {
+	/* @brief Returns a list of messages and updates
+	 * latest_notification_already_sent. */
+
+  cout << "[" << log_id << "] get_notifications called with args:" << endl
+       << "    uuid: |" << uuid << "|" << endl
+			 << "    latest_notification_already_sent: |"
+			 << latest_notification_already_sent << "|" << endl;
+
+	std::vector<std::string> result;
+
+  pqxx::work work(*psql_connection);
+  pqxx::result search_results = run_query(work, R"sql(
+  SELECT id, message
+    FROM adrestia_notifications
+    WHERE (target_uuid = %s OR target_uuid = '*')
+			AND id > %d
+			ORDER BY id
+  )sql", work.quote(uuid).c_str(), latest_notification_already_sent);
+
+	for (const auto &search_result : search_results) {
+		result.push_back(search_result["message"].as<string>());
+		latest_notification_already_sent =
+			std::max(latest_notification_already_sent, search_result["id"].as<int>());
+	}
+
+	return result;
+}
+
+
 pqxx::connection* adrestia_database::establish_psql_connection() {
   /* Returns a pointer to a pqxx::connection in the heap.
    * Connection parameters specified via environment variable (DB_CONNECTION_STRING)

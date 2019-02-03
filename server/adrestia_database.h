@@ -11,6 +11,7 @@
 
 // System modules
 #include <string>
+#include <vector>
 
 // JSON
 #include "../cpp/json.h"
@@ -84,6 +85,16 @@ namespace adrestia_database {
 		pqxx::connection* psql_connection,
 		const std::string& uuid,
 		const std::string& password
+	);
+
+	/* Returns a list of messages to send to the user, and updates
+	 * latest_notification_already_sent to the maximum of the IDs of the messages
+	 * returned. */
+	std::vector<std::string> get_notifications(
+		const std::string& log_id,
+		pqxx::connection* psql_connection,
+		const std::string& uuid,
+		int &latest_notification_already_sent
 	);
 
 
