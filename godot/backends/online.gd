@@ -11,11 +11,10 @@ var rules
 
 func _init(g_):
 	g = g_
-	var rules_file = File.new()
-	rules_file.open('res://data/rules.json', File.READ)
-	rules = g.GameRules.new()
-	rules.load_json_string(rules_file.get_as_text())
-	rules_file.close()
+	# TODO: These rules are possibly too new if we've reconnected a game that was
+	# started before the rules changed. Make sure that we get the rules from the
+	# server when we reconnect.
+	rules = g.get_default_rules()
 
 func get_view():
 	if state == null:

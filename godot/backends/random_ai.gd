@@ -17,11 +17,7 @@ var rules
 
 func _init(g_):
 	g = g_
-	var rules_file = File.new()
-	rules_file.open('res://data/rules.json', File.READ)
-	rules = g.GameRules.new()
-	rules.load_json_string(rules_file.get_as_text())
-	rules_file.close()
+	rules = g.get_default_rules()
 	ai = g.Strategy.new()
 	ai.init_cfr_strategy(rules)
 

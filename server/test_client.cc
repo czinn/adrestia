@@ -8,7 +8,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
+#ifdef __APPLE__
+#include <sys/wait.h>
+#define MSG_NOSIGNAL 0
+#else
 #include <wait.h>
+#endif
 #include <unistd.h>
 
 // System modules
@@ -140,6 +145,7 @@ int main(int argc, char* argv[]) {
 	string my_uuid;
 	string my_user_name;
 	string my_tag;
+	string version = version_to_string(adrestia_networking::CLIENT_VERSION);
 	string password("test_password");
 	string desired_user_name1("test_user");
 	string desired_user_name2("test_user_again");
@@ -187,7 +193,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_establish_connection_call(outbound_json);
+	adrestia_networking::create_establish_connection_call(outbound_json, version);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -207,6 +213,8 @@ int main(int argc, char* argv[]) {
 		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
 		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
 	}
+	GameRules rules;
+	rules = response_json["game_rules"];
 
 	// Create account
 	cout << "Registering new account." << endl;
@@ -291,7 +299,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_establish_connection_call(outbound_json);
+	adrestia_networking::create_establish_connection_call(outbound_json, version);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -343,7 +351,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_matchmake_me_call(outbound_json, selected_books);
+	adrestia_networking::create_matchmake_me_call(outbound_json, rules, selected_books);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -381,7 +389,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_establish_connection_call(outbound_json);
+	adrestia_networking::create_establish_connection_call(outbound_json, version);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -440,7 +448,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_matchmake_me_call(outbound_json, selected_books_bad1);
+	adrestia_networking::create_matchmake_me_call(outbound_json, rules, selected_books_bad1);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -466,7 +474,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_matchmake_me_call(outbound_json, selected_books_bad2);
+	adrestia_networking::create_matchmake_me_call(outbound_json, rules, selected_books_bad2);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -492,7 +500,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_matchmake_me_call(outbound_json, selected_books);
+	adrestia_networking::create_matchmake_me_call(outbound_json, rules, selected_books);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);

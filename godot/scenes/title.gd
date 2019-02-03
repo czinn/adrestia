@@ -10,6 +10,8 @@ const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
 const TutorialBackend = preload('res://backends/tutorial.gd')
 
 func _ready():
+	get_tree().set_auto_accept_quit(true)
+	get_tree().set_quit_on_go_back(true)
 	if not g.loaded:
 		g.loaded = true
 		initialize()
@@ -20,10 +22,9 @@ func _ready():
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected')
 
 func initialize():
-	get_tree().set_auto_accept_quit(true)
-	get_tree().set_quit_on_go_back(true)
-	g.load()
 	print('User data dir is %s' % [OS.get_user_data_dir()])
+	# For server development on desktop.
+	g.load()
 
 func on_connected():
 	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]

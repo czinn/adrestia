@@ -38,8 +38,11 @@ func _ready():
 
 func get_rules():
 	if backend == null:
-		return null
+		return rules
 	return backend.rules
+
+func get_default_rules():
+	return rules
 
 static func sum(list):
 	var result = 0
@@ -164,11 +167,13 @@ func safe_disconnect(object, signal_, target, method):
 
 # Data to persist between sessions.
 const save_path = 'user://saved_data.json'
+const default_rules_path = 'res://data/rules.json'
 var auth_uuid
 var auth_pwd
 var first_play
 var user_name
 var tag
+# var rules # (declared above)
 
 func save():
 	var data = {
@@ -177,6 +182,7 @@ func save():
 		'first_play': first_play,
 		'user_name': user_name,
 		'tag': tag,
+		'rules': rules.as_json().result,
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -205,6 +211,17 @@ func load():
 	first_play = dict_has(data, 'first_play', true)
 	user_name = dict_has(data, 'user_name', null)
 	tag = dict_has(data, 'tag', null)
+	var rules_json = dict_has(data, 'rules', null)
+
+	if rules_json == null:
+		var rules_file = File.new()
+		rules_file.open(default_rules_path, File.READ)
+		rules_json = rules_file.get_as_text()
+		rules_file.close()
+	else:
+		rules_json = JSON.print(rules_json)
+	rules = GameRules.new()
+	rules.load_json_string(rules_json)
 
 	if file.is_open():
 		file.close()

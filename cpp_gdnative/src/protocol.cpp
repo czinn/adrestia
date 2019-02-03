@@ -1,5 +1,7 @@
 #include "protocol.h"
 
+#include "game_rules.h"
+
 #include "../../server/adrestia_networking.h"
 
 #define CLASSNAME Protocol
@@ -28,9 +30,10 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_establish_connection_call() {
+  String Protocol::create_establish_connection_call(String version) {
     nlohmann::json j;
-    adrestia_networking::create_establish_connection_call(j);
+    std::string version_; of_godot_variant(version, &version_);
+    adrestia_networking::create_establish_connection_call(j, version_);
     return String(j.dump().c_str());
   }
 
@@ -56,10 +59,11 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_matchmake_me_call(Variant selected_books) {
+  String Protocol::create_matchmake_me_call(Variant rules, Variant selected_books) {
     nlohmann::json j;
     std::vector<std::string> selected_books_; of_godot_variant(selected_books, &selected_books_);
-    adrestia_networking::create_matchmake_me_call(j, selected_books_);
+		auto *_rules = godot::as<GameRules>(rules);
+    adrestia_networking::create_matchmake_me_call(j, *_rules->_ptr, selected_books_);
     return String(j.dump().c_str());
   }
 }

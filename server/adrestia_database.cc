@@ -5,6 +5,7 @@
 
 // Our related modules
 #include "adrestia_hexy.h"
+#include "../cpp/game_rules.h"
 
 // Database modules
 #include <pqxx/pqxx>
@@ -102,6 +103,44 @@ string vector_to_sql_array(pqxx::work& work, const vector<T>& vec) {
   return result;
 }
 
+GameRules adrestia_database::retrieve_game_rules(
+		const string& log_id,
+		pqxx::connection* psql_connection,
+		int id
+) {
+	/* @brief Gets the game rules with the given id
+	 *
+   * @param log_id: A string prepended to log lines
+   * @param psql_connection: The pqxx PostgreSQL connection.
+	 * @param id: Id of the game rules, from the game table. An id of 0 gets the
+	 *            most recent set of rules.
+	 *
+	 * @returns: A GameRules object constructed from the database record
+	 */
+
+  cout << "[" << log_id << "] retrieve_game_rules called with args:" << endl
+       << "    id: |" << id << "|" << endl;
+
+	pqxx::work work(*psql_connection);
+
+	if (id == 0) {
+		auto search_result = run_query(work, R"sql(
+			SELECT game_rules FROM adrestia_rules ORDER BY -id LIMIT 1
+			)sql");
+		if (search_result.size() == 0) {
+			throw string("No game rules records in database");
+		}
+		return json::parse(search_result[0][0].as<string>());
+	} else {
+		auto search_result = run_query(work, R"sql(
+			SELECT game_rules FROM adrestia_rules WHERE id = %d
+			)sql", id);
+		if (search_result.size() == 0) {
+			throw string("Could not find game rules");
+		}
+		return json::parse(search_result[0][0].as<string>());
+	}
+}
 
 string adrestia_database::retrieve_gamestate_from_database (
   const string& log_id,
@@ -487,6 +526,41 @@ json adrestia_database::verify_existing_account_in_database(
   cout << "[" << log_id << "] Received an incorrect password for this known uuid." << endl;
   result["valid"] = false;
   return result;
+}
+
+
+std::vector<std::string> adrestia_database::get_notifications(
+	const std::string& log_id,
+	pqxx::connection* psql_connection,
+	const std::string& uuid,
+	int &latest_notification_already_sent
+) {
+	/* @brief Returns a list of messages and updates
+	 * latest_notification_already_sent. */
+
+  cout << "[" << log_id << "] get_notifications called with args:" << endl
+       << "    uuid: |" << uuid << "|" << endl
+			 << "    latest_notification_already_sent: |"
+			 << latest_notification_already_sent << "|" << endl;
+
+	std::vector<std::string> result;
+
+  pqxx::work work(*psql_connection);
+  pqxx::result search_results = run_query(work, R"sql(
+  SELECT id, message
+    FROM adrestia_notifications
+    WHERE (target_uuid = %s OR target_uuid = '*')
+			AND id > %d
+			ORDER BY id
+  )sql", work.quote(uuid).c_str(), latest_notification_already_sent);
+
+	for (const auto &search_result : search_results) {
+		result.push_back(search_result["message"].as<string>());
+		latest_notification_already_sent =
+			std::max(latest_notification_already_sent, search_result["id"].as<int>());
+	}
+
+	return result;
 }
 
 
