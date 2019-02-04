@@ -25,7 +25,7 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
    *
    * Accepts keys from client:
    *     HANDLER_KEY: <this function>
-	 *     "game_rules": The local copy the player has of the game rules.
+   *     "game_rules": The local copy the player has of the game rules.
    *     "selected_books": The books selected by the user
    *
    * Keys inserted by babysitter:
@@ -38,7 +38,7 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
    *                  "You are now in a game!" if a game made
    *                  "Incorrect number of books (got |[X]|, expected |[Y]|)" if incorrect number of books
    *                  "Invalid book: |[book_name]|" if invalid book name
-	 *                  "Incompatible rules" if old rules
+   *                  "Incompatible rules" if old rules
    *     (Optional) "game_uid": The game_uid of the game that was made. If no game made, this will not be in the
    *                            response.
    *
@@ -48,20 +48,20 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   cout << "[" << log_id << "] Triggered matchmake_me." << endl;
   string uuid = client_json.at("uuid");
   vector<string> selected_books = client_json.at("selected_books");
-	GameRules client_rules;
-	client_rules = client_json.at("game_rules");
+  GameRules client_rules;
+  client_rules = client_json.at("game_rules");
 
-	// Checking client rules
+  // Checking client rules
   pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
   GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, psql_connection, 0);
   cout << "[" << log_id << "] Comparing client rules with server rules..." << endl;
-	if (!(game_rules == client_rules)) {
+  if (!(game_rules == client_rules)) {
     cout << "[" << log_id << "] Incompative rules" << endl;
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 409;
     resp[adrestia_networking::MESSAGE_KEY] = "Incompative rules";
-		return 0;
-	}
+    return 0;
+  }
 
   cout << "[" << log_id << "] Matchmaking client with uuid |" << uuid << "|..." << endl;
 

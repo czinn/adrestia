@@ -235,6 +235,11 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 				resp[adrestia_networking::MESSAGE_KEY] = "Asked to access non-existent endpoint |" +
 				                                         requested_function_name +
 				                                         "|.";
+			} catch (const string& s) {
+				cout << "[" << babysitter_id << "] Error while running handler: " << s << endl;
+				resp[adrestia_networking::HANDLER_KEY] = "generic_error";
+				resp[adrestia_networking::CODE_KEY] = 400;
+				resp[adrestia_networking::MESSAGE_KEY] = "An error occurred.";
 			}
 
 			string response_string = resp.dump();
@@ -267,6 +272,11 @@ void adrestia_networking::listen_for_connections(int port) {
 	send_timeout.tv_usec = 0;
 
 	server_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+	int enable = 1;
+	if (setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+		cout << "Failed to set setsockopt(SO_REUSEADDR)" << endl;
+	}
 
 	server_address.sin_family = AF_INET;
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
