@@ -10,7 +10,7 @@
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=8]
 [ext_resource path="res://art-built/close-x.png" type="Texture" id=9]
 
-[node name="game_mode_select" type="Node" index="0"]
+[node name="game_mode_select" type="Node"]
 
 script = ExtResource( 1 )
 

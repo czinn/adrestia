@@ -8,7 +8,6 @@ var view_player_id = 0 setget set_view_player_id
 
 onready var vbox = $scroll_container/vbox
 onready var template_row = $template_row
-onready var template_spacer = $template_spacer
 
 func _ready():
 	template_row.visible = false
@@ -42,7 +41,6 @@ func redraw():
 	if vbox == null: return
 
 	g.clear_children(vbox)
-	vbox.add_child(template_spacer.duplicate())
 	for index in range(len(history)):
 		var turn = template_row.duplicate()
 		var my_spell_list = g.child(turn, 'my_spell_list')
@@ -57,4 +55,3 @@ func redraw():
 		turn_label.text = 'Turn ' + str(index + 1)
 		turn.visible = true
 		vbox.add_child(turn)
-	vbox.add_child(template_spacer.duplicate())
