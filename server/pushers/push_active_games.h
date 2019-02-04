@@ -21,7 +21,7 @@ namespace adrestia_networking {
 			virtual std::vector<json> push(const std::string &log_id, const std::string &uuid);
 		
 		private:
-			std::map<std::string, std::string> games_I_am_aware_of; // game_uid to game_state
+			std::map<std::string, json> games_I_am_aware_of; // game_uid to game_state
 			std::vector<std::string> active_game_uids_I_am_aware_of;
 	};
 }

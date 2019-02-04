@@ -17,10 +17,6 @@ CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 	PRIMARY KEY (uuid)
 );
 
--- Player states:
---     -1: Aborted; this person is not coming and the game should be terminated.
---     0: Thinking; this person is deciding on their move.
---     1: Ready; this person has submitted a move.
 -- Game activity states:
 --     -1: Aborted; Someone aborted and the game cannot continue.
 --     0: In progress; this game is in progress.
@@ -28,12 +24,23 @@ CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 CREATE TABLE IF NOT EXISTS adrestia_games (
 	game_uid VARCHAR NOT NULL,
 	creator_uuid VARCHAR NOT NULL, -- Who made this?
-	involved_uuids VARCHAR ARRAY NOT NULL,
 	activity_state SMALLINT NOT NULL,
-	player_states SMALLINT ARRAY NOT NULL,
-	player_moves VARCHAR ARRAY,
-	game_state VARCHAR,
+	game_state JSON,
+	game_rules_id INTEGER REFERENCES adrestia_rules(id),
 	PRIMARY KEY (game_uid)
+);
+
+-- Player states:
+--     -1: Aborted; this person is not coming and the game should be terminated.
+--     0: Thinking; this person is deciding on their move.
+--     1: Ready; this person has submitted a move.
+CREATE TABLE IF NOT EXISTS adrestia_players (
+	game_uid VARCHAR REFERENCES adrestia_games(game_uid),
+	user_uid VARCHAR REFERENCES adrestia_accounts(uuid),
+	player_id SMALLINT NOT NULL, -- 0 or 1
+	player_state SMALLINT NOT NULL,
+	player_move VARCHAR,
+	PRIMARY KEY (game_uid, user_uid)
 );
 
 CREATE TABLE IF NOT EXISTS adrestia_rules (

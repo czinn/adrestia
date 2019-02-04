@@ -54,9 +54,11 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const string& log_i
   vector<string> active_game_uids = active_games["active_game_uids"];
 
   vector<string> game_uids_to_report;
-  vector<string> game_states_to_report;
+  vector<json> game_states_to_report;
   bool new_games = false;
   bool changed_games = false;
+
+	GameRules rules;
 
   // Any active games that have concluded require a special query.
   set<string> active_game_uids_set(active_game_uids.begin(), active_game_uids.end());
@@ -65,10 +67,8 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const string& log_i
 
     if (active_game_uids_set.find(current_game_uid) == active_game_uids_set.end()) {
       cout << "[" << log_id << "] Previously active game |" << current_game_uid << "| has become deactivated and should be reported." << endl;
-      string current_game_state = adrestia_database::retrieve_gamestate_from_database(log_id,
-                                                                                      psql_connection,
-                                                                                      current_game_uid
-                                                                                     );
+      json current_game_state =
+				adrestia_database::retrieve_gamestate_from_database(log_id, psql_connection, current_game_uid, rules);
       // A game_uid previously active has become deactivated. We should record this.
       game_uids_to_report.push_back(current_game_uid);
       game_states_to_report.push_back(current_game_state);
@@ -91,13 +91,11 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const string& log_i
   for (unsigned int i = 0; i < active_game_uids.size(); i += 1) {
     string current_game_uid = active_game_uids[i];
     cout << "[" << log_id << "] Looking at current game with uid |" << current_game_uid << "|..." << endl;
-    string current_game_state = adrestia_database::retrieve_gamestate_from_database(log_id,
-                                                                                    psql_connection,
-                                                                                    current_game_uid
-                                                                                   );
+		json current_game_state =
+			adrestia_database::retrieve_gamestate_from_database(log_id, psql_connection, current_game_uid, rules);
 
     try {
-      if (current_game_state.compare(games_I_am_aware_of.at(current_game_uid)) != 0) {
+      if (current_game_state != games_I_am_aware_of.at(current_game_uid)) {
         cout << "[" << log_id << "] Changed gamestate for game with game_uid |" << current_game_uid << "|" << endl;
 
         // The game state of this game has changed! We should record it.

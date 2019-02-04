@@ -6,6 +6,7 @@
 // Our related modules
 #include "adrestia_hexy.h"
 #include "../cpp/game_rules.h"
+#include "../cpp/game_state.h"
 
 // Database modules
 #include <pqxx/pqxx>
@@ -142,10 +143,11 @@ GameRules adrestia_database::retrieve_game_rules(
 	}
 }
 
-string adrestia_database::retrieve_gamestate_from_database (
+json adrestia_database::retrieve_gamestate_from_database (
   const string& log_id,
   pqxx::connection* psql_connection,
-  const string& game_uid
+  const string& game_uid,
+	GameRules &game_rules
 ) {
   /* @brief Retrieves the gamestate of a target game.
    *
@@ -154,8 +156,9 @@ string adrestia_database::retrieve_gamestate_from_database (
    * @param game_uid: The game_uid whose game_state will be returned.
    *                  If there is no such game, or the game has no state,
    *                      this will be an empty string.
-   *
-   * @returns: A string representation of the requested gamestate.
+	 * @param game_rules: A GameRules object that should be populated with the
+	 * game's rules.
+	 * @returns: json representation of the game state
    */
 
   cout << "[" << log_id << "] retrieve_gamestate_from_database called with args:" << endl
@@ -164,14 +167,17 @@ string adrestia_database::retrieve_gamestate_from_database (
   pqxx::work work(*psql_connection);
 
   auto search_result = run_query(work, R"sql(
-    SELECT game_state FROM adrestia_games WHERE game_uid = %s
-    )sql", work.quote(game_uid).c_str());
+    SELECT game_rules, game_state
+		FROM adrestia_games
+			INNER JOIN adrestia_rules ON game_rules_id = adrestia_rules.id
+		WHERE game_uid = %s
+	)sql", work.quote(game_uid).c_str());
 
   if (search_result.size() == 0) {
-    return "";
-  } else {
-    return search_result[0][0].as<string>("");
+    throw string("Could not find game state");
   }
+	game_rules = json::parse(search_result[0][0].as<string>());
+	return json::parse(search_result[0][1].as<string>());
 }
 
 
@@ -199,45 +205,29 @@ json adrestia_database::check_for_active_games_in_database (
   pqxx::work work(*psql_connection);
 
   auto search_result = run_query(work, R"sql(
-    SELECT game_uid, involved_uuids, player_states
+    SELECT adrestia_games.game_uid, player_state
     FROM adrestia_games
+			INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
     WHERE activity_state = 0
-    AND %s = ANY(involved_uuids)
+			AND user_uid = %s
   )sql", work.quote(uuid).c_str());
 
   vector<string> active_game_uids;
   vector<string> waiting_game_uids;
 
-  for (unsigned int row_index = 0; row_index < search_result.size(); row_index += 1) {
+  for (const auto &result : search_result) {
     // This is an active game that we are in.
-    string game_uid = search_result[row_index]["game_uid"].as<string>();
+    string game_uid = result["game_uid"].as<string>();
     active_game_uids.push_back(game_uid);
 
     cout << "[" << log_id << "] uuid |" << uuid << "| has active game |" << game_uid << "|." << endl;
 
-    string involved_uuids_array_string = search_result[row_index]["involved_uuids"].as<string>();
-    string player_states_array_string = search_result[row_index]["player_states"].as<string>();
-
-    vector<string> involved_uuids_vector = sql_array_to_vector(involved_uuids_array_string);
-    vector<string> player_states_vector = sql_array_to_vector(player_states_array_string);
-
-    // Find our state within this game...
-    for (unsigned int vector_index = 0; vector_index < involved_uuids_vector.size(); vector_index += 1) {
-      // If the current vector_index represents our uuid...
-      if (involved_uuids_vector[vector_index].compare(uuid) == 0) {
-        cout << "[" << log_id << "] uuid |" << uuid << "|'s state in game |" << game_uid << "| is |" << player_states_vector[vector_index] << "|" << endl;
-
-        // If the current player_state is 0 (the state is an integer, but we needed to convert it to a string
-        //     to use sql_array_to_vector
-        if (player_states_vector[vector_index].compare("0") == 0) {
-          // We need to make a move.
-          waiting_game_uids.push_back(game_uid);
-          cout << "[" << log_id << "] Waiting for uuid |" << uuid << "| to make a move in game |" << game_uid << "|..." << endl;
-        }
-
-        break;
-      }
-    }
+		// If the current player_state is 0...
+		if (result["player_state"].as<int>() == 0) {
+			// We need to make a move.
+			waiting_game_uids.push_back(game_uid);
+			cout << "[" << log_id << "] Waiting for uuid |" << uuid << "| to make a move in game |" << game_uid << "|..." << endl;
+		}
   }
 
   cout << "[" << log_id << "] Commiting transaction..." << endl;
@@ -282,7 +272,7 @@ json adrestia_database::matchmake_in_database (
 
   // Check if there are any waiters...
   auto search_result = run_query(work, R"sql(
-    SELECT uuid
+    SELECT uuid, selected_books
     FROM adrestia_match_waiters
     LIMIT 1
     FOR UPDATE
@@ -324,17 +314,51 @@ json adrestia_database::matchmake_in_database (
     cerr << "[" << log_id << "] Failed to create unique game id!" << endl;
     throw string("Failed to create unique game id!");
   }
+	
+	// Get the latest rules
+	auto rules_result = run_query(work, R"sql(
+		SELECT game_rules FROM adrestia_rules ORDER BY -id LIMIT 1
+		)sql");
+	if (search_result.size() == 0) {
+		throw string("No game rules records in database");
+	}
+	GameRules rules = json::parse(rules_result[0][0].as<string>());
 
-  // Create game
+	// Get the other player's selected books
+	vector<string> waiting_selected_books = sql_array_to_vector(search_result[0]["selected_books"].as<string>());
+
+  // Create the game
+	size_t creator_player_id = 0; // TODO: charles: Randomize this, though it shouldn't matter
+	vector<vector<string>> books = { selected_books, waiting_selected_books };
+	if (creator_player_id == 1) {
+		swap(books[0], books[1]);
+	}
+	GameState game_state(rules, books);
+
+	// Insert the game into the database
   cout << "[" << log_id << "] Creating game |" << game_uid << "|..." << endl;
   run_query(work, R"sql(
-    INSERT INTO adrestia_games (game_uid, creator_uuid, involved_uuids, activity_state, player_states)
-    VALUES (%s, %s, ARRAY[%s, %s], 0, ARRAY[0, 0])
+    INSERT INTO adrestia_games (game_uid, creator_uuid, activity_state, game_state, game_rules_id)
+		SELECT %s, %s, 0, %s, id
+		FROM adrestia_rules ORDER BY -id LIMIT 1
   )sql",
       work.quote(game_uid).c_str(),
       work.quote(uuid).c_str(),
+			work.quote(json(game_state).dump()).c_str());
+  run_query(work, R"sql(
+    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
+    VALUES (%s, %s, %d, 0)
+  )sql",
+      work.quote(game_uid).c_str(),
       work.quote(uuid).c_str(),
-      work.quote(waiting_uuid).c_str());
+			creator_player_id);
+  run_query(work, R"sql(
+    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
+    VALUES (%s, %s, %d, 0)
+  )sql",
+      work.quote(game_uid).c_str(),
+      work.quote(waiting_uuid).c_str(),
+			1 - creator_player_id);
 
   // Remove waiting uuid
   cout << "[" << log_id << "] Removing waiting uuid |" << waiting_uuid << "|..." << endl;

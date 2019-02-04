@@ -5,6 +5,7 @@
 
 // Our related modules
 #include "../cpp/game_rules.h"
+#include "../cpp/game_state.h"
 
 // Database modules
 #include <pqxx/pqxx>
@@ -32,10 +33,11 @@ namespace adrestia_database {
 	);
 
 	/* Fetches from the database the game_state associated with the given game_uid. */
-	std::string retrieve_gamestate_from_database(
+	json retrieve_gamestate_from_database(
 		const std::string& log_id,
 		pqxx::connection* psql_connection,
-		const std::string& game_uid
+		const std::string& game_uid,
+		GameRules &game_rules
 	);
 
 	/* Checks for active games in the database associated with the given uuid, and returns them.
