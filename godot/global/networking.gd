@@ -157,7 +157,7 @@ func on_floop(response):
 	pass
 
 func on_notification(response):
-	print('I got a notification: ' + response.message)
+	g.summon_notification(response.message)
 
 func after_auth():
 	g.save()

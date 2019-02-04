@@ -17,14 +17,17 @@ extends Node
 onready var g = get_node('/root/global')
 onready var root = get_tree().get_root()
 const transition_scene = preload('res://components/transition_bg.tscn')
+const notification_scene = preload('res://components/notification.tscn')
 var scene_holder
 var transition
+var notification
 var loader
 var current_scene
 var playing_backwards = false
 
 func _ready():
 	transition = transition_scene.instance()
+	notification = notification_scene.instance()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	scene_holder = Node.new()
 	add_child(scene_holder)
@@ -33,6 +36,7 @@ func _ready():
 func possess_initial_scene():
 	root.remove_child(current_scene)
 	scene_holder.add_child(current_scene)
+	current_scene.add_child(notification)
 
 func _process(time):
 	# For scene loader.
@@ -81,6 +85,8 @@ func set_new_scene(scene_resource):
 	current_scene.queue_free()
 	current_scene = scene_resource.instance()
 	scene_holder.add_child(current_scene)
+	notification.get_parent().remove_child(notification)
+	current_scene.add_child(notification)
 
 	if not playing_backwards:
 		transition.animation_player.play('slide_out')
