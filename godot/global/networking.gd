@@ -2,6 +2,7 @@ extends Node
 
 signal connected
 signal disconnected
+signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
@@ -9,6 +10,7 @@ var host = 'adrestia.neynt.ca'
 const port = 16969
 const version = '1.0.0'
 const handler_key = 'api_handler_name'
+const code_key = 'api_code'
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
@@ -35,6 +37,7 @@ var last_send_ms = 0
 const OFFLINE = 0
 const CONNECTING = 1
 const ONLINE = 2
+const OUT_OF_DATE = 3
 
 var status = OFFLINE
 
@@ -49,6 +52,7 @@ func _ready():
 	connect_timer.set_timer_process_mode(0)
 	connect_timer.set_wait_time(retry_sec)
 	connect_timer.connect('timeout', self, 'reconnect')
+	handlers['push_notifications'] = funcref(self, 'on_notification')
 	add_child(connect_timer)
 	self.protocol = Protocol.new()
 	self.peer = StreamPeerTCP.new()
@@ -64,7 +68,7 @@ func _process(time):
 		connect_timer.start()
 		set_process(false)
 		return
-	
+
 	if status == OFFLINE:
 		status = CONNECTING
 		print('Connecting...')
@@ -80,6 +84,7 @@ func _process(time):
 			[var err, var data]:
 				self.data_buffer.append_array(data)
 
+	while true:
 		# TODO: jim: n^2 work if we have many small chunks of data. Hopefully that
 		# doesn't happen.
 		var i = 0
@@ -97,10 +102,13 @@ func _process(time):
 				break
 			i += 1
 
-		if i + 1 >= self.data_buffer.size():
-			# Edge case for when we consume ALL of the available data
-			# (this actually happens most of the time)
+		if i == self.data_buffer.size():
+			# Edge case: when there is no complete packet in the buffer
+			break
+		elif i + 1 == self.data_buffer.size():
+			# Edge case: we consumed the entire buffer
 			self.data_buffer.resize(0)
+			break
 		else:
 			self.data_buffer = self.data_buffer.subarray(i + 1, -1)
 
@@ -113,19 +121,23 @@ func get_handler_name(request):
 func reconnect():
 	print('Attempting to reconnect.')
 	self.peer.connect_to_host(host, port)
+	self.peer.set_no_delay(true)
 	self.data_buffer = PoolByteArray()
 	last_send_ms = OS.get_ticks_msec()
 	last_recv_ms = OS.get_ticks_msec()
 	set_process(true)
 
 func on_network_ready(response):
-	print(response.game_rules)
-	g.get_default_rules().load_json_string(JSON.print(response.game_rules))
-	if g.auth_uuid != null:
-		authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
+	if response[code_key] == 200:
+		g.get_default_rules().load_json_string(JSON.print(response.game_rules))
+		if g.auth_uuid != null:
+			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
+		else:
+			gen_auth_pwd()
+			register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
 	else:
-		gen_auth_pwd()
-		register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+		status = OUT_OF_DATE
+		emit_signal('out_of_date')
 
 func gen_auth_pwd():
 	g.auth_pwd = ''
@@ -149,6 +161,12 @@ func on_authenticated(response):
 	g.tag = response.tag
 	after_auth()
 
+func on_floop(response):
+	pass
+
+func on_notification(response):
+	g.summon_notification(response.message)
+
 func after_auth():
 	g.save()
 	status = ONLINE
@@ -158,14 +176,14 @@ func after_auth():
 func is_online():
 	return status == ONLINE
 
-func on_floop(response):
-	pass
-
-func register_handlers(obj, on_connected, on_disconnected):
+func register_handlers(obj, on_connected, on_disconnected, on_out_of_date):
 	self.connect('connected', obj, on_connected)
 	self.connect('disconnected', obj, on_disconnected)
+	self.connect('out_of_date', obj, on_out_of_date)
 	if status == ONLINE:
 		obj.call(on_connected)
+	elif status == OUT_OF_DATE:
+		obj.call(on_out_of_date)
 	else:
 		obj.call(on_disconnected)
 

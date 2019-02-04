@@ -114,7 +114,7 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 				for (auto pusher : pushers) {
 					for (auto message_json : pusher->push(babysitter_id, uuid)) {
 						// We should push the json to the client.
-						cout << "[" << babysitter_id << "] Pushing new/changed game notification to client." << endl;
+						cout << "[" << babysitter_id << "] Pushing notification to client." << endl;
 						string message_json_string = message_json.dump();
 						message_json_string += '\n';
 						send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);

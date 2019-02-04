@@ -151,6 +151,9 @@ func summon_confirm(text):
 	get_node("/root").add_child(confirm)
 	return confirm
 
+func summon_notification(text):
+	scene_loader.notification.show_notification(text)
+
 func event_is_pressed(event):
 	return event is InputEventMouseButton \
 		and event.button_index == BUTTON_LEFT \

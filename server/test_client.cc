@@ -19,6 +19,7 @@
 // System modules
 #include <fstream>
 #include <iostream>
+#include <list>
 #include <string>
 using namespace std;
 
@@ -69,18 +70,17 @@ string hex_urandom(unsigned int number_of_characters) {
 	return returnVar;
 }
 
+string recv_buffer;
 
 string read_packet (int client_socket) {
 	// Reads a string sent from the target.
 	// The string should end with a newline, although this newline is not returned by this function.
-	string msg;
-
 	const int size = 8192;
 	char buffer[size];
 
-	while (true)
+	while (recv_buffer.find('\n') == string::npos)
 	{
-		int bytes_read = recv (client_socket, buffer, sizeof(buffer) - 2, 0);
+		int bytes_read = recv (client_socket, buffer, sizeof(buffer) - 1, 0);
 			// Though extremely unlikely in our setting --- connection from
 			// localhost, transmitting a small packet at a time --- this code
 			// takes care of fragmentation  (one packet arriving could have
@@ -89,18 +89,9 @@ string read_packet (int client_socket) {
 		if (bytes_read > 0)
 		{
 			buffer[bytes_read] = '\0';
-			buffer[bytes_read + 1] = '\0';
-
-			const char * packet = buffer;
-			while (*packet != '\0')
-			{
-				msg += packet;
-				packet += strlen(packet) + 1;
-
-				if (msg.length() > 1 && msg[msg.length() - 1] == '\n')
-				{
-					return msg.substr(0, msg.length()-1);
-				}
+			recv_buffer += buffer;
+			if (strchr(buffer, '\n') != nullptr) {
+				break;
 			}
 		}
 
@@ -117,7 +108,32 @@ string read_packet (int client_socket) {
 		}
 	}
 
-	throw connection_closed();
+	size_t newline_index = recv_buffer.find('\n');
+	string message = recv_buffer.substr(0, newline_index);
+	recv_buffer = recv_buffer.substr(newline_index + 1);
+	return message;
+}
+
+list<json> packet_cache;
+
+json read_packet (int client_socket, string handler_key) {
+	// Check the packet cache first
+	for (auto it = packet_cache.begin(); it != packet_cache.end(); it++) {
+		if ((*it)[adrestia_networking::HANDLER_KEY] == handler_key) {
+			json packet = *it;
+			packet_cache.erase(it);
+			return packet;
+		}
+	}
+	// If that doesn't give you a packet, keep reading packets until we get one with the right handler key
+	while (true) {
+		string packet_str = read_packet(client_socket);
+		json packet = json::parse(packet_str);
+		if (packet[adrestia_networking::HANDLER_KEY] == handler_key) {
+			return packet;
+		}
+		packet_cache.push_back(packet);
+	}
 }
 
 
@@ -169,7 +185,6 @@ int main(int argc, char* argv[]) {
 	json outbound_json;
 	json response_json;
 	string outbound_message;
-	string response_message;
 
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;
@@ -197,8 +212,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_1, "establish_connection");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to establish connection (endpoint)." << endl;
 		cerr << "establish_connection says:" << endl;
@@ -225,8 +239,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_1, "register_new_account");
 	if (response_json[adrestia_networking::CODE_KEY] != 201) {
 		cerr << "Failed to register new account." << endl;
 		cerr << "register_new_account says:" << endl;
@@ -258,8 +271,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_1, "change_user_name");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to change user name." << endl;
 		cerr << "change_user_name says:" << endl;
@@ -303,8 +315,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_1, "establish_connection");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to establish connection (endpoint)." << endl;
 		cerr << "establish_connection says:" << endl;
@@ -329,8 +340,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json  = read_packet(my_socket_1, "authenticate");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to authenticate." << endl;
 		cerr << "authenticate says:" << endl;
@@ -355,8 +365,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_1, "matchmake_me");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to enter the matchmaking waiting list." << endl;
 		cerr << "matchmake_me says:" << endl;
@@ -393,8 +402,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_2);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_2, "establish_connection");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to establish connection (endpoint)." << endl;
 		cerr << "establish_connection says:" << endl;
@@ -419,8 +427,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_2);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_2, "register_new_account");
 	if (response_json[adrestia_networking::CODE_KEY] != 201) {
 		cerr << "Failed to register new account." << endl;
 		cerr << "register_new_account says:" << endl;
@@ -452,8 +459,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_2);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_2, "matchmake_me");
 	if (response_json[adrestia_networking::CODE_KEY] != 400) {
 		cerr << "Matchmaking incorrectly succeeded." << endl;
 		cerr << "matchmake_me says:" << endl;
@@ -478,8 +484,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_2);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_2, "matchmake_me");
 	if (response_json[adrestia_networking::CODE_KEY] != 400) {
 		cerr << "Matchmaking incorrectly succeeded." << endl;
 		cerr << "matchmake_me says:" << endl;
@@ -504,8 +509,7 @@ int main(int argc, char* argv[]) {
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-	response_message = read_packet(my_socket_2);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_2, "matchmake_me");
 	if (response_json[adrestia_networking::CODE_KEY] != 201) {
 		cerr << "Failed to be matchmade." << endl;
 		cerr << "matchmake_me says:" << endl;
@@ -522,8 +526,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Socket 1 should now receive a notification...
-	response_message = read_packet(my_socket_1);
-	response_json = json::parse(response_message);
+	response_json = read_packet(my_socket_1, "push_active_games");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to receive matchmaking notification on socket 1." << endl;
 		cerr << "Received instead:" << endl;
