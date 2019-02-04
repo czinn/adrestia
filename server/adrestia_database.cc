@@ -76,16 +76,16 @@ vector<string> sql_array_to_vector(const string& sql_array) {
   }
 
   // Remove capping {}
-  const char* sql_interior_string_const = sql_array.substr(1, sql_array.length() - 2).c_str();
-  char* sql_interior_string = strdup(sql_interior_string_const);
+  std::string trimmed = sql_array.substr(1, sql_array.length() - 2);
+  char* sql_interior_string = strdup(trimmed.c_str());
 
   vector<string> result;
-  const char* pch = strtok(sql_interior_string,",");
+  const char* pch = strtok(sql_interior_string, ",");
   while (pch != NULL) {
     result.push_back(string(pch));
     pch = strtok(NULL, ",");
   }
-
+  free(sql_interior_string);
   return result;
 }
 
@@ -323,7 +323,7 @@ json adrestia_database::matchmake_in_database (
   auto rules_result = run_query(work, R"sql(
     SELECT game_rules FROM adrestia_rules ORDER BY -id LIMIT 1
     )sql");
-  if (search_result.size() == 0) {
+  if (rules_result.size() == 0) {
     throw string("No game rules records in database");
   }
   GameRules rules = json::parse(rules_result[0][0].as<string>());
