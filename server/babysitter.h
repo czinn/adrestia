@@ -23,6 +23,7 @@ class Babysitter {
       ESTABLISHED = 1,   // Must authenticate or register
       AUTHENTICATED = 2, // You're in!
     } phase;
+
     int client_socket;
     std::string babysitter_id; // for logging purposes
     std::string read_message_buffer;
