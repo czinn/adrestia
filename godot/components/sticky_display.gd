@@ -41,7 +41,7 @@ func redraw():
 		g.summon_delta(duration_label, sticky.amount - old_amount, Color(0, 0, 0))
 	old_amount = sticky.amount
 
-	if sticky.amount != 0:
+	if sticky.amount != 0 && !sticky.sticky.get_stacks():
 		duration_label.text = str(sticky.amount)
 	else:
 		duration_label.text = ''

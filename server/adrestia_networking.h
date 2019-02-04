@@ -1,6 +1,11 @@
 #ifndef ADRESTIA_NETWORKING_INCLUDE_GUARD
 #define ADRESTIA_NETWORKING_INCLUDE_GUARD
 
+#include "versioning.h"
+#include "../cpp/game_rules.h"
+#include "pushers/push_active_games.h"
+#include "pushers/push_notifications.h"
+
 // System modules
 #include <map>
 #include <string>
@@ -11,6 +16,8 @@ using json = nlohmann::json;
 
 
 namespace adrestia_networking {
+	const Version SERVER_VERSION = { 1, 0, 0 };
+	const Version CLIENT_VERSION = { 1, 0, 0 };
   const int DEFAULT_SERVER_PORT = 18677;
   const int MESSAGE_MAX_BYTES = 32768;
 
@@ -60,7 +67,9 @@ namespace adrestia_networking {
   // Calls to handlers
   void create_floop_call(json& client_json);
 
-  void create_establish_connection_call(json& client_json);
+  void create_establish_connection_call(json& client_json,
+	                                      const std::string &version
+	                                     );
 
   void create_register_new_account_call(json& client_json,
                                         const std::string& password
@@ -74,16 +83,9 @@ namespace adrestia_networking {
                                     const std::string& user_name
                                    );
   void create_matchmake_me_call(json& client_json,
+															  const GameRules &rules,
                                 const std::vector<std::string>& selected_books
                                );
-
-  // Server-side pushers
-  void push_active_games(const std::string& log_id,
-                         json& message_json,
-                         const std::string& uuid,
-                         std::map<std::string, std::string>& games_I_am_aware_of,
-                         std::vector<std::string>& active_game_uids_I_am_aware_of
-                        );
 }
 
 #endif

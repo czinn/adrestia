@@ -10,20 +10,23 @@ book = Book('conjuration', 'Book of Conjuration', [
     ),
 
     Spell('shield_1', 'Ripple Shield',
-        'Block 8 damage this turn.',
-        tech=1, level=1, cost=3,
-        effects=[effect_shield(8)],
+        'Block 8 damage. Lasts two turns.',
+        tech=2, level=2, cost=3,
+        effects=[effect_shield(8, duration_turns(2))],
     ),
 
-    Spell('mana_1', 'Fiery Spirit',
-        'Increase mana regeneration by 1.',
-        tech=2, level=2, cost=2,
-        effects=[effect_mana_regen(1)],
+    Spell('attack_2', 'Lifesteal',
+        'Deal 8 damage. Gain 4 health.',
+        tech=3, level=3, cost=4,
+				effects=[
+					effect_attack(8),
+					Effect(EK_health, ET_special, self=True, amount=4),
+				]
     ),
 
-    Spell('attack_2', 'Erupt',
-        'Deal 7 damage.',
-        tech=4, level=4, cost=3,
-        effects=[effect_attack(7)],
+    Spell('attack_3', 'Erupt',
+        'Deal 16 damage.',
+        tech=4, level=4, cost=5,
+        effects=[effect_attack(16)],
     ),
 ])

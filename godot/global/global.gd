@@ -31,13 +31,18 @@ var backend = null
 var tooltip = null # Currently displayed tooltip
 var rules = null setget ,get_rules
 
+var health_history
+
 func _ready():
 	pass
 
 func get_rules():
 	if backend == null:
-		return null
+		return rules
 	return backend.rules
+
+func get_default_rules():
+	return rules
 
 static func sum(list):
 	var result = 0
@@ -146,6 +151,9 @@ func summon_confirm(text):
 	get_node("/root").add_child(confirm)
 	return confirm
 
+func summon_notification(text):
+	scene_loader.notification.show_notification(text)
+
 func event_is_pressed(event):
 	return event is InputEventMouseButton \
 		and event.button_index == BUTTON_LEFT \
@@ -159,3 +167,64 @@ func tween(thing, to_pos, time):
 func safe_disconnect(object, signal_, target, method):
 	if object.is_connected(signal_, target, method):
 		object.disconnect(signal_, target, method)
+
+# Data to persist between sessions.
+const save_path = 'user://saved_data.json'
+const default_rules_path = 'res://data/rules.json'
+var auth_uuid
+var auth_pwd
+var first_play
+var user_name
+var tag
+# var rules # (declared above)
+
+func save():
+	var data = {
+		'auth_uuid': auth_uuid,
+		'auth_pwd': auth_pwd,
+		'first_play': first_play,
+		'user_name': user_name,
+		'tag': tag,
+		'rules': rules.as_json().result,
+	}
+	var file = File.new()
+	file.open(save_path, File.WRITE)
+	file.store_line(to_json(data))
+	file.close()
+
+func dict_has(dict, key, default):
+	if dict.has(key):
+		return dict[key]
+	else:
+		return default
+
+func load():
+	var file = File.new()
+	var data
+	if file.file_exists(save_path):
+		file.open(save_path, File.READ)
+		data = parse_json(file.get_line())
+	else:
+		print('No save data.')
+		data = {}
+
+	# Default values for persisted data
+	auth_uuid = dict_has(data, 'auth_uuid', null)
+	auth_pwd = dict_has(data, 'auth_pwd', null)
+	first_play = dict_has(data, 'first_play', true)
+	user_name = dict_has(data, 'user_name', null)
+	tag = dict_has(data, 'tag', null)
+	var rules_json = dict_has(data, 'rules', null)
+
+	if rules_json == null:
+		var rules_file = File.new()
+		rules_file.open(default_rules_path, File.READ)
+		rules_json = rules_file.get_as_text()
+		rules_file.close()
+	else:
+		rules_json = JSON.print(rules_json)
+	rules = GameRules.new()
+	rules.load_json_string(rules_json)
+
+	if file.is_open():
+		file.close()

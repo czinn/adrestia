@@ -13,10 +13,33 @@ stickies_list: List[Sticky] = [
 		effects=[Effect(EK_health, ET_poison, self=True, amount=-1)],
 	),
 
+	Sticky(id_='mana_drain', name='Mana Drain', kind=SK_id,
+		text="Lose 1 mana regeneration per turn.",
+		stacks=True,
+		trigger=trigger_turn,
+		effects=[Effect(EK_mana_regen, ET_special, self=True, amount=-1)],
+	),
+
+	Sticky(id_='burning', name='Burning', kind=SK_id,
+		text="Deals 2 damage each turn.",
+		stacks=True,
+		trigger=trigger_turn,
+		effects=[Effect(EK_health, ET_attack, self=True, amount=-2)],
+	),
+
+	Sticky(id_='exploded', name='Burning', kind=SK_id,
+		text="Deals 3 damage each turn.",
+		stacks=True,
+		trigger=trigger_turn,
+		effects=[Effect(EK_health, ET_attack, self=True, amount=-3)],
+	),
+
 	Sticky(id_='storm', name='Storm', kind=SK_delta,
 		text="Increase Gathering Storm's damage by 1.",
-		trigger=trigger_outbound(spell_id=['chain_1']),
-		# TODO: jim: how would we make this increase damage by 2?
+		stacks=True,
+		trigger=trigger_outbound(spell_id=['bloodlust_attack_2']),
+		# jim: how would we make this increase damage by 2?
+		# charles: Change amount in the sticky invoker
 	),
 
 	Sticky(id_='spell_poison', name='Fatigue', kind=SK_id,
@@ -59,22 +82,24 @@ stickies_list: List[Sticky] = [
 	),
 
 	Sticky(id_='antitech_next', name='Censure', kind=SK_id,
-		text="Lose 5 health if you cast a tech spell next turn.",
+		text="Lose 6 health if you learn a spell next turn.",
 		trigger=trigger_turn,
 		effects=[
 			Effect(EK_sticky, ET_special, self=True,
-				sticky=StickyInvoker('antitech', duration=duration_turns(1)))
+				sticky=StickyInvoker('antitech', duration=duration_turns(2)))
 		],
 	),
 
 	Sticky(id_='antitech', name='Censure', kind=SK_id,
-		text="Lose 5 health if you cast a tech spell.",
+		text="Lose 6 health if you learn a spell this turn.",
+		stacks=True,
 		trigger=trigger_spell(effect_type=['tech']),
-		effects=[Effect(EK_health, ET_constant, self=True, amount=-5)],
+		effects=[Effect(EK_health, ET_constant, self=True, amount=-6)],
 	),
 
 	Sticky(id_='antispell', name='Interdict', kind=SK_id,
 		text='Lose 6 health for each spell you cast this turn.',
+		stacks=True,
 		trigger=trigger_spell(),
 		effects=[Effect(EK_health, ET_constant, self=True, amount=-6)],
 	),
@@ -85,7 +110,8 @@ stickies_list: List[Sticky] = [
 	),
 
 	Sticky(id_='bloodlust', name='Bloodlust', kind=SK_delta,
-		text="Your attacks deal extra damage.",
-		trigger=trigger_outbound(effect_type=['attack']),
+		text="Your attacks deal an extra 2 damage damage.",
+		stacks=True,
+		trigger=trigger_outbound(effect_type=['attack', 'constant']),
 	),
 ]

@@ -10,7 +10,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
+#ifdef __APPLE__
+#include <sys/wait.h>
+#define MSG_NOSIGNAL 0
+#else
 #include <wait.h>
+#endif
 #include <unistd.h>
 #include <time.h>
 
@@ -91,8 +96,11 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 
 	unsigned int phase = 0;
 	string uuid = "";  // The uuid of the client we are babysitting
-	map<string, string> games_I_am_aware_of; // game_uid to game_state
-	vector<string> active_game_uids_I_am_aware_of;
+	
+	// Create pushers
+	PushActiveGames push_active_games;
+	PushNotifications push_notifications;
+	std::vector<Pusher*> pushers = { &push_active_games, &push_notifications };
 
 	try {
 		json client_json;
@@ -103,23 +111,14 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 			if (phase == 2) {
 				cout << "[" << babysitter_id << "] Processing pushers..." << endl;
 
-				json message_json;
-				message_json.clear();
-				adrestia_networking::push_active_games(babysitter_id,
-					                                   message_json,
-					                                   uuid,
-					                                   games_I_am_aware_of,
-					                                   active_game_uids_I_am_aware_of
-					                                  );
-
-				if (message_json.at(adrestia_networking::CODE_KEY) == 200) {
-					// We should push the json to the client.
-					cout << "[" << babysitter_id << "] Pushing new/changed game notification to client." << endl;
-					string message_json_string = message_json.dump();
-					message_json_string += '\n';
-					send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
-				} else {
-					cout << "[" << babysitter_id << "] Not pushing new/changed game notification to client due to code |" << message_json.at(adrestia_networking::CODE_KEY) << "|" << endl;
+				for (auto pusher : pushers) {
+					for (auto message_json : pusher->push(babysitter_id, uuid)) {
+						// We should push the json to the client.
+						cout << "[" << babysitter_id << "] Pushing notification to client." << endl;
+						string message_json_string = message_json.dump();
+						message_json_string += '\n';
+						send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
+					}
 				}
 			}
 
@@ -182,9 +181,12 @@ void adrestia_networking::babysit_client(int server_socket, int client_socket) {
 					     << endl;
 
 					if (requested_function_name.compare("establish_connection") == 0) {
-						requested_function(babysitter_id, client_json, resp);
-						cout << "[" << babysitter_id << "] moving to phase 1." << endl;;
-						phase = 1;
+						int valid_connection = requested_function(babysitter_id, client_json, resp);
+
+						if (valid_connection == 0) {
+							cout << "[" << babysitter_id << "] moving to phase 1." << endl;;
+							phase = 1;
+						}
 					}
 					else if (requested_function_name.compare("register_new_account") == 0) {
 						requested_function(babysitter_id, client_json, resp);
@@ -253,14 +255,16 @@ void adrestia_networking::listen_for_connections(int port) {
 	int server_socket;
 	int client_socket;
 
-	struct sockaddr_in server_address;
-	struct sockaddr_in client_address;
+	sockaddr_in server_address;
+	sockaddr_in client_address;
 	socklen_t client_address_sizeof;
 
-	struct timeval receive_timeout_struct;
-	receive_timeout_struct.tv_sec = adrestia_networking::WAIT_FOR_COMMANDS_SECONDS;
-	struct timeval send_timeout_struct;
-	send_timeout_struct.tv_sec = adrestia_networking::TIMEOUT_SEND_SECONDS;
+	timeval recv_timeout;
+	recv_timeout.tv_sec = adrestia_networking::WAIT_FOR_COMMANDS_SECONDS;
+	recv_timeout.tv_usec = 0;
+	timeval send_timeout;
+	send_timeout.tv_sec = adrestia_networking::TIMEOUT_SEND_SECONDS;
+	send_timeout.tv_usec = 0;
 
 	server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -268,7 +272,7 @@ void adrestia_networking::listen_for_connections(int port) {
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	server_address.sin_port = htons(port);
 
-	if (bind(server_socket, (sockaddr*) &server_address, sizeof(server_address)) == -1) {
+	if (::bind(server_socket, (sockaddr*) &server_address, sizeof(server_address)) == -1) {
 		cout << "Could not bind socket to address:port: |" << strerror(errno) << "|" << endl;
 		throw socket_error();
 	}
@@ -281,11 +285,11 @@ void adrestia_networking::listen_for_connections(int port) {
 
 		// Configure our timeouts and keepalives
 		// TODO: KEEPALIVE
-		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&receive_timeout_struct, sizeof (struct timeval)) < 0) {
+		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(timeval)) < 0) {
 			cerr << "ERROR on setsockopt for client socket (recieve timeout)!" << endl;
 			return;
 		}
-		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&send_timeout_struct, sizeof (struct timeval)) < 0) {
+		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, &send_timeout, sizeof(timeval)) < 0) {
 			cerr << "ERROR on setsockopt for client socket (send timeout)!" << endl;
 			return;
 		}

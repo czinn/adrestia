@@ -228,7 +228,8 @@ bool _simulate(
 			// Check for counterspells.
 			if (spell_idx < actions[1 - player_id].size()) {
 				const auto &other_spell = state.rules.get_spell(actions[1 - player_id][spell_idx]);
-				if (other_spell.is_counterspell() &&
+				if (!spell.is_tech_spell() &&
+						other_spell.is_counterspell() &&
 						other_spell.get_counterspell_selector().selects_spell(spell)) {
 					if (emit_events) {
 						events_out.emplace_back(json{

@@ -46,12 +46,34 @@
        inkscape:collect="always"
        xlink:href="#linearGradient2082"
        id="linearGradient2084"
-       x1="101.94823"
-       y1="126.29484"
-       x2="106.896"
-       y2="126.24372"
+       x1="97.462936"
+       y1="126.35751"
+       x2="96.562195"
+       y2="126.38737"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.2734951,0,0,1.4251359,-115.47108,-29.569421)" />
+       gradientTransform="matrix(9.3642493,-4.4783584e-8,-1.1363036e-7,9.2677674,-923.58037,-1104.3936)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2082"
+       id="linearGradient4934"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.4776241,-1.1848989e-8,-3.0064697e-8,2.4520966,-235.30149,-159.47982)"
+       x1="97.462936"
+       y1="126.35751"
+       x2="96.562195"
+       y2="126.38737" />
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask4930">
+      <rect
+         style="opacity:1;fill:url(#linearGradient4934);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.9564563;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         id="rect4932"
+         width="32.689869"
+         height="16.544176"
+         x="-3.1432724"
+         y="141.80984"
+         transform="matrix(0.91247232,-0.40913845,0.38273592,0.92385779,0,0)" />
+    </mask>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -61,8 +83,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.5293712"
-     inkscape:cx="134.8917"
-     inkscape:cy="72.825623"
+     inkscape:cx="82.474431"
+     inkscape:cy="43.464052"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -85,7 +107,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -94,24 +116,21 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-59.067602,-118.91057)">
-    <path
-       style="fill:#ff8787;fill-opacity:1;stroke:#ad0000;stroke-width:1.32291651;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       d="m 76.701289,128.6159 c -0.798589,2.54907 -2.475619,3.94191 -2.692997,6.00272 -0.335858,2.56794 5.505229,2.03869 4.639422,0.0258 -0.630306,-1.60263 -2.199698,-2.72757 -1.946425,-6.02846 z"
-       id="path10132"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
-    <path
-       style="fill:#c3c3c3;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.32291656;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 51.958526,136.11137 15.796031,-7.1946 8.734671,-0.52876 -6.077387,6.36292 -15.991645,7.2837 z"
-       id="path2072"
-       inkscape:connector-curvature="0" />
-    <rect
-       style="opacity:1;fill:url(#linearGradient2084);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.06932676;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-       id="rect2076"
-       width="16.802544"
-       height="9.6153231"
-       x="3.8578973"
-       y="145.53737"
-       transform="matrix(0.88092303,-0.47325956,0.32678387,0.9450991,0,0)" />
+    <g
+       id="g4928"
+       mask="url(#mask4930)"
+       transform="translate(2.1740179,-2.0240856)">
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path10132"
+         d="m 76.701289,128.6159 c -0.798589,2.54907 -2.475619,3.94191 -2.692997,6.00272 -0.335858,2.56794 5.505229,2.03869 4.639422,0.0258 -0.630306,-1.60263 -2.199698,-2.72757 -1.946425,-6.02846 z"
+         style="fill:#ff8787;fill-opacity:1;stroke:#ad0000;stroke-width:1.32291651;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path2072"
+         d="m 51.958526,136.11137 15.796031,-7.1946 8.734671,-0.52876 -6.077387,6.36292 -15.991645,7.2837 z"
+         style="fill:#c3c3c3;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.32291651;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
   </g>
 </svg>

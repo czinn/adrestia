@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="96"
-   height="96"
-   viewBox="0 0 25.399997 25.399999"
-   version="1.1"
-   id="svg1718"
+   sodipodi:docname="enticement_attack_1.svg"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="conjuration_damage_2.svg">
+   id="svg1718"
+   version="1.1"
+   viewBox="0 0 25.399997 25.399999"
+   height="96"
+   width="96">
   <defs
      id="defs1712">
     <mask
@@ -31,29 +31,29 @@
     </mask>
   </defs>
   <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="16.795302"
-     inkscape:cy="28.366433"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1052"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     units="px"
      inkscape:snap-global="false"
-     units="px" />
+     inkscape:window-maximized="0"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:window-height="1052"
+     inkscape:window-width="1920"
+     fit-margin-bottom="0"
+     fit-margin-right="0"
+     fit-margin-left="0"
+     fit-margin-top="0"
+     showgrid="false"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     inkscape:cy="23.033296"
+     inkscape:cx="54.92785"
+     inkscape:zoom="5.6"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
   <metadata
      id="metadata1715">
     <rdf:RDF>
@@ -62,7 +62,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -72,40 +72,16 @@
      id="layer1"
      transform="translate(-59.067602,-118.91057)">
     <path
-       sodipodi:type="star"
-       style="opacity:1;vector-effect:none;fill:#ffc18a;fill-opacity:1;stroke:#ff5d1d;stroke-width:2.09841633;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-       id="path1780"
-       sodipodi:sides="6"
-       sodipodi:cx="-6.0135636"
-       sodipodi:cy="-1.5274048"
-       sodipodi:r1="4.1324263"
-       sodipodi:r2="8.2648525"
-       sodipodi:arg1="0.39852245"
-       sodipodi:arg2="0.92212123"
-       inkscape:flatsided="false"
-       inkscape:rounded="0.1"
-       inkscape:randomized="0.05"
-       d="m -2.3084484,-0.21887189 c -0.1972038,0.4771731 1.47257676,5.19275699 1.0913523,5.51733949 -0.3812245,0.3245825 -3.6109349,-3.0318144 -4.1285852,-2.9910245 -0.5176503,0.04079 -3.614508,3.6847908 -4.0739133,3.4707745 -0.4594052,-0.2140163 0.6466667,-4.3969455 0.3153098,-4.7711803 -0.3313569,-0.37423471 -5.0370892,-1.23693223 -5.1215612,-1.73648847 -0.08447,-0.49955623 4.242139,-2.32019163 4.4438686,-2.78966593 0.2017296,-0.4694742 -1.5220246,-3.9195093 -1.1359076,-4.2458441 0.386117,-0.3263348 4.1601698,2.5087676 4.6721012,2.4811551 0.5119315,-0.027613 2.6914709,-3.7357221 3.1583043,-3.4987519 0.4668334,0.2369702 0.2526476,4.0845895 0.5557573,4.509195 0.3031097,0.4246055 5.0044641,1.1480878 5.037534,1.6598747 0.03307,0.5117869 -4.6170563,1.91744331 -4.8142602,2.39461641 z"
-       transform="matrix(1.2292693,-0.2790041,0.27883868,1.2299985,79.870361,131.91304)"
-       inkscape:transform-center-x="0.089141717"
-       inkscape:transform-center-y="-1.111569" />
-    <path
-       sodipodi:type="star"
-       style="opacity:1;vector-effect:none;fill:#fff2c5;fill-opacity:1;stroke:#ff5d1d;stroke-width:2.89408159;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-       id="path1780-5"
-       sodipodi:sides="6"
-       sodipodi:cx="-6.0135636"
-       sodipodi:cy="-1.5274048"
-       sodipodi:r1="4.1324263"
-       sodipodi:r2="8.2648525"
-       sodipodi:arg1="0.39852245"
-       sodipodi:arg2="0.92212123"
-       inkscape:flatsided="false"
-       inkscape:rounded="0.05"
-       inkscape:randomized="0.05"
-       d="m -2.3084484,-0.21887189 c -0.098602,0.23858655 1.2819645,5.35504829 1.0913523,5.51733949 -0.1906123,0.1622913 -3.86976,-3.0114194 -4.1285852,-2.9910245 -0.2588251,0.020395 -3.8442107,3.5777827 -4.0739133,3.4707745 -0.2297026,-0.1070081 0.4809882,-4.5840629 0.3153098,-4.7711803 -0.1656784,-0.18711733 -5.0793252,-1.48671035 -5.1215612,-1.73648847 -0.04224,-0.24977812 4.3430038,-2.55492883 4.4438686,-2.78966593 0.1008648,-0.2347371 -1.3289656,-4.0826767 -1.1359076,-4.2458441 0.193059,-0.1631674 4.4161355,2.4949614 4.6721012,2.4811551 0.2559658,-0.013806 2.9248876,-3.617237 3.1583043,-3.4987519 0.2334167,0.1184851 0.4042024,4.2968923 0.5557573,4.509195 0.1515548,0.2123028 5.0209991,1.4039813 5.037534,1.6598747 0.016535,0.2558935 -4.7156583,2.15602986 -4.8142602,2.39461641 z"
-       transform="matrix(0.58718131,-0.70163765,0.69861046,0.58862653,76.968723,127.80086)"
-       inkscape:transform-center-x="0.49062713"
-       inkscape:transform-center-y="-0.56403069" />
+       style="fill:#ff9f9f;fill-opacity:1;stroke:#dc0000;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+       d="m 72.743655,121.22221 c -2.118855,6.77502 -6.105269,8.99232 -6.682026,14.46963 -0.254463,9.6004 13.385883,7.77985 10.920048,-0.6739 -1.672357,-4.25953 -4.91002,-5.02242 -4.238022,-13.79568 z"
+       id="path10132"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <circle
+       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#e11616;stroke-width:1.32291651;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="path901"
+       cx="72.509377"
+       cy="137.29439"
+       r="2.9529386" />
   </g>
 </svg>

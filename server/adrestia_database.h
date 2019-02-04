@@ -3,11 +3,15 @@
 #ifndef ADRESTIA_DATABASE_INCLUDE_GUARD
 #define ADRESTIA_DATABASE_INCLUDE_GUARD
 
+// Our related modules
+#include "../cpp/game_rules.h"
+
 // Database modules
 #include <pqxx/pqxx>
 
 // System modules
 #include <string>
+#include <vector>
 
 // JSON
 #include "../cpp/json.h"
@@ -19,6 +23,13 @@ namespace adrestia_database {
 	const int TAG_LENGTH = 8;
 	const int UUID_LENGTH = 32;
 	const int GAME_UID_LENGTH = 32;
+
+	/* Gets game rules from the database. */
+	GameRules retrieve_game_rules(
+			const std::string& log_id,
+			pqxx::connection* psql_connection,
+			int id
+	);
 
 	/* Fetches from the database the game_state associated with the given game_uid. */
 	std::string retrieve_gamestate_from_database(
@@ -67,14 +78,23 @@ namespace adrestia_database {
 	);
 
 
-	/* Returns true if an account with the given uuid and password exists in the database,
-	 *     false otherwise.
+	/* Returns json with keys 'valid', 'user_name', 'tag'.
 	 */
-	bool verify_existing_account_in_database(
+	json verify_existing_account_in_database(
 		const std::string& log_id,
 		pqxx::connection* psql_connection,
 		const std::string& uuid,
 		const std::string& password
+	);
+
+	/* Returns a list of messages to send to the user, and updates
+	 * latest_notification_already_sent to the maximum of the IDs of the messages
+	 * returned. */
+	std::vector<std::string> get_notifications(
+		const std::string& log_id,
+		pqxx::connection* psql_connection,
+		const std::string& uuid,
+		int &latest_notification_already_sent
 	);
 
 

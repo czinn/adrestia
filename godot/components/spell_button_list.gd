@@ -5,7 +5,11 @@ signal long_pressed(index, spell)
 
 onready var g = get_node('/root/global')
 
+onready var slot_image_hbox = $background
+onready var slot_image_template = $background/template
+
 onready var hbox = $hbox
+export var slots_to_show = 0
 var spells = null setget set_spells
 var enabled_filter = null setget set_enabled_filter
 var unlocked_filter = null setget set_unlocked_filter
@@ -16,6 +20,7 @@ var immediately_show_tooltip = false setget set_immediately_show_tooltip
 func _ready():
 	if spells == null:
 		spells = []
+	slot_image_template.get_parent().remove_child(slot_image_template)
 	g.clear_children(hbox)
 	redraw()
 
@@ -54,6 +59,14 @@ func redraw():
 	if spells == null: return
 
 	g.clear_children(hbox)
+	g.clear_children(slot_image_hbox)
+	for i in range(slots_to_show):
+		var slot_image = slot_image_template.duplicate()
+		slot_image.visible = true
+		slot_image_hbox.add_child(slot_image)
+		if i < len(spells):
+			# Hide it
+			slot_image.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
 	var spell_buttons = g.make_spell_buttons(spells, show_stats, display_filter, enabled_filter, unlocked_filter)
 	for i in range(len(spell_buttons)):

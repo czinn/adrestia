@@ -18,6 +18,8 @@ var rules
 
 func _init(g_):
 	g = g_
+	# Always load these from the local file, that way we don't have to worry about
+	# breaking the tutorial when we update the rules.
 	var rules_file = File.new()
 	rules_file.open('res://data/rules.json', File.READ)
 	rules = g.GameRules.new()

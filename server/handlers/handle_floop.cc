@@ -28,7 +28,7 @@ int adrestia_networking::handle_floop(const string& log_id, const json& client_j
 
 	resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 	resp[adrestia_networking::CODE_KEY] = 200;
-	resp[adrestia_networking::MESSAGE_KEY] = "You've found the floop function!";
+	resp[adrestia_networking::MESSAGE_KEY] = "floop you too!";
 
 	return 0;
 }

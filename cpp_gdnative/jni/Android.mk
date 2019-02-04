@@ -24,5 +24,6 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/../godot_headers
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../cpp/
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../cpp/fdeep-include/
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../cpp/fplus-include/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../server/
 
 include $(BUILD_SHARED_LIBRARY)

@@ -71,7 +71,7 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
 }
 
-[node name="control" type="Control" index="0"]
+[node name="control" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -109,6 +109,7 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "custom_constants" ]
 
 [node name="texture_button" type="TextureButton" parent="vbox" index="0"]
 
+editor/display_folded = true
 material = ExtResource( 3 )
 anchor_left = 0.0
 anchor_top = 0.0

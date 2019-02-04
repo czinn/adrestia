@@ -115,7 +115,7 @@ func play_tutorial():
 	play_button.connect('pressed', self, 'play_button_pressed_override', [select_root])
 	# Show information
 	#yield(show_big_window('[b]Welcome to Adrestia![/b]\n\nIn Adrestia, players cast spells in order to reduce their opponent\'s health to zero. The first player to do so wins!'), 'completed')
-	yield(show_big_window("[b]Welcome to Adrestia![/b]\n\nIn this world, it's kill or be killed. You must use your spells and your wit to dominate the enemy."), 'completed')
+	yield(show_big_window("[b]Welcome to Adrestia![/b]\n\nYour objective is to use your spells and your wit to defeat your enemy."), 'completed')
 	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
 	#yield(show_tooltip(books_hbox.get_child(0), 'A book contains four spells.\n\nEach player secretly chooses three books at the beginning of the game.'), 'completed')
 	yield(show_tooltip(books_hbox.get_child(1).get_child(0), 'Tap this book to see what spells it contains.'), 'completed')
@@ -127,7 +127,7 @@ func play_tutorial():
 	
 	var spell_preview = yield(self.acquire_node('ui/spell_button_list'), 'completed')
 	yield(show_tooltip(spell_preview, 'Each book has four spells.'), 'completed')
-	var spell_button = spell_preview.get_child(0).get_child(1)
+	var spell_button = spell_preview.get_child(1).get_child(1)
 	var mana_indicator = spell_button.get_node('cost/mp_icon')
 	yield(show_tooltip(mana_indicator, "This is the spell's mana cost."), 'completed')
 	yield(show_tooltip(spell_button, 'Hold down the spell to see what it does.'), 'completed')
@@ -148,7 +148,7 @@ func play_tutorial():
 	end_turn_button.connect('pressed', self, 'end_turn_button_pressed_override', [game_root])
 	# Show information
 	yield(show_big_window('Nice work! Let\'s take a look around the game screen.'), 'completed')
-	var my_stats = yield(self.acquire_node('ui/my_stats'), 'completed')
+	var my_stats = yield(self.acquire_node('ui/my_avatar'), 'completed')
 	# TODO jim: Demonstrate that spells can increase mana regen.
 	yield(show_tooltip(my_stats, 'Here is your remaining health and mana. The (+3) beside your mana shows your mana regeneration.'), 'completed')
 	yield(show_tooltip(spell_select, 'Here are your books. You can tap a book to see its spells.'), 'completed')

@@ -1,12 +1,13 @@
 extends Node
 
 onready var g = get_node('/root/global')
+onready var online_status = $ui/online_status
 onready var play_button = $ui/play_button
-onready var tutorial_button = $ui/tutorial_button
+onready var credits_button = $ui/credits_button
+onready var placeholder_button = $ui/placeholder_button
 onready var animation_player = $animation_player
 
 const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
-const RandomAiBackend = preload('res://backends/random_ai.gd')
 const TutorialBackend = preload('res://backends/tutorial.gd')
 
 func _ready():
@@ -18,28 +19,51 @@ func _ready():
 	get_tree().set_auto_accept_quit(true)
 	get_tree().set_quit_on_go_back(true)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
-	tutorial_button.connect('pressed', self, 'on_tutorial_button_pressed')
-	# jim: We definitely need an official waifu at some point, but Moge-ko isn't it.
-	#waifu.connect('pressed', self, 'on_waifu_pressed')
+	credits_button.connect('pressed', self, 'on_credits_button_pressed')
+	placeholder_button.connect('pressed', self, 'test_network')
 	if not g.loaded:
 		g.loaded = true
+		initialize()
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
 	get_tree().set_auto_accept_quit(true)
+	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
 
-func on_waifu_pressed():
-	print(g.network.floop())
-	g.summon_tooltip($ui/moge_ko, "Hey now, why are you runniiing? No, no, I wanna play!\n... [i]Oooh, I see, it's tag![/i]\n[b]GYAHAHAHAHAHAA!!!![/b]")
+func initialize():
+	print('User data dir is %s' % [OS.get_user_data_dir()])
+	g.load()
+
+func on_connected():
+	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]
+
+func on_disconnected():
+	online_status.text = 'Offline.'
+
+func on_out_of_date():
+	online_status.text = 'Out-of-date client. Update the app to play online!'
+
+func test_network():
+	g.network.floop(funcref(self, 'floop_done'))
+
+func floop_done(response):
+	print('Floop response received.')
+	print(response)
 
 func on_play_button_pressed():
-	g.backend = RandomAiBackend.new(g)
-	print(g.backend.rules)
-	g.scene_loader.goto_scene('game_book_select')
+	if g.first_play:
+		g.first_play = false
+		g.save()
+		if yield(g.summon_confirm('It looks like this is your first time playing. Play the tutorial?'), 'popup_closed') == true:
+			on_tutorial_button_pressed()
+			return
+	g.scene_loader.goto_scene('game_mode_select')
+
+func on_credits_button_pressed():
+	g.scene_loader.goto_scene('credits')
 
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)
 	var tutorial_overlay = TutorialOverlay.instance()
 	get_node('/root').add_child(tutorial_overlay)
 	tutorial_overlay.play_tutorial()
-	print(g.backend.rules)
 	g.scene_loader.goto_scene('game_book_select')
