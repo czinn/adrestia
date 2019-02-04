@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS adrestia_accounts CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_accounts (
 	uuid VARCHAR NOT NULL,  -- Random hexy
 	user_name VARCHAR NOT NULL,
@@ -11,6 +12,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
 	(user_name, tag)
 ;
 
+DROP TABLE IF EXISTS adrestia_match_waiters CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 	uuid VARCHAR NOT NULL,  -- Random hexy
 	selected_books VARCHAR ARRAY NOT NULL,
@@ -21,6 +23,7 @@ CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
 --     -1: Aborted; Someone aborted and the game cannot continue.
 --     0: In progress; this game is in progress.
 --     1: Concluded; the game reached its conclusion, with someone winning.
+DROP TABLE IF EXISTS adrestia_games CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_games (
 	game_uid VARCHAR NOT NULL,
 	creator_uuid VARCHAR NOT NULL, -- Who made this?
@@ -34,6 +37,7 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
 --     -1: Aborted; this person is not coming and the game should be terminated.
 --     0: Thinking; this person is deciding on their move.
 --     1: Ready; this person has submitted a move.
+DROP TABLE IF EXISTS adrestia_players CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_players (
 	game_uid VARCHAR REFERENCES adrestia_games(game_uid),
 	user_uid VARCHAR REFERENCES adrestia_accounts(uuid),
@@ -43,11 +47,13 @@ CREATE TABLE IF NOT EXISTS adrestia_players (
 	PRIMARY KEY (game_uid, user_uid)
 );
 
+DROP TABLE IF EXISTS adrestia_rules CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_rules (
 	id SERIAL PRIMARY KEY,
 	game_rules JSON
 );
 
+DROP TABLE IF EXISTS adrestia_notifications CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_notifications (
 	id SERIAL PRIMARY KEY,
 	target_uuid VARCHAR NOT NULL, -- Account uuid or "*"
