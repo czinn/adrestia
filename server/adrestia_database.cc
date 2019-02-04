@@ -383,11 +383,14 @@ json adrestia_database::adjust_user_name_in_database(
 
     pqxx::work work(psql_connection[0]);
     try {
-      pqxx::result result = run_query(work, R"sql(
-        UPDATE adrestia_accounts
-        SET user_name = %s, tag = %s
-        WHERE uuid = %s
-      )sql", work.quote(user_name).c_str(), work.quote(tag).c_str(), work.quote(uuid).c_str());
+      pqxx::result result = run_query(work,
+      	R"sql(
+          UPDATE adrestia_accounts
+          SET user_name = %s, tag = %s
+          WHERE uuid = %s
+      	)sql",
+      	work.quote(user_name).c_str(), work.quote(tag).c_str(),
+      	work.quote(uuid).c_str());
       work.commit();
 
       cout << "[" << log_id << "] Successfully adjustment of user_name in database." << endl;
