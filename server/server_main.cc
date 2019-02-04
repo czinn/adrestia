@@ -24,11 +24,16 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <thread>
 using namespace std;
 
 // JSON
 #include "../cpp/json.h"
 using json = nlohmann::json;
+
+void babysit(int client_socket) {
+	Babysitter(client_socket).main();
+}
 
 void adrestia_networking::listen_for_connections(int port) {
 	int server_socket;
@@ -63,6 +68,8 @@ void adrestia_networking::listen_for_connections(int port) {
 
 	listen(server_socket, 5);
 
+	std::vector<std::thread> babysitters;
+
 	while (true) {
 		client_address_sizeof = sizeof(client_address);
 		client_socket = accept(server_socket, (sockaddr*) &client_address, &client_address_sizeof);
@@ -78,29 +85,7 @@ void adrestia_networking::listen_for_connections(int port) {
 			return;
 		}
 
-		pid_t pid = fork();
-		if (pid == 0) {
-			// We are the child; our responsibility is to process the new connection.
-			close(server_socket);  // The parent will keep listening.
-
-			if (fork() == 0) {  // detach us (parent returns immediately)
-				usleep(10000);  // Sleep to allow parent to finish
-				Babysitter(client_socket).main();
-			}
-
-			return;
-		} 
-		else if (pid > 0) {
-			// We are the parent; our responsibility is to keep listening.
-			int status = 0;
-			waitpid(pid, &status, 0);
-			close(client_socket);
-		}
-		else {
-			// An error!
-			cerr << "ERROR on fork() with code |" << pid << "|." << endl;
-			return;
-		}
+		babysitters.emplace_back(babysit, client_socket);
 	}
 }
 
