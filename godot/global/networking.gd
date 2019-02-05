@@ -12,6 +12,9 @@ const version = '1.0.0'
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
 
+# For development purposes.
+const always_register_new_account = true
+
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
 # - If we don't receive data for [timeout_ms], we're disconnected.
@@ -130,7 +133,7 @@ func reconnect():
 func on_network_ready(response):
 	if response[code_key] == 200:
 		g.get_default_rules().load_json_string(JSON.print(response.game_rules))
-		if g.auth_uuid != null:
+		if g.auth_uuid != null and not always_register_new_account:
 			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 		else:
 			gen_auth_pwd()

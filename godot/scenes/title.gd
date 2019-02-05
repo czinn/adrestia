@@ -21,8 +21,6 @@ func _ready():
 		initialize()
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
-	play_button.connect('pressed', self, 'on_play_button_pressed')
-	placeholder_button.connect('pressed', self, 'test_network')
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
 
 func initialize():
