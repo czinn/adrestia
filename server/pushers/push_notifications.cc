@@ -22,10 +22,10 @@ using json = nlohmann::json;
 
 adrestia_networking::PushNotifications::PushNotifications() {}
 
-std::vector<json> adrestia_networking::PushNotifications::push(const string& log_id, const string& uuid) {
+std::vector<json> adrestia_networking::PushNotifications::push(const Logger& logger, const string& uuid) {
   /* @brief Returns a list of messages for any new notifications
    *
-   * @param log_id: A string prepended to diagnostics
+   * @param logger: Logger
    * @param uuid: The uuid for which notifications will be checked.
    *
    * @sideeffect: latest_notification_already_sent will be updated to the ID of
@@ -42,7 +42,7 @@ std::vector<json> adrestia_networking::PushNotifications::push(const string& log
   pqxx::connection psql_connection = adrestia_database::establish_connection();
 
   std::vector<std::string> notifications = adrestia_database::get_notifications(
-      log_id, psql_connection, uuid, latest_notification_already_sent);
+      logger, psql_connection, uuid, latest_notification_already_sent);
 
   std::vector<json> result;
   for (const std::string &message : notifications) {

@@ -18,7 +18,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_change_user_name(const string& log_id, const json& client_json, json& resp) {
+int adrestia_networking::handle_change_user_name(const Logger& logger, const json& client_json, json& resp) {
   /* Changes the user name associated with the given uuid to the new requested user name.
    *     By necessity, creates a new tag to go with this user_name.
    *
@@ -38,24 +38,25 @@ int adrestia_networking::handle_change_user_name(const string& log_id, const jso
    * Always returns 0.
    */
 
-  cout << "[" << log_id << "] Triggered change_user_name." << endl;
+  logger.trace("Triggered change_user_name.");
   string uuid = client_json.at("uuid");
   string new_user_name = client_json.at("user_name");
 
-  cout << "[" << log_id << "] Modifying uuid |" << uuid << "| to have user_name |" << new_user_name << "|..." << endl;
+  logger.trace("Modifying uuid |%s| to have user_name |%s|...", uuid.c_str(), new_user_name.c_str());
   pqxx::connection psql_connection = adrestia_database::establish_connection();
-  json new_account_info = adrestia_database::adjust_user_name_in_database(log_id, psql_connection, uuid, new_user_name);
+  json new_account_info = adrestia_database::adjust_user_name_in_database(logger, psql_connection, uuid, new_user_name);
 
-  cout << "[" << log_id << "] New account info is:" << endl
-       << "    uuid: |" << uuid << "|" << endl
-       << "    user_name: |" << new_user_name << "|" << endl
-       << "    tag: |" << new_account_info["tag"] << "|" << endl;
+  logger.trace_()
+    << "New account info is:" << endl
+    << "    uuid: |" << uuid << "|" << endl
+    << "    user_name: |" << new_user_name << "|" << endl
+    << "    tag: |" << new_account_info["tag"] << "|";
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
   resp[adrestia_networking::CODE_KEY] = 200;
   resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
   resp["tag"] = new_account_info["tag"];
 
-  cout << "[" << log_id << "] change_user_name concluded." << endl;
+  logger.trace("change_user_name concluded.");
   return 0;
 }

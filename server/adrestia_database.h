@@ -6,7 +6,7 @@
 // Our related modules
 #include "../cpp/game_rules.h"
 #include "../cpp/game_state.h"
-#include "babysitter.h"
+#include "logger.h"
 
 // Database modules
 #include <pqxx/pqxx>
@@ -28,14 +28,14 @@ namespace adrestia_database {
 
 	/* Gets game rules from the database. */
 	GameRules retrieve_game_rules(
-			const std::string& log_id,
-			pqxx::connection& psql_connection,
-			int id
+		const Logger& logger,
+		pqxx::connection& psql_connection,
+		int id
 	);
 
 	/* Fetches from the database the game_state associated with the given game_uid. */
 	json retrieve_gamestate_from_database(
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& game_uid,
 		GameRules &game_rules
@@ -45,7 +45,7 @@ namespace adrestia_database {
 	 *     Also returns if any are waiting for this player's move in particular.
 	 */
 	json check_for_active_games_in_database (
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& uuid
 	);
@@ -54,7 +54,7 @@ namespace adrestia_database {
 	 *     otherwise, matches the user to a waiter.
 	 */
 	json matchmake_in_database(
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		const std::vector<std::string>& selected_books
@@ -64,7 +64,7 @@ namespace adrestia_database {
 	 * Returns a json object with key 'tag' representing the tag.
 	 */
 	json adjust_user_name_in_database(
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		const std::string& user_name
@@ -75,7 +75,7 @@ namespace adrestia_database {
 	 * Returns a json object with keys 'id', 'user_name', and 'tag'.
 	 */
 	json register_new_account_in_database(
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& password
 	);
@@ -84,7 +84,7 @@ namespace adrestia_database {
 	/* Returns json with keys 'valid', 'user_name', 'tag'.
 	 */
 	json verify_existing_account_in_database(
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		const std::string& password
@@ -94,7 +94,7 @@ namespace adrestia_database {
 	 * latest_notification_already_sent to the maximum of the IDs of the messages
 	 * returned. */
 	std::vector<std::string> get_notifications(
-		const std::string& log_id,
+		const Logger& logger,
 		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		int &latest_notification_already_sent
@@ -102,8 +102,9 @@ namespace adrestia_database {
 
 	/* Clear matchmake requests for a player. */
 	void clear_matchmake_requests(
-		const Babysitter* babysitter,
-		pqxx::connection& conn
+		const Logger& logger,
+		pqxx::connection& conn,
+		const std::string& uuid
 	);
 
 

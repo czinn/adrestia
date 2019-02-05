@@ -25,7 +25,7 @@ using json = nlohmann::json;
 
 // Performs a query using [work] with printf-style substitutions.
 // You must escape values yourself when using this.
-pqxx::result run_query(pqxx::work& work, const char* query_format, ...) {
+pqxx::result run_query(const Logger& logger, pqxx::work& work, const char* query_format, ...) {
   va_list args;
 
   // First, use [vsnprintf] to figure out how long the query needs to be.
@@ -37,7 +37,7 @@ pqxx::result run_query(pqxx::work& work, const char* query_format, ...) {
   va_start(args, query_format);
   char *query = new char[needed];
   vsprintf(query, query_format, args);
-  cout << query << endl;
+  logger.trace_() << query << endl;
 
   pqxx::result result;
   result = work.exec(query);
@@ -105,13 +105,13 @@ string vector_to_sql_array(pqxx::work& work, const vector<T>& vec) {
 }
 
 GameRules adrestia_database::retrieve_game_rules(
-    const string& log_id,
-    pqxx::connection& conn,
-    int id
+  const Logger& logger,
+  pqxx::connection& conn,
+  int id
 ) {
   /* @brief Gets the game rules with the given id
    *
-   * @param log_id: A string prepended to log lines
+   * @param logger: Logger
    * @param conn: The pqxx PostgreSQL connection.
    * @param id: Id of the game rules, from the game table. An id of 0 gets the
    *            most recent set of rules.
@@ -119,13 +119,14 @@ GameRules adrestia_database::retrieve_game_rules(
    * @returns: A GameRules object constructed from the database record
    */
 
-  cout << "[" << log_id << "] retrieve_game_rules called with args:" << endl
-       << "    id: |" << id << "|" << endl;
+  logger.trace(
+      "retrieve_game_rules called with args: \n"
+      "    id: |%d|", id);
 
   pqxx::work work(conn);
 
   if (id == 0) {
-    auto search_result = run_query(work, R"sql(
+    auto search_result = run_query(logger, work, R"sql(
       SELECT game_rules FROM adrestia_rules ORDER BY -id LIMIT 1
       )sql");
     if (search_result.size() == 0) {
@@ -133,7 +134,7 @@ GameRules adrestia_database::retrieve_game_rules(
     }
     return json::parse(search_result[0][0].as<string>());
   } else {
-    auto search_result = run_query(work, R"sql(
+    auto search_result = run_query(logger, work, R"sql(
       SELECT game_rules FROM adrestia_rules WHERE id = %d
       )sql", id);
     if (search_result.size() == 0) {
@@ -144,14 +145,14 @@ GameRules adrestia_database::retrieve_game_rules(
 }
 
 json adrestia_database::retrieve_gamestate_from_database (
-  const string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const string& game_uid,
   GameRules &game_rules
 ) {
   /* @brief Retrieves the gamestate of a target game.
    *
-   * @param log_id: A string prepended to log lines
+   * @param logger: Logger
    * @param psql_connection: The pqxx PostgreSQL connection.
    * @param game_uid: The game_uid whose game_state will be returned.
    *                  If there is no such game, or the game has no state,
@@ -161,12 +162,14 @@ json adrestia_database::retrieve_gamestate_from_database (
    * @returns: json representation of the game state
    */
 
-  cout << "[" << log_id << "] retrieve_gamestate_from_database called with args:" << endl
-       << "    game_uid: |" << game_uid << "|" << endl;
+  logger.trace(
+      "retrieve_gamestate_from_database called with args:\n"
+      "    game_uid: |%s|",
+      game_uid.c_str());
 
   pqxx::work work(psql_connection);
 
-  auto search_result = run_query(work, R"sql(
+  auto search_result = run_query(logger, work, R"sql(
     SELECT game_rules, game_state
     FROM adrestia_games
       INNER JOIN adrestia_rules ON game_rules_id = adrestia_rules.id
@@ -182,14 +185,14 @@ json adrestia_database::retrieve_gamestate_from_database (
 
 
 json adrestia_database::check_for_active_games_in_database (
-  const string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const string& uuid
 ) {
   /* @brief Checks the database to see if the given user is part of any active games, and returns the game_uids of
    *        those games. Also returns which games are waiting for this uuid to make a move.
    *
-   * @param log_id: A string prepended to log lines
+   * @param logger: Logger
    * @param psql_connection: The pqxx PostgreSQL connection.
    * @param uuid: We will be looking for games involving this uuid.
    *
@@ -199,12 +202,14 @@ json adrestia_database::check_for_active_games_in_database (
    *                                    move. This is, of course, a subset of active_game_uids.
    */
 
-  cout << "[" << log_id << "] check_for_active_games_in_database called with args:" << endl
-       << "    uuid: |" << uuid << "|" << endl;
+  logger.trace(
+      "check_for_active_games_in_database called with args:"
+      "    uuid: |%s|",
+      uuid.c_str());
 
   pqxx::work work(psql_connection);
 
-  auto search_result = run_query(work, R"sql(
+  auto search_result = run_query(logger, work, R"sql(
     SELECT adrestia_games.game_uid, player_state
     FROM adrestia_games
       INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
@@ -220,30 +225,30 @@ json adrestia_database::check_for_active_games_in_database (
     string game_uid = result["game_uid"].as<string>();
     active_game_uids.push_back(game_uid);
 
-    cout << "[" << log_id << "] uuid |" << uuid << "| has active game |" << game_uid << "|." << endl;
+    logger.debug("uuid |%s| has active game |%s|.", uuid.c_str(), game_uid.c_str());
 
     // If the current player_state is 0...
     if (result["player_state"].as<int>() == 0) {
       // We need to make a move.
       waiting_game_uids.push_back(game_uid);
-      cout << "[" << log_id << "] Waiting for uuid |" << uuid << "| to make a move in game |" << game_uid << "|..." << endl;
+      logger.debug("Waiting for uuid |%s| to make a move in game |%s|...", uuid.c_str(), game_uid.c_str());
     }
   }
 
-  cout << "[" << log_id << "] Commiting transaction..." << endl;
+  logger.trace("Committing transaction...");
   work.commit();
 
   json return_var;
   return_var["active_game_uids"] = active_game_uids;
   return_var["waiting_game_uids"] = waiting_game_uids;
 
-  cout << "[" << log_id << "] check_for_games concluded." << endl;
+  logger.trace("check_for_games concluded.");
   return return_var;
 }
 
 
 json adrestia_database::matchmake_in_database (
-  const string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const string& uuid,
   const vector<string>& selected_books
@@ -252,7 +257,7 @@ json adrestia_database::matchmake_in_database (
    *        there. If someone else is waiting for matchmaking, and the user can be matched with them, then
    *        a new game will be made including both players (and the waiter is removed).
    *
-   * @param log_id: A string prepended to log lines
+   * @param logger: Logger
    * @param psql_connection: The pqxx PostgreSQL connection.
    * @param uuid: The uuid of the user making the matchmaking request.
    * @param selected_books: The books selected by the user making the matchmaking request
@@ -265,13 +270,15 @@ json adrestia_database::matchmake_in_database (
    *           of the new game that was made.
    */
 
-  cout << "[" << log_id << "] matchmake_in_database called with args:" << endl
-       << "    uuid: |" << uuid << "|" << endl;
+  logger.trace(
+      "matchmake_in_database called with args:"
+      "    uuid: |%s|",
+      uuid.c_str());
 
   pqxx::work work(psql_connection);
 
   // Check if there are any waiters...
-  auto search_result = run_query(work,
+  auto search_result = run_query(logger, work,
     R"sql(
       SELECT uuid, selected_books
       FROM adrestia_match_waiters
@@ -282,9 +289,9 @@ json adrestia_database::matchmake_in_database (
     work.quote(uuid).c_str());
 
   if (search_result.size() == 0) {
-    cout << "[" << log_id << "] No possible matches are waiting. We shall become a waiter." << endl;
+    logger.info("No possible matches are waiting. We shall become a waiter.");
 
-    run_query(work,
+    run_query(logger, work,
       R"sql(
         INSERT INTO adrestia_match_waiters (uuid, selected_books)
         VALUES (%s, %s)
@@ -293,7 +300,7 @@ json adrestia_database::matchmake_in_database (
       work.quote(uuid).c_str(), vector_to_sql_array(work, selected_books).c_str(),
       vector_to_sql_array(work, selected_books).c_str());
 
-    cout << "[" << log_id << "] Commiting transaction." << endl;
+    logger.trace("Committing transaction.");
     work.commit();
 
     json return_var;
@@ -302,14 +309,14 @@ json adrestia_database::matchmake_in_database (
   }
 
   string waiting_uuid = search_result[0]["uuid"].as<string>();
-  cout << "[" << log_id << "] uuid |" << waiting_uuid << "| is a matching waiter; we will form a new game with them." << endl;
+  logger.debug("uuid |%s| is a matching waiter; we will form a new game with them.", waiting_uuid.c_str());
 
   // Create game id
   string game_uid = "";
   for (int i = 0; i < 1000; i += 1) {
     game_uid = adrestia_hexy::hex_urandom(adrestia_database::GAME_UID_LENGTH);
 
-    auto game_uid_search_result = run_query(work, R"sql(
+    auto game_uid_search_result = run_query(logger, work, R"sql(
       SELECT 1 FROM adrestia_games WHERE game_uid = %s
     )sql", work.quote(game_uid).c_str());
 
@@ -319,12 +326,12 @@ json adrestia_database::matchmake_in_database (
     break;
   }
   if (game_uid.compare("") == 0) {
-    cerr << "[" << log_id << "] Failed to create unique game id!" << endl;
+    logger.error("Failed to create unique game id!");
     throw string("Failed to create unique game id!");
   }
   
   // Get the latest rules
-  auto rules_result = run_query(work, R"sql(
+  auto rules_result = run_query(logger, work, R"sql(
     SELECT game_rules FROM adrestia_rules ORDER BY -id LIMIT 1
     )sql");
   if (rules_result.size() == 0) {
@@ -344,8 +351,8 @@ json adrestia_database::matchmake_in_database (
   GameState game_state(rules, books);
 
   // Insert the game into the database
-  cout << "[" << log_id << "] Creating game |" << game_uid << "|..." << endl;
-  run_query(work, R"sql(
+  logger.info("Creating game |%s|", game_uid.c_str());
+  run_query(logger, work, R"sql(
     INSERT INTO adrestia_games (game_uid, creator_uuid, activity_state, game_state, game_rules_id)
     SELECT %s, %s, 0, %s, id
     FROM adrestia_rules ORDER BY -id LIMIT 1
@@ -353,14 +360,14 @@ json adrestia_database::matchmake_in_database (
       work.quote(game_uid).c_str(),
       work.quote(uuid).c_str(),
       work.quote(json(game_state).dump()).c_str());
-  run_query(work, R"sql(
+  run_query(logger, work, R"sql(
     INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
     VALUES (%s, %s, %d, 0)
   )sql",
       work.quote(game_uid).c_str(),
       work.quote(uuid).c_str(),
       creator_player_id);
-  run_query(work, R"sql(
+  run_query(logger, work, R"sql(
     INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
     VALUES (%s, %s, %d, 0)
   )sql",
@@ -369,11 +376,11 @@ json adrestia_database::matchmake_in_database (
       1 - creator_player_id);
 
   // Remove waiting uuid
-  cout << "[" << log_id << "] Removing waiting uuid |" << waiting_uuid << "|..." << endl;
-  run_query(work, "DELETE FROM adrestia_match_waiters WHERE uuid = %s", work.quote(waiting_uuid).c_str());
+  logger.debug("Removing waiting uuid |%s|", waiting_uuid.c_str());
+  run_query(logger, work, "DELETE FROM adrestia_match_waiters WHERE uuid = %s", work.quote(waiting_uuid).c_str());
 
   // Commit
-  cout << "[" << log_id << "] Committing transaction..." << endl;
+  logger.trace("Committing transaction...");
   work.commit();
 
   json return_var;
@@ -382,7 +389,7 @@ json adrestia_database::matchmake_in_database (
 }
 
 json adrestia_database::adjust_user_name_in_database(
-  const string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const string& uuid,
   const string& user_name
@@ -391,7 +398,7 @@ json adrestia_database::adjust_user_name_in_database(
    *        By necessity, this requires the generation of a random tag to go with the name. 1000 attempts will be
    *        made to generate the tag.
    *
-   * @param log_id: A line prepended to diagnostic log lines
+   * @param logger: Logger
    * @param psql_connection: The pqxx PostgreSQL connection.
    * @param uuid: The uuid whose user_name is to be altered.
    * @param user_name: The new user_name for the given uuid.
@@ -402,9 +409,12 @@ json adrestia_database::adjust_user_name_in_database(
    * @returns A json object containing "tag": the new tag generated.
    */
 
-  cout << "[" << log_id << "] adjust_user_name_in_database called with args:" << endl
-       << "    uuid: |" << uuid << "|" << endl
-       << "    user_name: |" << user_name << "|" << endl;
+  logger.trace(
+      "adjust_user_name_in_database called with args:\n"
+      "    uuid: |%s|\n"
+      "    user_name: |%s|",
+      uuid.c_str(),
+      user_name.c_str());
 
   json new_account_info;
 
@@ -415,7 +425,7 @@ json adrestia_database::adjust_user_name_in_database(
 
     pqxx::work work(psql_connection);
     try {
-      pqxx::result result = run_query(work,
+      pqxx::result result = run_query(logger, work,
         R"sql(
           UPDATE adrestia_accounts
           SET user_name = %s, tag = %s
@@ -425,7 +435,7 @@ json adrestia_database::adjust_user_name_in_database(
         work.quote(uuid).c_str());
       work.commit();
 
-      cout << "[" << log_id << "] Successfully adjustment of user_name in database." << endl;
+      logger.info("Successfully changed user_name in database.");
       success = true;
       new_account_info["tag"] = tag;
       break;
@@ -437,7 +447,7 @@ json adrestia_database::adjust_user_name_in_database(
   }
 
   if (!success) {
-    cout << "[" << log_id << "] Failed to update the user_name!";
+    logger.error("Failed to update the user_name!");
     throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + user_name + "|!");
   }
 
@@ -446,7 +456,7 @@ json adrestia_database::adjust_user_name_in_database(
 
 
 json adrestia_database::register_new_account_in_database(
-  const string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const string& password
 ) {
@@ -454,7 +464,7 @@ json adrestia_database::register_new_account_in_database(
    *        user_name and a random (not-already-in-use-with-this-name) tag to go with it.
    *        1000 attempts will be made to generate a non-conflicting tag.
    *
-   * @param log_id: A string prepended to diagnostic log lines
+   * @param logger: Logger
    * @param psql_connection: The pqxx PostgreSQL connection.
    * @param password: The password that will be used with this new account.
    *
@@ -469,8 +479,11 @@ json adrestia_database::register_new_account_in_database(
 
   const string default_user_name = "Guest";
 
-  cout << "[" << log_id << "] register_new_account_in_database called with args:" << endl
-       << "    password: |" << password << "|" << endl;
+  // TODO: jim: stop printing this
+  logger.trace(
+    "register_new_account_in_database called with args:\n"
+    "    password: |%s|",
+    password.c_str());
 
   string salt = adrestia_hexy::hex_urandom(adrestia_database::SALT_LENGTH);
   pqxx::binarystring password_hash(hash_password(password, salt));
@@ -485,7 +498,7 @@ json adrestia_database::register_new_account_in_database(
 
     pqxx::work work(psql_connection);
     try {
-      run_query(work, R"sql(
+      run_query(logger, work, R"sql(
         INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)
         VALUES (%s, %s, %s, %s, %s)
       )sql",
@@ -496,7 +509,7 @@ json adrestia_database::register_new_account_in_database(
           work.quote(salt).c_str());
       work.commit();
 
-      cout << "[" << log_id << "] Successfully finished insertion of new account into database." << endl;
+      logger.trace("Successfully finished insertion of new account into database.");
       actually_created_account = true;
       new_account["uuid"] = uuid;
       new_account["tag"] = tag;
@@ -510,7 +523,7 @@ json adrestia_database::register_new_account_in_database(
   }
 
   if (!actually_created_account) {
-    cerr << "[" << log_id << "] Failed to create a non-conflicting uuid/tag pair!" << endl;
+    logger.error("Failed to create a non-conflicting uuid/tag pair!");
     throw string("Failed to generate non-conflicting uuid/tag pair.");
   }
 
@@ -519,21 +532,24 @@ json adrestia_database::register_new_account_in_database(
 
 
 json adrestia_database::verify_existing_account_in_database(
-  const string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const string& uuid,
   const string& password
 ) {
   /* @brief Returns json {'success': bool, 'user_name': string, 'tag': string } */
 
-  cout << "[" << log_id << "] verify_existing_account_in_database called with args:" << endl
-       << "    uuid: |" << uuid << "|" << endl
-       << "    password: |" << password << "|" << endl;
+  logger.trace(
+    "verify_existing_account_in_database called with args:\n"
+    "    uuid: |%s|\n"
+    "    password: |%s|",
+    uuid.c_str(),
+    password.c_str());
   
   json result;
 
   pqxx::work work(psql_connection);
-  pqxx::result search_result = run_query(work, R"sql(
+  pqxx::result search_result = run_query(logger, work, R"sql(
   SELECT hash_of_salt_and_password, salt, user_name, tag
     FROM adrestia_accounts
     WHERE uuid = %s
@@ -541,7 +557,7 @@ json adrestia_database::verify_existing_account_in_database(
 
   // Find account of given name
   if (search_result.size() == 0) {
-    cout << "[" << log_id << "] This uuid not found in database.";
+    logger.trace("This uuid not found in database.");
     result["valid"] = false;
     return result;
   }
@@ -551,21 +567,21 @@ json adrestia_database::verify_existing_account_in_database(
   pqxx::binarystring actual_hash(hash_password(password, salt));
 
   if (actual_hash == expected_hash) {
-    cout << "[" << log_id << "] This uuid and password have been verified." << endl;
+    logger.trace("This uuid and password have been verified.");
     result["valid"] = true;
     result["user_name"] = search_result[0]["user_name"].as<string>();
     result["tag"] = search_result[0]["tag"].as<string>();
     return result;
   }
 
-  cout << "[" << log_id << "] Received an incorrect password for this known uuid." << endl;
+  logger.trace("Received an incorrect password for this known uuid.");
   result["valid"] = false;
   return result;
 }
 
 
 std::vector<std::string> adrestia_database::get_notifications(
-  const std::string& log_id,
+  const Logger& logger,
   pqxx::connection& psql_connection,
   const std::string& uuid,
   int &latest_notification_already_sent
@@ -573,15 +589,17 @@ std::vector<std::string> adrestia_database::get_notifications(
   /* @brief Returns a list of messages and updates
    * latest_notification_already_sent. */
 
-  cout << "[" << log_id << "] get_notifications called with args:" << endl
-       << "    uuid: |" << uuid << "|" << endl
-       << "    latest_notification_already_sent: |"
-       << latest_notification_already_sent << "|" << endl;
+  logger.trace(
+    "get_notifications called with args:\n"
+    "    uuid: |%s|\n"
+    "    latest_notification_already_sent: |%d|",
+    uuid.c_str(),
+    latest_notification_already_sent);
 
   std::vector<std::string> result;
 
   pqxx::work work(psql_connection);
-  pqxx::result search_results = run_query(work, R"sql(
+  pqxx::result search_results = run_query(logger, work, R"sql(
   SELECT id, message
     FROM adrestia_notifications
     WHERE (target_uuid = %s OR target_uuid = '*')
@@ -600,16 +618,17 @@ std::vector<std::string> adrestia_database::get_notifications(
 
 
 void adrestia_database::clear_matchmake_requests(
-  const Babysitter* babysitter,
-  pqxx::connection& conn
+  const Logger& logger,
+  pqxx::connection& conn,
+  const std::string& uuid
 ) {
   pqxx::work work(conn);
-  run_query(work,
+  run_query(logger, work,
     R"sql(
       DELETE FROM adrestia_match_waiters
       WHERE uuid = %s
     )sql",
-    work.quote(babysitter->uuid).c_str());
+    work.quote(uuid).c_str());
   work.commit();
 }
 

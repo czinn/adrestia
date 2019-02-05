@@ -5,6 +5,7 @@
 
 #include "adrestia_hexy.h"
 #include "adrestia_networking.h"
+#include "logger.h"
 
 class connection_closed {};
 class socket_error {};
@@ -42,9 +43,9 @@ class Babysitter {
 
     void log(const char *format, ...);
 
+    Logger logger;
     Phase phase;
     int client_socket;
-    std::string babysitter_id; // for logging purposes
     std::string read_message_buffer;
     std::string uuid; // The uuid of the client we are babysitting.
 };

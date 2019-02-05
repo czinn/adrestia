@@ -17,7 +17,7 @@ using namespace std;
 #include "../../cpp/json.h"
 using json = nlohmann::json;
 
-int adrestia_networking::handle_establish_connection(const string& log_id, const json& client_json, json& resp) {
+int adrestia_networking::handle_establish_connection(const Logger& logger, const json& client_json, json& resp) {
   /* Responds with a message.
    *
    * Accepts keys from client:
@@ -52,7 +52,7 @@ int adrestia_networking::handle_establish_connection(const string& log_id, const
   }
 
   pqxx::connection conn = adrestia_database::establish_connection();
-  GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, conn, 0);
+  GameRules game_rules = adrestia_database::retrieve_game_rules(logger, conn, 0);
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
   resp[adrestia_networking::CODE_KEY] = 200;

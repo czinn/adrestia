@@ -18,7 +18,7 @@ namespace adrestia_networking {
 	class PushActiveGames : public Pusher {
 		public:
 			PushActiveGames();
-			virtual std::vector<json> push(const std::string &log_id, const std::string &uuid);
+			virtual std::vector<json> push(const Logger &logger, const std::string &uuid);
 		
 		private:
 			std::map<std::string, json> games_I_am_aware_of; // game_uid to game_state
