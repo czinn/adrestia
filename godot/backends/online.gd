@@ -5,7 +5,7 @@ var g = null
 var state = null
 var started_callback = null
 var update_callback = null
-var selected_book_ids
+var in_game = false
 
 # Public
 var rules
@@ -34,23 +34,24 @@ func get_state():
 
 func register_started_callback(callback_):
 	started_callback = callback_
-	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
-	g.network.matchmake_me(g.rules, self.selected_book_ids, funcref(self, 'on_matchmake_queue'))
+	if in_game:
+		started_callback.call_func()
 
 func register_update_callback(callback_):
 	update_callback = callback_
 
 func submit_books(selected_book_ids):
-	self.selected_book_ids = selected_book_ids
+	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
+	g.network.matchmake_me(g.rules, selected_book_ids, funcref(self, 'on_enter_matchmake_queue'))
 
-func on_matchmake_queue(response):
+func on_enter_matchmake_queue(response):
 	print('We have entered the matchmaking queue:')
 	print(response)
 
 func on_push_active_games(response):
 	print('We are now in a game: %s' % [response.game_uids])
-	# jim: Don't check for null; if this is null at this point we have a problem.
-	started_callback.call_func()
+	in_game = true
+	started_callback and started_callback.call_func()
 
 func submit_action(action):
 	if not state.is_valid_action(0, action):
