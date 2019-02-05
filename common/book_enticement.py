@@ -9,13 +9,13 @@ book = Book('enticement', 'Book of Enticement', [
 		effects=[effect_shield(3), effect_mana_regen(1)],
 	),
 
-	Spell('shield', 'Good Shield',
+	Spell('shield', 'Ripple Shield',
 		'Block 5 damage this turn.',
 		tech=2, level=2, cost=1,
 		effects=[effect_shield(5)],
 	),
 
-	Spell('attack', 'Big Flame',
+	Spell('attack', 'Greater Fireblast',
 		'Deal 13 damage.',
 		tech=3, level=3, cost=4,
 		effects=[effect_attack(13)],

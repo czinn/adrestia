@@ -26,10 +26,14 @@ onready var confirm_popup_scene = preload('res://components/confirm_popup.tscn')
 onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
 onready var drag_drop = get_node('/root/drag_drop')
+
+const app_version = '1.0.0'
+
 var loaded = false
 var backend = null
 var tooltip = null # Currently displayed tooltip
 var rules = null setget ,get_rules
+var rules_version = '1.0.0'
 
 var health_history
 
@@ -43,6 +47,11 @@ func get_rules():
 
 func get_default_rules():
 	return rules
+
+func update_rules(json_string, version):
+	rules.load_json_string(json_string)
+	rules_version = version
+	save()
 
 static func sum(list):
 	var result = 0
@@ -168,6 +177,16 @@ func safe_disconnect(object, signal_, target, method):
 	if object.is_connected(signal_, target, method):
 		object.disconnect(signal_, target, method)
 
+func compare_versions(version_1, version_2):
+	var split_1 = version_1.split(".")
+	var split_2 = version_2.split(".")
+	for i in range(len(split_1)):
+		if int(split_1[i]) < int(split_2[i]):
+			return -1
+		elif int(split_1[i]) > int(split_2[i]):
+			return 1
+	return 0
+
 # Data to persist between sessions.
 const save_path = 'user://saved_data.json'
 const default_rules_path = 'res://data/rules.json'
@@ -186,6 +205,7 @@ func save():
 		'user_name': user_name,
 		'tag': tag,
 		'rules': rules.as_json().result,
+		'rules_version': rules_version
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -215,12 +235,14 @@ func load():
 	user_name = dict_has(data, 'user_name', null)
 	tag = dict_has(data, 'tag', null)
 	var rules_json = dict_has(data, 'rules', null)
+	rules_version = dict_has(data, 'rules_version', '0.0.0')
 
-	if rules_json == null:
+	if rules_json == null or compare_versions(rules_version, app_version) < 0:
 		var rules_file = File.new()
 		rules_file.open(default_rules_path, File.READ)
 		rules_json = rules_file.get_as_text()
 		rules_file.close()
+		rules_version = app_version
 	else:
 		rules_json = JSON.print(rules_json)
 	rules = GameRules.new()

@@ -29,6 +29,7 @@ int adrestia_networking::handle_establish_connection(const string& log_id, const
 	 *     CODE_KEY: 200
 	 *     MESSAGE_KEY: "Adrestia is listening."
 	 *     "game_rules": The most recent set of game rules.
+	 *     "version": The client version
 	 *
 	 * Returns 0 if the connection was successfully established.
 	 * Returns 1 if the connection failed for some reason (out-of-date client).
@@ -58,6 +59,7 @@ int adrestia_networking::handle_establish_connection(const string& log_id, const
 	resp[adrestia_networking::CODE_KEY] = 200;
 	resp[adrestia_networking::MESSAGE_KEY] = "Adrestia is listening.";
 	resp["game_rules"] = json(game_rules);
+	resp["version"] = version_to_string(adrestia_networking::CLIENT_VERSION);
 
 	return 0;
 }

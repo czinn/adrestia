@@ -27,7 +27,7 @@ stickies_list: List[Sticky] = [
 		effects=[Effect(EK_health, ET_attack, self=True, amount=-2)],
 	),
 
-	Sticky(id_='exploded', name='Burning', kind=SK_id,
+	Sticky(id_='exploded', name='Chain Reaction', kind=SK_id,
 		text="Deals 3 damage each turn.",
 		stacks=True,
 		trigger=trigger_turn,
