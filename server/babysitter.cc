@@ -41,9 +41,6 @@ void Babysitter::main() {
   std::vector<Pusher*> pushers = { &push_active_games, &push_notifications };
 
   try {
-    json client_json;
-    json resp;
-    
     while (true) {
       // Pushers
       if (phase == AUTHENTICATED) {
@@ -61,7 +58,6 @@ void Babysitter::main() {
       }
 
       // read message
-      resp.clear();
       bool timed_out = false;
       string message = read_message(timed_out);
 
@@ -69,69 +65,15 @@ void Babysitter::main() {
         continue;
       }
 
-      string requested_function_name;
+      json client_json;
+      json resp;
+      string endpoint;
+      adrestia_networking::request_handler handler;
 
-      bool have_valid_function_to_call = true;
       try {
-        log("GOT SOMETHING");
         client_json = json::parse(message);
-        requested_function_name = client_json.at(adrestia_networking::HANDLER_KEY);
-        adrestia_networking::request_handler requested_function = handler_map.at(requested_function_name);
-
-        if ((phase == NEW) && (requested_function_name.compare("establish_connection") != 0)) {
-          log("Received out-of-order request for function |%s|.", requested_function_name.c_str());
-
-          resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-          resp[adrestia_networking::CODE_KEY] = 400;
-          resp[adrestia_networking::MESSAGE_KEY] =
-            "out-of-order request for |" + requested_function_name + "|";
-          have_valid_function_to_call = false;
-        }
-        else if ((phase == ESTABLISHED) &&
-            !((requested_function_name.compare("register_new_account") == 0) ||
-              (requested_function_name.compare("authenticate") == 0))) {
-          log("Received out-of-order request for function |%s| in phase |%d|.",
-              requested_function_name.c_str(), phase);
-
-          resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-          resp[adrestia_networking::CODE_KEY] = 400;
-          resp[adrestia_networking::MESSAGE_KEY] =
-            "received out-of-order request for function |" + requested_function_name + "|";
-          have_valid_function_to_call = false;
-        }
-
-        if (have_valid_function_to_call) {
-          // We have a function that we can actually work with...
-          log("Received valid call for function |%s| in phase |%d|.", requested_function_name.c_str(), phase);
-
-          if (requested_function_name.compare("establish_connection") == 0) {
-            int valid_connection = requested_function(babysitter_id, client_json, resp);
-
-            if (valid_connection == 0) {
-              cout << "[" << babysitter_id << "] moving to phase 1." << endl;;
-              phase = ESTABLISHED;
-            }
-          } else if (requested_function_name.compare("register_new_account") == 0) {
-            requested_function(babysitter_id, client_json, resp);
-
-            // This is a type of authentication (and it always succeeds)
-            uuid = resp["uuid"];
-            cout << "[" << babysitter_id << "] moving to phase 2 via register_new_account." << endl;
-            phase = AUTHENTICATED;
-          } else if (requested_function_name.compare("authenticate") == 0) {
-            int valid_authentication = requested_function(babysitter_id, client_json, resp);
-
-            if (valid_authentication == 0) {
-              uuid = client_json["uuid"];
-              cout << "[" << babysitter_id << "] moving to phase 2 via successful authenticate." << endl;
-              phase = AUTHENTICATED;
-            }
-          } else {
-            // This is all authenticated functions. uuid will be added to client_json.
-            client_json["uuid"] = uuid;
-            requested_function(babysitter_id, client_json, resp);
-          }
-        }
+        endpoint = client_json.at(adrestia_networking::HANDLER_KEY);
+        handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {
         // Not parsable to json
         log("Did not receive json-y message. %s", e.what());
@@ -146,11 +88,11 @@ void Babysitter::main() {
         resp[adrestia_networking::CODE_KEY] = 400;
         resp[adrestia_networking::MESSAGE_KEY] = "Could not find an expected key: |" + string(e.what()) + "|.";
       } catch (std::out_of_range& oor) {
-        log("Asked to access non-existent endpoint |%s|", requested_function_name.c_str());
+        log("Asked to access non-existent endpoint |%s|", endpoint.c_str());
         resp[adrestia_networking::HANDLER_KEY] = "generic_error";
         resp[adrestia_networking::CODE_KEY] = 400;
         resp[adrestia_networking::MESSAGE_KEY] =
-          "Asked to access non-existent endpoint |" + requested_function_name + "|.";
+          "Asked to access non-existent endpoint |" + endpoint + "|.";
       } catch (const string& s) {
         log("Error while running handler: %s", s.c_str());
         resp[adrestia_networking::HANDLER_KEY] = "generic_error";
@@ -158,15 +100,91 @@ void Babysitter::main() {
         resp[adrestia_networking::MESSAGE_KEY] = "An error occurred.";
       }
 
+      switch (phase) {
+        case NEW:
+          phase = phase_new(endpoint, client_json, resp, handler);
+          break;
+        case ESTABLISHED:
+          phase = phase_established(endpoint, client_json, resp, handler);
+          break;
+        case AUTHENTICATED:
+          phase = phase_authenticated(endpoint, client_json, resp, handler);
+          break;
+        default:
+          log("We somehow entered an invalid phase.");
+          return;
+      }
+
       string response_string = resp.dump();
       response_string += '\n';
       send(client_socket, response_string.c_str(), response_string.length(), MSG_NOSIGNAL);
     }
   } catch (connection_closed) {
-    cout << "[" << babysitter_id << "] Client closed the connection." << endl << endl;
+    log("Client closed the connection.");
   } catch (socket_error) {
-    cout << "[" << babysitter_id << "] terminating due to socket error." << endl;
+    log("Terminating due to socket error.");
   }
+}
+
+Babysitter::Phase Babysitter::phase_new(
+    const string &endpoint,
+    const json &client_json,
+    json &resp,
+    adrestia_networking::request_handler handler) {
+  if (endpoint == "establish_connection") {
+    int valid_connection = handler(babysitter_id, client_json, resp);
+    log("Moving to Phase 1.");
+    return (valid_connection == 0) ? ESTABLISHED : NEW;
+  }
+  log("Received out-of-order request for function |%s|.", endpoint.c_str());
+
+  resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+  resp[adrestia_networking::CODE_KEY] = 400;
+  resp[adrestia_networking::MESSAGE_KEY] =
+    "out-of-order request for |" + endpoint + "|";
+  return NEW;
+}
+
+Babysitter::Phase Babysitter::phase_established(
+    const string &endpoint,
+    const json &client_json,
+    json &resp,
+    adrestia_networking::request_handler handler) {
+  if (endpoint == "register_new_account") {
+    handler(babysitter_id, client_json, resp);
+    log("Moving to phase 2 via register_new_account.");
+    uuid = resp["uuid"];
+    return AUTHENTICATED;
+  } else if (endpoint == "authenticate") {
+    int valid = handler(babysitter_id, client_json, resp);
+    if (valid == 0) {
+      log("Moving to phase 2 via successful authenticate.");
+      uuid = client_json["uuid"];
+      return AUTHENTICATED;
+    }
+    return ESTABLISHED;
+  }
+  log("Received out-of-order request for function |%s| in phase |%d|.",
+      endpoint.c_str(), phase);
+
+  resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+  resp[adrestia_networking::CODE_KEY] = 400;
+  resp[adrestia_networking::MESSAGE_KEY] =
+    "received out-of-order request for function |" + endpoint + "|";
+  return ESTABLISHED;
+}
+
+Babysitter::Phase Babysitter::phase_authenticated(
+    const string &endpoint,
+    json &client_json,
+    json &resp,
+    adrestia_networking::request_handler handler) {
+  client_json["uuid"] = uuid;
+  int result = handler(babysitter_id, client_json, resp);
+  if (result != 0) {
+    log("It seems we got a bad result for that handler: %d", result);
+  }
+  return AUTHENTICATED;
 }
 
 string Babysitter::read_message(bool &timed_out) {
