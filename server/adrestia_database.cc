@@ -165,13 +165,13 @@ json adrestia_database::retrieve_player_info_from_database (
    * @returns json containing the following keys:
    *          "player_id": The player id in the game, as integer
    *          "player_state": The player state in the game, as integer
-   *          "player_move": The player move, if any, as a string
+   *          "player_move": The player move, if any, as a string. Empty if null.
    */
 
   logger.trace(
     "retrieve_player_info_from_database called with args:\n"
     "    game_uid: |%s|"
-    "    uuid: |%s|"
+    "    uuid: |%s|",
     game_uid.c_str(), uuid.c_str()
   );
 
@@ -180,7 +180,7 @@ json adrestia_database::retrieve_player_info_from_database (
   auto search_result = run_query(logger, work,
                                  R"sql(
                                    SELECT player_id, player_state, player_move
-                                     FROM adrestia_games
+                                     FROM adrestia_players
                                      WHERE game_uid = %s
                                        AND user_uid = %s
                                  )sql",
@@ -190,16 +190,21 @@ json adrestia_database::retrieve_player_info_from_database (
 
   if (search_result.size() == 0) {
     string error_string = "Could not find player for uuid |" + uuid + "|, game_uid |" + game_uid + "|.";
-    logger.error(error_string);
+    logger.error(error_string.c_str());
     throw string(error_string);
   }
 
-  logger.trace("Successfully found player.")
+  logger.trace("Successfully found player.");
 
   json return_var;
   return_var["player_id"] = search_result[0][0].as<int>();
   return_var["player_state"] = search_result[0][1].as<int>();
-  return_var["player_move"] = search_result[0][2].as<string>();
+  if (search_result[0][2].is_null()) {
+    return_var["player_move"] = "";
+  }
+  else {
+    return_var["player_move"] = search_result[0][2].as<string>();
+  }
 
   logger.trace("retrieve_player_info_from_database concluded.");
 
