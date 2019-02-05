@@ -36,7 +36,7 @@ func register_update_callback(callback_): update_callback = callback_
 
 func submit_books(selected_book_ids):
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
-	g.network.matchmake_me(selected_book_ids, funcref(self, 'on_matchmake_queue'))
+	g.network.matchmake_me(g.rules, selected_book_ids, funcref(self, 'on_matchmake_queue'))
 	started_callback and started_callback.call_func()
 
 func on_matchmake_queue(response):

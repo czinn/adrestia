@@ -222,5 +222,5 @@ func authenticate(uuid, password, callback):
 func change_user_name(user_name, callback):
 	return api_call_base('change_user_name', [user_name], callback)
 
-func matchmake_me(books, callback):
-	return api_call_base('matchmake_me', [books], callback)
+func matchmake_me(rules, books, callback):
+	return api_call_base('matchmake_me', [rules, books], callback)

@@ -6,6 +6,7 @@
 // Our related modules
 #include "../cpp/game_rules.h"
 #include "../cpp/game_state.h"
+#include "babysitter.h"
 
 // Database modules
 #include <pqxx/pqxx>
@@ -97,6 +98,12 @@ namespace adrestia_database {
 		pqxx::connection* psql_connection,
 		const std::string& uuid,
 		int &latest_notification_already_sent
+	);
+
+	/* Clear matchmake requests for a player. */
+	void clear_matchmake_requests(
+		const Babysitter* babysitter,
+		pqxx::connection* conn
 	);
 
 

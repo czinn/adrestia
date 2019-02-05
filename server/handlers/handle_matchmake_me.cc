@@ -101,6 +101,7 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   cout << "[" << log_id << "] Matchmaking uuid |" << uuid << "| in database." << endl;
 
   json database_json = adrestia_database::matchmake_in_database(log_id, psql_connection, uuid, selected_books);
+  delete psql_connection;
 
   string game_uid = database_json["game_uid"];
   if (game_uid.compare("") != 0) {

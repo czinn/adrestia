@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "adrestia_networking.h"
+#include "adrestia_database.h"
 
 using namespace std;
 using namespace adrestia_networking;
@@ -93,26 +94,27 @@ void Babysitter::main() {
         resp[adrestia_networking::CODE_KEY] = 400;
         resp[adrestia_networking::MESSAGE_KEY] =
           "Asked to access non-existent endpoint |" + endpoint + "|.";
+      }
+
+      try {
+        switch (phase) {
+          case NEW:
+            phase = phase_new(endpoint, client_json, resp, handler);
+            break;
+          case ESTABLISHED:
+            phase = phase_established(endpoint, client_json, resp, handler);
+            break;
+          case AUTHENTICATED:
+            phase = phase_authenticated(endpoint, client_json, resp, handler);
+            break;
+          default:
+            log("We somehow entered an invalid phase.");
+        }
       } catch (const string& s) {
         log("Error while running handler: %s", s.c_str());
         resp[adrestia_networking::HANDLER_KEY] = "generic_error";
         resp[adrestia_networking::CODE_KEY] = 400;
         resp[adrestia_networking::MESSAGE_KEY] = "An error occurred.";
-      }
-
-      switch (phase) {
-        case NEW:
-          phase = phase_new(endpoint, client_json, resp, handler);
-          break;
-        case ESTABLISHED:
-          phase = phase_established(endpoint, client_json, resp, handler);
-          break;
-        case AUTHENTICATED:
-          phase = phase_authenticated(endpoint, client_json, resp, handler);
-          break;
-        default:
-          log("We somehow entered an invalid phase.");
-          return;
       }
 
       string response_string = resp.dump();
@@ -124,6 +126,12 @@ void Babysitter::main() {
   } catch (socket_error) {
     log("Terminating due to socket error.");
   }
+
+  pqxx::connection *conn = adrestia_database::establish_psql_connection();
+  adrestia_database::clear_matchmake_requests(this, conn);
+  delete conn;
+
+  log("so we should have killed it");
 }
 
 Babysitter::Phase Babysitter::phase_new(

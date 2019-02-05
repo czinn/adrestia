@@ -45,6 +45,7 @@ int adrestia_networking::handle_change_user_name(const string& log_id, const jso
 	cout << "[" << log_id << "] Modifying uuid |" << uuid << "| to have user_name |" << new_user_name << "|..." << endl;
 	pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
 	json new_account_info = adrestia_database::adjust_user_name_in_database(log_id, psql_connection, uuid, new_user_name);
+	delete psql_connection;
 
 	cout << "[" << log_id << "] New account info is:" << endl
          << "    uuid: |" << uuid << "|" << endl

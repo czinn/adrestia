@@ -53,6 +53,7 @@ int adrestia_networking::handle_establish_connection(const string& log_id, const
 
   pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
   GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, psql_connection, 0);
+  delete psql_connection;
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
   resp[adrestia_networking::CODE_KEY] = 200;

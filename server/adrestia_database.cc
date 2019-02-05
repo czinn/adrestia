@@ -595,6 +595,21 @@ std::vector<std::string> adrestia_database::get_notifications(
 }
 
 
+void adrestia_database::clear_matchmake_requests(
+  const Babysitter* babysitter,
+  pqxx::connection* conn
+) {
+  pqxx::work work(*conn);
+  run_query(work,
+    R"sql(
+      DELETE FROM adrestia_match_waiters
+      WHERE uuid = %s
+    )sql",
+    work.quote(babysitter->uuid).c_str());
+  work.commit();
+}
+
+
 pqxx::connection* adrestia_database::establish_psql_connection() {
   /* Returns a pointer to a pqxx::connection in the heap.
    * Connection parameters specified via environment variable (DB_CONNECTION_STRING)
