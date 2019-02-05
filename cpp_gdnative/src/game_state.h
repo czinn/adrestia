@@ -14,6 +14,7 @@ namespace godot {
 			static void _register_methods();
 
 			void init(Variant rules, Variant player_books);
+			void init_json(Variant rules, Variant json);
 			void clone(Variant state);
 			// Returns a game state not suitable for simulation, but suitable for apply_event
 			void of_game_view(Variant view);

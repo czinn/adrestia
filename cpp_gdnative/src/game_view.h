@@ -13,6 +13,7 @@ namespace godot {
 			static void _register_methods();
 
 			void init(Variant game_state, int view_player_id);
+			void init_json(Variant rules, Variant json);
 			Variant turn_number() const;
 			Variant winners() const;
 			INTF_SETGET(Variant, history)

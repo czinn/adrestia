@@ -49,7 +49,10 @@ func on_enter_matchmake_queue(response):
 	print(response)
 
 func on_push_active_games(response):
+	print('Got an update:')
 	print('We are now in a game: %s' % [response.game_uids])
+	state = g.GameState.new()
+	state.init_json(rules, response.game_states[0])
 	in_game = true
 	started_callback and started_callback.call_func()
 

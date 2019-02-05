@@ -13,6 +13,7 @@ namespace godot {
 
 	void CLASSNAME::_register_methods() {
 		REGISTER_METHOD(init)
+		REGISTER_METHOD(init_json)
 		REGISTER_METHOD(clone)
 		REGISTER_METHOD(of_game_view)
 		REGISTER_METHOD(simulate)
@@ -38,6 +39,13 @@ namespace godot {
 		// freed by Godot? Should we hold a reference to rules somehow to prevent
 		// that?
 		set_ptr(new ::GameState(*_rules->_ptr, _books));
+	}
+
+	void CLASSNAME::init_json(Variant rules, Variant json) {
+		nlohmann::json j;
+		auto *_rules = godot::as<GameRules>(rules);
+		of_godot_variant(json, &j);
+		set_ptr(new ::GameState(*_rules->_ptr, j));
 	}
 
 	void CLASSNAME::clone(Variant state) {
