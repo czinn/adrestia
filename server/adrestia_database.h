@@ -29,14 +29,14 @@ namespace adrestia_database {
 	/* Gets game rules from the database. */
 	GameRules retrieve_game_rules(
 			const std::string& log_id,
-			pqxx::connection* psql_connection,
+			pqxx::connection& psql_connection,
 			int id
 	);
 
 	/* Fetches from the database the game_state associated with the given game_uid. */
 	json retrieve_gamestate_from_database(
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& game_uid,
 		GameRules &game_rules
 	);
@@ -46,7 +46,7 @@ namespace adrestia_database {
 	 */
 	json check_for_active_games_in_database (
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& uuid
 	);
 
@@ -55,7 +55,7 @@ namespace adrestia_database {
 	 */
 	json matchmake_in_database(
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		const std::vector<std::string>& selected_books
 	);
@@ -65,7 +65,7 @@ namespace adrestia_database {
 	 */
 	json adjust_user_name_in_database(
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		const std::string& user_name
 	);
@@ -76,7 +76,7 @@ namespace adrestia_database {
 	 */
 	json register_new_account_in_database(
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& password
 	);
 
@@ -85,7 +85,7 @@ namespace adrestia_database {
 	 */
 	json verify_existing_account_in_database(
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		const std::string& password
 	);
@@ -95,7 +95,7 @@ namespace adrestia_database {
 	 * returned. */
 	std::vector<std::string> get_notifications(
 		const std::string& log_id,
-		pqxx::connection* psql_connection,
+		pqxx::connection& psql_connection,
 		const std::string& uuid,
 		int &latest_notification_already_sent
 	);
@@ -103,14 +103,14 @@ namespace adrestia_database {
 	/* Clear matchmake requests for a player. */
 	void clear_matchmake_requests(
 		const Babysitter* babysitter,
-		pqxx::connection* conn
+		pqxx::connection& conn
 	);
 
 
 	/* Returns an established pqxx::connection object,
 	 *     connection parameters specified via environment variable.
 	 */
-	pqxx::connection* establish_psql_connection();
+	pqxx::connection establish_connection();
 }
 
 #endif

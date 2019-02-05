@@ -41,9 +41,8 @@ int adrestia_networking::handle_authenticate(const string& log_id, const json& c
   cout << "[" << log_id << "] Checking authentication for account with:" << endl
        << "    uuid: |" << uuid << "|" << endl
        << "    password: |" << password << "|" << endl;
-  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
+  pqxx::connection psql_connection = adrestia_database::establish_connection();
   json result = adrestia_database::verify_existing_account_in_database(log_id, psql_connection, uuid, password);
-  delete psql_connection;
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 

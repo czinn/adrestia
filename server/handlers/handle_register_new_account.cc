@@ -42,9 +42,8 @@ int adrestia_networking::handle_register_new_account(const string& log_id, const
   cout << "[" << log_id << "] Creating new account with params:" << endl
        << "    password: |" << password << "|" << endl;
 
-  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
+  pqxx::connection psql_connection = adrestia_database::establish_connection();
   json new_account = adrestia_database::register_new_account_in_database(log_id, psql_connection, password);
-  delete psql_connection;
 
   cout << "[" << log_id << "] Created new account with:" << endl
        << "    uuid: |" << new_account["uuid"] << "|" << endl

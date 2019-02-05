@@ -106,13 +106,13 @@ string vector_to_sql_array(pqxx::work& work, const vector<T>& vec) {
 
 GameRules adrestia_database::retrieve_game_rules(
     const string& log_id,
-    pqxx::connection* psql_connection,
+    pqxx::connection& conn,
     int id
 ) {
   /* @brief Gets the game rules with the given id
    *
    * @param log_id: A string prepended to log lines
-   * @param psql_connection: The pqxx PostgreSQL connection.
+   * @param conn: The pqxx PostgreSQL connection.
    * @param id: Id of the game rules, from the game table. An id of 0 gets the
    *            most recent set of rules.
    *
@@ -122,7 +122,7 @@ GameRules adrestia_database::retrieve_game_rules(
   cout << "[" << log_id << "] retrieve_game_rules called with args:" << endl
        << "    id: |" << id << "|" << endl;
 
-  pqxx::work work(*psql_connection);
+  pqxx::work work(conn);
 
   if (id == 0) {
     auto search_result = run_query(work, R"sql(
@@ -145,7 +145,7 @@ GameRules adrestia_database::retrieve_game_rules(
 
 json adrestia_database::retrieve_gamestate_from_database (
   const string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const string& game_uid,
   GameRules &game_rules
 ) {
@@ -164,7 +164,7 @@ json adrestia_database::retrieve_gamestate_from_database (
   cout << "[" << log_id << "] retrieve_gamestate_from_database called with args:" << endl
        << "    game_uid: |" << game_uid << "|" << endl;
 
-  pqxx::work work(*psql_connection);
+  pqxx::work work(psql_connection);
 
   auto search_result = run_query(work, R"sql(
     SELECT game_rules, game_state
@@ -183,7 +183,7 @@ json adrestia_database::retrieve_gamestate_from_database (
 
 json adrestia_database::check_for_active_games_in_database (
   const string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const string& uuid
 ) {
   /* @brief Checks the database to see if the given user is part of any active games, and returns the game_uids of
@@ -202,7 +202,7 @@ json adrestia_database::check_for_active_games_in_database (
   cout << "[" << log_id << "] check_for_active_games_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl;
 
-  pqxx::work work(*psql_connection);
+  pqxx::work work(psql_connection);
 
   auto search_result = run_query(work, R"sql(
     SELECT adrestia_games.game_uid, player_state
@@ -244,7 +244,7 @@ json adrestia_database::check_for_active_games_in_database (
 
 json adrestia_database::matchmake_in_database (
   const string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const string& uuid,
   const vector<string>& selected_books
 ) {
@@ -268,7 +268,7 @@ json adrestia_database::matchmake_in_database (
   cout << "[" << log_id << "] matchmake_in_database called with args:" << endl
        << "    uuid: |" << uuid << "|" << endl;
 
-  pqxx::work work(psql_connection[0]);
+  pqxx::work work(psql_connection);
 
   // Check if there are any waiters...
   auto search_result = run_query(work,
@@ -288,7 +288,7 @@ json adrestia_database::matchmake_in_database (
       R"sql(
         INSERT INTO adrestia_match_waiters (uuid, selected_books)
         VALUES (%s, %s)
-        ON CONFLICT DO UPDATE SET selected_books = %s
+        ON CONFLICT (uuid) DO UPDATE SET selected_books = %s
       )sql",
       work.quote(uuid).c_str(), vector_to_sql_array(work, selected_books).c_str(),
       vector_to_sql_array(work, selected_books).c_str());
@@ -383,7 +383,7 @@ json adrestia_database::matchmake_in_database (
 
 json adrestia_database::adjust_user_name_in_database(
   const string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const string& uuid,
   const string& user_name
 ) {
@@ -413,7 +413,7 @@ json adrestia_database::adjust_user_name_in_database(
   for (int i = 0; i < 1000; i += 1) {
     string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
 
-    pqxx::work work(psql_connection[0]);
+    pqxx::work work(psql_connection);
     try {
       pqxx::result result = run_query(work,
         R"sql(
@@ -447,7 +447,7 @@ json adrestia_database::adjust_user_name_in_database(
 
 json adrestia_database::register_new_account_in_database(
   const string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const string& password
 ) {
   /* @brief Creates a new account in adrestia_accounts with the given password. The account will be given a default
@@ -483,7 +483,7 @@ json adrestia_database::register_new_account_in_database(
     string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
     string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
 
-    pqxx::work work(psql_connection[0]);
+    pqxx::work work(psql_connection);
     try {
       run_query(work, R"sql(
         INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)
@@ -520,7 +520,7 @@ json adrestia_database::register_new_account_in_database(
 
 json adrestia_database::verify_existing_account_in_database(
   const string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const string& uuid,
   const string& password
 ) {
@@ -532,7 +532,7 @@ json adrestia_database::verify_existing_account_in_database(
   
   json result;
 
-  pqxx::work work(*psql_connection);
+  pqxx::work work(psql_connection);
   pqxx::result search_result = run_query(work, R"sql(
   SELECT hash_of_salt_and_password, salt, user_name, tag
     FROM adrestia_accounts
@@ -566,7 +566,7 @@ json adrestia_database::verify_existing_account_in_database(
 
 std::vector<std::string> adrestia_database::get_notifications(
   const std::string& log_id,
-  pqxx::connection* psql_connection,
+  pqxx::connection& psql_connection,
   const std::string& uuid,
   int &latest_notification_already_sent
 ) {
@@ -580,7 +580,7 @@ std::vector<std::string> adrestia_database::get_notifications(
 
   std::vector<std::string> result;
 
-  pqxx::work work(*psql_connection);
+  pqxx::work work(psql_connection);
   pqxx::result search_results = run_query(work, R"sql(
   SELECT id, message
     FROM adrestia_notifications
@@ -601,9 +601,9 @@ std::vector<std::string> adrestia_database::get_notifications(
 
 void adrestia_database::clear_matchmake_requests(
   const Babysitter* babysitter,
-  pqxx::connection* conn
+  pqxx::connection& conn
 ) {
-  pqxx::work work(*conn);
+  pqxx::work work(conn);
   run_query(work,
     R"sql(
       DELETE FROM adrestia_match_waiters
@@ -614,16 +614,11 @@ void adrestia_database::clear_matchmake_requests(
 }
 
 
-pqxx::connection* adrestia_database::establish_psql_connection() {
-  /* Returns a pointer to a pqxx::connection in the heap.
-   * Connection parameters specified via environment variable (DB_CONNECTION_STRING)
-   */
-
+pqxx::connection adrestia_database::establish_connection() {
   const char *db_conn_string = getenv("DB_CONNECTION_STRING");
   if (db_conn_string == nullptr) {
     cerr << "Failed to read DB_CONNECTION_STRING from env." << endl;
     throw string("Failed to read DB_CONNECTION_STRING from env.");
   }
-  pqxx::connection* psql_connection = new pqxx::connection(db_conn_string);
-  return psql_connection;
+  return pqxx::connection(db_conn_string);
 }

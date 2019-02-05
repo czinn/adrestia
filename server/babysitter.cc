@@ -127,9 +127,8 @@ void Babysitter::main() {
     log("Terminating due to socket error.");
   }
 
-  pqxx::connection *conn = adrestia_database::establish_psql_connection();
+  pqxx::connection conn = adrestia_database::establish_connection();
   adrestia_database::clear_matchmake_requests(this, conn);
-  delete conn;
 
   log("so we should have killed it");
 }

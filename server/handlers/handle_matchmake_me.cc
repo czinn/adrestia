@@ -52,7 +52,7 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   client_rules = client_json.at("game_rules");
 
   // Checking client rules
-  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
+  pqxx::connection psql_connection = adrestia_database::establish_connection();
   GameRules game_rules = adrestia_database::retrieve_game_rules(log_id, psql_connection, 0);
   cout << "[" << log_id << "] Comparing client rules with server rules..." << endl;
   if (!(game_rules == client_rules)) {
@@ -101,7 +101,6 @@ int adrestia_networking::handle_matchmake_me(const string& log_id, const json& c
   cout << "[" << log_id << "] Matchmaking uuid |" << uuid << "| in database." << endl;
 
   json database_json = adrestia_database::matchmake_in_database(log_id, psql_connection, uuid, selected_books);
-  delete psql_connection;
 
   string game_uid = database_json["game_uid"];
   if (game_uid.compare("") != 0) {
