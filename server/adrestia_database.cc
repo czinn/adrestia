@@ -284,10 +284,14 @@ json adrestia_database::matchmake_in_database (
   if (search_result.size() == 0) {
     cout << "[" << log_id << "] No possible matches are waiting. We shall become a waiter." << endl;
 
-    run_query(work, R"sql(
-      INSERT INTO adrestia_match_waiters (uuid, selected_books)
-      VALUES (%s, %s)
-    )sql", work.quote(uuid).c_str(), vector_to_sql_array(work, selected_books).c_str());
+    run_query(work,
+      R"sql(
+        INSERT INTO adrestia_match_waiters (uuid, selected_books)
+        VALUES (%s, %s)
+        ON CONFLICT DO UPDATE SET selected_books = %s
+      )sql",
+      work.quote(uuid).c_str(), vector_to_sql_array(work, selected_books).c_str(),
+      vector_to_sql_array(work, selected_books).c_str());
 
     cout << "[" << log_id << "] Commiting transaction." << endl;
     work.commit();
