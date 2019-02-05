@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://scenes/game_results.gd" type="Script" id=1]
+[ext_resource path="res://scenes/credits.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://art-built/9patch/background-title.png" type="Texture" id=3]
 [ext_resource path="res://scripts/background.gd" type="Script" id=4]
 [ext_resource path="res://art-built/button-back.png" type="Texture" id=5]
-[ext_resource path="res://fonts/Amaranth-Regular-60.tres" type="DynamicFont" id=6]
-[ext_resource path="res://components/game_history.tscn" type="PackedScene" id=7]
+[ext_resource path="res://fonts/Amaranth-Bold-15.tres" type="DynamicFont" id=6]
+[ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=7]
+[ext_resource path="res://fonts/Amaranth-Regular-60.tres" type="DynamicFont" id=8]
 
 [node name="root" type="Node"]
 
@@ -34,7 +35,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2( 0, 0, 540, 960 )
 script = ExtResource( 4 )
-_sections_unfolded = [ "Offset", "Region" ]
+_sections_unfolded = [ "Animation", "Offset", "Region", "Transform" ]
 
 [node name="back_button" type="TextureButton" parent="ui" index="1"]
 
@@ -62,38 +63,52 @@ expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="results_text" type="RichTextLabel" parent="ui" index="2"]
+[node name="content" type="RichTextLabel" parent="ui" index="2"]
 
 anchor_left = 0.5
 anchor_top = 0.0
 anchor_right = 0.5
 anchor_bottom = 0.0
-margin_left = -184.0
+margin_left = -220.0
 margin_top = 150.0
-margin_right = 184.0
-margin_bottom = 250.0
+margin_right = 220.0
+margin_bottom = 770.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
+custom_fonts/bold_font = ExtResource( 6 )
+custom_fonts/normal_font = ExtResource( 7 )
 bbcode_enabled = true
-bbcode_text = "Congratulations!
-This means you are the very best.
-You did great!"
+bbcode_text = "Copyright © 2019 Dmitri Sclear, Jim Zhang, and Charles Zinn.
+
+Adrestia is licenced under an [url=https://adrestia.neynt.ca]MIT License[/url].
+
+[b]Built with:[/b]
+Godot ([url=https://github.com/godotengine/godot/blob/master/LICENSE.txt]MIT License[/url])
+godot-cpp ([url=https://github.com/GodotNativeTools/godot-cpp/blob/master/LICENSE]MIT License[/url])
+nlohmann's json ([url=https://github.com/nlohmann/json/blob/develop/LICENSE.MIT]MIT License[/url])
+frugally-deep ([url=https://github.com/Dobiasd/frugally-deep/blob/master/LICENSE]MIT License[/url])"
 visible_characters = -1
 percent_visible = 1.0
 meta_underlined = true
 tab_size = 4
-text = "Congratulations!
-This means you are the very best.
-You did great!"
+text = "Copyright © 2019 Dmitri Sclear, Jim Zhang, and Charles Zinn.
+
+Adrestia is licenced under an MIT License.
+
+Built with:
+Godot (MIT License)
+godot-cpp (MIT License)
+nlohmann's json (MIT License)
+frugally-deep (MIT License)"
 scroll_active = false
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "Anchor", "BBCode", "Margin" ]
+_sections_unfolded = [ "Anchor", "BBCode", "Margin", "custom_fonts" ]
 
 [node name="title_label" type="Label" parent="ui" index="3"]
 
@@ -109,17 +124,12 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 6 )
-text = "Game Over"
+custom_fonts/font = ExtResource( 8 )
+text = "Credits"
 align = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
-
-[node name="game_history" parent="ui" index="4" instance=ExtResource( 7 )]
-
-margin_top = 240.0
-margin_bottom = 740.0
 
 

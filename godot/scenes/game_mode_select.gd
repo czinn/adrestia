@@ -17,6 +17,7 @@ func _ready():
 	button_tutorial.connect('pressed', self, 'on_button_tutorial_pressed')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_disconnected')
+	get_tree().set_auto_accept_quit(false)
 
 func on_connected():
 	button_multiplayer.material = null
