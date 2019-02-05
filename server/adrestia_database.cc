@@ -144,6 +144,70 @@ GameRules adrestia_database::retrieve_game_rules(
   }
 }
 
+
+json adrestia_database::retrieve_player_info_from_database (
+  const Logger& logger,
+  pqxx::connection& psql_connection,
+  const string& game_uid,
+  const string& uuid
+) {
+  /* @brief Retrieves information about a player in a specific game.
+   *
+   * @param logger: Logger
+   * @param psql_connection: The pqxx PostgreSQL connection.
+   * @param game_uid: The game_uid we will be getting information from.
+   * @param uuid: The user whose information we will be getting.
+   *
+   * @exception string: If no game player can be found matching the
+   *                    specific game_uid/uuid pair, a string will
+   *                    be thrown.
+   *
+   * @returns json containing the following keys:
+   *          "player_id": The player id in the game, as integer
+   *          "player_state": The player state in the game, as integer
+   *          "player_move": The player move, if any, as a string
+   */
+
+  logger.trace(
+    "retrieve_player_info_from_database called with args:\n"
+    "    game_uid: |%s|"
+    "    uuid: |%s|"
+    game_uid.c_str(), uuid.c_str()
+  );
+
+  pqxx::work work(psql_connection);
+
+  auto search_result = run_query(logger, work,
+                                 R"sql(
+                                   SELECT player_id, player_state, player_move
+                                     FROM adrestia_games
+                                     WHERE game_uid = %s
+                                       AND user_uid = %s
+                                 )sql",
+                                 work.quote(game_uid).c_str(),
+                                 work.quote(uuid).c_str()
+                                );
+
+  if (search_result.size() == 0) {
+    string error_string = "Could not find player for uuid |" + uuid + "|, game_uid |" + game_uid + "|.";
+    logger.error(error_string);
+    throw string(error_string);
+  }
+
+  logger.trace("Successfully found player.")
+
+  json return_var;
+  return_var["player_id"] = search_result[0][0].as<int>();
+  return_var["player_state"] = search_result[0][1].as<int>();
+  return_var["player_move"] = search_result[0][2].as<string>();
+
+  logger.trace("retrieve_player_info_from_database concluded.");
+
+  return return_var;
+}
+
+
+
 json adrestia_database::retrieve_gamestate_from_database (
   const Logger& logger,
   pqxx::connection& psql_connection,
@@ -158,14 +222,15 @@ json adrestia_database::retrieve_gamestate_from_database (
    *                  If there is no such game, or the game has no state,
    *                      this will be an empty string.
    * @param game_rules: A GameRules object that should be populated with the
-   * game's rules.
+   *                    game's rules.
    * @returns: json representation of the game state
    */
 
   logger.trace(
-      "retrieve_gamestate_from_database called with args:\n"
-      "    game_uid: |%s|",
-      game_uid.c_str());
+    "retrieve_gamestate_from_database called with args:\n"
+    "    game_uid: |%s|",
+    game_uid.c_str()
+  );
 
   pqxx::work work(psql_connection);
 
