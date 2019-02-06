@@ -2,6 +2,9 @@ extends Object
 
 # Private, do not touch
 var g = null
+var player_id = null
+var game_uid = null
+var view = null
 var state = null
 var started_callback = null
 var update_callback = null
@@ -18,24 +21,19 @@ func _init(g_):
 	rules = g.get_default_rules()
 
 func get_view():
-	if state == null:
-		return null
-	var view = g.GameView.new()
-	view.init(state, 0)
-	return view
+	if view != null:
+		return view
+	return null
 
 func get_state():
 	if state == null:
 		return null
-	if state.winners().size() != 0:
-		return state
-	else:
-		return null
+	return state
 
 func register_started_callback(callback_):
 	started_callback = callback_
 	if in_game:
-		started_callback.call_func()
+		started_callback and started_callback.call_func()
 
 func register_update_callback(callback_):
 	update_callback = callback_
@@ -50,19 +48,29 @@ func on_enter_matchmake_queue(response):
 
 func on_push_active_games(response):
 	print('Got an update:')
-	print('We are now in a game: %s' % [response.game_uids])
-	state = g.GameState.new()
-	state.init_json(rules, response.game_states[0])
-	in_game = true
-	started_callback and started_callback.call_func()
+	print(response)
+	var game = response.updates[0]
+	game_uid = game.game_uid
+	if game.has('game_state'):
+		state = g.GameState.new()
+		state.init_json(rules, game.game_state)
+	else:
+		view = g.GameView.new()
+		view.init_json(rules, game.game_view)
+		print('successfully created view')
+	if game.events.size() > 0:
+		update_callback.call_func(get_view(), game.events)
+
+	if not in_game:
+		print('We are now in a game: %s' % [game_uid])
+		in_game = true
+		started_callback and started_callback.call_func()
+
+func on_submit_move(response):
+	print('Submitted move with response: %d' % [response.api_code])
 
 func submit_action(action):
-	if not state.is_valid_action(0, action):
-		return false
-	# TODO jim: send this shit to the server, etc
-	var events = state.simulate_events([action, null]) # TODO
-	if update_callback != null:
-		update_callback.call_func(get_view(), events)
+	g.network.submit_move(game_uid, action, funcref(self, 'on_submit_move'))
 	return true
 
 func leave_game():

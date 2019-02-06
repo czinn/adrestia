@@ -29,8 +29,10 @@ Player::Player(const GameRules &rules, const json &j)
 	for (const auto &it : j.at("tech")) {
 		tech.push_back(it);
 	}
-	for (const auto &it : j.at("books")) {
-		books.push_back(&rules.get_book(it.get<std::string>()));
+	if (j.find("books") != j.end()) {
+		for (const auto &it : j.at("books")) {
+			books.push_back(&rules.get_book(it.get<std::string>()));
+		}
 	}
 	for (const auto &it : j.at("stickies")) {
 		stickies.push_back(StickyInstance(rules, it));
@@ -307,6 +309,7 @@ void to_json(json &j, const Player &player) {
 	j["mp"] = player.mp;
 	j["mp_regen"] = player.mp_regen;
 	j["tech"] = player.tech;
+	j["books"] = json::array();
 	for (auto *b : player.books) {
 		j["books"].push_back(b->get_id());
 	}

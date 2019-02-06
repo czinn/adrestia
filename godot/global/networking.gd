@@ -48,7 +48,7 @@ func _ready():
 	# For server development
 	# TODO: remove before release!!
 	if OS.get_name() in ['X11', 'OSX']:
-		g.network.host = 'localhost'
+		g.network.host = '127.0.0.1'
 
 	connect_timer = Timer.new()
 	connect_timer.set_one_shot(true)
@@ -227,3 +227,6 @@ func change_user_name(user_name, callback):
 
 func matchmake_me(rules, books, callback):
 	return api_call_base('matchmake_me', [rules, books], callback)
+
+func submit_move(game_uid, player_move, callback):
+	return api_call_base('submit_move', [game_uid, player_move], callback)

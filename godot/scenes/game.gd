@@ -20,6 +20,7 @@ onready var event_timer = $ui/event_timer
 onready var animation_player = $ui/animation_player
 onready var back_button = $ui/back_button
 
+var player_id
 var state
 var events = []
 
@@ -33,6 +34,7 @@ var ui_state
 func _ready():
 	state = g.GameState.new()
 	state.of_game_view(g.backend.get_view())
+	player_id = g.backend.get_view().view_player_id
 	ui_state = UiState.CHOOSING_SPELLS
 	g.backend.register_update_callback(funcref(self, 'on_backend_update'))
 	# Hacky method of displaying health in end-of-game history
@@ -45,7 +47,7 @@ func _ready():
 	spell_select.display_filter = funcref(self, 'is_not_tech_spell')
 	spell_select.enabled_filter = funcref(self, 'player_can_cast')
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
-	spell_select.books = state.players[0].books
+	spell_select.books = state.players[player_id].books
 	spell_select.connect('spell_press', self, 'on_spell_enqueue')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
 	get_tree().set_auto_accept_quit(false)
@@ -68,7 +70,7 @@ func on_back_button_pressed():
 func on_spell_enqueue(spell):
 	var action = my_spell_list.spells.duplicate()
 	action.append(spell.get_id())
-	if not state.is_valid_action(0, action):
+	if not state.is_valid_action(player_id, action):
 		return
 	my_spell_list.spells = action
 	redraw()
@@ -81,7 +83,7 @@ func on_my_spell_list_pressed(index, spell):
 	if ui_state == CHOOSING_SPELLS:
 		var action = my_spell_list.spells.duplicate()
 		action.remove(index)
-		if not state.is_valid_action(0, action):
+		if not state.is_valid_action(player_id, action):
 			return
 		my_spell_list.spells = action
 		redraw()
@@ -98,7 +100,7 @@ func player_upgraded_book_id():
 # TODO: jim: This is O(n) in the number of spells in the queue. Not super
 # important to improve, but feels bad.
 func player_mp_left():
-	var me = state.players[0]
+	var me = state.players[player_id]
 	var mp_left = me.mp
 	if ui_state == UiState.CHOOSING_SPELLS:
 		for spell_id in my_spell_list.spells:
@@ -109,14 +111,14 @@ func player_mp_left():
 func player_can_afford(spell):
 	if spell.is_tech_spell() and player_upgraded_book_id() != null:
 		return false
-	var me = state.players[0]
+	var me = state.players[player_id]
 	var mp_left = player_mp_left()
 	return spell.get_cost() <= mp_left
 
 # TODO: jim: This is ugly because we have to zip through Player.tech and
 # Player.books. Make it not ugly.
 func player_effective_tech_in(book_id):
-	var me = state.players[0]
+	var me = state.players[player_id]
 	for i in range(len(me.tech)):
 		if me.books[i].get_id() == book_id:
 			return me.tech[i] + \
@@ -125,7 +127,7 @@ func player_effective_tech_in(book_id):
 	return 0
 
 func player_effective_tech():
-	var me = state.players[0]
+	var me = state.players[player_id]
 	var result = me.tech
 	var upgraded_book_id = player_upgraded_book_id()
 	if ui_state == UiState.CHOOSING_SPELLS:
@@ -135,7 +137,7 @@ func player_effective_tech():
 	return result
 
 func player_effective_level():
-	var me = state.players[0]
+	var me = state.players[player_id]
 	return g.sum(me.tech) + \
 		(1 if player_upgraded_book_id() != null && \
 			ui_state == UiState.CHOOSING_SPELLS else 0)
@@ -153,8 +155,8 @@ func is_not_tech_spell(spell):
 	return not spell.is_tech_spell()
 
 func redraw():
-	var me = state.players[0]
-	var them = state.players[1]
+	var me = state.players[player_id]
+	var them = state.players[1 - player_id]
 	var mp_left = player_mp_left()
 	enemy_avatar.redraw(them)
 	enemy_stickies.redraw(them.stickies)
@@ -266,20 +268,20 @@ func on_event_timer_timeout():
 	for event in events_to_show:
 		state.apply_event(event)
 	
-		var me = state.players[0]
-		var them = state.players[1]
+		var me = state.players[player_id]
+		var them = state.players[1 - player_id]
 		# Do UI effects for event
 		if event['type'] == 'fire_spell':
-			var player_spell_list = my_spell_list if event['player'] == 0 else enemy_spell_list
+			var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
 			player_spell_list.flash_spell(event['index'])
 			# We need to update mana here because spells cost mana
-			if event['player'] == 0:
+			if event['player'] == player_id:
 				my_mana_bar.redraw(me)
 				my_avatar.redraw(me)
 			else:
 				enemy_avatar.redraw(them)
 		elif event['type'] == 'player_mp':
-			if event['player'] == 0:
+			if event['player'] == player_id:
 				my_mana_bar.redraw(me)
 				my_avatar.redraw(me)
 			else:
@@ -289,7 +291,7 @@ func on_event_timer_timeout():
 			var target_player = effect['target_player']
 			var kind = effect['kind']
 			if kind == 'health' or kind == 'mana_regen' or kind == 'mana':
-				if target_player == 0:
+				if target_player == player_id:
 					my_mana_bar.redraw(me)
 					my_avatar.redraw(me)
 				else:
@@ -297,22 +299,22 @@ func on_event_timer_timeout():
 			elif kind == 'tech':
 				spell_select.tech_levels = player_effective_tech()
 			elif kind == 'sticky':
-				if target_player == 0:
+				if target_player == player_id:
 					my_stickies.redraw_append(me.stickies)
 				else:
 					enemy_stickies.redraw_append(them.stickies)
 		elif event['type'] == 'spell_countered':
-			var player_spell_list = my_spell_list if event['player'] == 0 else enemy_spell_list
+			var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
 			player_spell_list.spell_countered(event['index'])
 		elif event['type'] == 'spell_hit':
 			pass # TODO: charles: Maybe animate this
 		elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':
-			if event['player'] == 0:
+			if event['player'] == player_id:
 				my_stickies.redraw_update(me.stickies)
 			else:	
 				enemy_stickies.redraw_update(them.stickies)
 		elif event['type'] == 'sticky_expired':
-			if event['player'] == 0:
+			if event['player'] == player_id:
 				my_stickies.redraw_remove(event['sticky_index'])
 			else:
 				enemy_stickies.redraw_remove(event['sticky_index'])
