@@ -19,14 +19,14 @@ func _ready():
 		# Tie
 		results_text.bbcode_text = '[b]You tied![/b]\nThis means you half-lost. Try harder next time.'
 		winner = -1
-	elif winners.has(0):
+	elif winners.has(game_history.view_player_id):
 		# Won!
 		results_text.bbcode_text = '[b]You won![/b]\nYour spells are very impressive. You must be very proud.'
-		winner = 0
+		winner = game_history.view_player_id
 	else:
 		# Loss
 		results_text.bbcode_text = '[b]You lost.[/b]\nYou need more practice.'
-		winner = 1
+		winner = 1 - game_history.view_player_id
 
 func _notification(what):
 	print(what)

@@ -22,6 +22,10 @@ func _init(g_):
 
 func get_view():
 	if view != null:
+		if state != null:
+			var v = g.GameView.new()
+			v.init(state, view.view_player_id)
+			return v
 		return view
 	return null
 
