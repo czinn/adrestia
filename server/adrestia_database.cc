@@ -217,7 +217,8 @@ json adrestia_database::retrieve_gamestate_from_database (
   const Logger& logger,
   pqxx::connection& psql_connection,
   const string& game_uid,
-  GameRules &game_rules
+  GameRules &game_rules,
+	vector<json> &last_events
 ) {
   /* @brief Retrieves the gamestate of a target game.
    *
@@ -228,6 +229,8 @@ json adrestia_database::retrieve_gamestate_from_database (
    *                      this will be an empty string.
    * @param game_rules: A GameRules object that should be populated with the
    *                    game's rules.
+	 * @param last_events: A vector that should be populated with the most recent
+	 *                     events from simulation.
    * @returns: json representation of the game state
    */
 
@@ -240,7 +243,7 @@ json adrestia_database::retrieve_gamestate_from_database (
   pqxx::work work(psql_connection);
 
   auto search_result = run_query(logger, work, R"sql(
-    SELECT game_rules, game_state
+    SELECT game_rules, game_state, last_events
     FROM adrestia_games
       INNER JOIN adrestia_rules ON game_rules_id = adrestia_rules.id
     WHERE game_uid = %s
@@ -250,6 +253,13 @@ json adrestia_database::retrieve_gamestate_from_database (
     throw string("Could not find game state");
   }
   game_rules = json::parse(search_result[0][0].as<string>());
+	last_events.clear();
+	if (!search_result[0]["last_events"].is_null()) {
+		json last_events_json = json::parse(search_result[0]["last_events"].as<string>());
+		for (const json &event : last_events_json) {
+			last_events.push_back(event);
+		}
+	}
   return json::parse(search_result[0][1].as<string>());
 }
 
@@ -456,6 +466,162 @@ json adrestia_database::matchmake_in_database (
   json return_var;
   return_var["game_uid"] = game_uid;
   return return_var;
+}
+
+bool adrestia_database::submit_move_in_database(
+	const Logger& logger,
+	pqxx::connection& psql_connection,
+	const string& uuid,
+	const string& game_uid,
+	const vector<string>& player_move
+) {
+	/* @brief Submits the move for a turn in the game, updating the game if all
+		* players have submitted a move.
+		*
+		* @param logger: Logger
+		* @param psql_connection: The pqxx PostgreSQL connection.
+		* @param uuid: The uuid whose user_name is to be altered.
+		* @param game_uid: The uid of the game to submit the move for
+		* @param player_move: The player's move to submit
+		*
+		* @returns: Whether the move was legal
+		*/
+
+	pqxx::work work(psql_connection);
+
+	// Stage 1: submit the move
+	logger.trace("submitting move in database");
+
+	// Verify that the player is in that game, and get the game rules and game
+	// state and player number and state
+	auto result = run_query(logger, work, R"sql(
+		SELECT game_rules, game_state, activity_state, player_id, player_state
+		FROM
+			adrestia_rules
+			INNER JOIN adrestia_games ON adrestia_rules.id = game_rules_id
+			INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
+		WHERE adrestia_players.game_uid = %s
+			AND adrestia_players.user_uid = %s
+		)sql",
+			work.quote(game_uid).c_str(),
+			work.quote(uuid).c_str());
+
+	if (result.size() == 0) {
+		// That player isn't in that game
+		logger.error(
+				"Player |%s| submitted a move for game |%s|, but they aren't in that game.",
+				uuid.c_str(), game_uid.c_str());
+		return false;
+	}
+
+	if (result[0]["activity_state"].as<int>() != 0) {
+		// The game is not active
+		logger.error(
+				"Player |%s| submitted a move for inactive game |%s|.",
+				uuid.c_str(), game_uid.c_str());
+		return false;
+	}
+
+	if (result[0]["player_state"].as<int>() != 0) {
+		// The player has already submitted a move
+		logger.error(
+				"Player |%s| resubmitted a move for game |%s|.",
+				uuid.c_str(), game_uid.c_str());
+		return false;
+	}
+
+	// Construct the game rules and game state
+	GameRules game_rules = json::parse(result[0]["game_rules"].as<string>());
+	GameState game_state(game_rules, json::parse(result[0]["game_state"].as<string>()));
+
+	size_t player_id = result[0]["player_id"].as<int>();
+	if (!game_state.is_valid_action(player_id, player_move)) {
+		// Illegal action
+		logger.error(
+				"Player |%s| submitted an illegal move |%s| for game |%s|.",
+				uuid.c_str(), json(player_move).dump().c_str(), game_uid.c_str());
+		return false;
+	}
+
+	// The move is very cool and very legal, add it to the database and update the player's state.
+	run_query(logger, work, R"sql(
+		UPDATE adrestia_players
+		SET player_state = 1,
+				player_move = %s
+		WHERE game_uid = %s
+			AND user_uid = %s
+	)sql",
+		vector_to_sql_array(work, player_move).c_str(),
+		work.quote(game_uid).c_str(),
+		work.quote(uuid).c_str());
+
+	// Commit
+	logger.trace("Committing transaction...");
+	work.commit();
+
+	// Start a new transaction
+	pqxx::work work_sim(psql_connection);
+	result = run_query(logger, work_sim, R"sql(
+		SELECT player_move
+		FROM
+			adrestia_players
+		WHERE adrestia_players.game_uid = %s
+			AND player_state = 1
+		ORDER BY player_id
+		FOR UPDATE
+	)sql",
+			work_sim.quote(game_uid).c_str());
+
+	if (result.size() != 2) {
+		// Not all players are ready, or the other player submitted at the same
+		// time and their babysitter won the race to update.
+		return true;
+	}
+
+	logger.trace("Simulating the game update...");
+
+	vector<vector<string>> actions;
+	for (const auto &player_move : result) {
+		actions.push_back(sql_array_to_vector(player_move["player_move"].as<string>()));
+	}
+	vector<json> events;
+	bool simulated = game_state.simulate(actions, events);
+
+	if (!simulated) {
+		// This should really never happen.
+		logger.error(
+				"An error occurred while simulating a game update for game |%s|",
+				game_uid.c_str());
+		return true;
+	}
+
+	bool concluded = game_state.winners().size() > 0;
+
+	// Update the game with the new state
+	run_query(logger, work_sim, R"sql(
+		UPDATE adrestia_games
+		SET activity_state = %d,
+				game_state = %s,
+				last_events = %s
+		WHERE game_uid = %s
+	)sql",
+			concluded ? 1 : 0,
+			work_sim.quote(json(game_state).dump()).c_str(),
+			work_sim.quote(json(events).dump()).c_str(),
+			work_sim.quote(game_uid).c_str());
+	// Update the players
+	run_query(logger, work_sim, R"sql(
+		UPDATE adrestia_players
+		SET player_state = 0,
+				player_move = NULL
+		WHERE game_uid = %s
+	)sql",
+			work_sim.quote(game_uid).c_str());
+
+	// Commit
+	logger.trace("Committing transaction...");
+	work_sim.commit();
+	return true;
 }
 
 json adrestia_database::adjust_user_name_in_database(

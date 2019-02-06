@@ -99,6 +99,7 @@ int main(int na, char* arg[]) {
 
 	handler_map["change_user_name"] = adrestia_networking::handle_change_user_name;
 	handler_map["matchmake_me"] = adrestia_networking::handle_matchmake_me;
+	handler_map["submit_move"] = adrestia_networking::handle_submit_move;
 
 
 	const char* server_port_env = getenv("SERVER_PORT");

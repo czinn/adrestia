@@ -64,6 +64,10 @@ namespace adrestia_networking {
                           const json& client_json,
                           json& resp
                          );
+  int handle_submit_move(const Logger& logger,
+                         const json& client_json,
+                         json& resp
+                        );
 
   // Calls to handlers
   void create_floop_call(json& client_json);
@@ -87,6 +91,11 @@ namespace adrestia_networking {
                                 const GameRules &rules,
                                 const std::vector<std::string>& selected_books
                                );
+
+	void create_submit_move_call(json& client_json,
+	                             const std::string& game_uid,
+	                             const std::vector<std::string>& player_move
+														  );
 }
 
 #endif

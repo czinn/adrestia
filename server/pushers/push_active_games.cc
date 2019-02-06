@@ -40,11 +40,11 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
    *             HANDLER_KEY: "push_active_games"
    *             CODE_KEY: 200
    *             MESSAGE_KEY: "You have [new|changed|new and changed|] games!" (depending on situation)
-   *             "game_uids": A list of the new/changed game_uids
-   *             "game_states": A list of gamestates that have concluded/been aborted.
-   *             "game_views": A list of the views of the new/changed game_uids.
-   *           Note that it follows that reported game_uids that do not represent concluded games are waiting
-   *               for the player to make a move.
+	 *             "updates": A list of updated game views or states, of the form
+	 *             						{"game_uid": uuid, "game_view": game view, "events": list of events}
+	 *             						(or with "game_state" instead of "game_view" for completed games
+	 *           Note that it follows that reported game_views are waiting for
+	 *           the player to make a move.
    */
 
   // Check for games
@@ -53,9 +53,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
   vector<string> active_game_uids = active_games["active_game_uids"];
 
-  vector<string> game_uids_to_report;
-  vector<json> game_states_to_report;
-  vector<json> game_views_to_report;
+  vector<json> update_list;
   bool new_games = false;
   bool changed_games = false;
 
@@ -68,12 +66,16 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
     if (active_game_uids_set.find(current_game_uid) == active_game_uids_set.end()) {
       logger.info("Previously active game |%s| has become deactivated and should be reported.", current_game_uid.c_str());
+			vector<json> events;
       json current_game_state =
-        adrestia_database::retrieve_gamestate_from_database(logger, psql_connection, current_game_uid, rules);
+        adrestia_database::retrieve_gamestate_from_database(
+						logger, psql_connection, current_game_uid, rules, events);
 
       // A game_uid previously active has become deactivated. We should record this.
-      game_uids_to_report.push_back(current_game_uid);
-      game_states_to_report.push_back(current_game_state);
+      update_list.push_back({
+					{"game_uid", current_game_uid},
+					{"game_state", current_game_state},
+					{"events", events}});
       changed_games = true;
 
       // We should add it to the map, and remove it from active games.
@@ -83,7 +85,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
       //     we want it to fail.
       active_game_uids_I_am_aware_of.erase(find(active_game_uids_I_am_aware_of.begin(),
                                                 active_game_uids_I_am_aware_of.end(),
-                                                current_game_state
+                                                current_game_uid
                                                )
                                           );
     }
@@ -93,8 +95,10 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
   for (unsigned int i = 0; i < active_game_uids.size(); i += 1) {
     string current_game_uid = active_game_uids[i];
     logger.debug("Looking at current game with uid |%s|...", current_game_uid.c_str());
+		vector<json> events;
     json current_game_state =
-      adrestia_database::retrieve_gamestate_from_database(logger, psql_connection, current_game_uid, rules);
+      adrestia_database::retrieve_gamestate_from_database(
+					logger, psql_connection, current_game_uid, rules, events);
 
     json current_player_info =
       adrestia_database::retrieve_player_info_from_database(logger, psql_connection, current_game_uid, uuid);
@@ -110,8 +114,10 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
         logger.info("Changed gamestate for game with game_uid |%s|", current_game_uid.c_str());
 
         // The game state of this game has changed! We should record it.
-        game_uids_to_report.push_back(current_game_uid);
-        game_views_to_report.push_back(current_game_view);
+				update_list.push_back({
+						{"game_uid", current_game_uid},
+						{"game_view", current_game_view},
+						{"events", events}});
         changed_games = true;
 
         // We should also add it to the map, seeing how it is becoming known.
@@ -126,8 +132,10 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
       logger.info("New active game with game_uid |%s|", current_game_uid.c_str());
 
       // This game_uid was active, but it is not a known game uid.
-      game_uids_to_report.push_back(current_game_uid);
-      game_views_to_report.push_back(current_game_view);
+			update_list.push_back({
+					{"game_uid", current_game_uid},
+					{"game_view", current_game_view},
+					{"events", events}});
       new_games = true;
 
       // We should also add it to the map, seeing how it is becoming known.
@@ -139,7 +147,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
   std::vector<json> message_list;
 
   // If there is nothing to report, make an empty message and conclude.
-  if (game_uids_to_report.empty()) {
+  if (update_list.empty()) {
     logger.debug("No new/changed games for uuid |%s|", uuid.c_str());
     return message_list;
   }
@@ -162,9 +170,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
   message_json[adrestia_networking::HANDLER_KEY] = "push_active_games";
   message_json[adrestia_networking::CODE_KEY] = 200;
   message_json[adrestia_networking::MESSAGE_KEY] = api_message;
-  message_json["game_uids"] = game_uids_to_report;
-  message_json["game_states"] = game_states_to_report;
-  message_json["game_views"] = game_views_to_report;
+  message_json["updates"] = update_list;
   message_list.push_back(message_json);
   return message_list;
 }

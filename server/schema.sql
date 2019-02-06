@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
 	creator_uuid VARCHAR NOT NULL, -- Who made this?
 	activity_state SMALLINT NOT NULL,
 	game_state JSON,
+	last_events JSON,
 	game_rules_id INTEGER REFERENCES adrestia_rules(id),
 	PRIMARY KEY (game_uid)
 );

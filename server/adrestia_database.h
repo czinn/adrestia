@@ -46,7 +46,8 @@ namespace adrestia_database {
     const Logger& logger,
     pqxx::connection& psql_connection,
     const std::string& game_uid,
-    GameRules &game_rules
+    GameRules &game_rules,
+		std::vector<json> &last_events
   );
 
   /* Checks for active games in the database associated with the given uuid, and returns them.
@@ -67,6 +68,17 @@ namespace adrestia_database {
     const std::string& uuid,
     const std::vector<std::string>& selected_books
   );
+
+	/* Submits the move for a turn in the game, updating the game if all players
+	 * have submitted a move.
+	 */
+	bool submit_move_in_database(
+		const Logger& logger,
+		pqxx::connection& psql_connection,
+		const std::string& uuid,
+		const std::string& game_uid,
+		const std::vector<std::string>& player_move
+	);
 
   /* Changes the user_name associated with the given uuid in the database.
    * Returns a json object with key 'tag' representing the tag.

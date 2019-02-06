@@ -1,6 +1,7 @@
 #include "game_view.h"
 
 #include "game_state.h"
+#include "game_rules.h"
 #include "player.h"
 
 #define CLASSNAME GameView

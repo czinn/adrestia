@@ -22,6 +22,7 @@ namespace godot {
     REGISTER_METHOD(create_authenticate_call);
     REGISTER_METHOD(create_change_user_name_call);
     REGISTER_METHOD(create_matchmake_me_call);
+    REGISTER_METHOD(create_submit_move_call);
   }
 
   String Protocol::create_floop_call() {
@@ -66,4 +67,12 @@ namespace godot {
     adrestia_networking::create_matchmake_me_call(j, *_rules->_ptr, selected_books_);
     return String(j.dump().c_str());
   }
+
+	String Protocol::create_submit_move_call(String game_uid, Variant player_move) {
+    nlohmann::json j;
+    std::string game_uid_; of_godot_variant(game_uid, &game_uid_);
+    std::vector<std::string> player_move_; of_godot_variant(player_move, &player_move_);
+		adrestia_networking::create_submit_move_call(j, game_uid_, player_move_);
+		return String(j.dump().c_str());
+	}
 }

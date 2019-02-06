@@ -58,3 +58,11 @@ void adrestia_networking::create_matchmake_me_call(json& client_json,
   client_json["selected_books"] = selected_books;
 }
 
+void adrestia_networking::create_submit_move_call(json& client_json,
+		const std::string& game_uid,
+		const std::vector<std::string>& player_move
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "submit_move";
+  client_json["game_uid"] = game_uid;
+  client_json["player_move"] = player_move;
+}

@@ -10,6 +10,10 @@
 #include "adrestia_networking.h"
 #include "adrestia_database.h"
 
+#ifdef __APPLE__
+#define MSG_NOSIGNAL 0
+#endif
+
 using namespace std;
 using namespace adrestia_networking;
 

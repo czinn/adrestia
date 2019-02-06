@@ -526,7 +526,10 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Socket 1 should now receive a notification...
+	// TODO: Why does it take so long before the client sees this message? The
+	// server is sending it almost immediately.
 	response_json = read_packet(my_socket_1, "push_active_games");
+	string game_uid;
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to receive matchmaking notification on socket 1." << endl;
 		cerr << "Received instead:" << endl;
@@ -540,7 +543,73 @@ int main(int argc, char* argv[]) {
 		cout << "push_active_games says:" << endl;
 		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
 		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		game_uid = response_json["updates"][0]["game_uid"];
+		cout << "Game UID is |" << game_uid << "|" << endl;
 	}
+
+	// Socket 2 should also receive a notificatibon...
+	cout << "Waiting for other player to get a notification..." << endl;
+	response_json = read_packet(my_socket_2, "push_active_games");
+	cout << "Other player got a notification." << endl;
+
+	// Try submitting an illegal move
+	cout << "Attempting to submit an illegal move" << endl;
+	outbound_json.clear();
+	adrestia_networking::create_submit_move_call(outbound_json, game_uid, {"conjuration_attack_1", "conjuration_tech"});
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_json = read_packet(my_socket_1, "submit_move");
+	if (response_json[adrestia_networking::CODE_KEY] != 400) {
+		cerr << "Server accepted an illegal move." << endl;
+	} else {
+		cout << "Server rejected an illegal move." << endl;
+	}
+
+	// Submit a legal move
+	cout << "Submitting a legal move" << endl;
+	outbound_json.clear();
+	adrestia_networking::create_submit_move_call(outbound_json, game_uid, {"conjuration_tech", "conjuration_attack_1"});
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_json = read_packet(my_socket_1, "submit_move");
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Server rejected a legal move." << endl;
+	} else {
+		cout << "Server accepted legal move." << endl;
+	}
+
+	// Resubmit a legal move
+	cout << "Attempting to resubmit a legal move" << endl;
+	outbound_json.clear();
+	adrestia_networking::create_submit_move_call(outbound_json, game_uid, {"conjuration_tech", "conjuration_attack_1"});
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_json = read_packet(my_socket_1, "submit_move");
+	if (response_json[adrestia_networking::CODE_KEY] != 400) {
+		cerr << "Server accepted a duplicate move." << endl;
+	} else {
+		cout << "Server rejected a depulicate move." << endl;
+	}
+
+	// Submit a move for the other player
+	cout << "Submitting a legal move for the other player" << endl;
+	outbound_json.clear();
+	adrestia_networking::create_submit_move_call(outbound_json, game_uid, {"refinement_tech", "refinement_mana"});
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_json = read_packet(my_socket_2, "submit_move");
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Server rejected a legal move for player 2." << endl;
+	} else {
+		cout << "Server accepted legal move for player 2." << endl;
+	}
+
+	// Both players should get a notification now.
+	cout << "Waiting for both players to get notifications with updated game views..." << endl;
+	response_json = read_packet(my_socket_1, "push_active_games");
+	response_json = read_packet(my_socket_2, "push_active_games");
+	// TODO: charles: Check these packets to make sure they're sane
+	cout << "Both players got notifications." << endl;
 
 	// Done.
 	cout << "Done!" << endl;
