@@ -6,9 +6,9 @@ onready var g = get_node('/root/global')
 
 onready var mouse_blocker = $mouse_blocker
 onready var big_text_wnd = $nine_patch_rect
-onready var big_text = $nine_patch_rect/margin_container/v_box_container/rich_text_label
-onready var yes_button = $nine_patch_rect/margin_container/v_box_container/h_box_container/yes_button
-onready var no_button = $nine_patch_rect/margin_container/v_box_container/h_box_container/no_button
+onready var big_text = $nine_patch_rect/rich_text_label
+onready var yes_button = $nine_patch_rect/yes_button
+onready var no_button = $nine_patch_rect/no_button
 
 var text = "" setget set_text
 

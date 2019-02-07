@@ -3,10 +3,10 @@
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/confirm_popup.gd" type="Script" id=2]
 [ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
-[ext_resource path="res://art-built/button-no.png" type="Texture" id=4]
-[ext_resource path="res://art-built/button-yes.png" type="Texture" id=5]
+[ext_resource path="res://art-built/button-yes.png" type="Texture" id=4]
+[ext_resource path="res://art-built/button-no.png" type="Texture" id=5]
 
-[node name="tutorial" type="Control"]
+[node name="confirm_popup" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -43,10 +43,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -203.0
-margin_top = -124.0
-margin_right = 218.0
-margin_bottom = 106.0
+margin_left = -213.0
+margin_top = -120.0
+margin_right = 213.0
+margin_bottom = 143.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -58,52 +58,70 @@ patch_margin_left = 11
 patch_margin_top = 11
 patch_margin_right = 11
 patch_margin_bottom = 11
-_sections_unfolded = [ "Mouse", "Patch Margin" ]
+_sections_unfolded = [ "Margin", "Mouse", "Patch Margin" ]
 
-[node name="margin_container" type="MarginContainer" parent="nine_patch_rect" index="0"]
+[node name="yes_button" type="TextureButton" parent="nine_patch_rect" index="0"]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
+margin_left = 2.0
+margin_top = -86.0
+margin_right = 199.0
+margin_bottom = -20.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 2
+focus_mode = 2
+mouse_filter = 0
 mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
+size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_constants/margin_right = 15
-custom_constants/margin_top = 15
-custom_constants/margin_left = 15
-custom_constants/margin_bottom = 15
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "custom_constants" ]
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
 
-[node name="v_box_container" type="VBoxContainer" parent="nine_patch_rect/margin_container" index="0"]
+[node name="no_button" type="TextureButton" parent="nine_patch_rect" index="1"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -199.0
+margin_top = -86.0
+margin_right = -2.0
+margin_bottom = -20.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 5 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
+
+[node name="rich_text_label" type="RichTextLabel" parent="nine_patch_rect" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 15.0
-margin_top = 15.0
-margin_right = 406.0
-margin_bottom = 215.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-
-[node name="rich_text_label" type="RichTextLabel" parent="nine_patch_rect/margin_container/v_box_container" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 391.0
-margin_bottom = 130.0
+margin_left = 27.0
+margin_top = 30.0
+margin_right = 401.0
+margin_bottom = 154.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 2
@@ -126,74 +144,6 @@ scroll_active = true
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "Anchor", "BBCode", "Margin", "Size Flags" ]
-
-[node name="h_box_container" type="HBoxContainer" parent="nine_patch_rect/margin_container/v_box_container" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 134.0
-margin_right = 391.0
-margin_bottom = 200.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 3
-custom_constants/separation = 20
-alignment = 0
-_sections_unfolded = [ "Size Flags", "custom_constants" ]
-
-[node name="no_button" type="TextureButton" parent="nine_patch_rect/margin_container/v_box_container/h_box_container" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 185.0
-margin_bottom = 66.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-texture_normal = ExtResource( 4 )
-expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
-
-[node name="yes_button" type="TextureButton" parent="nine_patch_rect/margin_container/v_box_container/h_box_container" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 205.0
-margin_right = 391.0
-margin_bottom = 66.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-texture_normal = ExtResource( 5 )
-expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Size Flags", "Textures" ]
+_sections_unfolded = [ "BBCode", "custom_fonts" ]
 
 
