@@ -77,4 +77,4 @@ func submit_action(action):
 	return true
 
 func leave_game():
-	pass
+	g.network.abort_game(game_uid, funcref(g.network, 'print_response'))

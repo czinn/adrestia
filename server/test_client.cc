@@ -637,7 +637,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Player 2 should be notified about the game being aborted.
-	cout << "Waiting for player 2 to recieve game abort push..." << endl;
+	cout << "Waiting for player 2 to receive game abort push..." << endl;
 	response_json = read_packet(my_socket_2, "push_active_games");
 	if (response_json[adrestia_networking::CODE_KEY] != 200) {
 		cerr << "Failed to receive abort notification on socket 2." << endl;

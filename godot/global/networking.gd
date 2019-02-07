@@ -184,6 +184,12 @@ func register_handlers(obj, on_connected, on_disconnected, on_out_of_date):
 	else:
 		obj.call(on_disconnected)
 
+func print_response(response):
+	print(response)
+
+func discard(response):
+	pass
+
 # Actual API starts here.
 # If a callback returns true, it will only be used to handle a single response.
 # Otherwise it will stick around.
@@ -215,6 +221,9 @@ func register_new_account(password, callback):
 
 func authenticate(uuid, password, callback):
 	return api_call_base('authenticate', [uuid, password], callback)
+
+func abort_game(game_uid, callback):
+	return api_call_base('abort_game', [game_uid], callback)
 
 func change_user_name(user_name, callback):
 	return api_call_base('change_user_name', [user_name], callback)
