@@ -5,7 +5,7 @@ onready var g = get_node('/root/global')
 onready var back_button = $ui/back_button
 
 func _ready():
-	back_button.connect('pressed', self, 'on_back_button_pressed')
+	back_button.connect('pressed', g.scene_loader, 'on_back_button_pressed')
 	get_tree().set_auto_accept_quit(false)
 
 func _notification(what):
@@ -13,4 +13,4 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_back_button_pressed():
-	g.scene_loader.goto_scene('title', true)
+	g.scene_loader.goto_scene('settings', true)

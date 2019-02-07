@@ -3,8 +3,7 @@ extends Node
 onready var g = get_node('/root/global')
 onready var online_status = $ui/online_status
 onready var play_button = $ui/play_button
-onready var credits_button = $ui/credits_button
-onready var placeholder_button = $ui/placeholder_button
+onready var settings_button = $ui/settings_button
 onready var animation_player = $animation_player
 
 const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
@@ -14,8 +13,7 @@ func _ready():
 	get_tree().set_auto_accept_quit(true)
 	get_tree().set_quit_on_go_back(true)
 	play_button.connect('pressed', self, 'on_play_button_pressed')
-	credits_button.connect('pressed', self, 'on_credits_button_pressed')
-	placeholder_button.connect('pressed', self, 'test_network')
+	settings_button.connect('pressed', self, 'on_settings_button_pressed')
 	if not g.loaded:
 		g.loaded = true
 		initialize()
@@ -53,8 +51,8 @@ func on_play_button_pressed():
 			return
 	g.scene_loader.goto_scene('game_mode_select')
 
-func on_credits_button_pressed():
-	g.scene_loader.goto_scene('credits')
+func on_settings_button_pressed():
+	g.scene_loader.goto_scene('settings')
 
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)
