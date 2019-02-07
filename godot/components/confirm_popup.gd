@@ -14,8 +14,8 @@ var text = "" setget set_text
 
 func _ready():
 	mouse_blocker.connect('gui_input', self, 'blocker_input')
-	no_button.connect('pressed', self, 'no_button_pressed')
 	yes_button.connect('pressed', self, 'yes_button_pressed')
+	no_button.connect('pressed', self, 'no_button_pressed')
 	redraw()
 
 func set_text(text_):

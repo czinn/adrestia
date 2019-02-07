@@ -1,0 +1,156 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://theme-default.tres" type="Theme" id=1]
+[ext_resource path="res://components/text_entry_popup.gd" type="Script" id=2]
+[ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
+[ext_resource path="res://art-built/button-done.png" type="Texture" id=4]
+[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=5]
+
+[node name="text_entry_popup" type="Control"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+_sections_unfolded = [ "Theme" ]
+
+[node name="mouse_blocker" type="ColorRect" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+color = Color( 0, 0, 0, 0.25098 )
+_sections_unfolded = [ "Material", "Mouse" ]
+
+[node name="ui" type="Control" parent="." index="1"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Theme" ]
+
+[node name="nine_patch_rect" type="NinePatchRect" parent="ui" index="0"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -213.0
+margin_top = -73.0
+margin_right = 213.0
+margin_bottom = 143.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 3 )
+patch_margin_left = 11
+patch_margin_top = 11
+patch_margin_right = 11
+patch_margin_bottom = 11
+_sections_unfolded = [ "Margin", "Mouse", "Patch Margin" ]
+
+[node name="line_edit" type="LineEdit" parent="ui" index="1"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -196.0
+margin_top = -14.0
+margin_right = 196.0
+margin_bottom = 51.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 1
+size_flags_horizontal = 1
+size_flags_vertical = 1
+text = "Jane"
+focus_mode = 2
+context_menu_enabled = true
+placeholder_alpha = 0.6
+caret_blink = false
+caret_blink_speed = 0.65
+caret_position = 0
+_sections_unfolded = [ "custom_fonts" ]
+
+[node name="done_button" type="TextureButton" parent="ui" index="2"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 39.0
+margin_right = 202.0
+margin_bottom = 105.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
+
+[node name="label" type="Label" parent="ui" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = -166.0
+margin_top = -41.0
+margin_right = 130.0
+margin_bottom = -1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+text = "Enter new username:"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_fonts" ]
+
+

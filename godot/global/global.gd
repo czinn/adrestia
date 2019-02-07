@@ -22,6 +22,7 @@ onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
 onready var confirm_popup_scene = preload('res://components/confirm_popup.tscn')
+onready var text_entry_popup_scene = preload('res://components/text_entry_popup.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
@@ -153,6 +154,13 @@ func summon_confirm(text):
 
 func summon_notification(text):
 	scene_loader.notification.show_notification(text)
+
+func summon_text_entry(text, default_text):
+	var popup = text_entry_popup_scene.instance()
+	popup.text = text
+	popup.default_text = default_text
+	get_node("/root").add_child(popup)
+	return popup
 
 func event_is_pressed(event):
 	return event is InputEventMouseButton \

@@ -7,7 +7,7 @@
 [sub_resource type="Animation" id=1]
 
 resource_name = "slide_in"
-length = 1.0
+length = 0.3
 loop = false
 step = 0.05
 tracks/0/type = "value"
@@ -17,7 +17,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.5, 1 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ -200.0, -50.0 ]
@@ -49,7 +49,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_top = -198.829
+margin_top = -200.0
 margin_bottom = -50.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false

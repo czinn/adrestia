@@ -15,7 +15,7 @@
    version="1.1"
    id="svg1718"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   sodipodi:docname="button-yes.svg">
+   sodipodi:docname="button-done.svg">
   <defs
      id="defs1712" />
   <sodipodi:namedview
@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -71,13 +71,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-25.581509"
+       x="-30.454527"
        y="143.68933"
        id="text838"><tspan
          sodipodi:role="line"
          id="tspan836"
-         x="-25.581509"
+         x="-30.454527"
          y="143.68933"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#000000;fill-opacity:1;stroke-width:0.26458335px">Yes</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#000000;fill-opacity:1;stroke-width:0.26458335px">Done</tspan></text>
   </g>
 </svg>

@@ -6,14 +6,13 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
-var host = 'adrestia.neynt.ca'
+const DEBUG = true
+var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
 const version = '1.0.0'
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
-
-# For development purposes.
-const always_register_new_account = true
+const always_register_new_account = DEBUG
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.

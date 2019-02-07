@@ -35,13 +35,6 @@ func on_disconnected():
 func on_out_of_date():
 	online_status.text = 'Out-of-date client. Update the app to play online!'
 
-func test_network():
-	g.network.floop(funcref(self, 'floop_done'))
-
-func floop_done(response):
-	print('Floop response received.')
-	print(response)
-
 func on_play_button_pressed():
 	if g.first_play:
 		g.first_play = false
