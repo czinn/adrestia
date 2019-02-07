@@ -32,6 +32,10 @@ CREATE TABLE IF NOT EXISTS adrestia_rules (
 --     -1: Aborted; Someone aborted and the game cannot continue.
 --     0: In progress; this game is in progress.
 --     1: Concluded; the game reached its conclusion, with someone winning.
+-- Possible winner values:
+--    -2: Tie
+--    0: Player 0 won
+--    1: Player 1 won
 DROP TABLE IF EXISTS adrestia_games CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_games (
 	game_uid VARCHAR NOT NULL,
@@ -39,6 +43,7 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
 	activity_state SMALLINT NOT NULL,
 	game_state JSON,
 	last_events JSON,
+	winner_id SMALLINT,
 	game_rules_id INTEGER REFERENCES adrestia_rules(id),
 	PRIMARY KEY (game_uid)
 );

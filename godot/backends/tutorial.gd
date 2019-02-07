@@ -15,6 +15,7 @@ var scripted_actions = [
 
 # Public
 var rules
+var forfeited = false
 
 func _init(g_):
 	g = g_

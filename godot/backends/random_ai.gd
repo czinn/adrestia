@@ -14,6 +14,7 @@ var do_debug_timer = true
 
 # Public
 var rules
+var forfeited = false
 
 func _init(g_):
 	g = g_

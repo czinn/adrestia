@@ -82,7 +82,8 @@ size_flags_vertical = 1
 custom_fonts/bold_font = ExtResource( 6 )
 custom_fonts/normal_font = ExtResource( 7 )
 bbcode_enabled = true
-bbcode_text = "Copyright © 2019 Dmitri Sclear, Jim Zhang, and Charles Zinn.
+bbcode_text = "Copyright © 2019 Dmitri Sclear, Jim Zhang, and
+Charles Zinn.
 
 Adrestia is licenced under an [url=https://adrestia.neynt.ca]MIT License[/url].
 
@@ -95,7 +96,8 @@ visible_characters = -1
 percent_visible = 1.0
 meta_underlined = true
 tab_size = 4
-text = "Copyright © 2019 Dmitri Sclear, Jim Zhang, and Charles Zinn.
+text = "Copyright © 2019 Dmitri Sclear, Jim Zhang, and
+Charles Zinn.
 
 Adrestia is licenced under an MIT License.
 

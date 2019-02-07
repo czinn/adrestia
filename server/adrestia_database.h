@@ -26,6 +26,15 @@ namespace adrestia_database {
   const int UUID_LENGTH = 32;
   const int GAME_UID_LENGTH = 32;
 
+  /* Marks the target uuid as winning/losing the target game */
+  void conclude_game_in_database(
+    const Logger& logger,
+    pqxx::connection& psql_connection,
+    const std::string& game_uid,
+    const std::string& uuid,
+    int game_result
+  );
+
   /* Gets game rules from the database. */
   GameRules retrieve_game_rules(
     const Logger& logger,
@@ -47,7 +56,7 @@ namespace adrestia_database {
     pqxx::connection& psql_connection,
     const std::string& game_uid,
     GameRules &game_rules,
-		std::vector<json> &last_events
+    std::vector<json> &last_events
   );
 
   /* Checks for active games in the database associated with the given uuid, and returns them.
@@ -69,25 +78,15 @@ namespace adrestia_database {
     const std::vector<std::string>& selected_books
   );
 
-	/* Submits the move for a turn in the game, updating the game if all players
-	 * have submitted a move.
-	 */
-	bool submit_move_in_database(
-		const Logger& logger,
-		pqxx::connection& psql_connection,
-		const std::string& uuid,
-		const std::string& game_uid,
-		const std::vector<std::string>& player_move
-	);
-
-  /* Changes the user_name associated with the given uuid in the database.
-   * Returns a json object with key 'tag' representing the tag.
+  /* Submits the move for a turn in the game, updating the game if all players
+   * have submitted a move.
    */
-  json adjust_user_name_in_database(
+  bool submit_move_in_database(
     const Logger& logger,
     pqxx::connection& psql_connection,
     const std::string& uuid,
-    const std::string& user_name
+    const std::string& game_uid,
+    const std::vector<std::string>& player_move
   );
 
 
@@ -120,18 +119,56 @@ namespace adrestia_database {
     int &latest_notification_already_sent
   );
 
-  /* Clear matchmake requests for a player. */
-  void clear_matchmake_requests(
-    const Logger& logger,
-    pqxx::connection& conn,
-    const std::string& uuid
-  );
-
-
   /* Returns an established pqxx::connection object,
    *     connection parameters specified via environment variable.
    */
   pqxx::connection establish_connection();
+
+  /* Db and DbQuery form an alternate way to access the database. They provide
+   * a flexible, concise interface that allows for the quick development of
+   * handlers.
+   *
+   * Db manages a pqxx::connection and pqxx::work for the user. A pqxx::work is
+   * active at all times. Calling [commit] or [abort] does the same thing to
+   * the underlying work, then immediately starts a fresh work.
+   *
+   * DbQuery is a helper class that allows formatting a query using question
+   * marks as placeholders. The placeholders are filled with arguments when
+   * operator() is called. A run-time check ensures that the number of
+   * arguments is correct. Every value passed in to DbQuery is automatically
+   * quoted/escaped.
+   *
+   * RAII ensures that stuff is cleaned up.
+   * */
+  class DbQuery {
+    public:
+      DbQuery(std::string format, pqxx::work *work, const Logger &logger);
+
+      template<typename T>
+      DbQuery &operator()(const T &x) {
+        quoted_parts.push_back(work->quote(x));
+        return *this;
+      }
+      pqxx::result operator()();
+    private:
+      std::vector<std::string> format_parts;
+      std::vector<std::string> quoted_parts;
+      pqxx::work *work;
+      const Logger &logger;
+  };
+
+  class Db {
+    public:
+      Db(const Logger &logger);
+      ~Db();
+      DbQuery query(std::string format);
+      void commit();
+      void abort();
+    private:
+      const Logger &logger;
+      pqxx::connection *conn;
+      pqxx::work *work;
+  };
 }
 
 #endif

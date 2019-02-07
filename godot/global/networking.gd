@@ -6,14 +6,13 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
-var host = 'adrestia.neynt.ca'
+const DEBUG = true
+var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
 const version = '1.0.0'
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
-
-# For development purposes.
-const always_register_new_account = true
+const always_register_new_account = DEBUG
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
@@ -45,11 +44,6 @@ const OUT_OF_DATE = 3
 var status = OFFLINE
 
 func _ready():
-	# For server development
-	# TODO: remove before release!!
-	if OS.get_name() in ['X11', 'OSX']:
-		g.network.host = '127.0.0.1'
-
 	connect_timer = Timer.new()
 	connect_timer.set_one_shot(true)
 	connect_timer.set_timer_process_mode(0)
@@ -190,6 +184,12 @@ func register_handlers(obj, on_connected, on_disconnected, on_out_of_date):
 	else:
 		obj.call(on_disconnected)
 
+func print_response(response):
+	print(response)
+
+func discard(response):
+	pass
+
 # Actual API starts here.
 # If a callback returns true, it will only be used to handle a single response.
 # Otherwise it will stick around.
@@ -221,6 +221,9 @@ func register_new_account(password, callback):
 
 func authenticate(uuid, password, callback):
 	return api_call_base('authenticate', [uuid, password], callback)
+
+func abort_game(game_uid, callback):
+	return api_call_base('abort_game', [game_uid], callback)
 
 func change_user_name(user_name, callback):
 	return api_call_base('change_user_name', [user_name], callback)

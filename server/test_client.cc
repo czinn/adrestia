@@ -611,6 +611,51 @@ int main(int argc, char* argv[]) {
 	// TODO: charles: Check these packets to make sure they're sane
 	cout << "Both players got notifications." << endl;
 
+	// Player 1 aborts the game
+	cout << "Attempting to abort game via player 1..." << endl;
+	outbound_json.clear();
+	response_json.clear();
+
+	adrestia_networking::create_abort_game_call(outbound_json, game_uid);
+
+	outbound_message = outbound_json.dump() + '\n';
+	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+	response_json = read_packet(my_socket_1, "abort_game");
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to abort game." << endl;
+		cerr << "abort_game says:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket_1);
+		return 0;
+	}
+	else {
+		cout << "abort_game says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+	}
+
+	// Player 2 should be notified about the game being aborted.
+	cout << "Waiting for player 2 to receive game abort push..." << endl;
+	response_json = read_packet(my_socket_2, "push_active_games");
+	if (response_json[adrestia_networking::CODE_KEY] != 200) {
+		cerr << "Failed to receive abort notification on socket 2." << endl;
+		cerr << "Received instead:" << endl;
+		cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+		cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		close(my_socket_2);
+		return 0;
+	}
+	else {
+		cout << "push_active_games says:" << endl;
+		cout << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+		cout << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+		game_uid = response_json["updates"][0]["game_uid"];
+		cout << "Aborted game UID is |" << game_uid << "|" << endl;
+	}
+
 	// Done.
 	cout << "Done!" << endl;
 

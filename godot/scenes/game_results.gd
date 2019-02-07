@@ -15,9 +15,15 @@ func _ready():
 	game_history.view_player_id = g.backend.get_view().view_player_id
 	game_history.history = final_state.history
 	game_history.health_history = g.health_history
+	print('Winners are:')
+	print(winners)
+
 	if winners.size() == 2:
 		# Tie
 		results_text.bbcode_text = '[b]You tied![/b]\nThis means you half-lost. Try harder next time.'
+		winner = -1
+	elif winners.size() == 0:
+		results_text.bbcode_text = '[b]Someone forfeit![/b]'
 		winner = -1
 	elif winners.has(game_history.view_player_id):
 		# Won!
@@ -29,7 +35,6 @@ func _ready():
 		winner = 1 - game_history.view_player_id
 
 func _notification(what):
-	print(what)
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.call_deferred('on_back_button_pressed')
 
