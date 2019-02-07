@@ -40,9 +40,12 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
    * Always returns 0.
    */
 
-  logger.trace("Triggered change_user_name.");
   string uuid = client_json.at("uuid");
   string new_user_name = client_json.at("user_name");
+  logger.trace_()
+    << "Triggered change_user_name with args:\n"
+    << "    uuid: |" << uuid << "|\n"
+    << "    user_name: |" << new_user_name << "|" << endl;
 
   logger.trace("Modifying uuid |%s| to have user_name |%s|...", uuid.c_str(), new_user_name.c_str());
 

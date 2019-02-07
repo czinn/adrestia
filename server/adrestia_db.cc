@@ -17,8 +17,6 @@ pqxx::result DbQuery::operator()() {
 }
 
 void DbQuery::replace_one_qmark(std::string s) {
-  logger.error_() << format << std::endl;
-  logger.error_() << s << std::endl;
   size_t pos = format.find('?');
   if (pos == std::string::npos) {
     throw std::string("Too many arguments supplied to SQL query.");
