@@ -56,6 +56,10 @@ namespace adrestia_networking {
                           json& resp
                          );
 
+  int handle_abort_game(const Logger& logger,
+                        const json& client_json,
+                        json& resp
+                       );
   int handle_change_user_name(const Logger& logger,
                               const json& client_json,
                               json& resp
@@ -84,6 +88,9 @@ namespace adrestia_networking {
                                 const std::string& password
                                );
 
+  void create_abort_game_call(json& client_json,
+                              const std::string& game_uid
+                             );
   void create_change_user_name_call(json& client_json,
                                     const std::string& user_name
                                    );

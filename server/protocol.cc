@@ -41,6 +41,13 @@ void adrestia_networking::create_authenticate_call(json& client_json,
 }
 
 
+void adrestia_networking::create_abort_game_call(json& client_json,
+  const std::string& game_uid
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "abort_game";
+  client_json["game_uid"] = game_uid;
+}
+
 void adrestia_networking::create_change_user_name_call(json& client_json,
   const std::string& user_name
 ) {

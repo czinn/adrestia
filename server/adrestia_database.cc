@@ -145,6 +145,145 @@ GameRules adrestia_database::retrieve_game_rules(
 }
 
 
+void adrestia_database::conclude_game_in_database(
+  const Logger& logger,
+  pqxx::connection& psql_connection,
+  const std::string& game_uid,
+  const std::string& uuid,
+  int game_result
+) {
+  /* @brief Concludes game in the database. How the game concluded is a parameter.
+   *
+   * @param logger: Logger
+   * @param psql_connection: The PostgreSQL connection.
+   * @param game_uid: The game_uid we will be concluding.
+   * @param uuid: The player/babysitter concluding the game.
+   * @param game_result: How the game concluded. Possible options are:
+   *        -2: The game ended in a tie
+   *        -1: This player aborted the game
+   *        0: This player lost the game
+   *        1: This player won the game
+   *
+   * @exception string: Throws a string if could not find a uuid/game_uid pairing in adrestia_players when aborting
+   *
+   * @returns Nothing
+   */
+
+  logger.trace(
+    "conclude_game_in_database called with args:\n"
+    "    game_uid: |%s|"
+    "    uuid: |%s|",
+    game_uid.c_str(), uuid.c_str()
+  );
+
+  pqxx::work work(psql_connection);
+
+  switch(game_result) {
+    case -2: {
+      // This is a tie. Ties are special since we don't need to find out who the winner was.
+      logger.debug("Tying game |%s|...",
+                   game_uid.c_str()
+                  );
+      run_query(logger, work,
+                R"sql(
+                  UPDATE adrestia_games
+                    SET activity_state = 1
+                    WHERE game_uid = %s
+                )sql",
+                work.quote(game_uid).c_str()
+               );
+
+      // Nothing more needs to be done for a tie.
+      logger.trace("conclude_game_in_database concluded.");
+      return;
+    }
+    case -1: {
+      // This is an abort. Aborts are special since we must mark the player as aborted, too.
+      logger.debug(
+        "Aborting player uuid |%s| in game |%s|...",
+        uuid.c_str(), game_uid.c_str()
+      );
+      run_query(logger, work,
+                R"sql(
+                  UPDATE adrestia_players
+                    SET player_state = -1
+                    WHERE game_uid = %s
+                      AND user_uid = %s
+                )sql",
+                work.quote(game_uid).c_str(),
+                work.quote(uuid).c_str()
+               );
+      break;
+    }
+  }
+
+  logger.trace("Finding player |%s|'s id in game |%s|...",
+               uuid.c_str(), game_uid.c_str()
+              );
+
+  auto search_result = run_query(logger, work,
+                                 R"sql(
+                                   SELECT player_id
+                                     FROM adrestia_players
+                                     WHERE game_uid = %s
+                                       AND user_uid = %s
+                                 )sql",
+                                 work.quote(game_uid).c_str(),
+                                 work.quote(uuid).c_str()
+                                );
+  if (search_result.size() == 0) {
+    string error_string = "Could not find player |" + uuid + "| as player of game |" + game_uid + "|!";
+    logger.error(error_string.c_str());
+    throw string(error_string);
+  }
+
+  int player_id = search_result[0][0].as<int>();
+  logger.trace("Player |%s| was id |%s| in game |%s|.",
+               uuid.c_str(), to_string(player_id).c_str(), game_uid.c_str()
+              );
+
+  int winner_id = player_id;
+  int game_final_state = 1;
+
+  switch(game_result) {
+    case -1: {
+      // This is an abort. The player lost the game, and final state is -1.
+      game_final_state = -1;
+    }
+    case 0: {
+      // This is a loss. The player lost the game.
+      if (player_id == 0) {
+        winner_id = 1;
+      }
+      else if (player_id == 1) {
+        winner_id = 0;
+      }
+      break;
+    }
+  }
+
+  logger.trace("Updating game |%s| to have final state |%s|, winner |%s|.",
+               game_uid.c_str(), to_string(game_final_state).c_str(), to_string(winner_id).c_str()
+              );
+  run_query(logger, work,
+            R"sql(
+              UPDATE adrestia_games
+                SET activity_state = %s,
+                    winner_id = %s
+                WHERE game_uid = %s
+            )sql",
+            work.quote(to_string(game_final_state)).c_str(),
+            work.quote(to_string(winner_id)).c_str(),
+            work.quote(game_uid).c_str()
+           );
+
+  logger.trace("Committing transaction...");
+  work.commit();
+
+  logger.trace("conclude_game_in_database concluded.");
+}
+
+
 json adrestia_database::retrieve_player_info_from_database (
   const Logger& logger,
   pqxx::connection& psql_connection,
@@ -206,6 +345,9 @@ json adrestia_database::retrieve_player_info_from_database (
     return_var["player_move"] = search_result[0][2].as<string>();
   }
 
+  logger.trace("Committing transaction...");
+  work.commit();
+
   logger.trace("retrieve_player_info_from_database concluded.");
 
   return return_var;
@@ -260,6 +402,10 @@ json adrestia_database::retrieve_gamestate_from_database (
 			last_events.push_back(event);
 		}
 	}
+
+  logger.trace("Committing transaction...");
+  work.commit();
+
   return json::parse(search_result[0][1].as<string>());
 }
 
