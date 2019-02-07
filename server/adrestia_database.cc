@@ -145,11 +145,11 @@ GameRules adrestia_database::retrieve_game_rules(
 }
 
 
-void conclude_game_in_database(
+void adrestia_database::conclude_game_in_database(
   const Logger& logger,
   pqxx::connection& psql_connection,
   const std::string& game_uid,
-  const std::string uuid,
+  const std::string& uuid,
   int game_result
 ) {
   /* @brief Concludes game in the database. How the game concluded is a parameter.
@@ -163,6 +163,8 @@ void conclude_game_in_database(
    *        -1: This player aborted the game
    *        0: This player lost the game
    *        1: This player won the game
+   *
+   * @exception string: Throws a string if could not find a uuid/game_uid pairing in adrestia_players when aborting
    *
    * @returns Nothing
    */
@@ -192,7 +194,7 @@ void conclude_game_in_database(
                );
 
       // Nothing more needs to be done for a tie.
-      logger.trace("conclude_game_in_database concluded.");s
+      logger.trace("conclude_game_in_database concluded.");
       return;
     }
     case -1: {
@@ -248,16 +250,16 @@ void conclude_game_in_database(
       // This is an abort. The player lost the game, and final state is -1.
       game_final_state = -1;
     }
-  }
-  case 0: {
-    // This is a loss. The player lost the game.
-    if (player_id == 0) {
-      winner_id = 1;
+    case 0: {
+      // This is a loss. The player lost the game.
+      if (player_id == 0) {
+        winner_id = 1;
+      }
+      else if (player_id == 1) {
+        winner_id = 0;
+      }
+      break;
     }
-    else if (player_id == 1) {
-      winner_id = 0;
-    }
-    break;
   }
 
   logger.trace("Updating game |%s| to have final state |%s|, winner |%s|.",
@@ -274,6 +276,9 @@ void conclude_game_in_database(
             work.quote(to_string(winner_id)).c_str(),
             work.quote(game_uid).c_str()
            );
+
+  logger.trace("Committing transaction...");
+  work.commit();
 
   logger.trace("conclude_game_in_database concluded.");
 }
@@ -340,6 +345,9 @@ json adrestia_database::retrieve_player_info_from_database (
     return_var["player_move"] = search_result[0][2].as<string>();
   }
 
+  logger.trace("Committing transaction...");
+  work.commit();
+
   logger.trace("retrieve_player_info_from_database concluded.");
 
   return return_var;
@@ -394,6 +402,10 @@ json adrestia_database::retrieve_gamestate_from_database (
 			last_events.push_back(event);
 		}
 	}
+
+  logger.trace("Committing transaction...");
+  work.commit();
+
   return json::parse(search_result[0][1].as<string>());
 }
 

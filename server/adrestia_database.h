@@ -31,8 +31,8 @@ namespace adrestia_database {
     const Logger& logger,
     pqxx::connection& psql_connection,
     const std::string& game_uid,
-    const std::string uuid,
-    int game_result,
+    const std::string& uuid,
+    int game_result
   );
 
   /* Gets game rules from the database. */

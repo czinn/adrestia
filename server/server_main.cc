@@ -97,6 +97,7 @@ int main(int na, char* arg[]) {
 	handler_map["register_new_account"] = adrestia_networking::handle_register_new_account;
 	handler_map["authenticate"] = adrestia_networking::handle_authenticate;
 
+	handler_map["abort_game"] = adrestia_networking::handle_abort_game;
 	handler_map["change_user_name"] = adrestia_networking::handle_change_user_name;
 	handler_map["matchmake_me"] = adrestia_networking::handle_matchmake_me;
 	handler_map["submit_move"] = adrestia_networking::handle_submit_move;
