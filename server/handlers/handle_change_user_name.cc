@@ -34,6 +34,7 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
    *     CODE_KEY: 200
    *     MESSAGE_KEY: "Modification complete."
    *     "tag": The new tag.
+   *     "user_name": The new user_name.
    *
    * Always returns 0.
    */
@@ -56,6 +57,7 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
   resp[adrestia_networking::CODE_KEY] = 200;
   resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
   resp["tag"] = new_account_info["tag"];
+  resp["user_name"] = new_user_name;
 
   logger.trace("change_user_name concluded.");
   return 0;
