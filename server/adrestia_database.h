@@ -26,6 +26,15 @@ namespace adrestia_database {
   const int UUID_LENGTH = 32;
   const int GAME_UID_LENGTH = 32;
 
+  /* Marks the target uuid as winning/losing the target game */
+  void conclude_game_in_database(
+    const Logger& logger,
+    pqxx::connection& psql_connection,
+    const std::string& game_uid,
+    const std::string uuid,
+    int game_result,
+  );
+
   /* Gets game rules from the database. */
   GameRules retrieve_game_rules(
     const Logger& logger,
