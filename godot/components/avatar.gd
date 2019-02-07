@@ -33,4 +33,4 @@ func redraw(player, mp_left = null):
 	var mp_max = g.rules.get_mana_cap()
 
 	mp_label.text = str(mp_left)
-	mp_regen_label.text = '+%s' % [player.mp_regen]
+	mp_regen_label.text = ('+' if player.mp_regen > 0 else '') + '%s' % [player.mp_regen]

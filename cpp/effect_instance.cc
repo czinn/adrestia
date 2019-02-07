@@ -69,6 +69,7 @@ void EffectInstance::apply(const GameRules &rules, Player &player) const {
 			break;
 		case EK_REGEN:
 			player.mp_regen += amount;
+			player.mp_regen = std::max(0, player.mp_regen);
 			break;
 		case EK_STICKY:
 			player.add_sticky(

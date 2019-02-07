@@ -98,6 +98,11 @@ std::vector<EffectInstance> _apply_to_effect(
 			{"duration", s.remaining_duration}
 		});
 	}
+	events_out.emplace_back(json{
+			{"type", "sticky_activated"},
+			{"player", player_id},
+			{"sticky_index", sticky_index}
+		});
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
@@ -132,6 +137,11 @@ std::vector<EffectInstance> _apply_to_spell(
 			// Do nothing!
 			break;
 	}
+	events_out.emplace_back(json{
+			{"type", "sticky_activated"},
+			{"player", player_id},
+			{"sticky_index", sticky_index}
+		});
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
@@ -165,6 +175,11 @@ std::vector<EffectInstance> _apply_to_turn(
 			// Do nothing!
 			break;
 	}
+	events_out.emplace_back(json{
+			{"type", "sticky_activated"},
+			{"player", player_id},
+			{"sticky_index", sticky_index}
+		});
 	// Generate additional effects
 	std::vector<EffectInstance> effects;
 	for (const auto &e : s.sticky.get_effects()) {
