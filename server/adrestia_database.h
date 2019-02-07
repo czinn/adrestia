@@ -56,7 +56,7 @@ namespace adrestia_database {
     pqxx::connection& psql_connection,
     const std::string& game_uid,
     GameRules &game_rules,
-		std::vector<json> &last_events
+    std::vector<json> &last_events
   );
 
   /* Checks for active games in the database associated with the given uuid, and returns them.
@@ -78,16 +78,16 @@ namespace adrestia_database {
     const std::vector<std::string>& selected_books
   );
 
-	/* Submits the move for a turn in the game, updating the game if all players
-	 * have submitted a move.
-	 */
-	bool submit_move_in_database(
-		const Logger& logger,
-		pqxx::connection& psql_connection,
-		const std::string& uuid,
-		const std::string& game_uid,
-		const std::vector<std::string>& player_move
-	);
+  /* Submits the move for a turn in the game, updating the game if all players
+   * have submitted a move.
+   */
+  bool submit_move_in_database(
+    const Logger& logger,
+    pqxx::connection& psql_connection,
+    const std::string& uuid,
+    const std::string& game_uid,
+    const std::vector<std::string>& player_move
+  );
 
   /* Changes the user_name associated with the given uuid in the database.
    * Returns a json object with key 'tag' representing the tag.
@@ -129,18 +129,42 @@ namespace adrestia_database {
     int &latest_notification_already_sent
   );
 
-  /* Clear matchmake requests for a player. */
-  void clear_matchmake_requests(
-    const Logger& logger,
-    pqxx::connection& conn,
-    const std::string& uuid
-  );
-
-
   /* Returns an established pqxx::connection object,
    *     connection parameters specified via environment variable.
    */
   pqxx::connection establish_connection();
+
+  /* Db and DbQuery form an alternate way to access the database. They provide
+   * a flexible, concise interface that allows for the quick development of
+   * handlers. */
+  class DbQuery {
+    public:
+      DbQuery(std::string format, pqxx::work *work, Logger &logger);
+
+      template<typename T>
+      DbQuery &operator()(const T &x) {
+        replace_one_qmark(work->quote(x));
+        return *this;
+      }
+      pqxx::result operator()();
+    private:
+      std::string format;
+      pqxx::work *work;
+      Logger &logger;
+      void replace_one_qmark(std::string s);
+  };
+
+  class Db {
+    public:
+      Db(Logger &logger);
+      ~Db();
+      DbQuery query(std::string format);
+      void commit();
+    private:
+      Logger &logger;
+      pqxx::connection *conn;
+      pqxx::work *work;
+  };
 }
 
 #endif

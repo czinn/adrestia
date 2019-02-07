@@ -238,8 +238,8 @@ void adrestia_database::conclude_game_in_database(
   }
 
   int player_id = search_result[0][0].as<int>();
-  logger.trace("Player |%s| was id |%s| in game |%s|.",
-               uuid.c_str(), to_string(player_id).c_str(), game_uid.c_str()
+  logger.trace("Player |%s| was id |%d| in game |%s|.",
+               uuid.c_str(), player_id, game_uid.c_str()
               );
 
   int winner_id = player_id;
@@ -273,7 +273,7 @@ void adrestia_database::conclude_game_in_database(
                 WHERE game_uid = %s
             )sql",
             work.quote(to_string(game_final_state)).c_str(),
-            work.quote(to_string(winner_id)).c_str(),
+            work.quote(winner_id).c_str(),
             work.quote(game_uid).c_str()
            );
 
@@ -996,22 +996,6 @@ std::vector<std::string> adrestia_database::get_notifications(
   }
 
   return result;
-}
-
-
-void adrestia_database::clear_matchmake_requests(
-  const Logger& logger,
-  pqxx::connection& conn,
-  const std::string& uuid
-) {
-  pqxx::work work(conn);
-  run_query(logger, work,
-    R"sql(
-      DELETE FROM adrestia_match_waiters
-      WHERE uuid = %s
-    )sql",
-    work.quote(uuid).c_str());
-  work.commit();
 }
 
 

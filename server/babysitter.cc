@@ -36,7 +36,7 @@ void Babysitter::main() {
   logger.info("Starting sequence.");
   phase = NEW;
   uuid = "";
-  
+
   // Create pushers
   PushActiveGames push_active_games;
   PushNotifications push_notifications;
@@ -128,8 +128,12 @@ void Babysitter::main() {
     logger.error("Terminating due to socket error.");
   }
 
-  pqxx::connection conn = adrestia_database::establish_connection();
-  adrestia_database::clear_matchmake_requests(logger, conn, uuid);
+  adrestia_database::Db db(logger);
+  db.query(R"sql(
+    DELETE FROM adrestia_match_waiters
+    WHERE uuid = ?
+  )sql")(uuid)();
+  db.commit();
 }
 
 Babysitter::Phase Babysitter::phase_new(
