@@ -45,11 +45,6 @@ const OUT_OF_DATE = 3
 var status = OFFLINE
 
 func _ready():
-	# For server development
-	# TODO: remove before release!!
-	if OS.get_name() in ['X11', 'OSX']:
-		g.network.host = '127.0.0.1'
-
 	connect_timer = Timer.new()
 	connect_timer.set_one_shot(true)
 	connect_timer.set_timer_process_mode(0)
