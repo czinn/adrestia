@@ -2,7 +2,7 @@
 
 using namespace adrestia_database;
 
-DbQuery::DbQuery(std::string format, pqxx::work *work, Logger &logger)
+DbQuery::DbQuery(std::string format, pqxx::work *work, const Logger &logger)
   : format(format)
   , work(work)
   , logger(logger)
@@ -26,7 +26,7 @@ void DbQuery::replace_one_qmark(std::string s) {
   format.replace(pos, 1, s);
 }
 
-Db::Db(Logger &logger)
+Db::Db(const Logger &logger)
   : logger(logger)
 {
   const char *db_conn_string = getenv("DB_CONNECTION_STRING");
@@ -51,6 +51,12 @@ DbQuery Db::query(std::string format) {
 
 void Db::commit() {
   work->commit();
+  delete work;
+  work = new pqxx::work(*conn);
+}
+
+void Db::abort() {
+  work->abort();
   delete work;
   work = new pqxx::work(*conn);
 }

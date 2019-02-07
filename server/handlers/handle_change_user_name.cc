@@ -5,6 +5,7 @@
 
 // Our related modules
 #include "../adrestia_database.h"
+#include "../adrestia_hexy.h"
 
 // Database
 #include <pqxx/pqxx>
@@ -44,19 +45,43 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
   string new_user_name = client_json.at("user_name");
 
   logger.trace("Modifying uuid |%s| to have user_name |%s|...", uuid.c_str(), new_user_name.c_str());
-  pqxx::connection psql_connection = adrestia_database::establish_connection();
-  json new_account_info = adrestia_database::adjust_user_name_in_database(logger, psql_connection, uuid, new_user_name);
+
+  adrestia_database::Db db(logger);
+  string tag;
+  bool success = false;
+  for (int i = 0; i < 1000; i += 1) {
+    tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
+    try {
+      pqxx::result result = db.query(R"sql(
+        UPDATE adrestia_accounts
+        SET user_name = ?, tag = ?
+        WHERE uuid = ?
+      )sql")(new_user_name)(tag)(uuid)();
+      db.commit();
+      logger.info("Successfully changed user_name in database.");
+      success = true;
+      break;
+    }
+    catch (pqxx::integrity_constraint_violation &e) {
+      db.abort();
+    }
+  }
+
+  if (!success) {
+    logger.error("Failed to update the user_name!");
+    throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + new_user_name + "|!");
+  }
 
   logger.trace_()
     << "New account info is:" << endl
     << "    uuid: |" << uuid << "|" << endl
     << "    user_name: |" << new_user_name << "|" << endl
-    << "    tag: |" << new_account_info["tag"] << "|";
+    << "    tag: |" << tag << "|";
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
   resp[adrestia_networking::CODE_KEY] = 200;
   resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
-  resp["tag"] = new_account_info["tag"];
+  resp["tag"] = tag;
   resp["user_name"] = new_user_name;
 
   logger.trace("change_user_name concluded.");

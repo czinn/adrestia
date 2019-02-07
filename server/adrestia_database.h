@@ -89,16 +89,6 @@ namespace adrestia_database {
     const std::vector<std::string>& player_move
   );
 
-  /* Changes the user_name associated with the given uuid in the database.
-   * Returns a json object with key 'tag' representing the tag.
-   */
-  json adjust_user_name_in_database(
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid,
-    const std::string& user_name
-  );
-
 
   /* Creates a new account with a default name in the database.
    * Returns a json object with keys 'id', 'user_name', and 'tag'.
@@ -136,10 +126,23 @@ namespace adrestia_database {
 
   /* Db and DbQuery form an alternate way to access the database. They provide
    * a flexible, concise interface that allows for the quick development of
-   * handlers. */
+   * handlers.
+   *
+   * Db manages a pqxx::connection and pqxx::work for the user. A pqxx::work is
+   * active at all times. Calling [commit] or [abort] does the same thing to
+   * the underlying work, then immediately starts a fresh work.
+   *
+   * DbQuery is a helper class that allows formatting a query using question
+   * marks as placeholders. The placeholders are filled with arguments when
+   * operator() is called. A run-time check ensures that the number of
+   * arguments is correct. Every value passed in to DbQuery is automatically
+   * quoted/escaped.
+   *
+   * RAII ensures that stuff is cleaned up.
+   * */
   class DbQuery {
     public:
-      DbQuery(std::string format, pqxx::work *work, Logger &logger);
+      DbQuery(std::string format, pqxx::work *work, const Logger &logger);
 
       template<typename T>
       DbQuery &operator()(const T &x) {
@@ -150,18 +153,19 @@ namespace adrestia_database {
     private:
       std::string format;
       pqxx::work *work;
-      Logger &logger;
+      const Logger &logger;
       void replace_one_qmark(std::string s);
   };
 
   class Db {
     public:
-      Db(Logger &logger);
+      Db(const Logger &logger);
       ~Db();
       DbQuery query(std::string format);
       void commit();
+      void abort();
     private:
-      Logger &logger;
+      const Logger &logger;
       pqxx::connection *conn;
       pqxx::work *work;
   };
