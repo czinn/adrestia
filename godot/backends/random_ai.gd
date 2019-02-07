@@ -59,9 +59,20 @@ func submit_books(selected_book_ids):
 		timer.start()
 		yield(self, 'debug_timer')
 
+	var ai_books = []
+	var rules_books = g.rules.get_books().keys()
+	randomize()
+	for i in range(len(rules_books)):
+		if i < 3:
+			ai_books.append(rules_books[i])
+		else:
+			var j = randi() % 3
+			if j < 3:
+				ai_books[j] = rules_books[i]
+
 	if left_game: return
 	state = g.GameState.new()
-	state.init(g.rules, [selected_book_ids, selected_book_ids])
+	state.init(g.rules, [selected_book_ids, ai_books])
 	if started_callback != null:
 		started_callback.call_func()
 
