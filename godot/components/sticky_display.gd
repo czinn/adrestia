@@ -3,6 +3,7 @@ extends Control
 onready var g = get_node('/root/global')
 
 onready var texture = $texture
+onready var glow_texture = $texture/glow_texture
 onready var duration_label = $duration_label
 onready var animation_player = $animation_player
 
@@ -31,11 +32,15 @@ func fadeout():
 	animation_player.play("fadeout")
 	redraw()
 
+func flash():
+	animation_player.play('glow')
+
 func redraw():
 	if g == null: return
 	if sticky == null: return
 
 	texture.texture = g.get_sticky_texture(sticky.sticky.get_id())
+	glow_texture.texture = texture.texture
 	
 	if old_amount != null && old_amount != sticky.amount:
 		g.summon_delta(duration_label, sticky.amount - old_amount, Color(0, 0, 0))

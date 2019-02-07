@@ -4,7 +4,7 @@ onready var sticky_display_scene = preload('res://components/sticky_display.tscn
 
 onready var g = get_node('/root/global')
 
-onready var stickies_hbox = $scroller/hbox
+onready var stickies_hbox = $grid
 
 var sticky_displays = []
 
@@ -21,6 +21,10 @@ func redraw(stickies):
 		stickies_hbox.add_child(sticky_display)
 		sticky_display.appear()
 		sticky_displays.append(sticky_display)
+
+func flash_sticky(index):
+	if stickies_hbox == null: return
+	sticky_displays[index].flash()
 
 # Like redraw, but assumes that the only change is appending the last sticky
 func redraw_append(stickies):

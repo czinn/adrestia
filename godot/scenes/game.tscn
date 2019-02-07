@@ -153,9 +153,9 @@ margin_bottom = 79.0
 [node name="enemy_stickies" parent="ui" index="3" instance=ExtResource( 6 )]
 
 margin_left = 10.0
-margin_top = 138.0
+margin_top = 81.0
 margin_right = -217.0
-margin_bottom = 210.0
+margin_bottom = 215.0
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="enemy_spell_list" parent="ui" index="4" instance=ExtResource( 7 )]
@@ -192,9 +192,9 @@ flipped = true
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 221.0
-margin_top = -376.0
+margin_top = -385.0
 margin_right = -21.0
-margin_bottom = -304.0
+margin_bottom = -251.0
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Theme" ]
 
 [node name="my_spell_list" parent="ui" index="8" instance=ExtResource( 7 )]

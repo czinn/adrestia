@@ -314,6 +314,11 @@ func on_event_timer_timeout():
 				my_stickies.redraw_update(me.stickies)
 			else:	
 				enemy_stickies.redraw_update(them.stickies)
+		elif event['type'] == 'sticky_activated':
+			if event['player'] == player_id:
+				my_stickies.flash_sticky(event['sticky_index'])
+			else:
+				enemy_stickies.flash_sticky(event['sticky_index'])
 		elif event['type'] == 'sticky_expired':
 			if event['player'] == player_id:
 				my_stickies.redraw_remove(event['sticky_index'])
