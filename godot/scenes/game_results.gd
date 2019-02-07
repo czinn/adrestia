@@ -17,15 +17,15 @@ func _ready():
 	game_history.health_history = g.health_history
 	if winners.size() == 2:
 		# Tie
-		results_text.bbcode_text = '[b]You tied![/b]\nThis means you half-lost. Try harder next time.'
+		results_text.bbcode_text = '[b]You tied![/b]'
 		winner = -1
 	elif winners.has(0):
 		# Won!
-		results_text.bbcode_text = '[b]You won![/b]\nYour spells are very impressive. You must be very proud.'
+		results_text.bbcode_text = '[b]You won![/b]'
 		winner = 0
 	else:
 		# Loss
-		results_text.bbcode_text = '[b]You lost.[/b]\nYou need more practice.'
+		results_text.bbcode_text = '[b]You lost.[/b]'
 		winner = 1
 
 func _notification(what):
