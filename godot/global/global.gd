@@ -27,13 +27,13 @@ onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
 onready var drag_drop = get_node('/root/drag_drop')
 
-const app_version = '1.0.0'
+const app_version = '1.0.2'
 
 var loaded = false
 var backend = null
 var tooltip = null # Currently displayed tooltip
 var rules = null setget ,get_rules
-var rules_version = '1.0.0'
+var rules_version = '1.0.2'
 
 var health_history
 
