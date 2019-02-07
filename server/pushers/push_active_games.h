@@ -7,6 +7,7 @@
 
 // System modules
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -22,6 +23,6 @@ namespace adrestia_networking {
 		
 		private:
 			std::map<std::string, json> games_I_am_aware_of; // game_uid to game_state
-			std::vector<std::string> active_game_uids_I_am_aware_of;
+			std::set<std::string> active_game_uids_I_am_aware_of;
 	};
 }

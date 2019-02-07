@@ -22,10 +22,6 @@ func _init(g_):
 
 func get_view():
 	if view != null:
-		if state != null:
-			var v = g.GameView.new()
-			v.init(state, view.view_player_id)
-			return v
 		return view
 	return null
 
@@ -58,9 +54,12 @@ func on_push_active_games(response):
 	if game.has('game_state'):
 		state = g.GameState.new()
 		state.init_json(rules, game.game_state)
+		if player_id != null:
+			view.init(state, player_id)
 	else:
 		view = g.GameView.new()
 		view.init_json(rules, game.game_view)
+		player_id = view.view_player_id
 		print('successfully created view')
 	if game.events.size() > 0:
 		update_callback.call_func(get_view(), game.events)

@@ -61,9 +61,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
   // Any active games that have concluded require a special query.
   set<string> active_game_uids_set(active_game_uids.begin(), active_game_uids.end());
-  for (unsigned int i = 0; i < active_game_uids_I_am_aware_of.size(); i += 1) {
-    string current_game_uid = active_game_uids_I_am_aware_of[i];
-
+  for (const string &current_game_uid : active_game_uids_I_am_aware_of) {
     if (active_game_uids_set.find(current_game_uid) == active_game_uids_set.end()) {
       logger.info("Previously active game |%s| has become deactivated and should be reported.", current_game_uid.c_str());
 			vector<json> events;
@@ -80,14 +78,6 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
       // We should add it to the map, and remove it from active games.
       games_I_am_aware_of[current_game_uid] = current_game_state;
-
-      // The find should always succeed; if erase tries to erase active_game_uids_I_am_aware_of.end(),
-      //     we want it to fail.
-      active_game_uids_I_am_aware_of.erase(find(active_game_uids_I_am_aware_of.begin(),
-                                                active_game_uids_I_am_aware_of.end(),
-                                                current_game_uid
-                                               )
-                                          );
     }
   }
 
@@ -122,7 +112,6 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
         // We should also add it to the map, seeing how it is becoming known.
         games_I_am_aware_of[current_game_uid] = current_game_state;
-        active_game_uids_I_am_aware_of.push_back(current_game_uid);
       }
       else {
         logger.debug("|%s| has no changes to its state.", current_game_uid.c_str());
@@ -140,9 +129,10 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
       // We should also add it to the map, seeing how it is becoming known.
       games_I_am_aware_of[current_game_uid] = current_game_state;
-      active_game_uids_I_am_aware_of.push_back(current_game_uid);
     }
   }
+
+	active_game_uids_I_am_aware_of = active_game_uids_set;
 
   std::vector<json> message_list;
 
