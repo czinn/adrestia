@@ -55,7 +55,6 @@ func _ready():
 	redraw()
 
 func _notification(what):
-	print(what)
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.call_deferred('on_back_button_pressed')
 
@@ -63,7 +62,6 @@ func on_back_button_pressed():
 	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to forfeit?[/center]'), 'popup_closed')
 	if confirmed:
 		g.backend.leave_game()
-		g.backend = null
 		# TODO: charles: Possibly go to game-end screen instead.
 		g.scene_loader.goto_scene('title', true)
 
@@ -74,10 +72,6 @@ func on_spell_enqueue(spell):
 		return
 	my_spell_list.spells = action
 	redraw()
-
-func on_book_upgrade(index, book):
-	print(index)
-	print(book)
 
 func on_my_spell_list_pressed(index, spell):
 	if ui_state == CHOOSING_SPELLS:
@@ -190,6 +184,13 @@ func on_end_turn_button_pressed():
 		return
 
 func on_backend_update(new_view, update_events):
+	if g.backend == null: return
+	if g.backend.forfeited:
+		print('Game was forfeit')
+		g.health_history.append([state.players[0].hp, state.players[1].hp])
+		g.scene_loader.goto_scene('game_results')
+		return
+
 	# Initialize the spell lists
 	var last_turn = new_view.history[-1]
 	my_spell_list.spells = last_turn[new_view.view_player_id]

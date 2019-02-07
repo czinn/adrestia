@@ -12,6 +12,7 @@ var in_game = false
 
 # Public
 var rules
+var forfeited = false
 
 func _init(g_):
 	g = g_
@@ -52,16 +53,18 @@ func on_push_active_games(response):
 	var game = response.updates[0]
 	game_uid = game.game_uid
 	if game.has('game_state'):
+		# This means the game is over.
 		state = g.GameState.new()
 		state.init_json(rules, game.game_state)
 		if player_id != null:
 			view.init(state, player_id)
+		forfeited = true
 	else:
 		view = g.GameView.new()
 		view.init_json(rules, game.game_view)
 		player_id = view.view_player_id
 		print('successfully created view')
-	if game.events.size() > 0:
+	if game.events.size() > 0 or forfeited:
 		update_callback.call_func(get_view(), game.events)
 
 	if not in_game:

@@ -146,15 +146,15 @@ namespace adrestia_database {
 
       template<typename T>
       DbQuery &operator()(const T &x) {
-        replace_one_qmark(work->quote(x));
+        quoted_parts.push_back(work->quote(x));
         return *this;
       }
       pqxx::result operator()();
     private:
-      std::string format;
+      std::vector<std::string> format_parts;
+      std::vector<std::string> quoted_parts;
       pqxx::work *work;
       const Logger &logger;
-      void replace_one_qmark(std::string s);
   };
 
   class Db {

@@ -79,7 +79,7 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
     << "New account info is:" << endl
     << "    uuid: |" << uuid << "|" << endl
     << "    user_name: |" << new_user_name << "|" << endl
-    << "    tag: |" << tag << "|";
+    << "    tag: |" << tag << "|" << endl;
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
   resp[adrestia_networking::CODE_KEY] = 200;

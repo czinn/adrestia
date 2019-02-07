@@ -3,25 +3,32 @@
 using namespace adrestia_database;
 
 DbQuery::DbQuery(std::string format, pqxx::work *work, const Logger &logger)
-  : format(format)
-  , work(work)
+  : work(work)
   , logger(logger)
-{}
-
-pqxx::result DbQuery::operator()() {
-  if (format.find('?') != std::string::npos) {
-    throw std::string("Too few arguments supplied to SQL query.");
+{
+  // split format by ?s
+  size_t cur, prev = 0;
+  while (true) {
+    cur = format.find('?', prev);
+    format_parts.push_back(format.substr(prev, cur - prev));
+    if (cur == std::string::npos) break;
+    prev = cur + 1;
   }
-  logger.trace_() << format << std::endl;
-  return work->exec(format);
 }
 
-void DbQuery::replace_one_qmark(std::string s) {
-  size_t pos = format.find('?');
-  if (pos == std::string::npos) {
-    throw std::string("Too many arguments supplied to SQL query.");
+pqxx::result DbQuery::operator()() {
+  if (format_parts.size() != quoted_parts.size() + 1) {
+    throw std::string("Wrong number of arguments supplied to SQL query.");
   }
-  format.replace(pos, 1, s);
+  std::stringstream query_builder;
+  for (size_t i = 0; i < quoted_parts.size(); i += 1) {
+    query_builder << format_parts[i];
+    query_builder << quoted_parts[i];
+  }
+  query_builder << format_parts.back();
+  std::string query = query_builder.str();
+  logger.trace_() << query << std::endl;
+  return work->exec(query);
 }
 
 Db::Db(const Logger &logger)
