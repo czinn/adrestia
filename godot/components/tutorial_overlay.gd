@@ -124,7 +124,7 @@ func play_tutorial():
 		var book = yield(select_root, 'show_book_detail')
 		if book.get_id() == 'conjuration':
 			break
-	
+
 	var spell_preview = yield(self.acquire_node('ui/spell_button_list'), 'completed')
 	yield(show_tooltip(spell_preview, 'Each book has four spells.'), 'completed')
 	var spell_button = spell_preview.get_child(1).get_child(1)

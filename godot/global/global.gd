@@ -32,6 +32,7 @@ const app_version = '1.0.2'
 
 var loaded = false
 var backend = null
+var tutorial_overlay = null
 var tooltip = null # Currently displayed tooltip
 var rules = null setget ,get_rules
 var rules_version = '1.0.2'
@@ -184,6 +185,11 @@ func tween(thing, to_pos, time):
 func safe_disconnect(object, signal_, target, method):
 	if object.is_connected(signal_, target, method):
 		object.disconnect(signal_, target, method)
+
+func remove_tutorial_overlay():
+	if tutorial_overlay != null:
+		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
+		tutorial_overlay = null
 
 func compare_versions(version_1, version_2):
 	var split_1 = version_1.split(".")
