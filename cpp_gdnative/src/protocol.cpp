@@ -83,4 +83,10 @@ namespace godot {
     adrestia_networking::create_submit_move_call(j, game_uid_, player_move_);
     return String(j.dump().c_str());
   }
+
+  String Protocol::create_get_stats_call() {
+    nlohmann::json j;
+    adrestia_networking::create_get_stats_call(j);
+    return String(j.dump().c_str());
+  }
 }

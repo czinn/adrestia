@@ -73,3 +73,7 @@ void adrestia_networking::create_submit_move_call(json& client_json,
   client_json["game_uid"] = game_uid;
   client_json["player_move"] = player_move;
 }
+
+void adrestia_networking::create_get_stats_call(json& client_json) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_stats";
+}

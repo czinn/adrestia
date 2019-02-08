@@ -72,6 +72,10 @@ namespace adrestia_networking {
                          const json& client_json,
                          json& resp
                         );
+  int handle_get_stats(const Logger& logger,
+                       const json& client_json,
+                       json& resp
+                      );
 
   // Calls to handlers
   void create_floop_call(json& client_json);
@@ -103,6 +107,8 @@ namespace adrestia_networking {
 	                             const std::string& game_uid,
 	                             const std::vector<std::string>& player_move
 														  );
+
+	void create_get_stats_call(json& client_json);
 }
 
 #endif
