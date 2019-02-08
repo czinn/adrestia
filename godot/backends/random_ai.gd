@@ -22,6 +22,9 @@ func _init(g_):
 	ai = g.Strategy.new()
 	ai.init_cfr_strategy(rules)
 
+func get_time_limit():
+	return 30
+
 func get_view():
 	if left_game: return null
 	if state == null:

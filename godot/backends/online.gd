@@ -21,6 +21,9 @@ func _init(g_):
 	# server when we reconnect.
 	rules = g.get_default_rules()
 
+func get_time_limit():
+	return 30
+
 func get_view():
 	if view != null:
 		return view

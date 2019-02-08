@@ -27,6 +27,9 @@ func _init(g_):
 	rules.load_json_string(rules_file.get_as_text())
 	rules_file.close()
 
+func get_time_limit():
+	return 0
+
 func get_view():
 	if state == null:
 		return null

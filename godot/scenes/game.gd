@@ -9,6 +9,7 @@ onready var spell_button_list_scene = preload('res://components/spell_button_lis
 onready var game = $ui
 onready var spell_select = $ui/spell_select
 onready var end_turn_button = $ui/end_turn_button
+onready var countdown_timer = $ui/countdown_timer
 onready var my_mana_bar = $ui/my_mana_bar
 onready var my_spell_list = $ui/my_spell_list
 onready var my_avatar = $ui/my_avatar
@@ -50,6 +51,11 @@ func _ready():
 	spell_select.books = state.players[player_id].books
 	spell_select.connect('spell_press', self, 'on_spell_enqueue')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
+	if g.backend.get_time_limit() == 0:
+		countdown_timer.visible = false
+	else:
+		countdown_timer.seconds = g.backend.get_time_limit()
+		countdown_timer.connect('finished', self, 'on_end_turn_button_pressed')
 	get_tree().set_auto_accept_quit(false)
 	yield(get_tree(), 'idle_frame')
 	redraw()
@@ -163,6 +169,8 @@ func redraw():
 	spell_select.redraw_tech_upgrades(player_upgraded_book_id())
 
 func on_end_turn_button_pressed():
+	if ui_state != UiState.CHOOSING_SPELLS:
+		return
 	spell_select.on_close_book()
 	var action = my_spell_list.spells
 
@@ -237,6 +245,10 @@ func on_event_timer_timeout():
 			my_spell_list.spells = []
 			my_spell_list.immediately_show_tooltip = false
 			enemy_spell_list.spells = []
+
+			# Restart the timer if applicable
+			if g.backend.get_time_limit() > 0:
+				countdown_timer.seconds = g.backend.get_time_limit()
 
 			redraw()
 
