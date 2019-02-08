@@ -69,8 +69,9 @@ func show_big_window(text):
 func show_tooltip(target, text):
 	g.summon_tooltip(target, text)
 	var rect = target.get_global_rect()
-	mouse_blocker.material.set_shader_param('radius', max(rect.size.x, rect.size.y) / 2.0 + 15.0);
+	mouse_blocker.material.set_shader_param('radius', 10.0);
 	mouse_blocker.material.set_shader_param('position', rect.position + (rect.size / 2.0));
+	mouse_blocker.material.set_shader_param('size', rect.size / 2.0);
 	mouse_blocker.visible = true
 	yield(g, 'tooltip_closed')
 	mouse_blocker.visible = false
