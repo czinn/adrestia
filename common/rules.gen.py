@@ -16,6 +16,7 @@ from book_regulation import book as book_regulation
 from book_regulation import old_book as book_regulation_old
 from book_tricks import book as book_tricks
 
+version = [1, 0, 0]
 library: List[Book] = [
 	book_conjuration, # Midrange
 	book_regulation, # Control
@@ -43,6 +44,7 @@ spells = deconstruct(
 books = deconstruct(library, {Spell: lambda spell: spell.id_})
 
 print(json.dumps({
+  'version': version,
 	'mana_cap': 10,
 	'initial_mana_regen': 3,
 	'initial_health': 25,

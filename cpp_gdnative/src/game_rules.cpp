@@ -12,6 +12,7 @@ namespace godot {
 	SCRIPT_AT("res://native/game_rules.gdns")
 
 	void GameRules::_register_methods() {
+		REGISTER_METHOD(get_version)
 		REGISTER_METHOD(get_sticky)
 		REGISTER_METHOD(get_spell)
 		REGISTER_METHOD(get_book)
@@ -23,6 +24,10 @@ namespace godot {
 		REGISTER_JSONABLE
 	}
 
+	Variant CLASSNAME::get_version() const {
+		json j = _ptr->get_version();
+		return to_godot_variant(j, owner);
+	}
 	FORWARD_REF_BY_ID_GETTER(Sticky, get_sticky)
 	FORWARD_REF_BY_ID_GETTER(Spell, get_spell)
 	FORWARD_REF_BY_ID_GETTER(Book, get_book)

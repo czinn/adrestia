@@ -46,11 +46,11 @@ int adrestia_networking::handle_establish_connection(const Logger& logger, const
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 400;
     resp[adrestia_networking::MESSAGE_KEY] = "Server out of date, please try again later";
-		logger.error_()
-			<< "CRITICAL WARNING: Client connected with version "
-			<< version_to_string(v)
-			<< ", which is newer than the newest client. Update the server?"
-			<< std::endl;
+    logger.error_()
+      << "CRITICAL WARNING: Client connected with version "
+      << version_to_string(v)
+      << ", which is newer than the newest client. Update the server?"
+      << std::endl;
     return 1;
   }
 

@@ -22,7 +22,7 @@
 - [>] Player avatars
 - [>] Health bar
 - [x] Mana crystal row
-- [ ] Art for all books, spells, and stickies.
+- [x] Art for all books, spells, and stickies.
 
 # Tutorial
 
@@ -32,13 +32,15 @@
 
 # Networking
 
-- [ ] Establish a TCP connection.
-- [ ] Create helper functions for each of the available server endpoints
-- [ ] Add login page
+- [x] Establish a TCP connection.
+- [x] Create helper functions for each of the available server endpoints
+- [ ] Add login page (for transferring between devices)
+- [ ] Reconnect to existing games
 
 # Post-release improvements
+
 - [ ] Pretty splash screen (maybe? game loads very fast)
-- [ ] Player avatars
+- [x] Player avatars
 - [ ] Health bar (maybe?)
 
 # Campaign / story

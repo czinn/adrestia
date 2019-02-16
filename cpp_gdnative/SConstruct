@@ -45,6 +45,7 @@ sources = []
 add_sources(sources, "src")
 add_sources(sources, '../cpp')
 sources.append('../server/protocol.cc')
+sources.append('../server/versioning.cc')
 
 library = env.SharedLibrary(target=final_lib_path + 'libadrestia', source=sources)
 Default(library)

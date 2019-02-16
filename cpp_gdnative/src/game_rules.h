@@ -16,6 +16,7 @@ namespace godot {
 			static const char *resource_path;
 			static void _register_methods();
 
+			Variant get_version() const;
 			Variant get_sticky(String id) const;
 			Variant get_spell(String id) const;
 			Variant get_book(String id) const;

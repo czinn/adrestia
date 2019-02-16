@@ -68,7 +68,7 @@ func _process(time):
 	if status == OFFLINE:
 		status = CONNECTING
 		print('Connecting...')
-		establish_connection(g.app_version, funcref(self, 'on_network_ready'))
+		establish_connection(g.version_to_string(g.app_version), funcref(self, 'on_network_ready'))
 
 	if OS.get_ticks_msec() - last_send_ms > 2000:
 		floop(funcref(self, 'on_floop'))
@@ -90,6 +90,9 @@ func _process(time):
 				var json = JSON.parse(message).result
 				var handler = json[handler_key]
 				if handler in handlers:
+					if json[code_key] != 200:
+						print('Networking: Got non-200 response code')
+						print(json)
 					if handlers[handler].call_func(json):
 						handlers.erase(handler)
 				else:
@@ -125,7 +128,7 @@ func reconnect():
 
 func on_network_ready(response):
 	if response[code_key] == 200:
-		g.update_rules(JSON.print(response.game_rules), response.version)
+		g.update_rules(JSON.print(response.game_rules))
 		if g.auth_uuid != null and not always_register_new_account:
 			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 		else:
