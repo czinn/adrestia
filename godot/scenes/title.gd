@@ -8,6 +8,7 @@ onready var animation_player = $animation_player
 
 const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
 const TutorialBackend = preload('res://backends/tutorial.gd')
+const OnlineBackend = preload('res://backends/online.gd')
 
 func _ready():
 	get_tree().set_auto_accept_quit(true)
@@ -20,6 +21,7 @@ func _ready():
 		initialize()
 		animation_player.play('fade_in')
 		yield(animation_player, 'animation_finished')
+	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
 
 func initialize():
@@ -35,6 +37,15 @@ func on_disconnected():
 
 func on_out_of_date():
 	online_status.text = 'Out-of-date client. Update the app to play online!'
+
+func on_push_active_games(response):
+	if yield(g.summon_confirm('Would you like to reconnect to your active game?'), 'popup_closed'):
+		g.backend = OnlineBackend.new(g)
+		g.backend.reconnect(response)
+		g.scene_loader.goto_scene('game')
+	else:
+		g.network.abort_game(response[0].game_uid, funcref(g.network, 'discard_response'))
+	return true
 
 func on_play_button_pressed():
 	if g.first_play:

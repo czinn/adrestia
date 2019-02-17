@@ -11,7 +11,7 @@ var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
-const always_register_new_account = DEBUG
+const always_register_new_account = true
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
@@ -30,6 +30,7 @@ var peer
 var data_buffer
 var protocol
 var handlers = {}
+var message_queues = {}
 
 var connect_timer
 var last_recv_ms = 0
@@ -96,8 +97,9 @@ func _process(time):
 					if handlers[handler].call_func(json):
 						handlers.erase(handler)
 				else:
-					print('Unhandled message')
-					print(json)
+					if not (handler in message_queues):
+						message_queues[handler] = []
+					message_queues[handler].append(json)
 				break
 			i += 1
 
@@ -198,6 +200,12 @@ func discard(response):
 
 func register_handler(handler_name, callback):
 	handlers[handler_name] = callback
+	if handler_name in message_queues:
+		while message_queues[handler_name].size() > 0:
+			var json = message_queues[handler_name].pop_front()
+			if handlers[handler_name].call_func(json):
+				handlers.erase(handler_name)
+				break
 
 func api_call_base(name, args, callback):
 	last_send_ms = OS.get_ticks_msec()

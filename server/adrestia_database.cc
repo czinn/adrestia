@@ -339,10 +339,10 @@ json adrestia_database::retrieve_player_info_from_database (
   return_var["player_id"] = search_result[0][0].as<int>();
   return_var["player_state"] = search_result[0][1].as<int>();
   if (search_result[0][2].is_null()) {
-    return_var["player_move"] = "";
+    return_var["player_move"] = json::array();
   }
   else {
-    return_var["player_move"] = search_result[0][2].as<string>();
+    return_var["player_move"] = json::parse(search_result[0][2].as<string>());
   }
 
   logger.trace("Committing transaction...");
@@ -697,7 +697,7 @@ bool adrestia_database::submit_move_in_database(
     WHERE game_uid = %s
       AND user_uid = %s
   )sql",
-    vector_to_sql_array(work, player_move).c_str(),
+    work.quote(json(player_move).dump()).c_str(),
     work.quote(game_uid).c_str(),
     work.quote(uuid).c_str());
 
@@ -728,7 +728,10 @@ bool adrestia_database::submit_move_in_database(
 
   vector<vector<string>> actions;
   for (const auto &player_move : result) {
-    actions.push_back(sql_array_to_vector(player_move["player_move"].as<string>()));
+		json player_move_json = json::parse(player_move[0].as<string>());
+		vector<string> v;
+		for (const string &spell : player_move_json) v.push_back(spell);
+    actions.push_back(v);
   }
   vector<json> events;
   bool simulated = game_state.simulate(actions, events);

@@ -10,8 +10,8 @@ var winner
 
 func _ready():
 	back_button.connect('pressed', self, 'on_back_button_pressed')
-	var winners = g.backend.get_view().winners()
 	var final_state = g.backend.get_state()
+	var winners = g.backend.get_state().winners()
 	game_history.view_player_id = g.backend.get_view().view_player_id
 	game_history.history = final_state.history
 	game_history.health_history = g.health_history

@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS adrestia_players (
 	user_uid VARCHAR REFERENCES adrestia_accounts(uuid),
 	player_id SMALLINT NOT NULL, -- 0 or 1
 	player_state SMALLINT NOT NULL,
-	player_move VARCHAR,
+	player_move JSON,
 	PRIMARY KEY (game_uid, user_uid)
 );
 

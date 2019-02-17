@@ -42,7 +42,10 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
    *             MESSAGE_KEY: "You have [new|changed|new and changed|] games!" (depending on situation)
    *             "updates": A list of updated game views or states, of the form
    *                        {"game_uid": uuid, "game_view": game view, "events": list of events}
-   *                        (or with "game_state" instead of "game_view" for completed games
+	 *                        (or with "game_state" instead of "game_view" for
+	 *                        completed games. If the game is a new game and has
+	 *                        rules that aren't the most recent rules, the game's
+	 *                        rules will be included in the first update.
    *           Note that it follows that reported game_views are waiting for
    *           the player to make a move.
    */
@@ -56,6 +59,8 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
   vector<json> update_list;
   bool new_games = false;
   bool changed_games = false;
+
+	GameRules latest_rules = adrestia_database::retrieve_game_rules(logger, psql_connection, 0);
 
   GameRules rules;
 
@@ -121,10 +126,15 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
       logger.info("New active game with game_uid |%s|", current_game_uid.c_str());
 
       // This game_uid was active, but it is not a known game uid.
-      update_list.push_back({
-          {"game_uid", current_game_uid},
-          {"game_view", current_game_view},
-          {"events", events}});
+			json update = {
+				{"game_uid", current_game_uid},
+				{"game_view", current_game_view},
+				{"events", events}
+			};
+			if (rules.get_version() != latest_rules.get_version()) {
+				update["game_rules"] = rules;
+			}
+      update_list.push_back(update);
       new_games = true;
 
       // We should also add it to the map, seeing how it is becoming known.

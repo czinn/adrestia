@@ -72,6 +72,8 @@ func on_back_button_pressed():
 		g.scene_loader.goto_scene('title', true)
 
 func on_spell_enqueue(spell):
+	if ui_state != CHOOSING_SPELLS:
+		return
 	var action = my_spell_list.spells.duplicate()
 	action.append(spell.get_id())
 	if not state.is_valid_action(player_id, action):
@@ -80,13 +82,14 @@ func on_spell_enqueue(spell):
 	redraw()
 
 func on_my_spell_list_pressed(index, spell):
-	if ui_state == CHOOSING_SPELLS:
-		var action = my_spell_list.spells.duplicate()
-		action.remove(index)
-		if not state.is_valid_action(player_id, action):
-			return
-		my_spell_list.spells = action
-		redraw()
+	if ui_state != CHOOSING_SPELLS:
+		return
+	var action = my_spell_list.spells.duplicate()
+	action.remove(index)
+	if not state.is_valid_action(player_id, action):
+		return
+	my_spell_list.spells = action
+	redraw()
 
 # TODO: jim: All the player_* functions duplicate some part of our game logic.
 # Move these to helper functions in C++ and wrap them?

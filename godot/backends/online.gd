@@ -21,6 +21,13 @@ func _init(g_):
 	# server when we reconnect.
 	rules = g.get_default_rules()
 
+func reconnect(update_message):
+	var game = update_message.updates[0]
+	game['events'] = []
+	if 'game_rules' in game:
+		rules.load_json_string(JSON.print(game['game_rules']))
+	on_push_active_games(update_message)
+
 func get_time_limit():
 	return 30
 
@@ -61,7 +68,6 @@ func on_push_active_games(response):
 		state.init_json(rules, game.game_state)
 		if player_id != null:
 			view.init(state, player_id)
-		forfeited = true
 	else:
 		view = g.GameView.new()
 		view.init_json(rules, game.game_view)
@@ -83,4 +89,5 @@ func submit_action(action):
 	return true
 
 func leave_game():
+	g.network.register_handler('push_active_games', funcref(g.network, 'discard_response'))
 	g.network.abort_game(game_uid, funcref(g.network, 'print_response'))
