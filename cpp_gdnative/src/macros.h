@@ -57,7 +57,8 @@ class Forwarder {
 		T *_ptr; // Pointer to the underlying data.
 		inline void del_ptr() {
 			if (_ptr != nullptr && _owner.is_null()) {
-				delete _ptr;
+				std::cout << "YEET " << size_t(_ptr) << std::endl;
+				//delete _ptr;
 			}
 		}
 
@@ -207,18 +208,21 @@ inline void of_godot_variant(godot::Variant v, nlohmann::json *j) {
 	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
+		godot::Godot::print(godot::String("Wrapped pointer at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
-		o->set_ptr(new ::CLASSNAME(x), owner);\
+		o->set_ptr(new ::CLASSNAME(x));\
+		godot::Godot::print(godot::String("Wrapped value at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME &x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(&x), owner);\
+		godot::Godot::print(godot::String("Wrapped reference at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}
 

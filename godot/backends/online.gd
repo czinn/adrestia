@@ -68,7 +68,7 @@ func on_push_active_games(response):
 		player_id = view.view_player_id
 		print('successfully created view')
 	if game.events.size() > 0 or forfeited:
-		update_callback.call_func(get_view(), game.events)
+		update_callback.call_func(get_view(), [])
 
 	if not in_game:
 		print('We are now in a game: %s' % [game_uid])

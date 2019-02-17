@@ -252,7 +252,6 @@ func load():
 		data = {}
 
 	# Load rules from file by default.
-	print('hi gg')
 	var rules_file = File.new()
 	rules = GameRules.new()
 	rules_file.open(default_rules_path, File.READ)
@@ -268,14 +267,12 @@ func load():
 	tag = dict_has(data, 'tag', null)
 
 	# Override rules with those from saved_data if they're newer.
-	print('hello gg')
 	var rules_json = dict_has(data, 'rules', null)
 	if rules_json != null:
 		var rules_saved = GameRules.new()
 		rules_saved.load_json_string(JSON.print(rules_json))
 		if compare_versions(rules.get_version(), rules_saved.get_version()) < 0:
 			rules = rules_saved
-	print('yolo gg')
 
 	if file.is_open():
 		file.close()

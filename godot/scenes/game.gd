@@ -278,7 +278,9 @@ func on_event_timer_timeout():
 		else:
 			break
 
+	print(events_to_show)
 	for event in events_to_show:
+		print(event)
 		state.apply_event(event)
 	
 		var me = state.players[player_id]
@@ -313,9 +315,11 @@ func on_event_timer_timeout():
 				spell_select.tech_levels = player_effective_tech()
 			elif kind == 'sticky':
 				if target_player == player_id:
-					my_stickies.redraw_append(me.stickies)
+					my_stickies.redraw(me.stickies)
+					#my_stickies.redraw_append(me.stickies)
 				else:
-					enemy_stickies.redraw_append(them.stickies)
+					enemy_stickies.redraw(them.stickies)
+					#enemy_stickies.redraw_append(them.stickies)
 		elif event['type'] == 'spell_countered':
 			var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
 			player_spell_list.spell_countered(event['index'])
@@ -323,16 +327,24 @@ func on_event_timer_timeout():
 			pass # TODO: charles: Maybe animate this
 		elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':
 			if event['player'] == player_id:
-				my_stickies.redraw_update(me.stickies)
+				my_stickies.redraw(me.stickies)
+				#my_stickies.redraw_update(me.stickies)
 			else:	
-				enemy_stickies.redraw_update(them.stickies)
+				enemy_stickies.redraw(them.stickies)
+				#enemy_stickies.redraw_update(them.stickies)
 		elif event['type'] == 'sticky_activated':
 			if event['player'] == player_id:
-				my_stickies.flash_sticky(event['sticky_index'])
+				my_stickies.redraw(me.stickies)
+				#my_stickies.flash_sticky(event['sticky_index'])
 			else:
-				enemy_stickies.flash_sticky(event['sticky_index'])
+				enemy_stickies.redraw(them.stickies)
+				#enemy_stickies.flash_sticky(event['sticky_index'])
 		elif event['type'] == 'sticky_expired':
 			if event['player'] == player_id:
-				my_stickies.redraw_remove(event['sticky_index'])
+				my_stickies.redraw(me.stickies)
+				#my_stickies.redraw_remove(event['sticky_index'])
 			else:
-				enemy_stickies.redraw_remove(event['sticky_index'])
+				enemy_stickies.redraw(them.stickies)
+				#enemy_stickies.redraw_remove(event['sticky_index'])
+		print('Finished event')
+	print('Finished all events')
