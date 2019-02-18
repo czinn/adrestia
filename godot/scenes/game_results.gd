@@ -23,8 +23,8 @@ func _ready():
 		results_text.bbcode_text = '[b]You tied![/b]'
 		winner = -1
 	elif winners.size() == 0:
-		results_text.bbcode_text = '[b]Someone forfeit![/b]'
-		winner = -1
+		results_text.bbcode_text = '[b]Your opponent forfeited the game.[/b]'
+		winner = game_history.view_player_id
 	elif winners.has(game_history.view_player_id):
 		# Won!
 		results_text.bbcode_text = '[b]You won![/b]'
