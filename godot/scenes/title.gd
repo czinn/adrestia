@@ -31,10 +31,10 @@ func on_connected():
 	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]
 
 func on_disconnected():
-	online_status.text = 'Offline.'
+	online_status.text = 'Offline'
 
 func on_out_of_date():
-	online_status.text = 'Out-of-date client. Update the app to play online!'
+	online_status.text = 'Out-of-date client.'
 
 func on_play_button_pressed():
 	if g.first_play:

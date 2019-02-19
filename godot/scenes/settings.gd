@@ -25,10 +25,13 @@ func on_connected():
 	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]
 
 func on_disconnected():
-	online_status.text = 'Offline as %s [%s]' % [g.user_name, g.tag]
+	if g.user_name != null:
+		online_status.text = 'Offline as %s [%s]' % [g.user_name, g.tag]
+	else:
+		online_status.text = 'Offline'
 
 func on_out_of_date():
-	online_status.text = 'Out of date client.'
+	online_status.text = 'Out of date client. Update the app to play online!'
 
 func on_reset_account_button_pressed():
 	if not g.network.is_online():
@@ -36,6 +39,7 @@ func on_reset_account_button_pressed():
 	if yield(g.summon_confirm('This will clear all of your in-game progress. Are you sure?'), 'popup_closed') == true:
 		g.auth_uuid = null
 		g.auth_pwd = null
+		g.multiplayer_wins = null
 		g.network.peer.disconnect_from_host()
 		g.summon_notification('All right, enjoy your new account.')
 

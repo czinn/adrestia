@@ -24,6 +24,7 @@ namespace godot {
     REGISTER_METHOD(create_change_user_name_call);
     REGISTER_METHOD(create_matchmake_me_call);
     REGISTER_METHOD(create_submit_move_call);
+    REGISTER_METHOD(create_get_stats_call);
   }
 
   String Protocol::create_floop_call() {

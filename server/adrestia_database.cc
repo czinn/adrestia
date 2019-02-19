@@ -142,6 +142,8 @@ GameRules adrestia_database::retrieve_game_rules(
     }
     return json::parse(search_result[0][0].as<string>());
   }
+
+  work.commit();
 }
 
 
@@ -767,6 +769,15 @@ bool adrestia_database::submit_move_in_database(
   // Commit
   logger.trace("Committing transaction...");
   work_sim.commit();
+
+  if (concluded) {
+    int game_result = -2;
+    if (game_state.winners().size() == 1) {
+      game_result = game_state.winners()[0] == player_id;
+    }
+    conclude_game_in_database(logger, psql_connection, game_uid, uuid, game_result);
+  }
+
   return true;
 }
 

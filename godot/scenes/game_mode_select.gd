@@ -10,13 +10,16 @@ onready var button_multiplayer = $ui/button_multiplayer
 onready var button_ai = $ui/button_ai
 onready var button_tutorial = $ui/button_tutorial
 onready var back_button = $ui/back_button
+onready var wins_label = $ui/button_multiplayer/wins_label
 
 func _ready():
 	button_multiplayer.connect('pressed', self, 'on_button_multiplayer_pressed')
 	button_ai.connect('pressed', self, 'on_button_ai_pressed')
 	button_tutorial.connect('pressed', self, 'on_button_tutorial_pressed')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
+	redraw()
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_disconnected')
+	g.network.get_stats(funcref(self, 'on_get_stats'))
 	get_tree().set_auto_accept_quit(false)
 
 func on_connected():
@@ -49,3 +52,15 @@ func on_button_tutorial_pressed():
 
 func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)
+
+func on_get_stats(response):
+	g.multiplayer_wins = response.wins
+	g.save()
+	redraw()
+
+func redraw():
+	if g.multiplayer_wins == null:
+		wins_label.visible = false
+	else:
+		wins_label.text = "Wins: " + str(g.multiplayer_wins)
+		wins_label.visible = true
