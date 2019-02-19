@@ -33,7 +33,7 @@ func _ready():
 	get_tree().set_auto_accept_quit(false)
 	for i in range(selected_books_hbox.get_child_count()):
 		var button = selected_books_hbox.get_child(i)
-		button.connect('pressed', self, 'on_remove_book', [i, button])
+		button.connect('pressed', self, 'on_top_book_down', [i, button])
 		button.connect('button_down', self, 'on_remove_book_down', [i, button])
 
 func _notification(what):
@@ -76,25 +76,13 @@ func on_book_down(book_button):
 	g.drag_drop.payload = book_button
 	g.drag_drop.track_drag(book_button.button)
 
-func on_remove_book(i, button):
-	if chosen_books[i] == null: return
-	var book_id = chosen_books[i].get_id()
-	chosen_books[i] = null
-
-	# animate book going back to list
-	var book_button = book_buttons[book_id]
-	var image = g.drag_drop.clone_image(button)
-	button.texture_normal = book_placeholder_texture
-	yield(g.tween(image, book_button.get_global_position(), 0.3), 'done')
-	image.queue_free()
-	book_button.button.texture_normal = g.get_book_texture(book_id)
-
-	# clear spell list
-	spell_button_list.spells = []
+func on_top_book_down(i, button):
+	if chosen_books[i]:
+		show_book_detail(chosen_books[i])
 
 func on_remove_book_down(i, button):
 	if chosen_books[i] == null: return
-	g.drag_drop.set_dead_zone(0, 0, 0, 0)
+	g.drag_drop.set_dead_zone(20, null, null, 20)
 	g.drag_drop.on_lift = funcref(self, 'on_remove_book_down_lift')
 	g.drag_drop.on_drop = funcref(self, 'on_remove_book_down_drop')
 	g.drag_drop.payload = [i, button]
