@@ -57,8 +57,8 @@ class Forwarder {
 		T *_ptr; // Pointer to the underlying data.
 		inline void del_ptr() {
 			if (_ptr != nullptr && _owner.is_null()) {
-				std::cout << "YEET " << size_t(_ptr) << std::endl;
-				//delete _ptr;
+				std::cout << "DELYEET " << size_t(_ptr) << std::endl;
+				delete _ptr;
 			}
 		}
 
