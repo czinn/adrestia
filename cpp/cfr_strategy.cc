@@ -44,7 +44,7 @@ std::vector<double> cfr_state_vector(const GameState &g) {
 			size_t book_index = p.find_book_idx(book_id);
 			r.push_back(book_index != size_t(-1) ? 1.0 : 0.0);
 			for (size_t tech = 1; tech <= 3; tech++) {
-				r.push_back(p.tech[book_index] >= tech ? 1.0 : 0.0);
+				r.push_back(book_index == size_t(-1) ? 0.0 : p.tech[book_index] >= tech ? 1.0 : 0.0);
 			}
 		}
 	}
