@@ -281,7 +281,7 @@ func on_event_timer_timeout():
 	print(events_to_show)
 	for event in events_to_show:
 		print(event)
-		#state.apply_event(event)
+		state.apply_event(event)
 	
 		#var me = state.players[player_id]
 		#var them = state.players[1 - player_id]
