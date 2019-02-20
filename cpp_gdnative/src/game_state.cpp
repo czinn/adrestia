@@ -30,6 +30,7 @@ namespace godot {
 	}
 
 	void CLASSNAME::init(Variant rules, Variant player_books) {
+		godot::Godot::print("GameState::init");
 		Array a = player_books;
 		auto *_rules = godot::as<GameRules>(rules);
 		std::vector<std::vector<std::string>> _books;
@@ -42,6 +43,7 @@ namespace godot {
 	}
 
 	void CLASSNAME::init_json(Variant rules, Variant json) {
+		godot::Godot::print("GameState::init_json");
 		nlohmann::json j;
 		auto *_rules = godot::as<GameRules>(rules);
 		of_godot_variant(json, &j);
@@ -49,11 +51,13 @@ namespace godot {
 	}
 
 	void CLASSNAME::clone(Variant state) {
+		godot::Godot::print("GameState::clone");
 		auto *_state = godot::as<GameState>(state);
 		set_ptr(new ::GameState(*_state->_ptr));
 	}
 
 	void CLASSNAME::of_game_view(Variant view) {
+		godot::Godot::print("GameState::of_game_view");
 		auto *_view = godot::as<GameView>(view);
 		::GameView &v = *_view->_ptr;
 		size_t i = v.view_player_id;

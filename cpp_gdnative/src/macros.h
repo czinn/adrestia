@@ -86,15 +86,19 @@ class Forwarder {
 
 		// Own it.
 		void set_ptr(T *u) {
+			std::cout << "antic " << size_t(u) << std::endl;
 			del_ptr();
 			_ptr = u;
+			std::cout << "CURYATE(owned) " << _resource_path << " " << size_t(_ptr) << std::endl;
 			_owner.unref();
 		}
 
 		// Don't own it.
 		void set_ptr(T *u, godot::Reference *r) {
+			std::cout << "antic " << size_t(u) << std::endl;
 			del_ptr();
 			_ptr = u;
+			std::cout << "CURYATE(borrowed) " << _resource_path << " " << size_t(_ptr) << std::endl;
 			_owner = godot::Ref<godot::Reference>(r);
 		}
 };
@@ -208,21 +212,21 @@ inline void of_godot_variant(godot::Variant v, nlohmann::json *j) {
 	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
-		godot::Godot::print(godot::String("Wrapped pointer at ") + godot::String::num_int64((size_t) o->_ptr));\
+		godot::Godot::print(godot::String("Wrapped pointer for " STRINGIZE(CLASSNAME) " at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(new ::CLASSNAME(x));\
-		godot::Godot::print(godot::String("Wrapped value at ") + godot::String::num_int64((size_t) o->_ptr));\
+		godot::Godot::print(godot::String("Wrapped value for " STRINGIZE(CLASSNAME) " at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME &x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(&x), owner);\
-		godot::Godot::print(godot::String("Wrapped reference at ") + godot::String::num_int64((size_t) o->_ptr));\
+		godot::Godot::print(godot::String("Wrapped reference for " STRINGIZE(CLASSNAME) " at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}
 
