@@ -16,8 +16,6 @@ func _ready():
 	game_history.history = final_state.history
 	game_history.health_history = \
 		compute_health_history(g.backend.rules, final_state.players, final_state.history)
-	print('Winners are:')
-	print(winners)
 
 	if winners.size() == 2:
 		# Tie
@@ -42,8 +40,6 @@ func compute_health_history(rules, players, history):
 		for book in player.books:
 			player_books.append(book.get_id())
 		books.append(player_books)
-	print(books)
-	print(history)
 	var state = g.GameState.new()
 	state.init(rules, books)
 	var health_history = []
