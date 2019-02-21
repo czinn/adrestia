@@ -1,0 +1,126 @@
+2019-02-02 20:31:44.419 EST [2438] LOG:  listening on IPv6 address "::1", port 5432
+2019-02-02 20:31:44.419 EST [2438] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-02-02 20:31:44.420 EST [2438] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2019-02-02 20:31:44.440 EST [2439] LOG:  database system was shut down at 2019-02-02 13:51:22 EST
+2019-02-02 20:31:44.447 EST [2438] LOG:  database system is ready to accept connections
+2019-02-02 20:31:46.300 EST [2450] ERROR:  syntax error at or near "{" at character 51
+2019-02-02 20:31:46.300 EST [2450] STATEMENT:  CREATE TABLE IF NOT EXISTS adrestia_notifications {
+		id SERIAL PRIMARY KEY,
+		target_uuid VARCHAR NOT NULL, 
+		message VARCHAR NOT NULL
+	};
+2019-02-02 21:12:10.860 EST [3392] FATAL:  database "charles" does not exist
+2019-02-02 21:13:45.301 EST [3502] ERROR:  column "*" does not exist at character 132
+2019-02-02 21:13:45.301 EST [3502] STATEMENT:  
+	  SELECT id, message
+	    FROM adrestia_notifications
+	    WHERE (target_uuid = '7ba3868ecb5acf11af513e2f5eafc114' OR target_uuid = "*")
+				AND id > 0
+				ORDER BY id
+	  
+2019-02-03 16:26:28.279 EST [11063] FATAL:  sorry, too many clients already
+2019-02-03 16:26:38.104 EST [11275] FATAL:  sorry, too many clients already
+2019-02-03 19:32:03.252 EST [22496] FATAL:  sorry, too many clients already
+2019-02-04 13:05:37.537 EST [39554] ERROR:  syntax error at or near "<" at character 154
+2019-02-04 13:05:37.537 EST [39554] STATEMENT:  CREATE TABLE IF NOT EXISTS adrestia_players (
+		game_uid VARCHAR REFERENCES adrestia_games(game_uid),
+		user_uid VARCHAR REFERENCES adrestia_accounts(uuid)<
+		player_state SMALLINT NOT NULL,
+		player_move VARCHAR,
+		PRIMARY KEY (game_uid, user_uid)
+	);
+2019-02-04 13:18:47.366 EST [39961] ERROR:  column reference "game_uid" is ambiguous at character 13
+2019-02-04 13:18:47.366 EST [39961] STATEMENT:  
+	    SELECT game_uid, player_state
+	    FROM adrestia_games
+				INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
+	    WHERE activity_state = 0
+				AND user_uid = 'f1e3c921448d68601bcbe7e955dc1afb'
+	  
+2019-02-04 13:19:33.984 EST [40074] ERROR:  column "player_id" of relation "adrestia_players" does not exist at character 56
+2019-02-04 13:19:33.984 EST [40074] STATEMENT:  
+	    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
+	    VALUES ('0bbf90fba5ea4707cca561dbbc708917', '571802c6b9209ea982508ec197bb9505', 0, 0)
+	  
+2019-02-04 13:20:22.168 EST [40141] ERROR:  INSERT has more expressions than target columns at character 157
+2019-02-04 13:20:22.168 EST [40141] STATEMENT:  
+	    INSERT INTO adrestia_players (game_uid, user_uid, player_state)
+	    VALUES ('5c540188e55a9eb24ffe84dd0427d36e', 'b25f2d565d9bcb31854366af21a317a3', 1, 0)
+	  
+2019-02-04 13:20:56.817 EST [40224] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:21:09.832 EST [40262] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:21:17.613 EST [40300] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:21:27.517 EST [40303] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:34:40.070 EST [40611] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:36:38.102 EST [40703] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:37:36.105 EST [40785] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-04 13:40:13.499 EST [40920] ERROR:  relation "adretia_games" does not exist at character 13
+2019-02-04 13:40:13.499 EST [40920] STATEMENT:  delete from adretia_games;
+2019-02-04 13:40:18.537 EST [40920] ERROR:  update or delete on table "adrestia_games" violates foreign key constraint "adrestia_players_game_uid_fkey" on table "adrestia_players"
+2019-02-04 13:40:18.537 EST [40920] DETAIL:  Key (game_uid)=(2726f5bed55c32c1e3c213155319fb2c) is still referenced from table "adrestia_players".
+2019-02-04 13:40:18.537 EST [40920] STATEMENT:  delete from adrestia_games ;
+2019-02-05 20:38:50.727 EST [74993] ERROR:  column "last_events" does not exist at character 37
+2019-02-05 20:38:50.727 EST [74993] STATEMENT:  
+	    SELECT game_rules, game_state, last_events
+	    FROM adrestia_games
+	      INNER JOIN adrestia_rules ON game_rules_id = adrestia_rules.id
+	    WHERE game_uid = 'e7d442a1a20f0fc0392a7fb6e06d7cf1'
+	  
+2019-02-05 21:09:28.397 EST [76214] ERROR:  syntax error at or near "player_move" at character 55
+2019-02-05 21:09:28.397 EST [76214] STATEMENT:  
+			UPDATE adrestia_players
+			SET player_state = 1
+					player_move = ARRAY['conjuration_tech','conjuration_attack_1']
+			WHERE game_uid = '8e04072faa80cd9da18b7cfdf98fa4a4'
+				AND user_uid = '75f6a8f6dd673c99308f120525d9d6e1'
+		
+2019-02-07 16:45:00.288 EST [30909] ERROR:  column "involved_uuids" does not exist at character 23
+2019-02-07 16:45:00.288 EST [30909] STATEMENT:  
+	    SELECT game_uid, involved_uuids, player_states
+	    FROM adrestia_games
+	    WHERE activity_state = 0
+	    AND 'ebb5d8c81321ce4207e455e20ea84d72' = ANY(involved_uuids)
+	  
+2019-02-07 16:46:12.551 EST [30979] ERROR:  syntax error at or near "*" at character 21
+2019-02-07 16:46:12.551 EST [30979] STATEMENT:  drop table adrestia_*
+	;
+2019-02-07 16:46:17.715 EST [30979] ERROR:  cannot drop table adrestia_accounts because other objects depend on it
+2019-02-07 16:46:17.715 EST [30979] DETAIL:  constraint adrestia_players_user_uid_fkey on table adrestia_players depends on table adrestia_accounts
+2019-02-07 16:46:17.715 EST [30979] HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+2019-02-07 16:46:17.715 EST [30979] STATEMENT:  drop table adrestia_accounts ;
+2019-02-07 23:32:55.933 EST [2438] LOG:  received smart shutdown request
+2019-02-07 23:32:55.934 EST [2438] LOG:  background worker "logical replication launcher" (PID 2445) exited with exit code 1
+2019-02-07 23:32:55.934 EST [2440] LOG:  shutting down
+2019-02-07 23:32:55.940 EST [2438] LOG:  database system is shut down
+2019-02-17 10:43:05.308 EST [16983] LOG:  listening on IPv6 address "::1", port 5432
+2019-02-17 10:43:05.308 EST [16983] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-02-17 10:43:05.309 EST [16983] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2019-02-17 10:43:05.327 EST [16984] LOG:  database system was shut down at 2019-02-07 23:32:55 EST
+2019-02-17 10:43:05.334 EST [16983] LOG:  database system is ready to accept connections
+2019-02-17 10:59:03.303 EST [19026] ERROR:  cannot determine type of empty array at character 78
+2019-02-17 10:59:03.303 EST [19026] HINT:  Explicitly cast to the desired type, for example ARRAY[]::integer[].
+2019-02-17 10:59:03.303 EST [19026] STATEMENT:  
+	    UPDATE adrestia_players
+	    SET player_state = 1,
+	        player_move = ARRAY[]
+	    WHERE game_uid = '83911b261a22ee82947423622ab378e3'
+	      AND user_uid = '8438ce0b6816a30cb09aae160f44128b'
+	  
+2019-02-17 11:10:35.955 EST [19865] ERROR:  syntax error at or near "[" at character 78
+2019-02-17 11:10:35.955 EST [19865] STATEMENT:  
+	    UPDATE adrestia_players
+	    SET player_state = 1,
+	        player_move = ["regulation_tech","regulation_shield_1"]
+	    WHERE game_uid = '110207af3677a2b808366d73f70a6038'
+	      AND user_uid = '8b4337d0d294307c63dc37407029ca97'
+	  
+2019-02-18 19:16:05.753 EST [98058] LOG:  unexpected EOF on client connection with an open transaction
+2019-02-19 22:35:24.552 EST [16983] LOG:  received smart shutdown request
+2019-02-19 22:35:24.553 EST [16983] LOG:  background worker "logical replication launcher" (PID 16990) exited with exit code 1
+2019-02-19 22:35:24.553 EST [16985] LOG:  shutting down
+2019-02-19 22:35:24.559 EST [16983] LOG:  database system is shut down
+2019-02-21 10:50:02.979 EST [27204] LOG:  listening on IPv6 address "::1", port 5432
+2019-02-21 10:50:02.979 EST [27204] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2019-02-21 10:50:02.980 EST [27204] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2019-02-21 10:50:02.998 EST [27205] LOG:  database system was shut down at 2019-02-19 22:35:24 EST
+2019-02-21 10:50:03.004 EST [27204] LOG:  database system is ready to accept connections

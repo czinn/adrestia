@@ -304,7 +304,7 @@ json adrestia_database::retrieve_player_info_from_database (
    * @returns json containing the following keys:
    *          "player_id": The player id in the game, as integer
    *          "player_state": The player state in the game, as integer
-   *          "player_move": The player move, if any, as a string. Empty if null.
+   *          "player_move": The player move, if any, as a string. Null if null.
    */
 
   logger.trace(
@@ -339,7 +339,7 @@ json adrestia_database::retrieve_player_info_from_database (
   return_var["player_id"] = search_result[0][0].as<int>();
   return_var["player_state"] = search_result[0][1].as<int>();
   if (search_result[0][2].is_null()) {
-    return_var["player_move"] = json::array();
+    return_var["player_move"] = nullptr;
   }
   else {
     return_var["player_move"] = json::parse(search_result[0][2].as<string>());

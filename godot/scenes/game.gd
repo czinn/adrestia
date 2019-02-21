@@ -59,6 +59,9 @@ func _ready():
 	get_tree().set_auto_accept_quit(false)
 	yield(get_tree(), 'idle_frame')
 	redraw()
+	if g.backend.get_current_move() != null:
+		my_spell_list.spells = g.backend.get_current_move()
+		on_end_turn_button_pressed()
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:

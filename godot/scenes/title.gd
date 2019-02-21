@@ -39,12 +39,13 @@ func on_out_of_date():
 	online_status.text = 'Out-of-date client. Update the app to play online!'
 
 func on_push_active_games(response):
+	print(response)
 	if yield(g.summon_confirm('Would you like to reconnect to your active game?'), 'popup_closed'):
 		g.backend = OnlineBackend.new(g)
 		g.backend.reconnect(response)
 		g.scene_loader.goto_scene('game')
 	else:
-		g.network.abort_game(response[0].game_uid, funcref(g.network, 'discard_response'))
+		g.network.abort_game(response.updates[0].game_uid, funcref(g.network, 'discard'))
 	return true
 
 func on_play_button_pressed():

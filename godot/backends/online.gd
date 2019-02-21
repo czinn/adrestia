@@ -9,6 +9,7 @@ var state = null
 var started_callback = null
 var update_callback = null
 var in_game = false
+var current_move = null
 
 # Public
 var rules
@@ -26,7 +27,10 @@ func reconnect(update_message):
 	game['events'] = []
 	if 'game_rules' in game:
 		rules.load_json_string(JSON.print(game['game_rules']))
+	if 'player_move' in game:
+		current_move = game['player_move']
 	on_push_active_games(update_message)
+	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 
 func get_time_limit():
 	return 30
@@ -40,6 +44,9 @@ func get_state():
 	if state == null:
 		return null
 	return state
+
+func get_current_move():
+	return current_move
 
 func register_started_callback(callback_):
 	started_callback = callback_
@@ -87,6 +94,9 @@ func on_submit_move(response):
 	print('Submitted move with response: %d' % [response.api_code])
 
 func submit_action(action):
+	if action == null:
+		return
+	current_move = action
 	g.network.submit_move(game_uid, action, funcref(self, 'on_submit_move'))
 	return true
 

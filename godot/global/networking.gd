@@ -11,7 +11,7 @@ var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
-const always_register_new_account = true
+const always_register_new_account = false
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.

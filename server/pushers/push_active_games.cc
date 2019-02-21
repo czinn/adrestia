@@ -134,6 +134,9 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 			if (rules.get_version() != latest_rules.get_version()) {
 				update["game_rules"] = rules;
 			}
+			if (current_player_info.at("player_move") != nullptr) {
+				update["player_move"] = current_player_info["player_move"];
+			}
       update_list.push_back(update);
       new_games = true;
 
