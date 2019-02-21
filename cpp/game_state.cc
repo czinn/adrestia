@@ -330,7 +330,7 @@ void GameState::apply_event(const json &event) {
 				break;
 			case EK_REGEN:
 				player.mp_regen += effect.at("amount").get<int>();
-				player.mp_regen = std::max(0, player.mp);
+				player.mp_regen = std::max(0, player.mp_regen);
 				break;
 			case EK_STICKY:
 				{
