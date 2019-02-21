@@ -68,6 +68,8 @@ func on_push_active_games(response):
 		state.init_json(rules, game.game_state)
 		if player_id != null:
 			view.init(state, player_id)
+		if state.winners().size() == 0:
+			forfeited = true
 	else:
 		view = g.GameView.new()
 		view.init_json(rules, game.game_view)
@@ -89,5 +91,5 @@ func submit_action(action):
 	return true
 
 func leave_game():
-	g.network.register_handler('push_active_games', funcref(g.network, 'discard_response'))
+	g.network.register_handler('push_active_games', funcref(g.network, 'discard'))
 	g.network.abort_game(game_uid, funcref(g.network, 'print_response'))
