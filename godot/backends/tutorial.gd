@@ -56,7 +56,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	state = g.GameState.new()
-	state.init(g.rules, [selected_book_ids, ['conjuration']])
+	state.init(g.get_rules(), [selected_book_ids, ['conjuration']])
 	if started_callback != null:
 		started_callback.call_func()
 

@@ -26,7 +26,7 @@ func redraw(player, mp_left = null):
 		g.summon_delta(mp_label, player.mp - old_mp, Color(0.27, 0.55, 1))
 	old_mp = player.mp
 	
-	var mp_max = g.rules.get_mana_cap()
+	var mp_max = g.get_rules().get_mana_cap()
 	if len(mp_icons.get_children()) != mp_max:
 		g.clear_children(mp_icons)
 		for i in range(mp_max):

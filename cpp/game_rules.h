@@ -16,6 +16,7 @@ using json = nlohmann::json;
 class GameRules {
 	public:
 		GameRules();
+		~GameRules();
 		bool operator==(const GameRules &) const;
 
 		// Initializes rules from json file.
