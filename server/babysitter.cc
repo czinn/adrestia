@@ -190,6 +190,18 @@ Babysitter::Phase Babysitter::phase_authenticated(
     json &resp,
     request_handler handler) {
   client_json["uuid"] = uuid;
+
+  // Update their last_message time in the database
+  logger.info("Updating user's last message time in the database");
+  adrestia_database::Db db(logger);
+  db.query(R"sql(
+    UPDATE adrestia_accounts
+    SET last_message = NOW()
+    WHERE uuid = ?
+  )sql")(uuid)();
+  db.commit();
+  logger.info("Finished updating user");
+
   int result = handler(logger, client_json, resp);
   if (result != 0) {
     logger.warn("It seems we got a bad result for that handler: %d", result);

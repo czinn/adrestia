@@ -755,8 +755,8 @@ json adrestia_database::register_new_account_in_database(
     pqxx::work work(psql_connection);
     try {
       run_query(logger, work, R"sql(
-        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt, last_login, last_message)
+        VALUES (%s, %s, %s, %s, %s, NOW(), NOW())
       )sql",
           work.quote(uuid).c_str(),
           work.quote(default_user_name).c_str(),
