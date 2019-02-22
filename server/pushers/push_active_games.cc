@@ -42,32 +42,53 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
    *             MESSAGE_KEY: "You have [new|changed|new and changed|] games!" (depending on situation)
    *             "updates": A list of updated game views or states, of the form
    *                        {"game_uid": uuid, "game_view": game view, "events": list of events}
-	 *                        (or with "game_state" instead of "game_view" for
-	 *                        completed games. If the game is a new game and has
-	 *                        rules that aren't the most recent rules, the game's
-	 *                        rules will be included in the first update.
+   *                        (or with "game_state" instead of "game_view" for
+   *                        completed games. If the game is a new game and has
+   *                        rules that aren't the most recent rules, the game's
+   *                        rules will be included in the first update.
    *           Note that it follows that reported game_views are waiting for
    *           the player to make a move.
    */
 
   // Check for games
-  pqxx::connection psql_connection = adrestia_database::establish_connection();
-  json active_games = adrestia_database::check_for_active_games_in_database(logger, psql_connection, uuid);
+  adrestia_database::Db db(logger);
+  auto active_games_result = db.query(R"sql(
+    SELECT adrestia_games.game_uid, player_state
+    FROM adrestia_games
+      INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
+    WHERE activity_state = 0
+      AND user_uid = ?
+  )sql")(uuid)();
 
-  vector<string> active_game_uids = active_games["active_game_uids"];
+  vector<string> active_game_uids;
+  vector<string> waiting_game_uids; // TODO: jim: this is unused
+  for (const auto &row : active_games_result) {
+    // This is an active game that we are in.
+    string game_uid = row["game_uid"].as<string>();
+    active_game_uids.push_back(game_uid);
+    logger.debug("uuid |%s| has active game |%s|.", uuid.c_str(), game_uid.c_str());
+
+    // If the current player_state is 0...
+    if (row["player_state"].as<int>() == 0) {
+      // We need to make a move.
+      waiting_game_uids.push_back(game_uid);
+      logger.trace("Waiting for uuid |%s| to make a move in game |%s|.", uuid.c_str(), game_uid.c_str());
+    }
+  }
+
+  pqxx::connection psql_connection = adrestia_database::establish_connection();
 
   vector<json> update_list;
   bool new_games = false;
   bool changed_games = false;
 
-	GameRules latest_rules = adrestia_database::retrieve_game_rules(logger, psql_connection, 0);
-
+  GameRules latest_rules = adrestia_database::retrieve_game_rules(logger, psql_connection, 0);
   GameRules rules;
 
   // Any active games that have concluded require a special query.
   set<string> active_game_uids_set(active_game_uids.begin(), active_game_uids.end());
   for (const string &current_game_uid : active_game_uids_I_am_aware_of) {
-    if (active_game_uids_set.find(current_game_uid) == active_game_uids_set.end()) {
+    if (active_game_uids_set.count(current_game_uid) == 0) {
       logger.info("Previously active game |%s| has become deactivated and should be reported.", current_game_uid.c_str());
       vector<json> events;
       json current_game_state =
@@ -87,16 +108,16 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
   }
 
   // Detect any new games, or games whose states have changed...
-  for (unsigned int i = 0; i < active_game_uids.size(); i += 1) {
-    string current_game_uid = active_game_uids[i];
+  for (const string &current_game_uid : active_game_uids) {
     logger.debug("Looking at current game with uid |%s|...", current_game_uid.c_str());
     vector<json> events;
     json current_game_state =
-      adrestia_database::retrieve_gamestate_from_database(
-          logger, psql_connection, current_game_uid, rules, events);
+      adrestia_database::retrieve_gamestate_from_database(logger,
+          psql_connection, current_game_uid, rules, events);
 
     json current_player_info =
-      adrestia_database::retrieve_player_info_from_database(logger, psql_connection, current_game_uid, uuid);
+      adrestia_database::retrieve_player_info_from_database(logger,
+          psql_connection, current_game_uid, uuid);
 
     GameState game_state_obj(rules, current_game_state);
     GameView game_view_obj(game_state_obj, current_player_info["player_id"]);
@@ -126,17 +147,17 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
       logger.info("New active game with game_uid |%s|", current_game_uid.c_str());
 
       // This game_uid was active, but it is not a known game uid.
-			json update = {
-				{"game_uid", current_game_uid},
-				{"game_view", current_game_view},
-				{"events", events}
-			};
-			if (rules.get_version() != latest_rules.get_version()) {
-				update["game_rules"] = rules;
-			}
-			if (current_player_info.at("player_move") != nullptr) {
-				update["player_move"] = current_player_info["player_move"];
-			}
+      json update = {
+        {"game_uid", current_game_uid},
+        {"game_view", current_game_view},
+        {"events", events}
+      };
+      if (rules.get_version() != latest_rules.get_version()) {
+        update["game_rules"] = rules;
+      }
+      if (current_player_info.at("player_move") != nullptr) {
+        update["player_move"] = current_player_info["player_move"];
+      }
       update_list.push_back(update);
       new_games = true;
 
@@ -157,13 +178,11 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
   // Decide what our message should be
   string api_message = "";
-  if ((new_games) && (changed_games)) {
+  if (new_games && changed_games) {
     api_message = "You have new and changed games!";
-  }
-  else if (new_games) {
+  } else if (new_games) {
     api_message = "You have new games!";
-  }
-  else {
+  } else {
     api_message = "You have changed games!";
   }
   logger.trace("Message going in as: |%s|", api_message.c_str());

@@ -59,15 +59,6 @@ namespace adrestia_database {
     std::vector<json> &last_events
   );
 
-  /* Checks for active games in the database associated with the given uuid, and returns them.
-   *     Also returns if any are waiting for this player's move in particular.
-   */
-  json check_for_active_games_in_database (
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid
-  );
-
   /* Adds the user to the waiting list if there are no compatible waiters;
    *     otherwise, matches the user to a waiter.
    */

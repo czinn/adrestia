@@ -410,69 +410,6 @@ json adrestia_database::retrieve_gamestate_from_database (
 }
 
 
-json adrestia_database::check_for_active_games_in_database (
-  const Logger& logger,
-  pqxx::connection& psql_connection,
-  const string& uuid
-) {
-  /* @brief Checks the database to see if the given user is part of any active games, and returns the game_uids of
-   *        those games. Also returns which games are waiting for this uuid to make a move.
-   *
-   * @param logger: Logger
-   * @param psql_connection: The pqxx PostgreSQL connection.
-   * @param uuid: We will be looking for games involving this uuid.
-   *
-   * @returns: A json object with the following tags:
-   *               "active_game_uids": An array of active game_uids that the given uuid is part of
-   *               "waiting_game_uids": An array of active game_uids that are waiting for the given uuid to make a
-   *                                    move. This is, of course, a subset of active_game_uids.
-   */
-
-  logger.trace(
-      "check_for_active_games_in_database called with args:"
-      "    uuid: |%s|",
-      uuid.c_str());
-
-  pqxx::work work(psql_connection);
-
-  auto search_result = run_query(logger, work, R"sql(
-    SELECT adrestia_games.game_uid, player_state
-    FROM adrestia_games
-      INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
-    WHERE activity_state = 0
-      AND user_uid = %s
-  )sql", work.quote(uuid).c_str());
-
-  vector<string> active_game_uids;
-  vector<string> waiting_game_uids;
-
-  for (const auto &result : search_result) {
-    // This is an active game that we are in.
-    string game_uid = result["game_uid"].as<string>();
-    active_game_uids.push_back(game_uid);
-
-    logger.debug("uuid |%s| has active game |%s|.", uuid.c_str(), game_uid.c_str());
-
-    // If the current player_state is 0...
-    if (result["player_state"].as<int>() == 0) {
-      // We need to make a move.
-      waiting_game_uids.push_back(game_uid);
-      logger.trace("Waiting for uuid |%s| to make a move in game |%s|...", uuid.c_str(), game_uid.c_str());
-    }
-  }
-
-  logger.trace("Committing transaction...");
-  work.commit();
-
-  json return_var;
-  return_var["active_game_uids"] = active_game_uids;
-  return_var["waiting_game_uids"] = waiting_game_uids;
-
-  logger.trace("check_for_games concluded.");
-  return return_var;
-}
-
-
 json adrestia_database::matchmake_in_database (
   const Logger& logger,
   pqxx::connection& psql_connection,

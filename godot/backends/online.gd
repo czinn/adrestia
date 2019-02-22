@@ -17,9 +17,6 @@ var forfeited = false
 
 func _init(g_):
 	g = g_
-	# TODO: These rules are possibly too new if we've reconnected a game that was
-	# started before the rules changed. Make sure that we get the rules from the
-	# server when we reconnect.
 	rules = g.get_default_rules()
 
 func reconnect(update_message):
