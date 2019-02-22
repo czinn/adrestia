@@ -278,73 +278,61 @@ func on_event_timer_timeout():
 		else:
 			break
 
-	print(events_to_show)
 	for event in events_to_show:
-		print(event)
 		state.apply_event(event)
 	
-		#var me = state.players[player_id]
-		#var them = state.players[1 - player_id]
-		## Do UI effects for event
-		#if event['type'] == 'fire_spell':
-		#	var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
-		#	player_spell_list.flash_spell(event['index'])
-		#	# We need to update mana here because spells cost mana
-		#	if event['player'] == player_id:
-		#		my_mana_bar.redraw(me)
-		#		my_avatar.redraw(me)
-		#	else:
-		#		enemy_avatar.redraw(them)
-		#elif event['type'] == 'player_mp':
-		#	if event['player'] == player_id:
-		#		my_mana_bar.redraw(me)
-		#		my_avatar.redraw(me)
-		#	else:
-		#		enemy_avatar.redraw(them)
-		#elif event['type'] == 'effect':
-		#	var effect = event['effect']
-		#	var target_player = effect['target_player']
-		#	var kind = effect['kind']
-		#	if kind == 'health' or kind == 'mana_regen' or kind == 'mana':
-		#		if target_player == player_id:
-		#			my_mana_bar.redraw(me)
-		#			my_avatar.redraw(me)
-		#		else:
-		#			enemy_avatar.redraw(them)
-		#	elif kind == 'tech':
-		#		spell_select.tech_levels = player_effective_tech()
-		#	elif kind == 'sticky':
-		#		if target_player == player_id:
-		#			my_stickies.redraw(me.stickies)
-		#			#my_stickies.redraw_append(me.stickies)
-		#		else:
-		#			enemy_stickies.redraw(them.stickies)
-		#			#enemy_stickies.redraw_append(them.stickies)
-		#elif event['type'] == 'spell_countered':
-		#	var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
-		#	player_spell_list.spell_countered(event['index'])
-		#elif event['type'] == 'spell_hit':
-		#	pass # TODO: charles: Maybe animate this
-		#elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':
-		#	if event['player'] == player_id:
-		#		my_stickies.redraw(me.stickies)
-		#		#my_stickies.redraw_update(me.stickies)
-		#	else:	
-		#		enemy_stickies.redraw(them.stickies)
-		#		#enemy_stickies.redraw_update(them.stickies)
-		#elif event['type'] == 'sticky_activated':
-		#	if event['player'] == player_id:
-		#		my_stickies.redraw(me.stickies)
-		#		#my_stickies.flash_sticky(event['sticky_index'])
-		#	else:
-		#		enemy_stickies.redraw(them.stickies)
-		#		#enemy_stickies.flash_sticky(event['sticky_index'])
-		#elif event['type'] == 'sticky_expired':
-		#	if event['player'] == player_id:
-		#		my_stickies.redraw(me.stickies)
-		#		#my_stickies.redraw_remove(event['sticky_index'])
-		#	else:
-		#		enemy_stickies.redraw(them.stickies)
-		#		#enemy_stickies.redraw_remove(event['sticky_index'])
-		print('Finished event')
-	print('Finished all events')
+		var me = state.players[player_id]
+		var them = state.players[1 - player_id]
+		# Do UI effects for event
+		if event['type'] == 'fire_spell':
+			var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
+			player_spell_list.flash_spell(event['index'])
+			# We need to update mana here because spells cost mana
+			if event['player'] == player_id:
+				my_mana_bar.redraw(me)
+				my_avatar.redraw(me)
+			else:
+				enemy_avatar.redraw(them)
+		elif event['type'] == 'player_mp':
+			if event['player'] == player_id:
+				my_mana_bar.redraw(me)
+				my_avatar.redraw(me)
+			else:
+				enemy_avatar.redraw(them)
+		elif event['type'] == 'effect':
+			var effect = event['effect']
+			var target_player = effect['target_player']
+			var kind = effect['kind']
+			if kind == 'health' or kind == 'mana_regen' or kind == 'mana':
+				if target_player == player_id:
+					my_mana_bar.redraw(me)
+					my_avatar.redraw(me)
+				else:
+					enemy_avatar.redraw(them)
+			elif kind == 'tech':
+				spell_select.tech_levels = player_effective_tech()
+			elif kind == 'sticky':
+				if target_player == player_id:
+					my_stickies.redraw_append(me.stickies)
+				else:
+					enemy_stickies.redraw_append(them.stickies)
+		elif event['type'] == 'spell_countered':
+			var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
+			player_spell_list.spell_countered(event['index'])
+		elif event['type'] == 'spell_hit':
+			pass # TODO: charles: Maybe animate this
+		elif event['type'] == 'sticky_amount_changed' or event['type'] == 'sticky_duration_changed':
+			if event['player'] == player_id:
+				my_stickies.redraw_update(me.stickies)
+			else:	
+				enemy_stickies.redraw_update(them.stickies)
+		elif event['type'] == 'sticky_activated':
+			if event['player'] == player_id:
+				my_stickies.flash_sticky(event['sticky_index'])
+			else:
+				enemy_stickies.flash_sticky(event['sticky_index'])
+		elif event['type'] == 'sticky_expired':
+			if event['player'] == player_id:
+				my_stickies.redraw_remove(event['sticky_index'])
+			else:
+				enemy_stickies.redraw_remove(event['sticky_index'])

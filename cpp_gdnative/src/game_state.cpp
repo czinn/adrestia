@@ -36,10 +36,12 @@ namespace godot {
 		std::vector<std::vector<std::string>> _books;
 		of_godot_variant(player_books, &_books);
 
-		// TODO: jim: Is it possible that the memory underlying the rules will be
+		// XTODO: jim: Is it possible that the memory underlying the rules will be
 		// freed by Godot? Should we hold a reference to rules somehow to prevent
 		// that?
+		// jim: answer: yes it is fucking important, thanks past jim. done now
 		set_ptr(new ::GameState(*_rules->_ptr, _books));
+		_deps.push_back(godot::Ref<godot::Reference>(_rules));
 	}
 
 	void CLASSNAME::init_json(Variant rules, Variant json) {
@@ -48,6 +50,7 @@ namespace godot {
 		auto *_rules = godot::as<GameRules>(rules);
 		of_godot_variant(json, &j);
 		set_ptr(new ::GameState(*_rules->_ptr, j));
+		_deps.push_back(godot::Ref<godot::Reference>(_rules));
 	}
 
 	void CLASSNAME::clone(Variant state) {

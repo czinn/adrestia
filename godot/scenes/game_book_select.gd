@@ -22,7 +22,7 @@ var book_buttons = {}
 
 func _ready():
 	g.clear_children(books_hbox)
-	for book in g.rules.get_books().values():
+	for book in g.get_rules().get_books().values():
 		var book_button = book_button_scene.instance()
 		books_hbox.add_child(book_button)
 		book_button.book = book

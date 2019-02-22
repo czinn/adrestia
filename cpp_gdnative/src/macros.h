@@ -50,15 +50,21 @@ class Forwarder {
 		}
 
 	private:
-		// Owner of the data. If null, I own the data.
+		// Owner of the data. If null, I own the data and must free it.
 		godot::Ref<godot::Reference> _owner;
 
 	public:
 		T *_ptr; // Pointer to the underlying data.
+		// Additional godot objects that own data we depend upon.
+		std::vector<godot::Ref<godot::Reference>> _deps;
 		inline void del_ptr() {
 			if (_ptr != nullptr && _owner.is_null()) {
-				std::cout << "DELYEET " << size_t(_ptr) << std::endl;
+				std::cout << "deleting object at " << size_t(_ptr) << std::endl;
 				delete _ptr;
+			}
+			_deps.clear();
+			if (!_owner.is_null()) {
+				_owner.unref();
 			}
 		}
 
@@ -84,22 +90,36 @@ class Forwarder {
 			}
 		}
 
-		// Own it.
-		void set_ptr(T *u) {
-			std::cout << "antic " << size_t(u) << std::endl;
+		// Don't own it and depend on things.
+		void set_ptr(T *u, godot::Reference *r, const std::vector<godot::Reference*> &deps) {
+			std::cout << "set_ptr";
+			if (r != nullptr) std::cout << " (borrowed)";
+			if (!deps.empty()) std::cout << " (with deps)";
+			std::cout << " called for " << _resource_path << "; ";
 			del_ptr();
 			_ptr = u;
-			std::cout << "CURYATE(owned) " << _resource_path << " " << size_t(_ptr) << std::endl;
-			_owner.unref();
+			std::cout << "_ptr set to " << size_t(_ptr) << std::endl;
+			if (r != nullptr) {
+				_owner = godot::Ref<godot::Reference>(r);
+			}
+			for (auto r : deps) {
+				_deps.push_back(godot::Ref<godot::Reference>(r));
+			}
+		}
+
+		// Own it.
+		void set_ptr(T *u) {
+			set_ptr(u, nullptr, {});
 		}
 
 		// Don't own it.
 		void set_ptr(T *u, godot::Reference *r) {
-			std::cout << "antic " << size_t(u) << std::endl;
-			del_ptr();
-			_ptr = u;
-			std::cout << "CURYATE(borrowed) " << _resource_path << " " << size_t(_ptr) << std::endl;
-			_owner = godot::Ref<godot::Reference>(r);
+			set_ptr(u, r, {});
+		}
+
+		// Own it and depend on things.
+		void set_ptr(T *u, const std::vector<godot::Reference*> &deps) {
+			set_ptr(u, nullptr, deps);
 		}
 };
 }
@@ -212,21 +232,18 @@ inline void of_godot_variant(godot::Variant v, nlohmann::json *j) {
 	inline godot::Variant to_godot_variant(const CLASSNAME *x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(x), owner);\
-		godot::Godot::print(godot::String("Wrapped pointer for " STRINGIZE(CLASSNAME) " at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(new ::CLASSNAME(x));\
-		godot::Godot::print(godot::String("Wrapped value for " STRINGIZE(CLASSNAME) " at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}\
 	template<>\
 	inline godot::Variant to_godot_variant(const CLASSNAME &x, godot::Reference *owner) {\
 		auto [w, o] = godot::CLASSNAME::make_instance();\
 		o->set_ptr(const_cast<CLASSNAME*>(&x), owner);\
-		godot::Godot::print(godot::String("Wrapped reference for " STRINGIZE(CLASSNAME) " at ") + godot::String::num_int64((size_t) o->_ptr));\
 		return w;\
 	}
 

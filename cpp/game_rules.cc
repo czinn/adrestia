@@ -13,10 +13,7 @@ GameRules::GameRules(std::string rules_filename) {
 	*this = j;
 }
 
-#include <iostream>
-GameRules::~GameRules() {
-	std::cout << "~GameRules()" << std::endl;
-}
+GameRules::~GameRules() { }
 
 bool GameRules::operator==(const GameRules &other) const {
 	return (

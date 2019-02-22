@@ -35,7 +35,14 @@ var loaded = false
 var backend = null
 var tutorial_overlay = null
 var tooltip = null # Currently displayed tooltip
-var rules = null setget ,get_rules
+
+# jim: So, why the hell is this an array? Because we have to keep all versions
+# of the rules we've ever conceivably used alive, and it's hard to keep track
+# of exactly when we can be sure that rules can be freed, so we just never free
+# them. The .back() of this array will be the freshest rules, and backends can
+# override these rules (as retrieved by [get_rules]). But the rules must always
+# live.
+var rules = []
 
 var health_history
 
@@ -44,14 +51,16 @@ func _ready():
 
 func get_rules():
 	if backend == null:
-		return rules
+		return rules.back()
 	return backend.rules
 
 func get_default_rules():
-	return rules
+	return rules.back()
 
 func update_rules(json_string):
-	rules.load_json_string(json_string)
+	var new_rules = GameRules.new()
+	new_rules.load_json_string(json_string)
+	rules.append(new_rules)
 	save()
 
 static func sum(list):
@@ -228,7 +237,7 @@ func save():
 		'first_play': first_play,
 		'user_name': user_name,
 		'tag': tag,
-		'rules': rules.as_json().result,
+		'rules': rules.back().as_json().result,
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -253,11 +262,11 @@ func load():
 
 	# Load rules from file by default.
 	var rules_file = File.new()
-	rules = GameRules.new()
+	rules = [GameRules.new()]
 	rules_file.open(default_rules_path, File.READ)
-	rules.load_json_string(rules_file.get_as_text())
+	rules[0].load_json_string(rules_file.get_as_text())
 	rules_file.close()
-	app_version = rules.get_version()
+	app_version = rules.back().get_version()
 
 	# Default values for persisted data
 	auth_uuid = dict_has(data, 'auth_uuid', null)
@@ -271,8 +280,8 @@ func load():
 	if rules_json != null:
 		var rules_saved = GameRules.new()
 		rules_saved.load_json_string(JSON.print(rules_json))
-		if compare_versions(rules.get_version(), rules_saved.get_version()) < 0:
-			rules = rules_saved
+		if compare_versions(rules.back().get_version(), rules_saved.get_version()) < 0:
+			rules.append(rules_saved)
 
 	if file.is_open():
 		file.close()
