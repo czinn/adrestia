@@ -3,13 +3,13 @@
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/avatar.gd" type="Script" id=2]
 [ext_resource path="res://art-built/avatar_frame.png" type="Texture" id=3]
-[ext_resource path="res://art-built/avatar/salter.png" type="Texture" id=4]
+[ext_resource path="res://art-built/avatar/round.png" type="Texture" id=4]
 [ext_resource path="res://art-built/health-heart.png" type="Texture" id=5]
 [ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=6]
 [ext_resource path="res://art-built/mana-gem-big.png" type="Texture" id=7]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=8]
 
-[node name="avatar" type="Control"]
+[node name="avatar" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0

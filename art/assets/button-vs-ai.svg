@@ -14,7 +14,7 @@
    viewBox="0 0 104.18761 40.234032"
    version="1.1"
    id="svg1718"
-   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="button-vs-ai.svg">
   <defs
      id="defs1712">
@@ -40,19 +40,19 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="-82.85563"
+     inkscape:cx="-251.85563"
      inkscape:cy="91.601742"
      inkscape:document-units="px"
-     inkscape:current-layer="g1544"
+     inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1035"
+     inkscape:window-height="1052"
      inkscape:window-x="0"
-     inkscape:window-y="1"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-global="false"
      showguides="false" />
@@ -86,13 +86,13 @@
        id="g1544"
        mask="url(#mask1546)">
       <path
-         style="fill:#ffdbda;fill-opacity:1;stroke:#ff2020;stroke-width:2.64583349;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+         style="fill:#ffede7;fill-opacity:1;stroke:#ff2020;stroke-width:2.64583349;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
          d="m -17.017648,146.4184 -7.349314,10.78302 H 4.2172501 L -3.133311,146.41631 Z"
          id="path1487"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="ccccc" />
       <rect
-         style="opacity:1;vector-effect:none;fill:#ffdbda;fill-opacity:1;stroke:#ff2020;stroke-width:2.64583349;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         style="opacity:1;vector-effect:none;fill:#ffede7;fill-opacity:1;stroke:#ff2020;stroke-width:2.64583349;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
          id="rect1485"
          width="38.835224"
          height="24.00149"
@@ -112,17 +112,17 @@
              x="62.225395"
              y="48.828037" /></flowRegion><flowPara
            id="flowPara2368" /></flowRoot>      <path
-         style="fill:#ffdbda;stroke:#ff2020;stroke-width:1.32291675;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+         style="fill:#ffede7;stroke:#ff2020;stroke-width:1.32291675;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
          d="m -21.982813,135.35445 v 4.11595"
          id="path2370"
          inkscape:connector-curvature="0" />
       <path
-         style="fill:#ffdbda;stroke:#ff2020;stroke-width:1.32291675;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+         style="fill:#ffede7;stroke:#ff2020;stroke-width:1.32291675;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
          d="m 1.3097268,135.35445 v 4.11595"
          id="path2370-5"
          inkscape:connector-curvature="0" />
       <path
-         style="fill:#ffdbda;stroke:#ff2020;stroke-width:1.32291675;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+         style="fill:#ffede7;stroke:#ff2020;stroke-width:1.32291675;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
          d="M -8.3253408,140.31229 H -12.441291"
          id="path2370-5-7"
          inkscape:connector-curvature="0" />
