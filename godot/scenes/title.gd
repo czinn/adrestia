@@ -14,6 +14,7 @@ func _ready():
 	get_tree().set_auto_accept_quit(true)
 	get_tree().set_quit_on_go_back(true)
 	g.remove_tutorial_overlay()
+	g.remove_backend();
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	settings_button.connect('pressed', self, 'on_settings_button_pressed')
 	if not g.loaded:

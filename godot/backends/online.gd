@@ -15,9 +15,17 @@ var current_move = null
 var rules
 var forfeited = false
 
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		g.network.disconnect('disconnected', self, 'disconnected')
+
 func _init(g_):
 	g = g_
 	rules = g.get_default_rules()
+	g.network.connect('disconnected', self, 'disconnected')
+
+func disconnected():
+	g.scene_loader.goto_scene('title')
 
 func reconnect(update_message):
 	var game = update_message.updates[0]
@@ -80,7 +88,7 @@ func on_push_active_games(response):
 		player_id = view.view_player_id
 		print('successfully created view')
 	if game.events.size() > 0 or forfeited:
-		update_callback.call_func(get_view(), [])
+		update_callback.call_func(get_view(), game.events)
 
 	if not in_game:
 		print('We are now in a game: %s' % [game_uid])

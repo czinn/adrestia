@@ -203,6 +203,11 @@ func remove_tutorial_overlay():
 		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
 		tutorial_overlay = null
 
+func remove_backend():
+	if backend != null:
+		backend.free()
+		backend = null
+
 func compare_versions(a, b):
 	for i in range(len(a)):
 		if a[i] < b[i]:
