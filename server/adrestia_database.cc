@@ -524,15 +524,15 @@ json adrestia_database::matchmake_in_database (
       work.quote(uuid).c_str(),
       work.quote(json(game_state).dump()).c_str());
   run_query(logger, work, R"sql(
-    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
-    VALUES (%s, %s, %d, 0)
+    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state, last_move_time)
+    VALUES (%s, %s, %d, 0, NOW())
   )sql",
       work.quote(game_uid).c_str(),
       work.quote(uuid).c_str(),
       creator_player_id);
   run_query(logger, work, R"sql(
-    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
-    VALUES (%s, %s, %d, 0)
+    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state, last_move_time)
+    VALUES (%s, %s, %d, 0, NOW())
   )sql",
       work.quote(game_uid).c_str(),
       work.quote(waiting_uuid).c_str(),
@@ -629,8 +629,7 @@ bool adrestia_database::submit_move_in_database(
   // The move is very cool and very legal, add it to the database and update the player's state.
   run_query(logger, work, R"sql(
     UPDATE adrestia_players
-    SET player_state = 1,
-        player_move = %s
+    SET player_state = 1, player_move = %s, last_move_time = NOW()
     WHERE game_uid = %s
       AND user_uid = %s
   )sql",
@@ -755,8 +754,8 @@ json adrestia_database::register_new_account_in_database(
     pqxx::work work(psql_connection);
     try {
       run_query(logger, work, R"sql(
-        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt, last_login, last_message)
-        VALUES (%s, %s, %s, %s, %s, NOW(), NOW())
+        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt, last_login)
+        VALUES (%s, %s, %s, %s, %s, NOW())
       )sql",
           work.quote(uuid).c_str(),
           work.quote(default_user_name).c_str(),

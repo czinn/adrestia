@@ -54,7 +54,7 @@ int adrestia_networking::handle_authenticate(const Logger& logger, const json& c
     adrestia_database::Db db(logger);
     db.query(R"sql(
       UPDATE adrestia_accounts
-      SET last_login = NOW(), last_message = NOW()
+      SET last_login = NOW()
       WHERE uuid = ?
     )sql")(uuid)();
     db.commit();

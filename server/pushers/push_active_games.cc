@@ -31,9 +31,8 @@ void forfeit_for_inactive_opponents(const Logger& logger, const std::string& uui
 		SELECT adrestia_games.game_uid, user_uid
 		FROM adrestia_games
       INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
-			INNER JOIN adrestia_accounts ON adrestia_players.user_uid = adrestia_accounts.uuid
 		WHERE activity_state = 0
-			AND NOW() - last_message > interval '1 minute'
+			AND NOW() - last_move_time > interval '1 minute'
 	)sql")();
 
 	for (const auto &row : active_games_with_inactive_opponent) {
