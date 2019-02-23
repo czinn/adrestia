@@ -45,9 +45,9 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
    *                        (or with "game_state" instead of "game_view" for
    *                        completed games. If the game is a new game and has
    *                        rules that aren't the most recent rules, the game's
-   *                        rules will be included in the first update.
-   *           Note that it follows that reported game_views are waiting for
-   *           the player to make a move.
+   *                        rules ("game_rules") will be included in the first update.
+	 *                        If the player has already made a move for the
+	 *                        current turn, it will be included as "player_move".
    */
 
   // Check for games

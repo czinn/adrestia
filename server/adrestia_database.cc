@@ -304,7 +304,7 @@ json adrestia_database::retrieve_player_info_from_database (
    * @returns json containing the following keys:
    *          "player_id": The player id in the game, as integer
    *          "player_state": The player state in the game, as integer
-   *          "player_move": The player move, if any, as a string. Null if null.
+   *          "player_move": The player move, if any, as an array. Null if null.
    */
 
   logger.trace(
