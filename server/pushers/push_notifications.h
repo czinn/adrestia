@@ -17,7 +17,7 @@ namespace adrestia_networking {
 	class PushNotifications : public Pusher {
 		public:
 			PushNotifications();
-			virtual std::vector<json> push(const std::string &log_id, const std::string &uuid);
+			virtual std::vector<json> push(const Logger &logger, const std::string &uuid);
 		
 		private:
 			int latest_notification_already_sent;

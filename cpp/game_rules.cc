@@ -13,6 +13,8 @@ GameRules::GameRules(std::string rules_filename) {
 	*this = j;
 }
 
+GameRules::~GameRules() { }
+
 bool GameRules::operator==(const GameRules &other) const {
 	return (
 		this->stickies == other.stickies &&
@@ -28,6 +30,7 @@ bool GameRules::operator==(const GameRules &other) const {
 //------------------------------------------------------------------------------
 // GETTERS
 //------------------------------------------------------------------------------
+const Version &GameRules::get_version() const { return version; }
 const Sticky &GameRules::get_sticky(std::string id) const { return stickies.at(id); }
 const Spell &GameRules::get_spell(std::string id) const { return spells.at(id); }
 const Book &GameRules::get_book(std::string id) const { return books.at(id); }
@@ -41,6 +44,10 @@ int GameRules::get_spell_cap() const { return spell_cap; }
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, GameRules &rules) {
+	const auto version = j.find("version");
+	if (version != j.end()) {
+		rules.version = *version;
+	}
 	for (const auto &it : j.at("stickies")) {
 		rules.stickies.emplace(it["id"].get<std::string>(), it);
 	}
@@ -57,6 +64,7 @@ void from_json(const json &j, GameRules &rules) {
 }
 
 void to_json(json &j, const GameRules &rules) {
+	j["version"] = rules.version;
 	for (const auto &[k, v] : rules.stickies) {
 		j["stickies"].push_back(v);
 	}

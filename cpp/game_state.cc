@@ -316,7 +316,9 @@ void GameState::apply_event(const json &event) {
 			case EK_TECH:
 				{
 					auto [spell, book_idx] = player.find_spell(effect.at("spell_id"));
-					player.tech[book_idx] += effect.at("amount").get<int>();
+					if (spell != nullptr) {
+						player.tech[book_idx] += effect.at("amount").get<int>();
+					}
 				}
 				break;
 			case EK_HEALTH:
@@ -330,6 +332,7 @@ void GameState::apply_event(const json &event) {
 				break;
 			case EK_REGEN:
 				player.mp_regen += effect.at("amount").get<int>();
+				player.mp_regen = std::max(0, player.mp);
 				break;
 			case EK_STICKY:
 				{
@@ -359,6 +362,8 @@ void GameState::apply_event(const json &event) {
 		// State is unchanged, this event is used only for animation.
 		// We don't generate effects here because they're piped through stickies
 		// and applied to players in separate events.
+	} else if (type == "sticky_activated") {
+		// State is unchanged, this event is used only for animation.
 	} else if (type == "sticky_amount_changed"
 			|| type == "sticky_expired"
 			|| type == "sticky_duration_changed") {

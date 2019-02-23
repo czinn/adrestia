@@ -5,6 +5,7 @@
 
 // Our related modules
 #include "../adrestia_database.h"
+#include "../adrestia_hexy.h"
 
 // Database
 #include <pqxx/pqxx>
@@ -18,44 +19,74 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_change_user_name(const string& log_id, const json& client_json, json& resp) {
-	/* Changes the user name associated with the given uuid to the new requested user name.
-	 *     By necessity, creates a new tag to go with this user_name.
-	 *
-	 * Accepts keys from client:
-	 *     HANDLER_KEY: <this function>
-	 *     "user_name": The new user_name
-	 *
-	 * Keys inserted by babysitter:
-	 *     "uuid": The uuid to modify
-	 *
-	 * Responds to client with keys:
-	 *     HANDLER_KEY: <this function>
-	 *     CODE_KEY: 200
-	 *     MESSAGE_KEY: "Modification complete."
-	 *     "tag": The new tag.
-	 *
-	 * Always returns 0.
-	 */
+int adrestia_networking::handle_change_user_name(const Logger& logger, const json& client_json, json& resp) {
+  /* Changes the user name associated with the given uuid to the new requested user name.
+   *     By necessity, creates a new tag to go with this user_name.
+   *
+   * Accepts keys from client:
+   *     HANDLER_KEY: <this function>
+   *     "user_name": The new user_name
+   *
+   * Keys inserted by babysitter:
+   *     "uuid": The uuid to modify
+   *
+   * Responds to client with keys:
+   *     HANDLER_KEY: <this function>
+   *     CODE_KEY: 200
+   *     MESSAGE_KEY: "Modification complete."
+   *     "tag": The new tag.
+   *     "user_name": The new user_name.
+   *
+   * Always returns 0.
+   */
 
-	cout << "[" << log_id << "] Triggered change_user_name." << endl;
-	string uuid = client_json.at("uuid");
-	string new_user_name = client_json.at("user_name");
+  string uuid = client_json.at("uuid");
+  string new_user_name = client_json.at("user_name");
+  logger.trace_()
+    << "Triggered change_user_name with args:\n"
+    << "    uuid: |" << uuid << "|\n"
+    << "    user_name: |" << new_user_name << "|" << endl;
 
-	cout << "[" << log_id << "] Modifying uuid |" << uuid << "| to have user_name |" << new_user_name << "|..." << endl;
-	pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
-	json new_account_info = adrestia_database::adjust_user_name_in_database(log_id, psql_connection, uuid, new_user_name);
+  logger.trace("Modifying uuid |%s| to have user_name |%s|...", uuid.c_str(), new_user_name.c_str());
 
-	cout << "[" << log_id << "] New account info is:" << endl
-         << "    uuid: |" << uuid << "|" << endl
-	     << "    user_name: |" << new_user_name << "|" << endl
-	     << "    tag: |" << new_account_info["tag"] << "|" << endl;
+  adrestia_database::Db db(logger);
+  string tag;
+  bool success = false;
+  for (int i = 0; i < 1000; i += 1) {
+    tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
+    try {
+      pqxx::result result = db.query(R"sql(
+        UPDATE adrestia_accounts
+        SET user_name = ?, tag = ?
+        WHERE uuid = ?
+      )sql")(new_user_name)(tag)(uuid)();
+      db.commit();
+      logger.info("Successfully changed user_name in database.");
+      success = true;
+      break;
+    }
+    catch (pqxx::integrity_constraint_violation &e) {
+      db.abort();
+    }
+  }
 
-	resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-	resp[adrestia_networking::CODE_KEY] = 200;
-	resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
-	resp["tag"] = new_account_info["tag"];
+  if (!success) {
+    logger.error("Failed to update the user_name!");
+    throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + new_user_name + "|!");
+  }
 
-	cout << "[" << log_id << "] change_user_name concluded." << endl;
-	return 0;
+  logger.trace_()
+    << "New account info is:" << endl
+    << "    uuid: |" << uuid << "|" << endl
+    << "    user_name: |" << new_user_name << "|" << endl
+    << "    tag: |" << tag << "|" << endl;
+
+  resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+  resp[adrestia_networking::CODE_KEY] = 200;
+  resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
+  resp["tag"] = tag;
+  resp["user_name"] = new_user_name;
+
+  logger.trace("change_user_name concluded.");
+  return 0;
 }

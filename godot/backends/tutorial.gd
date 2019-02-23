@@ -15,6 +15,7 @@ var scripted_actions = [
 
 # Public
 var rules
+var forfeited = false
 
 func _init(g_):
 	g = g_
@@ -25,6 +26,9 @@ func _init(g_):
 	rules = g.GameRules.new()
 	rules.load_json_string(rules_file.get_as_text())
 	rules_file.close()
+
+func get_time_limit():
+	return 0
 
 func get_view():
 	if state == null:
@@ -49,7 +53,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	state = g.GameState.new()
-	state.init(g.rules, [selected_book_ids, ['conjuration']])
+	state.init(g.get_rules(), [selected_book_ids, ['conjuration']])
 	if started_callback != null:
 		started_callback.call_func()
 

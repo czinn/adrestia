@@ -28,7 +28,7 @@ book = Book('contrition', 'Book of Contrition', [
 		],
 	),
 
-	Spell('explosion', 'Big Blast',
+	Spell('explosion', 'Chain Reaction',
 		"Deal 3 damage, plus 3 damage per turn for three turns.",
 		tech=4, level=4, cost=3,
 		effects=[

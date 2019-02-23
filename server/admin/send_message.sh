@@ -14,7 +14,7 @@ echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	MESSAGE=$(echo $MESSAGE | sed "s/'/''/g")
-	echo "insert into adrestia_notifications (target_uuid, message) values ('$TARGET', '$MESSAGE')" | psql $DB_CONNECTION_STRING
+	echo "insert into adrestia_notifications (target_uuid, message) values ('$TARGET', '$MESSAGE')" | psql "$DB_CONNECTION_STRING"
 	echo "Message sent."
 else
 	echo "Message not sent."

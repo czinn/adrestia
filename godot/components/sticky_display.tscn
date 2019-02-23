@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/sticky_display.gd" type="Script" id=2]
 [ext_resource path="res://art-built/stickies/placeholder.png" type="Texture" id=3]
-[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=4]
+[ext_resource path="res://shaders/blur.material" type="Material" id=4]
+[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=5]
 
 [sub_resource type="Animation" id=1]
 
@@ -132,7 +133,38 @@ tracks/2/keys = {
 "values": [ 64.0, 64.0, 0.0 ]
 }
 
-[node name="sticky_display" type="Control"]
+[sub_resource type="Animation" id=4]
+
+resource_name = "glow"
+length = 0.5
+loop = false
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("texture/glow_texture:rect_scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("texture/glow_texture:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[node name="sticky_display" type="Control" index="0"]
 
 modulate = Color( 1, 1, 1, 0 )
 anchor_left = 0.0
@@ -141,7 +173,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 64.0
 margin_bottom = 64.0
-rect_min_size = Vector2( 64, 72 )
+rect_min_size = Vector2( 64, 64 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -172,6 +204,26 @@ expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Mouse", "Rect" ]
 
+[node name="glow_texture" type="TextureRect" parent="texture" index="0"]
+
+visible = false
+show_behind_parent = true
+material = ExtResource( 4 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 32, 32 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 6
+_sections_unfolded = [ "Material", "Rect", "Visibility" ]
+
 [node name="duration_label" type="Label" parent="." index="1"]
 
 anchor_left = 0.0
@@ -188,7 +240,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_colors/font_color_shadow = Color( 1, 1, 1, 1 )
 custom_constants/shadow_offset_x = 2
@@ -212,6 +264,7 @@ playback_speed = 1.0
 anims/appear = SubResource( 1 )
 anims/fadein = SubResource( 2 )
 anims/fadeout = SubResource( 3 )
+anims/glow = SubResource( 4 )
 blend_times = [  ]
 
 [connection signal="gui_input" from="." to="." method="_gui_event"]

@@ -8,6 +8,7 @@
 #include "spell.h"
 #include "book.h"
 #include "json.h"
+#include "../server/versioning.h"
 
 using json = nlohmann::json;
 
@@ -15,10 +16,12 @@ using json = nlohmann::json;
 class GameRules {
 	public:
 		GameRules();
+		~GameRules();
 		bool operator==(const GameRules &) const;
 
 		// Initializes rules from json file.
 		GameRules(std::string rules_filename);
+		const Version &get_version() const;
 		const Sticky &get_sticky(std::string id) const;
 		const Spell &get_spell(std::string id) const;
 		const Book &get_book(std::string id) const;
@@ -32,6 +35,7 @@ class GameRules {
 		friend void to_json(json &j, const GameRules &rules);
 
 	private:
+		Version version;
 		std::map<std::string, Sticky> stickies;
 		// Note that there is no way to access the list of spells directly. If you
 		// want to do this, you probably want to get the list of books and iterate

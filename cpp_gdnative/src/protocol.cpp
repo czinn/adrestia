@@ -20,8 +20,10 @@ namespace godot {
     REGISTER_METHOD(create_establish_connection_call);
     REGISTER_METHOD(create_register_new_account_call);
     REGISTER_METHOD(create_authenticate_call);
+    REGISTER_METHOD(create_abort_game_call);
     REGISTER_METHOD(create_change_user_name_call);
     REGISTER_METHOD(create_matchmake_me_call);
+    REGISTER_METHOD(create_submit_move_call);
   }
 
   String Protocol::create_floop_call() {
@@ -45,6 +47,13 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
+  String Protocol::create_abort_game_call(String game_uid) {
+    nlohmann::json j;
+    std::string game_uid_; of_godot_variant(game_uid, &game_uid_);
+    adrestia_networking::create_abort_game_call(j, game_uid_);
+    return String(j.dump().c_str());
+  }
+
   String Protocol::create_register_new_account_call(String password) {
     nlohmann::json j;
     std::string password_; of_godot_variant(password, &password_);
@@ -62,8 +71,22 @@ namespace godot {
   String Protocol::create_matchmake_me_call(Variant rules, Variant selected_books) {
     nlohmann::json j;
     std::vector<std::string> selected_books_; of_godot_variant(selected_books, &selected_books_);
-		auto *_rules = godot::as<GameRules>(rules);
+    auto *_rules = godot::as<GameRules>(rules);
     adrestia_networking::create_matchmake_me_call(j, *_rules->_ptr, selected_books_);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_submit_move_call(String game_uid, Variant player_move) {
+    nlohmann::json j;
+    std::string game_uid_; of_godot_variant(game_uid, &game_uid_);
+    std::vector<std::string> player_move_; of_godot_variant(player_move, &player_move_);
+    adrestia_networking::create_submit_move_call(j, game_uid_, player_move_);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_get_stats_call() {
+    nlohmann::json j;
+    adrestia_networking::create_get_stats_call(j);
     return String(j.dump().c_str());
   }
 }

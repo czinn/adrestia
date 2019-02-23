@@ -69,8 +69,9 @@ func show_big_window(text):
 func show_tooltip(target, text):
 	g.summon_tooltip(target, text)
 	var rect = target.get_global_rect()
-	mouse_blocker.material.set_shader_param('radius', max(rect.size.x, rect.size.y) / 2.0 + 15.0);
+	mouse_blocker.material.set_shader_param('radius', 10.0);
 	mouse_blocker.material.set_shader_param('position', rect.position + (rect.size / 2.0));
+	mouse_blocker.material.set_shader_param('size', rect.size / 2.0);
 	mouse_blocker.visible = true
 	yield(g, 'tooltip_closed')
 	mouse_blocker.visible = false
@@ -124,7 +125,7 @@ func play_tutorial():
 		var book = yield(select_root, 'show_book_detail')
 		if book.get_id() == 'conjuration':
 			break
-	
+
 	var spell_preview = yield(self.acquire_node('ui/spell_button_list'), 'completed')
 	yield(show_tooltip(spell_preview, 'Each book has four spells.'), 'completed')
 	var spell_button = spell_preview.get_child(1).get_child(1)

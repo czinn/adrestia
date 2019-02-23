@@ -22,14 +22,27 @@ onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
 onready var delta_anim_scene = preload('res://components/delta_anim.tscn')
 onready var confirm_popup_scene = preload('res://components/confirm_popup.tscn')
+onready var text_entry_popup_scene = preload('res://components/text_entry_popup.tscn')
 
 onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
 onready var drag_drop = get_node('/root/drag_drop')
+
+# Read from rules.json
+var app_version = null # e.g. [1, 0, 0]
+
 var loaded = false
 var backend = null
+var tutorial_overlay = null
 var tooltip = null # Currently displayed tooltip
-var rules = null setget ,get_rules
+
+# jim: So, why the hell is this an array? Because we have to keep all versions
+# of the rules we've ever conceivably used alive, and it's hard to keep track
+# of exactly when we can be sure that rules can be freed, so we just never free
+# them. The .back() of this array will be the freshest rules, and backends can
+# override these rules (as retrieved by [get_rules]). But the rules must always
+# live.
+var rules = []
 
 var health_history
 
@@ -38,11 +51,17 @@ func _ready():
 
 func get_rules():
 	if backend == null:
-		return rules
+		return rules.back()
 	return backend.rules
 
 func get_default_rules():
-	return rules
+	return rules.back()
+
+func update_rules(json_string):
+	var new_rules = GameRules.new()
+	new_rules.load_json_string(json_string)
+	rules.append(new_rules)
+	save()
 
 static func sum(list):
 	var result = 0
@@ -58,6 +77,12 @@ static func clear_children(node):
 static func child(parent, child_name):
 	# Not recursive; not owned.
 	return parent.find_node(child_name, false, false)
+
+static func map(list, f):
+	var result = []
+	for elem in list:
+		result.append(f(elem))
+	return result
 
 static func map_method(list, method):
 	var result = []
@@ -154,6 +179,13 @@ func summon_confirm(text):
 func summon_notification(text):
 	scene_loader.notification.show_notification(text)
 
+func summon_text_entry(text, default_text):
+	var popup = text_entry_popup_scene.instance()
+	popup.text = text
+	popup.default_text = default_text
+	get_node("/root").add_child(popup)
+	return popup
+
 func event_is_pressed(event):
 	return event is InputEventMouseButton \
 		and event.button_index == BUTTON_LEFT \
@@ -167,6 +199,26 @@ func tween(thing, to_pos, time):
 func safe_disconnect(object, signal_, target, method):
 	if object.is_connected(signal_, target, method):
 		object.disconnect(signal_, target, method)
+
+func remove_tutorial_overlay():
+	if tutorial_overlay != null:
+		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
+		tutorial_overlay = null
+
+func compare_versions(a, b):
+	for i in range(len(a)):
+		if a[i] < b[i]:
+			return -1
+		elif a[i] > b[i]:
+			return 1
+	return 0
+
+func string_to_version(s):
+	var p = s.split('.')
+	return [int(p[0]), int(p[1]), int(p[2])]
+
+func version_to_string(v):
+	return '%d.%d.%d' % [v[0], v[1], v[2]]
 
 # Data to persist between sessions.
 const save_path = 'user://saved_data.json'
@@ -185,7 +237,7 @@ func save():
 		'first_play': first_play,
 		'user_name': user_name,
 		'tag': tag,
-		'rules': rules.as_json().result,
+		'rules': rules.back().as_json().result,
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -208,23 +260,28 @@ func load():
 		print('No save data.')
 		data = {}
 
+	# Load rules from file by default.
+	var rules_file = File.new()
+	rules = [GameRules.new()]
+	rules_file.open(default_rules_path, File.READ)
+	rules[0].load_json_string(rules_file.get_as_text())
+	rules_file.close()
+	app_version = rules.back().get_version()
+
 	# Default values for persisted data
 	auth_uuid = dict_has(data, 'auth_uuid', null)
 	auth_pwd = dict_has(data, 'auth_pwd', null)
 	first_play = dict_has(data, 'first_play', true)
 	user_name = dict_has(data, 'user_name', null)
 	tag = dict_has(data, 'tag', null)
-	var rules_json = dict_has(data, 'rules', null)
 
-	if rules_json == null:
-		var rules_file = File.new()
-		rules_file.open(default_rules_path, File.READ)
-		rules_json = rules_file.get_as_text()
-		rules_file.close()
-	else:
-		rules_json = JSON.print(rules_json)
-	rules = GameRules.new()
-	rules.load_json_string(rules_json)
+	# Override rules with those from saved_data if they're newer.
+	var rules_json = dict_has(data, 'rules', null)
+	if rules_json != null:
+		var rules_saved = GameRules.new()
+		rules_saved.load_json_string(JSON.print(rules_json))
+		if compare_versions(rules.back().get_version(), rules_saved.get_version()) < 0:
+			rules.append(rules_saved)
 
 	if file.is_open():
 		file.close()

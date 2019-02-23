@@ -30,7 +30,7 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_button_multiplayer_pressed():
-	if g.network.is_online():
+	if g.network.status == g.network.ONLINE:
 		g.backend = OnlineBackend.new(g)
 		g.scene_loader.goto_scene('game_book_select')
 	else:
@@ -42,9 +42,9 @@ func on_button_ai_pressed():
 
 func on_button_tutorial_pressed():
 	g.backend = TutorialBackend.new(g)
-	var tutorial_overlay = TutorialOverlay.instance()
-	get_node('/root').add_child(tutorial_overlay)
-	tutorial_overlay.play_tutorial()
+	g.tutorial_overlay = TutorialOverlay.instance()
+	get_node('/root').add_child(g.tutorial_overlay)
+	g.tutorial_overlay.play_tutorial()
 	g.scene_loader.goto_scene('game_book_select')
 
 func on_back_button_pressed():

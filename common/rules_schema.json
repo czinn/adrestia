@@ -3,6 +3,7 @@
 	"description": "Set of Adrestia spells and other configuration options",
 	"type": "object",
 	"properties": {
+		"version": {"$ref": "#/definitions/version"},
 		"spells": {"type": "array", "items": {"$ref": "#/definitions/spell"}},
 		"books": {"type": "array", "items": {"$ref": "#/definitions/book"}},
 		"stickies": {"type": "array", "items": {"$ref": "#/definitions/sticky"}},
@@ -105,6 +106,12 @@
 				"effect_type": {"type": "array", "items": {"$ref": "#/definitions/effect_type"}}
 			},
 			"additionalProperties": false
+		},
+		"version": {
+			"type": "array",
+			"minItems": 3,
+			"maxItems": 3,
+			"items": {"type": "integer"}
 		}
 	}
 }

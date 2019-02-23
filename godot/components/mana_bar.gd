@@ -10,7 +10,7 @@ func _ready():
 
 func redraw(player, mp_left = null):
 	if mp_left == null: mp_left = player.mp
-	var mp_max = g.rules.get_mana_cap()
+	var mp_max = g.get_rules().get_mana_cap()
 
 	if len(get_children()) != mp_max:
 		g.clear_children(self)

@@ -9,7 +9,7 @@ book = Book('conjuration', 'Book of Conjuration', [
         effects=[effect_attack(3)],
     ),
 
-    Spell('shield_1', 'Ripple Shield',
+    Spell('shield_1', 'Fortress',
         'Block 8 damage. Lasts two turns.',
         tech=2, level=2, cost=3,
         effects=[effect_shield(8, duration_turns(2))],

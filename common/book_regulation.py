@@ -2,7 +2,7 @@ from rules_schema import *
 
 book = Book('regulation', 'Book of Regulation', [
 	spell_tech(name='Learn Regulation', text='Increase Regulation by 1.'),
-	Spell('shield_1', 'Shield Shield',
+	Spell('shield_1', 'Barrier',
 		'Block 7 damage this turn.',
 		tech=1, level=1, cost=2,
 		effects=[effect_shield(7)],
@@ -14,7 +14,7 @@ book = Book('regulation', 'Book of Regulation', [
 		effects=[Effect(EK_health, ET_constant, amount=-3)],
 	),
 
-	Spell('shield_2', 'Fading Shield',
+	Spell('shield_2', 'Double Shield',
 		'Block 12 damage. Lasts two turns.',
 		tech=3, level=3, cost=3,
 		effects=[effect_shield(12, duration_turns(2))],

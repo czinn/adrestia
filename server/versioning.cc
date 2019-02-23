@@ -18,3 +18,13 @@ Version string_to_version(const std::string s) {
 	}
 	return v;
 }
+
+void from_json(const json& j, Version& v) {
+	v.major = j.at(0);
+	v.minor = j.at(1);
+	v.patch = j.at(2);
+}
+
+void to_json(json& j, const Version& v) {
+	j = json::array({ v.major, v.minor, v.patch });
+}

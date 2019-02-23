@@ -7,6 +7,7 @@
 
 // System modules
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -18,10 +19,10 @@ namespace adrestia_networking {
 	class PushActiveGames : public Pusher {
 		public:
 			PushActiveGames();
-			virtual std::vector<json> push(const std::string &log_id, const std::string &uuid);
+			virtual std::vector<json> push(const Logger &logger, const std::string &uuid);
 		
 		private:
-			std::map<std::string, std::string> games_I_am_aware_of; // game_uid to game_state
-			std::vector<std::string> active_game_uids_I_am_aware_of;
+			std::map<std::string, json> games_I_am_aware_of; // game_uid to game_state
+			std::set<std::string> active_game_uids_I_am_aware_of;
 	};
 }

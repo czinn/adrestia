@@ -1,11 +1,16 @@
 #pragma once
 
 #include <string>
+#include "../cpp/json.h"
+
+using json = nlohmann::json;
 
 struct Version {
-	int major;
-	int minor;
-	int patch;
+	int major = 0;
+	int minor = 0;
+	int patch = 0;
+	friend void from_json(const json &j, Version &rules);
+	friend void to_json(json &j, const Version &rules);
 };
 
 std::string version_to_string(const Version &v);

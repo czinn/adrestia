@@ -18,7 +18,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_register_new_account(const string& log_id, const json& client_json, json &resp) {
+int adrestia_networking::handle_register_new_account(const Logger& logger, const json& client_json, json &resp) {
   /* Creates a new account in the database.
    *
    * Accepts keys from client:
@@ -36,17 +36,19 @@ int adrestia_networking::handle_register_new_account(const string& log_id, const
    * Always returns 0.
    */
 
-  cout << "[" << log_id << "] Triggered register_new_account." << endl;
+  logger.trace("Triggered register_new_account.");
   string password = client_json.at("password");
 
-  cout << "[" << log_id << "] Creating new account with params:" << endl
-       << "    password: |" << password << "|" << endl;
+  // TODO jim: stop logging this
+  logger.trace(
+      "Creating new account with params:\n"
+      "    password: |%s|",
+      password.c_str());
 
-  pqxx::connection* psql_connection = adrestia_database::establish_psql_connection();
-  json new_account = adrestia_database::register_new_account_in_database(log_id, psql_connection, password);
-  delete psql_connection;
+  pqxx::connection psql_connection = adrestia_database::establish_connection();
+  json new_account = adrestia_database::register_new_account_in_database(logger, psql_connection, password);
 
-  cout << "[" << log_id << "] Created new account with:" << endl
+  logger.info_() << "Created new account with:" << endl
        << "    uuid: |" << new_account["uuid"] << "|" << endl
        << "    user_name: |" << new_account["user_name"] << "|" << endl
        << "    tag: |" << new_account["tag"] << "|" << endl;
@@ -58,6 +60,6 @@ int adrestia_networking::handle_register_new_account(const string& log_id, const
   resp["user_name"] = new_account["user_name"];
   resp["tag"] = new_account["tag"];
 
-  cout << "[" << log_id << "] register_new_account concluded." << endl;
+  logger.trace("register_new_account concluded.");
   return 0;
 }

@@ -6,11 +6,12 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const host = '127.0.0.1'
+const DEBUG = true
+var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
-const version = '1.0.0'
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
+const always_register_new_account = DEBUG
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
@@ -67,7 +68,7 @@ func _process(time):
 	if status == OFFLINE:
 		status = CONNECTING
 		print('Connecting...')
-		establish_connection(version, funcref(self, 'on_network_ready'))
+		establish_connection(g.version_to_string(g.app_version), funcref(self, 'on_network_ready'))
 
 	if OS.get_ticks_msec() - last_send_ms > 2000:
 		floop(funcref(self, 'on_floop'))
@@ -89,8 +90,14 @@ func _process(time):
 				var json = JSON.parse(message).result
 				var handler = json[handler_key]
 				if handler in handlers:
+					if json[code_key] != 200:
+						print('Networking: Got non-200 response code')
+						print(json)
 					if handlers[handler].call_func(json):
 						handlers.erase(handler)
+				else:
+					print('Unhandled message')
+					print(json)
 				break
 			i += 1
 
@@ -107,7 +114,7 @@ func _process(time):
 func to_packet(s):
 	return (s + '\n').to_utf8()
 
-func handler_name(request):
+func get_handler_name(request):
 	return JSON.parse(request).result[handler_key]
 
 func reconnect():
@@ -121,8 +128,8 @@ func reconnect():
 
 func on_network_ready(response):
 	if response[code_key] == 200:
-		g.get_default_rules().load_json_string(JSON.print(response.game_rules))
-		if g.auth_uuid != null:
+		g.update_rules(JSON.print(response.game_rules))
+		if g.auth_uuid != null and not always_register_new_account:
 			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 		else:
 			gen_auth_pwd()
@@ -179,9 +186,18 @@ func register_handlers(obj, on_connected, on_disconnected, on_out_of_date):
 	else:
 		obj.call(on_disconnected)
 
+func print_response(response):
+	print(response)
+
+func discard(response):
+	pass
+
 # Actual API starts here.
 # If a callback returns true, it will only be used to handle a single response.
 # Otherwise it will stick around.
+
+func register_handler(handler_name, callback):
+	handlers[handler_name] = callback
 
 func api_call_base(name, args, callback):
 	last_send_ms = OS.get_ticks_msec()
@@ -189,8 +205,8 @@ func api_call_base(name, args, callback):
 		print('Network call %s failed because disconnected.' % [name])
 		return false
 	var request = protocol.callv('create_%s_call' % [name], args)
-	var handler = handler_name(request)
-	handlers[handler] = callback
+	var handler_name = get_handler_name(request)
+	handlers[handler_name] = callback
 	if self.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		return false
 	self.peer.put_data(to_packet(request))
@@ -208,8 +224,14 @@ func register_new_account(password, callback):
 func authenticate(uuid, password, callback):
 	return api_call_base('authenticate', [uuid, password], callback)
 
+func abort_game(game_uid, callback):
+	return api_call_base('abort_game', [game_uid], callback)
+
 func change_user_name(user_name, callback):
 	return api_call_base('change_user_name', [user_name], callback)
 
-func matchmake_me(books, callback):
-	return api_call_base('matchmake_me', [books], callback)
+func matchmake_me(rules, books, callback):
+	return api_call_base('matchmake_me', [rules, books], callback)
+
+func submit_move(game_uid, player_move, callback):
+	return api_call_base('submit_move', [game_uid, player_move], callback)
