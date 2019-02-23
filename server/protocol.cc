@@ -22,12 +22,13 @@ void adrestia_networking::create_establish_connection_call(json& client_json, co
 	client_json["client_version"] = version;
 }
 
-
 void adrestia_networking::create_register_new_account_call(json& client_json,
-  const std::string& password
+  const std::string& password,
+	bool debug
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "register_new_account";
   client_json["password"] = password;
+	client_json["debug"] = debug;
 }
 
 

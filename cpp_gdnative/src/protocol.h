@@ -13,7 +13,7 @@ namespace godot {
 
       godot::String create_floop_call();
       godot::String create_establish_connection_call(godot::String version);
-      godot::String create_register_new_account_call(godot::String password);
+      godot::String create_register_new_account_call(godot::String password, bool debug);
       godot::String create_authenticate_call(godot::String uuid, godot::String password);
       godot::String create_abort_game_call(godot::String game_uid);
       godot::String create_change_user_name_call(godot::String user_name);

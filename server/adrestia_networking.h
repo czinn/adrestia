@@ -85,7 +85,8 @@ namespace adrestia_networking {
                                        );
 
   void create_register_new_account_call(json& client_json,
-                                        const std::string& password
+                                        const std::string& password,
+																				bool debug
                                        );
   void create_authenticate_call(json& client_json,
                                 const std::string& uuid,

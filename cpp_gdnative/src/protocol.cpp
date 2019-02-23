@@ -54,10 +54,10 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_register_new_account_call(String password) {
+  String Protocol::create_register_new_account_call(String password, bool debug) {
     nlohmann::json j;
     std::string password_; of_godot_variant(password, &password_);
-    adrestia_networking::create_register_new_account_call(j, password_);
+    adrestia_networking::create_register_new_account_call(j, password_, debug);
     return String(j.dump().c_str());
   }
 

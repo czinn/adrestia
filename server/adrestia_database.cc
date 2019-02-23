@@ -48,7 +48,7 @@ pqxx::result run_query(const Logger& logger, pqxx::work& work, const char* query
 }
 
 
-string hash_password(const string& password, const string& salt) {
+string adrestia_database::hash_password(const string& password, const string& salt) {
   // Get expected hashed password.
   // The hashing of the password only in the case that the account exists is bad for security, but good for speed!
   string salt_and_password = salt + password;
@@ -664,9 +664,9 @@ bool adrestia_database::submit_move_in_database(
 
   vector<vector<string>> actions;
   for (const auto &player_move : result) {
-		json player_move_json = json::parse(player_move[0].as<string>());
-		vector<string> v;
-		for (const string &spell : player_move_json) v.push_back(spell);
+    json player_move_json = json::parse(player_move[0].as<string>());
+    vector<string> v;
+    for (const string &spell : player_move_json) v.push_back(spell);
     actions.push_back(v);
   }
   vector<json> events;
@@ -707,82 +707,6 @@ bool adrestia_database::submit_move_in_database(
   logger.trace("Committing transaction...");
   work_sim.commit();
   return true;
-}
-
-
-json adrestia_database::register_new_account_in_database(
-  const Logger& logger,
-  pqxx::connection& psql_connection,
-  const string& password
-) {
-  /* @brief Creates a new account in adrestia_accounts with the given password. The account will be given a default
-   *        user_name and a random (not-already-in-use-with-this-name) tag to go with it.
-   *        1000 attempts will be made to generate a non-conflicting tag.
-   *
-   * @param logger: Logger
-   * @param psql_connection: The pqxx PostgreSQL connection.
-   * @param password: The password that will be used with this new account.
-   *
-   * @exception string: In the case of failing to generate a non-conflicting tag after 1000 attempts, though possibly
-   *            also in the case of other database integrity constraint violations.
-   *
-   * @returns: A json object with:
-   *               "id": The uuid of the new account
-   *               "user_name": The user_name of the new account
-   *               "tag": The tag of the new account
-   */
-
-  const string default_user_name = "Guest";
-
-  // TODO: jim: stop printing this
-  logger.trace(
-    "register_new_account_in_database called with args:\n"
-    "    password: |%s|",
-    password.c_str());
-
-  string salt = adrestia_hexy::hex_urandom(adrestia_database::SALT_LENGTH);
-  pqxx::binarystring password_hash(hash_password(password, salt));
-
-  json new_account;
-  bool actually_created_account = false;
-
-  // Keep making up ids/tags until we get a successful insertion.
-  for (int i = 0; i < 1000; i += 1) {
-    string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
-    string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
-
-    pqxx::work work(psql_connection);
-    try {
-      run_query(logger, work, R"sql(
-        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt, last_login)
-        VALUES (%s, %s, %s, %s, %s, NOW())
-      )sql",
-          work.quote(uuid).c_str(),
-          work.quote(default_user_name).c_str(),
-          work.quote(tag).c_str(),
-          work.quote(password_hash).c_str(),
-          work.quote(salt).c_str());
-      work.commit();
-
-      logger.trace("Successfully finished insertion of new account into database.");
-      actually_created_account = true;
-      new_account["uuid"] = uuid;
-      new_account["tag"] = tag;
-      new_account["user_name"] = default_user_name;
-      break;
-    }
-    catch (pqxx::integrity_constraint_violation &) {
-      work.abort();
-      continue;
-    }
-  }
-
-  if (!actually_created_account) {
-    logger.error("Failed to create a non-conflicting uuid/tag pair!");
-    throw string("Failed to generate non-conflicting uuid/tag pair.");
-  }
-
-  return new_account;
 }
 
 
