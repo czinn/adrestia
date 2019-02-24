@@ -37,79 +37,109 @@ namespace adrestia_networking {
   void listen_for_connections(int port);
 
   // Server-side handlers
-  int handle_floop(const Logger& logger,
-                   const json& client_json,
-                   json& resp
-                  );
+  int handle_floop(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
 
-  int handle_establish_connection(const Logger& logger,
-                                  const json& client_json,
-                                  json& resp
-                                 );
+  int handle_establish_connection(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
 
-  int handle_register_new_account(const Logger& logger,
-                                  const json& client_json,
-                                  json& resp
-                                 );
-  int handle_authenticate(const Logger& logger,
-                          const json& client_json,
-                          json& resp
-                         );
+  int handle_register_new_account(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
+  int handle_authenticate(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
 
-  int handle_abort_game(const Logger& logger,
-                        const json& client_json,
-                        json& resp
-                       );
-  int handle_change_user_name(const Logger& logger,
-                              const json& client_json,
-                              json& resp
-                             );
-  int handle_matchmake_me(const Logger& logger,
-                          const json& client_json,
-                          json& resp
-                         );
-  int handle_submit_move(const Logger& logger,
-                         const json& client_json,
-                         json& resp
-                        );
-  int handle_get_stats(const Logger& logger,
-                       const json& client_json,
-                       json& resp
-                      );
+  int handle_abort_game(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
+  int handle_change_user_name(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
+
+  int handle_matchmake_me(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
+
+  int handle_submit_move(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
+
+  int handle_get_stats(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
+
+  int handle_deactivate_account(
+      const Logger& logger,
+      const json& client_json,
+      json& resp
+  );
 
   // Calls to handlers
   void create_floop_call(json& client_json);
 
-  void create_establish_connection_call(json& client_json,
-                                        const std::string &version
-                                       );
+  void create_establish_connection_call(
+      json& client_json,
+      const std::string &version
+  );
 
-  void create_register_new_account_call(json& client_json,
-                                        const std::string& password,
-																				bool debug
-                                       );
-  void create_authenticate_call(json& client_json,
-                                const std::string& uuid,
-                                const std::string& password
-                               );
+  void create_register_new_account_call(
+      json& client_json,
+      const std::string& password,
+      bool debug
+  );
 
-  void create_abort_game_call(json& client_json,
-                              const std::string& game_uid
-                             );
-  void create_change_user_name_call(json& client_json,
-                                    const std::string& user_name
-                                   );
-  void create_matchmake_me_call(json& client_json,
-                                const GameRules &rules,
-                                const std::vector<std::string>& selected_books
-                               );
+  void create_authenticate_call(
+      json& client_json,
+      const std::string& uuid,
+      const std::string& password
+  );
 
-	void create_submit_move_call(json& client_json,
-	                             const std::string& game_uid,
-	                             const std::vector<std::string>& player_move
-														  );
+  void create_abort_game_call(
+      json& client_json,
+      const std::string& game_uid
+  );
 
-	void create_get_stats_call(json& client_json);
+  void create_change_user_name_call(
+      json& client_json,
+      const std::string& user_name
+  );
+
+  void create_matchmake_me_call(
+      json& client_json,
+      const GameRules &rules,
+      const std::vector<std::string>& selected_books
+  );
+
+  void create_submit_move_call(
+      json& client_json,
+      const std::string& game_uid,
+      const std::vector<std::string>& player_move
+  );
+
+  void create_get_stats_call(json& client_json);
+
+  void create_deactivate_account_call(json& client_json);
 }
 
 #endif

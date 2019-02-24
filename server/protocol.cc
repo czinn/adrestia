@@ -78,3 +78,7 @@ void adrestia_networking::create_submit_move_call(json& client_json,
 void adrestia_networking::create_get_stats_call(json& client_json) {
   client_json[adrestia_networking::HANDLER_KEY] = "get_stats";
 }
+
+void adrestia_networking::create_deactivate_account_call(json& client_json) {
+  client_json[adrestia_networking::HANDLER_KEY] = "deactivate_account";
+}

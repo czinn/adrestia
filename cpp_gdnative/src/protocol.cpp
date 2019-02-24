@@ -24,6 +24,8 @@ namespace godot {
     REGISTER_METHOD(create_change_user_name_call);
     REGISTER_METHOD(create_matchmake_me_call);
     REGISTER_METHOD(create_submit_move_call);
+    REGISTER_METHOD(create_get_stats_call);
+    REGISTER_METHOD(create_deactivate_account_call);
   }
 
   String Protocol::create_floop_call() {
@@ -87,6 +89,12 @@ namespace godot {
   String Protocol::create_get_stats_call() {
     nlohmann::json j;
     adrestia_networking::create_get_stats_call(j);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_deactivate_account_call() {
+    nlohmann::json j;
+    adrestia_networking::create_deactivate_account_call(j);
     return String(j.dump().c_str());
   }
 }
