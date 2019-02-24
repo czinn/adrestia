@@ -9,7 +9,7 @@
 [ext_resource path="res://art-built/mana-gem-big.png" type="Texture" id=7]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=8]
 
-[node name="avatar" type="Control" index="0"]
+[node name="avatar" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -144,16 +144,30 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Mouse", "custom_colors", "custom_constants", "custom_fonts" ]
 
-[node name="mana" type="TextureRect" parent="." index="5"]
+[node name="mana_box" type="Control" parent="." index="5"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -88.0
+margin_top = -71.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Anchor", "Margin" ]
+
+[node name="mana" type="TextureRect" parent="mana_box" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 112.0
-margin_top = 129.0
-margin_right = 162.0
-margin_bottom = 177.0
+margin_right = 50.0
+margin_bottom = 48.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -163,18 +177,18 @@ size_flags_vertical = 1
 texture = ExtResource( 7 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Mouse", "Rect" ]
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect" ]
 
-[node name="mp_label" type="Label" parent="." index="6"]
+[node name="mp_label" type="Label" parent="mana_box" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 115.0
-margin_top = 134.0
-margin_right = 161.0
-margin_bottom = 174.0
+margin_left = 3.0
+margin_top = 5.0
+margin_right = 49.0
+margin_bottom = 45.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -192,18 +206,18 @@ align = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Mouse", "custom_colors", "custom_constants", "custom_fonts" ]
+_sections_unfolded = [ "Anchor", "Margin", "Mouse", "custom_colors", "custom_constants", "custom_fonts" ]
 
-[node name="mp_detail" type="Label" parent="." index="7"]
+[node name="mp_detail" type="Label" parent="mana_box" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 158.0
-margin_top = 135.0
-margin_right = 206.0
-margin_bottom = 175.0
+margin_left = 46.0
+margin_top = 6.0
+margin_right = 94.0
+margin_bottom = 46.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -219,18 +233,18 @@ text = "/10"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
+_sections_unfolded = [ "Margin", "custom_colors", "custom_constants", "custom_fonts" ]
 
-[node name="mp_regen_label" type="Label" parent="." index="8"]
+[node name="mp_regen_label" type="Label" parent="mana_box" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 141.0
-margin_top = 165.0
-margin_right = 189.0
-margin_bottom = 205.0
+margin_left = 29.0
+margin_top = 36.0
+margin_right = 77.0
+margin_bottom = 76.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -246,6 +260,6 @@ text = "+3"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "custom_colors", "custom_constants", "custom_fonts" ]
+_sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_constants", "custom_fonts" ]
 
 

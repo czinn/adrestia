@@ -35,6 +35,7 @@ func _ready():
 		var button = selected_books_hbox.get_child(i)
 		button.connect('pressed', self, 'on_top_book_down', [i, button])
 		button.connect('button_down', self, 'on_remove_book_down', [i, button])
+	spell_button_list.immediately_show_tooltip = true
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
