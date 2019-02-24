@@ -11,6 +11,7 @@ onready var tree_poll_timer = $tree_poll_timer
 onready var big_text = $nine_patch_rect/margin_container/rich_text_label
 
 var finished_first_turn = false
+var open_time = 0
 
 func _ready():
 	mouse_blocker.connect('gui_input', self, 'blocker_input')
@@ -20,6 +21,8 @@ func _ready():
 
 var force_click_rect = null
 func blocker_input(event):
+	if OS.get_ticks_msec() - open_time < 500:
+		return
 	if g.event_is_pressed(event):
 		if force_click_rect != null && !force_click_rect.has_point(get_viewport().get_mouse_position()):
 			return
@@ -73,6 +76,7 @@ func acquire_node(path):
 	return node
 
 func show_big_window(text):
+	open_time = OS.get_ticks_msec()
 	big_text.bbcode_text = text
 	mouse_blocker.visible = true
 	mouse_blocker.material.set_shader_param('radius', 0.0);
@@ -80,6 +84,7 @@ func show_big_window(text):
 	yield(self, 'popup_closed')
 
 func show_tooltip(target, text, force=false):
+	open_time = OS.get_ticks_msec()
 	g.summon_tooltip(target, text)
 	var rect = target.get_global_rect()
 	if force:
@@ -162,28 +167,47 @@ func play_tutorial():
 	var my_stats = yield(self.acquire_node('ui/my_avatar'), 'completed')
 	# TODO jim: Demonstrate that spells can increase mana regen.
 	yield(show_tooltip(my_stats, 'This is you! You have 25 health and 3 mana. The (+3) beside your mana shows your mana regeneration; you\'ll get this much mana at the start of each turn.'), 'completed')
-	yield(show_tooltip(spell_select, 'Here are your books. You can tap a book to see its spells.'), 'completed')
 
 	var book_button = spell_select.get_node('book_buttons').get_child(0)
 	var tech_level = book_button.get_node('level')
 	var upgrade_arrow = book_button.get_node('upgrade_arrow')
-	yield(show_tooltip(upgrade_arrow, 'Press this arrow to learn the next spell from the book.', true), 'completed')
+	yield(show_tooltip(upgrade_arrow, 'Tap this arrow to learn the next spell from the book.', true), 'completed')
 	yield(show_tooltip(book_button, 'Great! Now tap the book to open it up.', true), 'completed')
 	var spell_select_animator = spell_select.get_node('animation_player')
 	yield(spell_select_animator, 'animation_finished')
 	var buy_spell_buttons = spell_select.get_node('spell_panel/ninepatch/hbox')
 	var flame_strike_button = buy_spell_buttons.get_child(0)
-	yield(show_tooltip(flame_strike_button, 'Cast a flame strike.', true), 'completed')
+	yield(show_tooltip(flame_strike_button, 'Cast [b]Flame Strike[/b].', true), 'completed')
 	yield(show_tooltip(end_turn_button, 'Now, end your turn.', true), 'completed')
 	var spell_animation_area = game_root.get_node('ui/spell_animation_area')
 	game_root.animate_events = false
 	yield(show_tooltip(spell_animation_area, 'Your spells and your opponent\'s spells take effect at the same time.'), 'completed')
 	game_root.animate_events = true
-	if len(game_root.events) > 0:
-		yield(game_root, 'turn_animation_finished')
+	yield(game_root, 'turn_animation_finished')
 	finished_first_turn = true
 	var mana_box = my_stats.get_node('mana_box')
 	yield(show_tooltip(mana_box, 'You didn\'t use all of your mana last turn, so you have some extra now: 2 from last turn, plus 3 from this turn.'), 'completed')
+	yield(show_tooltip(book_button, 'Open up the [b]Book of Conjuration[/b] again.', true), 'completed')
+	yield(spell_select_animator, 'animation_finished')
+	flame_strike_button = buy_spell_buttons.get_child(0)
+	var fortress_button = buy_spell_buttons.get_child(1)
+	yield(show_tooltip(fortress_button, '[b]Fortress[/b] is a shield spell that blocks damage. You can\'t cast it right now.'), 'completed')
+	yield(show_tooltip(flame_strike_button, 'Cast [b]Flame Strike[/b] instead.', true), 'completed')
+	var close_book_button = spell_select.get_node('spell_panel/ninepatch/close_button')
+	yield(show_tooltip(close_book_button, 'Close the book.', true), 'completed')
+	yield(show_tooltip(upgrade_arrow, 'Tap the arrow to learn the next spell from the book.', true), 'completed')
+	var my_spell_list = game_root.get_node('ui/my_spell_list')
+	yield(show_tooltip(my_spell_list, 'Great! Notice that you don\'t have to learn spells as your first spell, but learning does take up a spell slot. You can also only learn one spell per turn.'), 'completed')
+	yield(show_tooltip(book_button, 'Open the book again.', true), 'completed')
+	yield(spell_select_animator, 'animation_finished')
+	fortress_button = buy_spell_buttons.get_child(1)
+	yield(show_big_window('You can cast three spells per turn, which happen in order. Each spell can affect the ones that come later.'), 'completed')
+	yield(show_tooltip(fortress_button, 'You just learned the next spell from the [b]Book of Conuration[/b], which was [b]Fortress[/b]. Cast it as your final spell for this turn.', true), 'completed')
+	yield(show_tooltip(end_turn_button, 'End your turn.', true), 'completed')
+	game_root.animate_events = false
+	yield(show_tooltip(spell_animation_area, 'Spell ordering matters for your opponent too. Their first [b]Flame Strike[/b] will hit you, but their second [b]Flame Strike[/b] will get blocked by your [b]Fortress[/b].'), 'completed')
+	game_root.animate_events = true
+	yield(game_root, 'turn_animation_finished')
 	yield(show_big_window('You\'re on your own now. Good luck!'), 'completed')
 
 	# Results
