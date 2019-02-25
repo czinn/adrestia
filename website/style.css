@@ -11,6 +11,7 @@ body {
   background-repeat: repeat;
   background-size: 130px auto;
   font-size: 24px;
+  margin: 0 5vh;
 }
 
 .content {
@@ -29,7 +30,7 @@ h1 {
 }
 
 p {
-  padding: 5vh 0;
+  margin: 5vh 0;
 }
 
 img {
