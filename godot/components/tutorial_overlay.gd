@@ -146,7 +146,10 @@ func play_tutorial():
 	yield(g, 'tooltip_closed')
 	var book_slot = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
 	yield(show_tooltip(book_slot, 'The [b]Book of Conjuration[/b] is a good book for beginners. Drag it up here to bring it into battle.'), 'completed')
-	yield(select_root, 'chose_book')
+	while true:
+		var temp = yield(select_root, 'chose_book')
+		if temp[1].get_id() == 'conjuration':
+			break
 	yield(show_tooltip(play_button, "Good job! Pick two more books if you'd like, then press the play button to fight against an AI opponent."), 'completed')
 
 	# Game
@@ -162,7 +165,10 @@ func play_tutorial():
 	# TODO jim: Demonstrate that spells can increase mana regen.
 	yield(show_tooltip(my_stats, 'This is you! You have 25 health and 3 mana. The (+3) beside your mana shows your mana regeneration; you\'ll get this much mana at the start of each turn.'), 'completed')
 
-	var book_button = spell_select.get_node('book_buttons').get_child(0)
+	var book_button = null
+	for i in range(len(spell_select.books)):
+		if spell_select.books[i].get_id() == 'conjuration':
+			book_button = spell_select.get_node('book_buttons').get_child(i)
 	var tech_level = book_button.get_node('level')
 	var upgrade_arrow = book_button.get_node('upgrade_arrow')
 	yield(show_tooltip(upgrade_arrow, 'Tap this arrow to learn the next spell from the book.', true), 'completed')
