@@ -10,7 +10,7 @@ var started_callback = null
 var update_callback = null
 var left_game = false
 
-var do_debug_timer = true
+var do_debug_timer = false
 
 # Public
 var rules
