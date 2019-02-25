@@ -244,10 +244,8 @@ func matchmake_me(rules, books, callback):
 func submit_move(game_uid, player_move, callback):
 	return api_call_base('submit_move', [game_uid, player_move], callback)
 
-<<<<<<< HEAD
 func get_stats(callback):
 	return api_call_base('get_stats', [], callback)
-=======
+
 func deactivate_account(callback):
 	return api_call_base('deactivate_account', [], callback)
->>>>>>> master
