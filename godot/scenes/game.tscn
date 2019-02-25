@@ -335,10 +335,10 @@ margin_right = 187.0
 margin_bottom = -384.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 0
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-_sections_unfolded = [ "Anchor" ]
+_sections_unfolded = [ "Anchor", "Mouse" ]
 
 
