@@ -40,7 +40,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 __meta__ = {
@@ -115,7 +115,7 @@ visible_characters = -1
 percent_visible = 1.0
 meta_underlined = true
 tab_size = 4
-text = "Offline."
+text = "Offline"
 scroll_active = true
 scroll_following = false
 selection_enabled = false

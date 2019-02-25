@@ -10,7 +10,7 @@ var started_callback = null
 var update_callback = null
 var left_game = false
 
-var do_debug_timer = true
+var do_debug_timer = false
 
 # Public
 var rules
@@ -41,6 +41,9 @@ func get_state():
 		return state
 	else:
 		return null
+
+func get_current_move():
+	return null
 
 func register_started_callback(callback_):
 	started_callback = callback_

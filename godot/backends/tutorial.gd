@@ -9,7 +9,7 @@ var update_callback = null
 var turn = 0
 var scripted_actions = [
 	['conjuration_tech', 'conjuration_attack_1'],
-	['conjuration_tech', 'conjuration_attack_1'],
+	['conjuration_tech', 'conjuration_attack_1', 'conjuration_attack_1'],
 	['conjuration_attack_1'],
 ]
 
@@ -44,6 +44,9 @@ func get_state():
 		return state
 	else:
 		return null
+
+func get_current_move():
+	return null
 
 func register_started_callback(callback_):
 	started_callback = callback_

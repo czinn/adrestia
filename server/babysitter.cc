@@ -190,6 +190,7 @@ Babysitter::Phase Babysitter::phase_authenticated(
     json &resp,
     request_handler handler) {
   client_json["uuid"] = uuid;
+
   int result = handler(logger, client_json, resp);
   if (result != 0) {
     logger.warn("It seems we got a bad result for that handler: %d", result);

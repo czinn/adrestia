@@ -36,10 +36,10 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1080"
+     inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      inkscape:snap-global="true"
      showguides="true"
      inkscape:guide-bbox="true">
@@ -80,19 +80,19 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot1408-1-1-7-8-7-2-2"
-       style="font-style:normal;font-weight:normal;font-size:32px;line-height:0.89999998;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1;"
-       transform="matrix(0.26458334,0,0,0.26458334,-384.48658,104.568)"
+       style="font-style:normal;font-weight:normal;font-size:32px;line-height:0.89999998;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       transform="matrix(0.26458334,0,0,0.26458334,-389.68376,108.25326)"
        inkscape:export-filename="/tmp/weh.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"><flowRegion
          id="flowRegion1410-2-9-45-6-0-3-7"
-         style="line-height:0.89999998;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1;"><rect
+         style="line-height:0.89999998;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"><rect
            id="rect1412-9-4-2-8-9-7-0"
-           width="70.392731"
-           height="64.537895"
+           width="136.82127"
+           height="64.895042"
            x="1463.6553"
            y="11.979513"
-           style="line-height:0.89999998;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1;" /></flowRegion><flowPara
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.89999998;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1;"
-         id="flowPara826">End Turn</flowPara></flowRoot>  </g>
+           style="line-height:0.89999998;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0.89999998;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="flowPara826">Commit</flowPara></flowRoot>  </g>
 </svg>

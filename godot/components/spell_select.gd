@@ -64,7 +64,7 @@ func redraw():
 		btn_book.texture_normal = g.get_book_texture(book.get_id())
 		btn_book.connect('pressed', self, 'on_open_book', [index, book])
 		btn_upgrade.connect('pressed', self, 'on_book_upgrade', [index, book])
-	
+
 	redraw_tech_levels()
 
 func on_close_book():

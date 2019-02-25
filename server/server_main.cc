@@ -102,7 +102,7 @@ int main(int na, char* arg[]) {
 	handler_map["matchmake_me"] = adrestia_networking::handle_matchmake_me;
 	handler_map["submit_move"] = adrestia_networking::handle_submit_move;
 	handler_map["get_stats"] = adrestia_networking::handle_get_stats;
-
+	handler_map["deactivate_account"] = adrestia_networking::handle_deactivate_account;
 
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;

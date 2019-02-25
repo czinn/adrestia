@@ -4,8 +4,8 @@ onready var g = get_node('/root/global')
 
 onready var avatar = $avatar
 onready var hp_label = $hp_label
-onready var mp_label = $mp_label
-onready var mp_regen_label = $mp_regen_label
+onready var mp_label = $mana_box/mp_label
+onready var mp_regen_label = $mana_box/mp_regen_label
 
 export var flipped = false
 

@@ -6,7 +6,7 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const DEBUG = true
+const DEBUG = false
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
 const handler_key = 'api_handler_name'
@@ -30,6 +30,7 @@ var peer
 var data_buffer
 var protocol
 var handlers = {}
+var message_queues = {}
 
 var connect_timer
 var last_recv_ms = 0
@@ -96,8 +97,9 @@ func _process(time):
 					if handlers[handler].call_func(json):
 						handlers.erase(handler)
 				else:
-					print('Unhandled message')
-					print(json)
+					if not (handler in message_queues):
+						message_queues[handler] = []
+					message_queues[handler].append(json)
 				break
 			i += 1
 
@@ -133,7 +135,7 @@ func on_network_ready(response):
 			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 		else:
 			gen_auth_pwd()
-			register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+			register_new_account(g.auth_pwd, DEBUG, funcref(self, 'on_account_created'))
 	else:
 		status = OUT_OF_DATE
 		emit_signal('out_of_date')
@@ -154,7 +156,7 @@ func on_authenticated(response):
 		# TODO: jim: this should not happen unless we clear the database. warn user
 		# that their account has been nuked in that case?
 		gen_auth_pwd()
-		register_new_account(g.auth_pwd, funcref(self, 'on_account_created'))
+		register_new_account(g.auth_pwd, DEBUG, funcref(self, 'on_account_created'))
 		return
 	g.user_name = response.user_name
 	g.tag = response.tag
@@ -198,6 +200,12 @@ func discard(response):
 
 func register_handler(handler_name, callback):
 	handlers[handler_name] = callback
+	if handler_name in message_queues:
+		while message_queues[handler_name].size() > 0:
+			var json = message_queues[handler_name].pop_front()
+			if handlers[handler_name].call_func(json):
+				handlers.erase(handler_name)
+				break
 
 func api_call_base(name, args, callback):
 	last_send_ms = OS.get_ticks_msec()
@@ -218,8 +226,8 @@ func floop(callback):
 func establish_connection(version, callback):
 	return api_call_base('establish_connection', [version], callback)
 
-func register_new_account(password, callback):
-	return api_call_base('register_new_account', [password], callback)
+func register_new_account(password, debug, callback):
+	return api_call_base('register_new_account', [password, debug], callback)
 
 func authenticate(uuid, password, callback):
 	return api_call_base('authenticate', [uuid, password], callback)
@@ -235,3 +243,9 @@ func matchmake_me(rules, books, callback):
 
 func submit_move(game_uid, player_move, callback):
 	return api_call_base('submit_move', [game_uid, player_move], callback)
+
+func get_stats(callback):
+	return api_call_base('get_stats', [], callback)
+
+func deactivate_account(callback):
+	return api_call_base('deactivate_account', [], callback)

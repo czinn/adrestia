@@ -5,6 +5,9 @@ CREATE TABLE IF NOT EXISTS adrestia_accounts (
 	tag VARCHAR NOT NULL,
 	hash_of_salt_and_password BYTEA NOT NULL,
 	salt VARCHAR NOT NULL,
+	last_login TIMESTAMPTZ,
+	debug BOOLEAN NOT NULL DEFAULT FALSE,
+	deactivated BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (uuid)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
@@ -59,7 +62,8 @@ CREATE TABLE IF NOT EXISTS adrestia_players (
 	user_uid VARCHAR REFERENCES adrestia_accounts(uuid),
 	player_id SMALLINT NOT NULL, -- 0 or 1
 	player_state SMALLINT NOT NULL,
-	player_move VARCHAR,
+	player_move JSON,
+	last_move_time TIMESTAMPTZ,
 	PRIMARY KEY (game_uid, user_uid)
 );
 

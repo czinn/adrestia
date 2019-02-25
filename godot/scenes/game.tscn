@@ -120,7 +120,7 @@ tracks/5/keys = {
 "values": [ 80.0, 90.0, -70.0 ]
 }
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -137,7 +137,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 theme = ExtResource( 2 )
-_sections_unfolded = [ "Mouse", "Theme" ]
+_sections_unfolded = [ "Margin", "Mouse", "Theme" ]
 
 [node name="bg" type="Sprite" parent="ui" index="0"]
 
@@ -322,5 +322,23 @@ texture_normal = ExtResource( 12 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+
+[node name="spell_animation_area" type="Control" parent="ui" index="15"]
+
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -185.0
+margin_top = 233.0
+margin_right = 187.0
+margin_bottom = -384.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Anchor", "Mouse" ]
 
 

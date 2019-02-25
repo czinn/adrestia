@@ -38,34 +38,34 @@ int adrestia_networking::handle_get_stats(const Logger& logger, const json& clie
    */
 
   string uuid = client_json.at("uuid");
-	logger.trace_() << "Getting stats for uuid |" << uuid << "|" << endl;
+  logger.trace_() << "Getting stats for uuid |" << uuid << "|" << endl;
 
   adrestia_database::Db db(logger);
-	auto wins_result = db.query(R"sql(
-		SELECT COUNT(*)
-		FROM adrestia_games
-			INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
-		WHERE user_uid = ?
-			AND winner_id = player_id
-		)sql")(uuid)();
-	int wins = wins_result[0][0].as<int>();
+  auto wins_result = db.query(R"sql(
+    SELECT COUNT(*)
+    FROM adrestia_games
+      INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
+    WHERE user_uid = ?
+      AND winner_id = player_id
+    )sql")(uuid)();
+  int wins = wins_result[0][0].as<int>();
 
-	auto games_result = db.query(R"sql(
-		SELECT COUNT(*)
-		FROM adrestia_games
-			INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
-		WHERE user_uid = ?
-		)sql")(uuid)();
-	int games = games_result[0][0].as<int>();
+  auto games_result = db.query(R"sql(
+    SELECT COUNT(*)
+    FROM adrestia_games
+      INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
+    WHERE user_uid = ?
+    )sql")(uuid)();
+  int games = games_result[0][0].as<int>();
 
-	logger.trace_() << "User |" << uuid << "| has " << wins << " wins out of " << games << " games" << endl;
+  logger.trace_() << "User |" << uuid << "| has " << wins << " wins out of " << games << " games" << endl;
 
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
   resp[adrestia_networking::CODE_KEY] = 200;
   resp[adrestia_networking::MESSAGE_KEY] = "Here are your stats";
   resp["wins"] = wins;
   resp["games"] = games;
-	
-	logger.trace("get_stats concluded.");
-	return 0;
+  
+  logger.trace("get_stats concluded.");
+  return 0;
 }
