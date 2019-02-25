@@ -316,7 +316,9 @@ void GameState::apply_event(const json &event) {
 			case EK_TECH:
 				{
 					auto [spell, book_idx] = player.find_spell(effect.at("spell_id"));
-					player.tech[book_idx] += effect.at("amount").get<int>();
+					if (spell != nullptr) {
+						player.tech[book_idx] += effect.at("amount").get<int>();
+					}
 				}
 				break;
 			case EK_HEALTH:

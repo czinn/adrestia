@@ -30,7 +30,7 @@ func redraw(player, mp_left = null):
 		g.summon_delta(mp_label, player.mp - old_mp, Color(0.27, 0.55, 1))
 	old_mp = player.mp
 
-	var mp_max = g.rules.get_mana_cap()
+	var mp_max = g.get_rules().get_mana_cap()
 
 	mp_label.text = str(mp_left)
 	mp_regen_label.text = ('+' if player.mp_regen > 0 else '') + '%s' % [player.mp_regen]

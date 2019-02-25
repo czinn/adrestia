@@ -9,17 +9,33 @@ var state = null
 var started_callback = null
 var update_callback = null
 var in_game = false
+var current_move = null
 
 # Public
 var rules
 var forfeited = false
 
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		g.network.disconnect('disconnected', self, 'disconnected')
+
 func _init(g_):
 	g = g_
-	# TODO: These rules are possibly too new if we've reconnected a game that was
-	# started before the rules changed. Make sure that we get the rules from the
-	# server when we reconnect.
 	rules = g.get_default_rules()
+	g.network.connect('disconnected', self, 'disconnected')
+
+func disconnected():
+	g.scene_loader.goto_scene('title')
+
+func reconnect(update_message):
+	var game = update_message.updates[0]
+	game['events'] = []
+	if 'game_rules' in game:
+		rules.load_json_string(JSON.print(game['game_rules']))
+	if 'player_move' in game:
+		current_move = game['player_move']
+	on_push_active_games(update_message)
+	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 
 func get_time_limit():
 	return 30
@@ -34,6 +50,9 @@ func get_state():
 		return null
 	return state
 
+func get_current_move():
+	return current_move
+
 func register_started_callback(callback_):
 	started_callback = callback_
 	if in_game:
@@ -44,7 +63,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
-	g.network.matchmake_me(g.rules, selected_book_ids, funcref(self, 'on_enter_matchmake_queue'))
+	g.network.matchmake_me(g.get_rules(), selected_book_ids, funcref(self, 'on_enter_matchmake_queue'))
 
 func on_enter_matchmake_queue(response):
 	print('We have entered the matchmaking queue:')
@@ -80,6 +99,9 @@ func on_submit_move(response):
 	print('Submitted move with response: %d' % [response.api_code])
 
 func submit_action(action):
+	if action == null:
+		return
+	current_move = action
 	g.network.submit_move(game_uid, action, funcref(self, 'on_submit_move'))
 	return true
 

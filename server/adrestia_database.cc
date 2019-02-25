@@ -48,7 +48,7 @@ pqxx::result run_query(const Logger& logger, pqxx::work& work, const char* query
 }
 
 
-string hash_password(const string& password, const string& salt) {
+string adrestia_database::hash_password(const string& password, const string& salt) {
   // Get expected hashed password.
   // The hashing of the password only in the case that the account exists is bad for security, but good for speed!
   string salt_and_password = salt + password;
@@ -306,7 +306,7 @@ json adrestia_database::retrieve_player_info_from_database (
    * @returns json containing the following keys:
    *          "player_id": The player id in the game, as integer
    *          "player_state": The player state in the game, as integer
-   *          "player_move": The player move, if any, as a string. Empty if null.
+   *          "player_move": The player move, if any, as an array. Null if null.
    */
 
   logger.trace(
@@ -341,10 +341,10 @@ json adrestia_database::retrieve_player_info_from_database (
   return_var["player_id"] = search_result[0][0].as<int>();
   return_var["player_state"] = search_result[0][1].as<int>();
   if (search_result[0][2].is_null()) {
-    return_var["player_move"] = "";
+    return_var["player_move"] = nullptr;
   }
   else {
-    return_var["player_move"] = search_result[0][2].as<string>();
+    return_var["player_move"] = json::parse(search_result[0][2].as<string>());
   }
 
   logger.trace("Committing transaction...");
@@ -409,69 +409,6 @@ json adrestia_database::retrieve_gamestate_from_database (
   work.commit();
 
   return json::parse(search_result[0][1].as<string>());
-}
-
-
-json adrestia_database::check_for_active_games_in_database (
-  const Logger& logger,
-  pqxx::connection& psql_connection,
-  const string& uuid
-) {
-  /* @brief Checks the database to see if the given user is part of any active games, and returns the game_uids of
-   *        those games. Also returns which games are waiting for this uuid to make a move.
-   *
-   * @param logger: Logger
-   * @param psql_connection: The pqxx PostgreSQL connection.
-   * @param uuid: We will be looking for games involving this uuid.
-   *
-   * @returns: A json object with the following tags:
-   *               "active_game_uids": An array of active game_uids that the given uuid is part of
-   *               "waiting_game_uids": An array of active game_uids that are waiting for the given uuid to make a
-   *                                    move. This is, of course, a subset of active_game_uids.
-   */
-
-  logger.trace(
-      "check_for_active_games_in_database called with args:"
-      "    uuid: |%s|",
-      uuid.c_str());
-
-  pqxx::work work(psql_connection);
-
-  auto search_result = run_query(logger, work, R"sql(
-    SELECT adrestia_games.game_uid, player_state
-    FROM adrestia_games
-      INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
-    WHERE activity_state = 0
-      AND user_uid = %s
-  )sql", work.quote(uuid).c_str());
-
-  vector<string> active_game_uids;
-  vector<string> waiting_game_uids;
-
-  for (const auto &result : search_result) {
-    // This is an active game that we are in.
-    string game_uid = result["game_uid"].as<string>();
-    active_game_uids.push_back(game_uid);
-
-    logger.debug("uuid |%s| has active game |%s|.", uuid.c_str(), game_uid.c_str());
-
-    // If the current player_state is 0...
-    if (result["player_state"].as<int>() == 0) {
-      // We need to make a move.
-      waiting_game_uids.push_back(game_uid);
-      logger.trace("Waiting for uuid |%s| to make a move in game |%s|...", uuid.c_str(), game_uid.c_str());
-    }
-  }
-
-  logger.trace("Committing transaction...");
-  work.commit();
-
-  json return_var;
-  return_var["active_game_uids"] = active_game_uids;
-  return_var["waiting_game_uids"] = waiting_game_uids;
-
-  logger.trace("check_for_games concluded.");
-  return return_var;
 }
 
 
@@ -589,15 +526,15 @@ json adrestia_database::matchmake_in_database (
       work.quote(uuid).c_str(),
       work.quote(json(game_state).dump()).c_str());
   run_query(logger, work, R"sql(
-    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
-    VALUES (%s, %s, %d, 0)
+    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state, last_move_time)
+    VALUES (%s, %s, %d, 0, NOW())
   )sql",
       work.quote(game_uid).c_str(),
       work.quote(uuid).c_str(),
       creator_player_id);
   run_query(logger, work, R"sql(
-    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state)
-    VALUES (%s, %s, %d, 0)
+    INSERT INTO adrestia_players (game_uid, user_uid, player_id, player_state, last_move_time)
+    VALUES (%s, %s, %d, 0, NOW())
   )sql",
       work.quote(game_uid).c_str(),
       work.quote(waiting_uuid).c_str(),
@@ -694,12 +631,11 @@ bool adrestia_database::submit_move_in_database(
   // The move is very cool and very legal, add it to the database and update the player's state.
   run_query(logger, work, R"sql(
     UPDATE adrestia_players
-    SET player_state = 1,
-        player_move = %s
+    SET player_state = 1, player_move = %s, last_move_time = NOW()
     WHERE game_uid = %s
       AND user_uid = %s
   )sql",
-    vector_to_sql_array(work, player_move).c_str(),
+    work.quote(json(player_move).dump()).c_str(),
     work.quote(game_uid).c_str(),
     work.quote(uuid).c_str());
 
@@ -730,7 +666,10 @@ bool adrestia_database::submit_move_in_database(
 
   vector<vector<string>> actions;
   for (const auto &player_move : result) {
-    actions.push_back(sql_array_to_vector(player_move["player_move"].as<string>()));
+    json player_move_json = json::parse(player_move[0].as<string>());
+    vector<string> v;
+    for (const string &spell : player_move_json) v.push_back(spell);
+    actions.push_back(v);
   }
   vector<json> events;
   bool simulated = game_state.simulate(actions, events);
@@ -779,82 +718,6 @@ bool adrestia_database::submit_move_in_database(
   }
 
   return true;
-}
-
-
-json adrestia_database::register_new_account_in_database(
-  const Logger& logger,
-  pqxx::connection& psql_connection,
-  const string& password
-) {
-  /* @brief Creates a new account in adrestia_accounts with the given password. The account will be given a default
-   *        user_name and a random (not-already-in-use-with-this-name) tag to go with it.
-   *        1000 attempts will be made to generate a non-conflicting tag.
-   *
-   * @param logger: Logger
-   * @param psql_connection: The pqxx PostgreSQL connection.
-   * @param password: The password that will be used with this new account.
-   *
-   * @exception string: In the case of failing to generate a non-conflicting tag after 1000 attempts, though possibly
-   *            also in the case of other database integrity constraint violations.
-   *
-   * @returns: A json object with:
-   *               "id": The uuid of the new account
-   *               "user_name": The user_name of the new account
-   *               "tag": The tag of the new account
-   */
-
-  const string default_user_name = "Guest";
-
-  // TODO: jim: stop printing this
-  logger.trace(
-    "register_new_account_in_database called with args:\n"
-    "    password: |%s|",
-    password.c_str());
-
-  string salt = adrestia_hexy::hex_urandom(adrestia_database::SALT_LENGTH);
-  pqxx::binarystring password_hash(hash_password(password, salt));
-
-  json new_account;
-  bool actually_created_account = false;
-
-  // Keep making up ids/tags until we get a successful insertion.
-  for (int i = 0; i < 1000; i += 1) {
-    string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
-    string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
-
-    pqxx::work work(psql_connection);
-    try {
-      run_query(logger, work, R"sql(
-        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt)
-        VALUES (%s, %s, %s, %s, %s)
-      )sql",
-          work.quote(uuid).c_str(),
-          work.quote(default_user_name).c_str(),
-          work.quote(tag).c_str(),
-          work.quote(password_hash).c_str(),
-          work.quote(salt).c_str());
-      work.commit();
-
-      logger.trace("Successfully finished insertion of new account into database.");
-      actually_created_account = true;
-      new_account["uuid"] = uuid;
-      new_account["tag"] = tag;
-      new_account["user_name"] = default_user_name;
-      break;
-    }
-    catch (pqxx::integrity_constraint_violation &) {
-      work.abort();
-      continue;
-    }
-  }
-
-  if (!actually_created_account) {
-    logger.error("Failed to create a non-conflicting uuid/tag pair!");
-    throw string("Failed to generate non-conflicting uuid/tag pair.");
-  }
-
-  return new_account;
 }
 
 

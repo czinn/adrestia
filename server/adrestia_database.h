@@ -26,6 +26,9 @@ namespace adrestia_database {
   const int UUID_LENGTH = 32;
   const int GAME_UID_LENGTH = 32;
 
+  /* Hashes the password with the given salt */
+  std::string hash_password(const std::string& password, const std::string& salt);
+
   /* Marks the target uuid as winning/losing the target game */
   void conclude_game_in_database(
     const Logger& logger,
@@ -59,15 +62,6 @@ namespace adrestia_database {
     std::vector<json> &last_events
   );
 
-  /* Checks for active games in the database associated with the given uuid, and returns them.
-   *     Also returns if any are waiting for this player's move in particular.
-   */
-  json check_for_active_games_in_database (
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid
-  );
-
   /* Adds the user to the waiting list if there are no compatible waiters;
    *     otherwise, matches the user to a waiter.
    */
@@ -87,16 +81,6 @@ namespace adrestia_database {
     const std::string& uuid,
     const std::string& game_uid,
     const std::vector<std::string>& player_move
-  );
-
-
-  /* Creates a new account with a default name in the database.
-   * Returns a json object with keys 'id', 'user_name', and 'tag'.
-   */
-  json register_new_account_in_database(
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& password
   );
 
 

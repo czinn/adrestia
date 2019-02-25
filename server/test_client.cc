@@ -235,7 +235,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_register_new_account_call(outbound_json, password);
+	adrestia_networking::create_register_new_account_call(outbound_json, password, true);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -423,7 +423,7 @@ int main(int argc, char* argv[]) {
 	outbound_json.clear();
 	response_json.clear();
 
-	adrestia_networking::create_register_new_account_call(outbound_json, password);
+	adrestia_networking::create_register_new_account_call(outbound_json, password, true);
 
 	outbound_message = outbound_json.dump() + '\n';
 	send(my_socket_2, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);

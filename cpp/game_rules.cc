@@ -13,6 +13,8 @@ GameRules::GameRules(std::string rules_filename) {
 	*this = j;
 }
 
+GameRules::~GameRules() { }
+
 bool GameRules::operator==(const GameRules &other) const {
 	return (
 		this->stickies == other.stickies &&

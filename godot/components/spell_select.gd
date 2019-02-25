@@ -108,7 +108,7 @@ func on_spell_pressed(index, spell):
 func on_book_upgrade(index, book):
 	for spell_id in book.get_spells():
 		print('considering ' + spell_id)
-		var spell = g.rules.get_spell(spell_id)
+		var spell = g.get_rules().get_spell(spell_id)
 		if spell.is_tech_spell():
 			print('casting ' + spell_id)
 			emit_signal('spell_press', spell)

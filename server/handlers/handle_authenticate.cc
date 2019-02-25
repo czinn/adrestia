@@ -50,6 +50,15 @@ int adrestia_networking::handle_authenticate(const Logger& logger, const json& c
   resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
 
   if (result.at("valid")) {
+    // Update their last login time in the database
+    adrestia_database::Db db(logger);
+    db.query(R"sql(
+      UPDATE adrestia_accounts
+      SET last_login = NOW()
+      WHERE uuid = ?
+    )sql")(uuid)();
+    db.commit();
+
     resp[adrestia_networking::CODE_KEY] = 200;
     resp[adrestia_networking::MESSAGE_KEY] = "Authorization OK.";
     resp["user_name"] = result.at("user_name").get<string>();

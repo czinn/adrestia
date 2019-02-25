@@ -35,23 +35,30 @@ var loaded = false
 var backend = null
 var tutorial_overlay = null
 var tooltip = null # Currently displayed tooltip
-var rules = null setget ,get_rules
 
-var health_history
+# jim: So, why the hell is this an array? Because we have to keep all versions
+# of the rules we've ever conceivably used alive, and it's hard to keep track
+# of exactly when we can be sure that rules can be freed, so we just never free
+# them. The .back() of this array will be the freshest rules, and backends can
+# override these rules (as retrieved by [get_rules]). But the rules must always
+# live.
+var rules = []
 
 func _ready():
 	pass
 
 func get_rules():
 	if backend == null:
-		return rules
+		return rules.back()
 	return backend.rules
 
 func get_default_rules():
-	return rules
+	return rules.back()
 
 func update_rules(json_string):
-	rules.load_json_string(json_string)
+	var new_rules = GameRules.new()
+	new_rules.load_json_string(json_string)
+	rules.append(new_rules)
 	save()
 
 static func sum(list):
@@ -196,6 +203,11 @@ func remove_tutorial_overlay():
 		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
 		tutorial_overlay = null
 
+func remove_backend():
+	if backend != null:
+		backend.free()
+		backend = null
+
 func compare_versions(a, b):
 	for i in range(len(a)):
 		if a[i] < b[i]:
@@ -229,7 +241,7 @@ func save():
 		'first_play': first_play,
 		'user_name': user_name,
 		'tag': tag,
-		'rules': rules.as_json().result,
+		'rules': rules.back().as_json().result,
 		'multiplayer_wins': multiplayer_wins,
 	}
 	var file = File.new()
@@ -254,13 +266,12 @@ func load():
 		data = {}
 
 	# Load rules from file by default.
-	print('hi gg')
 	var rules_file = File.new()
-	rules = GameRules.new()
+	rules = [GameRules.new()]
 	rules_file.open(default_rules_path, File.READ)
-	rules.load_json_string(rules_file.get_as_text())
+	rules[0].load_json_string(rules_file.get_as_text())
 	rules_file.close()
-	app_version = rules.get_version()
+	app_version = rules.back().get_version()
 
 	# Default values for persisted data
 	auth_uuid = dict_has(data, 'auth_uuid', null)
@@ -271,14 +282,12 @@ func load():
 	multiplayer_wins = dict_has(data, 'multiplayer_wins', null)
 
 	# Override rules with those from saved_data if they're newer.
-	print('hello gg')
 	var rules_json = dict_has(data, 'rules', null)
 	if rules_json != null:
 		var rules_saved = GameRules.new()
 		rules_saved.load_json_string(JSON.print(rules_json))
-		if compare_versions(rules.get_version(), rules_saved.get_version()) < 0:
-			rules = rules_saved
-	print('yolo gg')
+		if compare_versions(rules.back().get_version(), rules_saved.get_version()) < 0:
+			rules.append(rules_saved)
 
 	if file.is_open():
 		file.close()
