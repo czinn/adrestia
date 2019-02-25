@@ -31,7 +31,7 @@ func initialize():
 	g.load()
 
 func on_connected():
-	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]
+	online_status.text = 'Online as %s' % [g.user_name]
 
 func on_disconnected():
 	online_status.text = 'Offline'
