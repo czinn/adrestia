@@ -199,9 +199,9 @@ func safe_disconnect(object, signal_, target, method):
 		object.disconnect(signal_, target, method)
 
 func remove_tutorial_overlay():
-	if tutorial_overlay != null:
+	if tutorial_overlay != null && tutorial_overlay.get_parent() != null:
 		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
-		tutorial_overlay = null
+	tutorial_overlay = null
 
 func remove_backend():
 	if backend != null:
