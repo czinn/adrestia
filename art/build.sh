@@ -38,3 +38,4 @@ find $SVG_DIR -type f -name '*.svg' -print0 | while IFS= read -r -d $'\0' input_
 		true
 	fi
 done
+wait
