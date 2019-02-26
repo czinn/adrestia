@@ -25,15 +25,17 @@ func _ready():
 		winner = -1
 	elif winners.size() == 0:
 		title_label.text = 'Victory!'
-		detail_text.bbcode_text = 'By forfeit'
+		detail_text.bbcode_text = 'By forfeit.'
 		winner = game_history.view_player_id
 	elif winners.has(game_history.view_player_id):
 		# Won!
 		title_label.text = 'Victory!'
+		detail_text.bbcode_text = 'Congraulations!'
 		winner = game_history.view_player_id
 	else:
 		# Loss
 		title_label.text = 'Defeat.'
+		detail_text.bbcode_text = 'Better luck next time.'
 		winner = 1 - game_history.view_player_id
 
 func compute_health_history(rules, players, history):

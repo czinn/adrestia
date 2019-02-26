@@ -48,7 +48,7 @@
 # UI polish from Dmitri's family
 
 - [x] Tutorial: Railroad player actions 100%
-- [ ] Tutorial: Throttle message advancement -- easy to miss messages by double
+- [x] Tutorial: Throttle message advancement -- easy to miss messages by double
   tapping
 - [x] Tutorial: Say "Tap to continue"
 - [x] Tutorial: Allow click through spotlight -- subtle, but literally everyone
@@ -75,9 +75,9 @@
 - [ ] Game: More spell labels -- label damage spells with damage amount,
   shields with shield amount, and spells in general with their type
 - [ ] Game: Use side tabs rather than slide-out system for switching books
-- [ ] Game stats: Add labels for players 
+- [x] Game stats: Add labels for players 
 
-# Stretch
+# Stretch mechanics
 
 - [ ] Hidden "trap" stickies and spells
 - [ ] Character classes with affinities for books
