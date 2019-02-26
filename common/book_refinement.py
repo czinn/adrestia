@@ -3,25 +3,25 @@ from rules_schema import *
 book = Book('refinement', 'Book of Refinement', [
   spell_tech(name='Learn Refinement', text='Increase Refinement by 1.'),
 
-  Spell('1', 'One',
+  Spell('1', 'Vine Shield',
     'Block 5 damage this turn.',
     tech=1, level=1, cost=1,
     effects=[effect_shield(5)],
   ),
 
-  Spell('2', 'Two',
+  Spell('2', 'Starlight Lance',
     'Deal 3 piercing damage.',
     tech=2, level=2, cost=2,
     effects=[Effect(EK_health, ET_constant, amount=-3)],
   ),
     
-  Spell('3', 'Three',
+  Spell('3', 'Sprout',
     'Increase mana regeneration by 1.',
     tech=3, level=3, cost=1,
     effects=[effect_mana_regen(1)],
   ),
 
-  Spell('4', 'Four',
+  Spell('4', 'Nourish',
     'Gain 8 health.',
     tech=4, level=4, cost=4,
     effects=[Effect(EK_health, ET_special, self=True, amount=8)],

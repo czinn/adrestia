@@ -3,13 +3,13 @@ from rules_schema import *
 book = Book('bloodlust', 'Book of Bloodlust', [
   spell_tech(name='Learn Bloodlust', text='Increase Bloodlust by 1.'),
 
-  Spell('1', 'One',
+  Spell('1', 'Razor Wind',
     'Deal 4 damage.',
     tech=1, level=1, cost=1,
     effects=[effect_attack(4)],
   ),
 
-  Spell('2', 'Two',
+  Spell('2', 'Frenzy',
     'Deal 3 damage. Your attacks deal +1 damage for the rest of the game.',
     tech=2, level=2, cost=2,
     effects=[
@@ -19,7 +19,7 @@ book = Book('bloodlust', 'Book of Bloodlust', [
     ],
   ),
 
-  Spell('3', 'Three',
+  Spell('3', 'Bloodboil',
     'Deal 9 damage. On hit: gain 1 mana.',
     tech=3, level=3, cost=3,
     effects=[
@@ -28,7 +28,7 @@ book = Book('bloodlust', 'Book of Bloodlust', [
     ],
   ),
 
-  Spell('4', 'Four',
+  Spell('4', 'Mangle',
     'Deal 16 damage. On hit: opponent loses 3 health per turn for 4 turns.',
     tech=4, level=4, cost=4,
     effects=[Effect(EK_health, ET_attack, amount=-16,

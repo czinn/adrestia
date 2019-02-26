@@ -3,7 +3,7 @@ from rules_schema import *
 book = Book('contrition', 'Book of Contrition', [
   spell_tech(name='Learn Contrition', text='Increase Contrition by 1.'),
 
-  Spell('1', 'One',
+  Spell('1', 'Harm',
     'Lose 3 health. Deal 7 damage.',
     tech=1, level=1, cost=1,
     effects=[
@@ -12,7 +12,7 @@ book = Book('contrition', 'Book of Contrition', [
     ],
   ),
 
-  Spell('2', 'Two',
+  Spell('2', 'Repent',
     'Lose 7 health. Increase mana regeneration by 1.',
     tech=2, level=2, cost=2,
     effects=[
@@ -21,7 +21,7 @@ book = Book('contrition', 'Book of Contrition', [
     ],
   ),
 
-  Spell('3', 'Three',
+  Spell('3', 'Steel Facade',
     'Decrease your mana regeneration by 1. Block 25 damage. Lasts two turns.',
     tech=3, level=3, cost=3,
     effects=[
@@ -30,7 +30,7 @@ book = Book('contrition', 'Book of Contrition', [
     ],
   ),
 
-  Spell('4', 'Four',
+  Spell('4', 'Fury',
     'Deal damage equal to the health you\'ve lost.',
     tech=4, level=4, cost=4,
     # Amount for this spell gets magically determined by the C++ code
