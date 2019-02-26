@@ -40,7 +40,7 @@ tracks/1/keys = {
 "values": [ 211.0, -161.0, -123.0 ]
 }
 
-[node name="spell_select" type="Control" index="0"]
+[node name="spell_select" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -240,6 +240,7 @@ _sections_unfolded = [ "Rect", "Size Flags", "Textures" ]
 
 [node name="upgrade_arrow" type="TextureButton" parent="templates/book_button" index="1"]
 
+visible = false
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -251,7 +252,7 @@ margin_bottom = -5.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
-mouse_filter = 0
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
@@ -262,7 +263,7 @@ group = null
 texture_normal = ExtResource( 7 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Rect", "Textures" ]
+_sections_unfolded = [ "Mouse", "Rect", "Textures" ]
 
 [node name="level" type="Label" parent="templates/book_button" index="2"]
 

@@ -68,7 +68,7 @@ func redraw():
 			# Hide it
 			slot_image.modulate = Color(1.0, 1.0, 1.0, 0.0)
 
-	var spell_buttons = g.make_spell_buttons(spells, show_stats, display_filter, enabled_filter, unlocked_filter)
+	var spell_buttons = g.make_spell_buttons(spells, show_stats, display_filter, enabled_filter, unlocked_filter, null)
 	for i in range(len(spell_buttons)):
 		var spell_button = spell_buttons[i]
 		var spell = spell_button.spell

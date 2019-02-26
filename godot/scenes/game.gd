@@ -47,6 +47,7 @@ func _ready():
 	spell_select.display_filter = funcref(self, 'is_not_tech_spell')
 	spell_select.enabled_filter = funcref(self, 'player_can_cast')
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
+	spell_select.unlockable_filter = funcref(self, 'player_can_unlock_spell')
 	spell_select.books = state.players[player_id].books
 	spell_select.connect('spell_press', self, 'on_spell_enqueue')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
@@ -76,6 +77,14 @@ func on_back_button_pressed():
 func on_spell_enqueue(spell):
 	if ui_state != CHOOSING_SPELLS:
 		return
+	if not player_has_unlocked_spell(spell) and player_can_unlock_spell(spell):
+		var book = g.backend.rules.get_book(spell.get_book())
+		var tech_spell
+		for spell_id in book.get_spells():
+			var spell_ = g.backend.rules.get_spell(spell_id)
+			if spell_.is_tech_spell():
+				tech_spell = spell_
+		spell = tech_spell
 	var action = my_spell_list.spells.duplicate()
 	action.append(spell.get_id())
 	if not state.is_valid_action(player_id, action):
@@ -150,6 +159,12 @@ func player_effective_level():
 func player_has_unlocked_spell(spell):
 	return (player_effective_level() >= spell.get_level() and
 			player_effective_tech_in(spell.get_book()) >= spell.get_tech())
+
+func player_can_unlock_spell(spell):
+	if player_upgraded_book_id() != null:
+		return false
+	return (player_effective_level() + 1 >= spell.get_level() and
+			player_effective_tech_in(spell.get_book()) + 1 >= spell.get_tech())
 
 func player_can_cast(spell):
 	if spell.is_tech_spell() and player_upgraded_book_id() != null:

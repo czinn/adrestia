@@ -12,6 +12,7 @@ var books = null setget set_books
 var display_filter = null
 var enabled_filter = null
 var unlocked_filter = null
+var unlockable_filter = null
 var current_book = null
 
 onready var book_buttons_vbox = $book_buttons
@@ -41,7 +42,7 @@ func redraw_tech_upgrades(upgraded_book):
 	for i in range(len(books)):
 		var btn = book_buttons_vbox.get_child(i)
 		var btn_upgrade = g.child(btn, 'upgrade_arrow')
-		btn_upgrade.visible = (upgraded_book == null)
+		btn_upgrade.visible = false #(upgraded_book == null)
 
 func redraw():
 	spell_panel.visible = false
@@ -77,7 +78,7 @@ func redraw_spells():
 	if current_book == null:
 		return
 	var spell_buttons = g.make_spell_buttons(current_book.get_spells(), true,
-			display_filter, enabled_filter, unlocked_filter)
+			display_filter, enabled_filter, unlocked_filter, unlockable_filter)
 	for i in range(len(spell_buttons)):
 		var spell_button = spell_buttons[i]
 		var spell = spell_button.spell
