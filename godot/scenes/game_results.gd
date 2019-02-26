@@ -21,21 +21,21 @@ func _ready():
 	if winners.size() == 2:
 		# Tie
 		title_label.text = 'Draw.'
-		detail_text.bbcode_text = "It's a tie!"
+		detail_text.bbcode_text = "[center]It's a tie![/center]"
 		winner = -1
 	elif winners.size() == 0:
 		title_label.text = 'Victory!'
-		detail_text.bbcode_text = 'By forfeit.'
+		detail_text.bbcode_text = '[center]By forfeit.[/center]'
 		winner = game_history.view_player_id
 	elif winners.has(game_history.view_player_id):
 		# Won!
 		title_label.text = 'Victory!'
-		detail_text.bbcode_text = 'Congraulations!'
+		detail_text.bbcode_text = '[center]Congraulations![/center]'
 		winner = game_history.view_player_id
 	else:
 		# Loss
 		title_label.text = 'Defeat.'
-		detail_text.bbcode_text = 'Better luck next time.'
+		detail_text.bbcode_text = '[center]Better luck next time.[/center]'
 		winner = 1 - game_history.view_player_id
 
 func compute_health_history(rules, players, history):
