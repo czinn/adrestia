@@ -16,15 +16,15 @@ from book_regulation import book as book_regulation
 from book_regulation import old_book as book_regulation_old
 from book_tricks import book as book_tricks
 
-version = [1, 1, 0]
+version = [2, 0, 0]
 library: List[Book] = [
-  book_conjuration, # Midrange
-  book_regulation, # Control
-  book_contrition, # Self-harm
-  book_enticement, # Lifestealing and Mana Manipulation
-  book_refinement, # Eco
-  book_bloodlust, # Aggro
-  book_tricks, # Tricks
+  book_conjuration, # Wild Wild West
+  book_regulation, # The Turtle
+  book_contrition, # The Emo
+  book_enticement, # The Rogue
+  book_refinement, # The BIG One
+  book_bloodlust, # The Berserker
+  book_tricks, # The Tricky One
 ]
 
 for book in library:
@@ -32,7 +32,7 @@ for book in library:
     spell.id_ = f'{book.id_}_{spell.sub_id}'
     spell.book = book.id_
 
-tech_placeholder = spell_tech(name='Learn Spell', text='Increase knowledge of some book.')
+tech_placeholder = spell_tech(name='Learn Spell', text='Learn some spell from some book.')
 tech_placeholder.id_ = 'tech'
 tech_placeholder.book = 'none' # should probably not cause problems
 
@@ -46,7 +46,7 @@ books = deconstruct(library, {Spell: lambda spell: spell.id_})
 print(json.dumps({
   'version': version,
   'mana_cap': 10,
-  'initial_mana_regen': 4,
+  'initial_mana_regen': 3,
   'initial_health': 40,
   'spell_cap': 3,
   'stickies': stickies_built,
