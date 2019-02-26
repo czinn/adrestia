@@ -54,7 +54,7 @@
 			"additionalProperties": false,
 			"required": ["kind", "self", "effect_type"]
 		},
-		"effect_kind": {"enum": ["health", "tech", "mana", "mana_regen", "sticky"]},
+		"effect_kind": {"enum": ["health", "tech", "mana", "mana_regen", "sticky", "id"]},
 		"effect_type": {"enum": ["attack", "shield", "special", "poison", "constant", "counter", "tech", "heal"]},
 		"sticky": {
 			"type": "object",

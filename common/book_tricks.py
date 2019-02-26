@@ -3,32 +3,35 @@ from rules_schema import *
 book = Book ('tricks', 'Book of Deception', [
   spell_tech(name='Learn Deception', text='Increase Deception by 1.'),
 
-  Spell('shield', 'Flickering Shield',
-      'Block 13 damage. Lasts one step.',
+  Spell('1', 'One',
+      'Counter opponent\'s spell if they aren\'t learning a spell. Lose 3 health.',
       tech=1, level=1, cost=1,
-      effects=[effect_shield(13, duration=duration_steps(1))],
-  ),
-
-  Spell('antitech', 'Censure',
-      'Your opponent loses 6 health if they learn a new spell next turn',
-      tech=2, level=2, cost=2,
-      effects=[
-        Effect(EK_sticky, ET_special, self=False,
-          sticky=StickyInvoker('antitech_next', duration=duration_turns(1)))
-      ],
-  ),
-
-  Spell('cancel', 'Backfire',
-      'Counter opponent\'s spell if it isn\'t a knowledge spell. Lose 2 health.',
-      tech=3, level=3, cost=1,
-      effects=[Effect(EK_health, ET_special, self=True, amount=-2)],
+      effects=[Effect(EK_health, ET_special, self=True, amount=-3)],
       counterspell=Selector(),
   ),
 
-  Spell('fury', 'Fury',
-      'Deal damage equal to the health you\'ve lost.',
-      tech=4, level=4, cost=4,
-      # Amount for this spell gets magically determined by the C++ code
-      effects=[effect_attack(0)],
+  Spell('2', 'Two',
+    'Deal 3 damage. On hit: deal an additional 9 damage.',
+    tech=2, level=2, cost=2,
+    effects=[
+      Effect(EK_health, ET_attack, amount=-3,
+          on_hit=Effect(EK_health, ET_special, self=True, amount=-9))
+    ],
+  ),
+
+  Spell('3', 'Three',
+    'If your opponent\'s spell is a shield, increase your mana regeneration by 2.',
+    tech=2, level=2, cost=2,
+    # This spell gets magically countered by the C++ code if the opponent's spell isn't a shield.
+    effects=[effect_mana_regen(2)],
+  ),
+
+  Spell('4', 'Four',
+    'Your opponent loses 15 health if they learn a new spell next turn',
+    tech=4, level=4, cost=4,
+    effects=[
+    Effect(EK_sticky, ET_special, self=False,
+        sticky=StickyInvoker('antitech_next', duration=duration_turns(1)))
+    ],
   ),
 ])

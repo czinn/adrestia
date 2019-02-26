@@ -3,31 +3,28 @@ from rules_schema import *
 book = Book('refinement', 'Book of Refinement', [
   spell_tech(name='Learn Refinement', text='Increase Refinement by 1.'),
 
-  Spell('attack', 'Burning Hammer',
-    'Deal 2 damage per turn for the rest of the game.',
-    tech=1, level=1, cost=4,
-    effects=[Effect(EK_sticky, ET_attack, self=False, sticky=StickyInvoker('burning', duration_game))],
+  Spell('1', 'One',
+    'Block 5 damage this turn.',
+    tech=1, level=1, cost=1,
+    effects=[effect_shield(5)],
   ),
 
-  Spell('mana', 'Forge',
-    'Increase mana regeneration by 1.',
-    tech=2, level=2, cost=4,
-    effects=[effect_mana_regen(1)],
+  Spell('2', 'Two',
+    'Deal 3 piercing damage.',
+    tech=2, level=2, cost=2,
+    effects=[Effect(EK_health, ET_constant, amount=-3)],
   ),
     
-  Spell('shield', 'Dragonskin',
-    'Lose 3 health. Block 11 damage this turn.',
+  Spell('3', 'Three',
+    'Increase mana regeneration by 1.',
     tech=3, level=3, cost=1,
-    effects=[
-      effect_shield(11),
-      Effect(EK_health, ET_special, self=True, amount=-3),
-    ],
+    effects=[effect_mana_regen(1)],
   ),
 
-  Spell('mana_2', 'Mana Crystal',
-    'Increase mana regeneration by 10.',
-    tech=4, level=4, cost=10,
-    effects=[effect_mana_regen(10)],
+  Spell('4', 'Four',
+    'Gain 8 health.',
+    tech=4, level=4, cost=4,
+    effects=[Effect(EK_health, ET_special, self=True, amount=8)],
   ),
 ])
 

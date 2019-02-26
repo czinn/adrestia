@@ -50,6 +50,7 @@ bool EffectInstance::fizzles() const {
 		case EK_HEALTH:
 		case EK_MANA:
 		case EK_REGEN:
+    case EK_ID:
 			return amount == 0;
 		case EK_STICKY:
 			return false;
@@ -82,6 +83,8 @@ void EffectInstance::apply(const GameRules &rules, Player &player) const {
 						sticky_invoker
 					));
 			break;
+    case EK_ID:
+      break;
 	}
 }
 

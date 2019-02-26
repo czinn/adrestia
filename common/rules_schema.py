@@ -56,6 +56,7 @@ EK_tech = 'tech'
 EK_mana = 'mana'
 EK_mana_regen = 'mana_regen'
 EK_sticky = 'sticky'
+EK_id = 'id'
 
 # EffectType
 ET_attack = 'attack'

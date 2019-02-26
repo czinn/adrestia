@@ -35,6 +35,12 @@ const Selector &Spell::get_counterspell_selector() const {
 	return counterspell_selector;
 }
 bool Spell::is_tech_spell() const { return tech_spell; }
+bool Spell::has_type(EffectType effect_type) const {
+	for (const auto &effect : effects) {
+    if (effect.get_effect_type() == effect_type) return true;
+	}
+  return false;
+}
 
 //------------------------------------------------------------------------------
 // SERIALIZATION
