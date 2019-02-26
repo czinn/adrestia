@@ -50,8 +50,6 @@ func redraw():
 		var enemy_health = g.child(turn, 'enemy_health')
 		health_helper(my_health, index, view_player_id)
 		health_helper(enemy_health, index, 1 - view_player_id)
-		my_spell_list.immediately_show_tooltip = true
-		enemy_spell_list.immediately_show_tooltip = true
 		my_spell_list.spells = history[index][view_player_id]
 		enemy_spell_list.spells = history[index][1 - view_player_id]
 		turn_label.text = 'Turn ' + str(index + 1)
