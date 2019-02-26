@@ -117,7 +117,7 @@ def deconstruct(thing: Any, special_handlers: Dict[Any, Callable[[Any], Any]]={}
 		return thing
 
 # WE DSL NOW
-effect_mana_regen = lambda amt: Effect(EK_mana_regen, ET_special, self=True, amount=1)
+effect_mana_regen = lambda amt: Effect(EK_mana_regen, ET_special, self=True, amount=amt)
 effect_attack = lambda dmg: Effect(EK_health, ET_attack, self=False, amount=-dmg)
 effect_shield = lambda amt, duration=duration_turns(1): Effect(EK_sticky, ET_shield, self=True,
 		sticky=StickyInvoker('shield', amount=amt, duration=duration))
