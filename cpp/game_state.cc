@@ -117,6 +117,11 @@ void _process_effect_queue(
 						{"effect", effect_instance}
 					});
 				}
+        if (effect_instance.effect.get_on_hit() != nullptr) {
+          append_to_effect_queue(next_effect_queue,
+              EffectInstance(target_player_id, effect_instance.spell,
+                *effect_instance.effect.get_on_hit()));
+        }
 			}
 		}
 		std::swap(effect_queue, next_effect_queue);

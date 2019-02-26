@@ -15,6 +15,7 @@ EffectInstance::EffectInstance(size_t caster, const Spell &spell, const Effect &
 	, amount(effect.get_amount())
 	, sticky_invoker(effect.get_sticky_invoker())
 	, spell(spell)
+  , effect(effect)
 	, target_player(effect.get_targets_self() ? caster : 1 - caster) {}
 
 EffectInstance::EffectInstance(const EffectInstance &effect)
@@ -24,6 +25,7 @@ EffectInstance::EffectInstance(const EffectInstance &effect)
 	, amount(effect.amount)
 	, sticky_invoker(effect.sticky_invoker)
 	, spell(effect.spell)
+	, effect(effect.effect)
 	, target_player(effect.target_player) {}
 
 bool EffectInstance::operator==(const EffectInstance &other) const {
@@ -34,6 +36,7 @@ bool EffectInstance::operator==(const EffectInstance &other) const {
 		this->amount == other.amount &&
 		this->sticky_invoker == other.sticky_invoker &&
 		this->spell == other.spell &&
+		this->effect == other.effect &&
 		this->target_player == other.target_player
 	);
 }

@@ -48,7 +48,8 @@
 				"self": {"type": "boolean"},
 				"effect_type": {"$ref": "#/definitions/effect_type"},
 				"amount": {"type": "integer"},
-				"sticky": {"$ref": "#/definitions/sticky_invoker"}
+				"sticky": {"$ref": "#/definitions/sticky_invoker"},
+        "on_hit": {"$ref": "#/definitions/effect"}
 			},
 			"additionalProperties": false,
 			"required": ["kind", "self", "effect_type"]

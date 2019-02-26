@@ -46,7 +46,7 @@ books = deconstruct(library, {Spell: lambda spell: spell.id_})
 print(json.dumps({
   'version': version,
   'mana_cap': 10,
-  'initial_mana_regen': 3,
+  'initial_mana_regen': 4,
   'initial_health': 40,
   'spell_cap': 3,
   'stickies': stickies_built,
