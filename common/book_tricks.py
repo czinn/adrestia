@@ -19,9 +19,9 @@ book = Book ('tricks', 'Book of Deception', [
 	),
 
 	Spell('cancel', 'Backfire',
-			'Counter opponent\'s spell if it isn\'t a knowledge spell.',
+			'Counter opponent\'s spell if it isn\'t a knowledge spell. Lose 2 health.',
 			tech=3, level=3, cost=1,
-			effects=[],
+			effects=[Effect(EK_health, ET_special, self=True, amount=-2)],
 			counterspell=Selector(),
 	),
 

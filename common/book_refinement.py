@@ -3,20 +3,20 @@ from rules_schema import *
 book = Book('refinement', 'Book of Refinement', [
 	spell_tech(name='Learn Refinement', text='Increase Refinement by 1.'),
 
-	Spell('mana', 'Forge',
-		'Increase mana regeneration by 1.',
-		tech=1, level=1, cost=2,
-		effects=[effect_mana_regen(1)],
-	),
-
 	Spell('attack', 'Burning Hammer',
 		'Deal 2 damage per turn for the rest of the game.',
-		tech=2, level=2, cost=4,
+		tech=1, level=1, cost=4,
 		effects=[Effect(EK_sticky, ET_attack, self=False, sticky=StickyInvoker('burning', duration_game))],
+	),
+
+	Spell('mana', 'Forge',
+		'Increase mana regeneration by 1.',
+		tech=2, level=2, cost=4,
+		effects=[effect_mana_regen(1)],
 	),
 		
 	Spell('shield', 'Dragonskin',
-		'Lose 4 health. Block 11 damage this turn.',
+		'Lose 3 health. Block 11 damage this turn.',
 		tech=3, level=3, cost=1,
 		effects=[
 			effect_shield(11),

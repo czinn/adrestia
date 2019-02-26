@@ -16,7 +16,7 @@ from book_regulation import book as book_regulation
 from book_regulation import old_book as book_regulation_old
 from book_tricks import book as book_tricks
 
-version = [1, 0, 1]
+version = [1, 1, 0]
 library: List[Book] = [
   book_conjuration, # Midrange
   book_regulation, # Control
@@ -47,7 +47,7 @@ print(json.dumps({
   'version': version,
   'mana_cap': 10,
   'initial_mana_regen': 3,
-  'initial_health': 25,
+  'initial_health': 40,
   'spell_cap': 3,
   'stickies': stickies_built,
   'spells': spells,
