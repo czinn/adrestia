@@ -3,7 +3,8 @@ extends Node
 onready var g = get_node('/root/global')
 
 onready var back_button = $ui/back_button
-onready var results_text = $ui/results_text
+onready var title_label = $ui/title_label
+onready var detail_text = $ui/detail_text
 onready var game_history = $ui/game_history
 
 var winner
@@ -19,18 +20,20 @@ func _ready():
 
 	if winners.size() == 2:
 		# Tie
-		results_text.bbcode_text = '[b]You tied![/b]'
+		title_label.text = 'Draw.'
+		detail_text.bbcode_text = "It's a tie!"
 		winner = -1
 	elif winners.size() == 0:
-		results_text.bbcode_text = '[b]Your opponent forfeited the game.[/b]'
+		title_label.text = 'Victory!'
+		detail_text.bbcode_text = 'By forfeit'
 		winner = game_history.view_player_id
 	elif winners.has(game_history.view_player_id):
 		# Won!
-		results_text.bbcode_text = '[b]You won![/b]'
+		title_label.text = 'Victory!'
 		winner = game_history.view_player_id
 	else:
 		# Loss
-		results_text.bbcode_text = '[b]You lost.[/b]'
+		title_label.text = 'Defeat.'
 		winner = 1 - game_history.view_player_id
 
 func compute_health_history(rules, players, history):

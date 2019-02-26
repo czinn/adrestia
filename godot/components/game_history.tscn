@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://components/game_history.gd" type="Script" id=1]
-[ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=2]
-[ext_resource path="res://components/spell_list.tscn" type="PackedScene" id=3]
-[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=4]
-[ext_resource path="res://art-built/health-heart.png" type="Texture" id=5]
+[ext_resource path="res://theme-default.tres" type="Theme" id=1]
+[ext_resource path="res://components/game_history.gd" type="Script" id=2]
+[ext_resource path="res://art-built/9patch/panel-9patch.png" type="Texture" id=3]
+[ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=4]
+[ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=5]
+[ext_resource path="res://art-built/health-heart.png" type="Texture" id=6]
 
-[node name="game_history" type="Control"]
+[node name="game_history" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -19,8 +20,9 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-script = ExtResource( 1 )
-_sections_unfolded = [ "Anchor", "Margin" ]
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+_sections_unfolded = [ "Anchor", "Margin", "Theme" ]
 
 [node name="background" type="NinePatchRect" parent="." index="0"]
 
@@ -36,7 +38,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 patch_margin_left = 11
 patch_margin_top = 11
 patch_margin_right = 11
@@ -45,12 +47,14 @@ _sections_unfolded = [ "Anchor", "Margin", "Patch Margin" ]
 
 [node name="scroll_container" type="ScrollContainer" parent="." index="1"]
 
-anchor_left = 0.0
+anchor_left = 0.5
 anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+margin_left = -270.0
 margin_top = 5.0
-margin_bottom = -5.0
+margin_right = 270.0
+margin_bottom = 495.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
@@ -86,8 +90,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_bottom = 300.0
-rect_min_size = Vector2( 540, 340 )
+margin_bottom = 376.0
+rect_min_size = Vector2( 540, 380 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -96,19 +100,17 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "Size Flags" ]
 
-[node name="enemy_spell_list" parent="template_row" index="0" instance=ExtResource( 3 )]
+[node name="enemy_spell_list" parent="template_row" index="0" instance=ExtResource( 4 )]
 
-anchor_right = 0.0
-margin_top = 40.0
-margin_right = 370.0
-margin_bottom = 190.0
+margin_left = 155.0
+margin_top = 53.0
+margin_bottom = 203.0
 
-[node name="my_spell_list" parent="template_row" index="1" instance=ExtResource( 3 )]
+[node name="my_spell_list" parent="template_row" index="1" instance=ExtResource( 4 )]
 
-anchor_right = 0.0
-margin_top = 190.0
-margin_right = 370.0
-margin_bottom = 340.0
+margin_left = 155.0
+margin_top = 207.0
+margin_bottom = 357.0
 
 [node name="turn_label" type="Label" parent="template_row" index="2"]
 
@@ -116,17 +118,18 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_bottom = 20.0
+margin_left = 25.0
+margin_top = 14.0
+margin_bottom = 54.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Turn 1"
-align = 1
 valign = 1
 percent_visible = 1.0
 lines_skipped = 0
@@ -135,13 +138,14 @@ _sections_unfolded = [ "Anchor", "Margin", "Mouse", "Rect", "custom_colors", "cu
 
 [node name="enemy_health" type="Control" parent="template_row" index="3"]
 
-anchor_left = 1.0
+anchor_left = 0.0
 anchor_top = 0.0
-anchor_right = 1.0
+anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = -120.0
-margin_top = 86.0
-margin_bottom = 136.0
+margin_left = 27.0
+margin_top = 101.0
+margin_right = 147.0
+margin_bottom = 151.0
 rect_min_size = Vector2( 120, 50 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -166,7 +170,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 5 )
+texture = ExtResource( 6 )
 expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Mouse", "Rect" ]
@@ -185,7 +189,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 1, 0.0156863, 0.294118, 1 )
 custom_constants/shadow_offset_x = 2
@@ -213,7 +217,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 1, 0.0156863, 0.294118, 1 )
 custom_constants/shadow_offset_x = 2
@@ -228,13 +232,14 @@ _sections_unfolded = [ "Margin", "Mouse", "Rect", "custom_colors", "custom_const
 
 [node name="my_health" type="Control" parent="template_row" index="4"]
 
-anchor_left = 1.0
+anchor_left = 0.0
 anchor_top = 0.0
-anchor_right = 1.0
+anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = -120.0
-margin_top = 226.0
-margin_bottom = 276.0
+margin_left = 27.0
+margin_top = 255.0
+margin_right = 147.0
+margin_bottom = 305.0
 rect_min_size = Vector2( 120, 50 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -259,7 +264,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 5 )
+texture = ExtResource( 6 )
 expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Mouse", "Rect" ]
@@ -270,15 +275,16 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
+margin_top = 2.0
 margin_right = 50.0
-margin_bottom = 50.0
+margin_bottom = 52.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 1, 0.0156863, 0.294118, 1 )
 custom_constants/shadow_offset_x = 2
@@ -306,7 +312,7 @@ mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 1, 0.0156863, 0.294118, 1 )
 custom_constants/shadow_offset_x = 2
@@ -318,5 +324,47 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Margin", "custom_colors", "custom_constants", "custom_fonts" ]
+
+[node name="their_label" type="Label" parent="template_row" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 27.0
+margin_top = 67.0
+margin_right = 82.0
+margin_bottom = 97.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Them"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="my_label" type="Label" parent="template_row" index="6"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 27.0
+margin_top = 221.0
+margin_right = 67.0
+margin_bottom = 251.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "You"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
 
 

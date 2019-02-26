@@ -153,7 +153,7 @@ func summon_tooltip(target, text):
 	tooltip = tooltip_scene.instance()
 	tooltip.text = text
 	var pos = target.get_global_rect().position
-	var above = pos.y > 20
+	var above = pos.y > 100
 	var y = pos.y if above else (pos.y + target.rect_size.y)
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
 	get_node("/root").add_child(tooltip)
