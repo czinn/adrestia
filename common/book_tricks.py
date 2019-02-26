@@ -21,7 +21,7 @@ book = Book('tricks', 'Book of Deception', [
 
   Spell('3', 'Embezzle',
     'If your opponent\'s spell is a shield, increase your mana regeneration by 2.',
-    tech=2, level=2, cost=2,
+    tech=3, level=3, cost=3,
     # This spell gets magically countered by the C++ code if the opponent's spell isn't a shield.
     effects=[effect_mana_regen(2)],
   ),

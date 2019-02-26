@@ -17,7 +17,7 @@ book = Book('refinement', 'Book of Refinement', [
     
   Spell('3', 'Sprout',
     'Increase mana regeneration by 1.',
-    tech=3, level=3, cost=1,
+    tech=3, level=3, cost=3,
     effects=[effect_mana_regen(1)],
   ),
 
