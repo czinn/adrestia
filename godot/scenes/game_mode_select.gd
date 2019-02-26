@@ -54,7 +54,7 @@ func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)
 
 func on_get_stats(response):
-	g.multiplayer_wins = response.wins
+	g.multiplayer_wins = response.wins if response.has('wins') else ''
 	g.save()
 	redraw()
 

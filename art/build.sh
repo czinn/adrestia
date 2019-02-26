@@ -32,7 +32,7 @@ find $SVG_DIR -type f -name '*.svg' -print0 | while IFS= read -r -d $'\0' input_
 			--export-dpi=$dpi \
 			--export-background-opacity=0 \
 			--without-gui \
-			"$wd/$input_file"
+			"$wd/$input_file" &
 	else
 		#echo "Skipping $base_file"
 		true
