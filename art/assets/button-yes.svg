@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.0494892"
-     inkscape:cx="68.027828"
-     inkscape:cy="27.783126"
+     inkscape:cx="37.133614"
+     inkscape:cy="25.604688"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,7 +39,7 @@
      inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:snap-global="false"
      units="px" />
   <metadata
@@ -70,7 +70,7 @@
        rx="2.1166668" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
        x="-25.581509"
        y="143.68933"
        id="text838"><tspan
@@ -78,6 +78,6 @@
          id="tspan836"
          x="-25.581509"
          y="143.68933"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#000000;fill-opacity:1;stroke-width:0.26458335px">Yes</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Amaranth;-inkscape-font-specification:Amaranth;fill:#000000;fill-opacity:1;stroke-width:0.26458335px;">Yes</tspan></text>
   </g>
 </svg>

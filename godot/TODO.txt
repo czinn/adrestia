@@ -47,25 +47,26 @@
 
 # UI polish from Dmitri's family
 
-- [ ] Tutorial: Railroad player actions 100%
+- [x] Tutorial: Railroad player actions 100%
 - [ ] Tutorial: Throttle message advancement -- easy to miss messages by double
   tapping
-- [ ] Tutorial: Say "Tap to continue"
-- [ ] Tutorial: Allow click through spotlight -- subtle, but literally everyone
+- [x] Tutorial: Say "Tap to continue"
+- [x] Tutorial: Allow click through spotlight -- subtle, but literally everyone
   who's ever used the app has been stung by this
-- [ ] Tutorial: Explain parallel turns explicitly
-- [ ] Tutorial: Explain pairwise spells explicitly -- possibly even include an
+- [x] Tutorial: Explain parallel turns explicitly
+- [x] Tutorial: Explain pairwise spells explicitly -- possibly even include an
   animation
-- [ ] Tutorial: Mention mana conservation between turns
-- [ ] Relabel "End Turn" to "Commit" -- otherwise people think the game is
+- [x] Tutorial: Mention mana conservation between turns
+- [x] Relabel "End Turn" to "Commit" -- otherwise people think the game is
   traditionally turn based
 - [ ] Game: Tap to bring up spell info; drag to queue them up
 - [ ] Game: More eye-catching damage effects
 
 # UI polish from Jim's friend
 
-- [ ] Confirmation dialog: Highlight "yes" button
-- [ ] Book select: Label books even after they're selected
+- [x] Confirmation dialog: Highlight "yes" button
+  - jim: parenthesized "no" button. It's aesthetic. Trust
+- [x] Book select: Label books even after they're selected
 - [ ] Tutorial: Explain spell learning mechanic more clearly
 - [ ] Distinguish very clearly between unlearned spells and unaffordable ones
   -- lock icon vs. simple grey out?

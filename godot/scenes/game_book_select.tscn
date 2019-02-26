@@ -1,15 +1,14 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/game_book_select.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://art-built/9patch/background-book-select.png" type="Texture" id=3]
 [ext_resource path="res://scripts/background.gd" type="Script" id=4]
-[ext_resource path="res://art-built/book-select-empty.png" type="Texture" id=5]
+[ext_resource path="res://components/book_button.tscn" type="PackedScene" id=5]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=7]
 [ext_resource path="res://components/spell_button_list.tscn" type="PackedScene" id=8]
-[ext_resource path="res://components/book_button.tscn" type="PackedScene" id=9]
-[ext_resource path="res://art-built/close-x.png" type="Texture" id=10]
+[ext_resource path="res://art-built/close-x.png" type="Texture" id=9]
 
 [sub_resource type="StyleBoxFlat" id=1]
 
@@ -70,13 +69,12 @@ _sections_unfolded = [ "Animation", "Offset", "Region" ]
 
 [node name="selected_books_hbox" type="HBoxContainer" parent="ui" index="1"]
 
-editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
 margin_top = 124.0
-margin_bottom = 279.0
+margin_bottom = 344.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -87,83 +85,23 @@ custom_constants/separation = 0
 alignment = 1
 _sections_unfolded = [ "Margin", "custom_constants" ]
 
-[node name="icon" type="TextureButton" parent="ui/selected_books_hbox" index="0"]
+[node name="slot" parent="ui/selected_books_hbox" index="0" instance=ExtResource( 5 )]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_left = 60.0
 margin_right = 200.0
-margin_bottom = 155.0
-rect_min_size = Vector2( 140, 155 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-texture_normal = ExtResource( 5 )
-expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Rect", "Textures" ]
+size_flags_horizontal = 0
 
-[node name="icon2" type="TextureButton" parent="ui/selected_books_hbox" index="1"]
+[node name="slot2" parent="ui/selected_books_hbox" index="1" instance=ExtResource( 5 )]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_left = 200.0
 margin_right = 340.0
-margin_bottom = 155.0
-rect_min_size = Vector2( 140, 155 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-texture_normal = ExtResource( 5 )
-expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Rect", "Textures" ]
+size_flags_horizontal = 0
 
-[node name="icon3" type="TextureButton" parent="ui/selected_books_hbox" index="2"]
+[node name="slot3" parent="ui/selected_books_hbox" index="2" instance=ExtResource( 5 )]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_left = 340.0
 margin_right = 480.0
-margin_bottom = 155.0
-rect_min_size = Vector2( 140, 155 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-texture_normal = ExtResource( 5 )
-expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Rect", "Textures" ]
+size_flags_horizontal = 0
 
 [node name="text" type="Label" parent="ui" index="2"]
 
@@ -282,29 +220,29 @@ custom_constants/separation = 0
 alignment = 0
 _sections_unfolded = [ "Margin", "Mouse", "Size Flags", "custom_constants" ]
 
-[node name="control" parent="ui/books_scroll/books_hbox" index="0" instance=ExtResource( 9 )]
+[node name="control" parent="ui/books_scroll/books_hbox" index="0" instance=ExtResource( 5 )]
 
-[node name="control2" parent="ui/books_scroll/books_hbox" index="1" instance=ExtResource( 9 )]
+[node name="control2" parent="ui/books_scroll/books_hbox" index="1" instance=ExtResource( 5 )]
 
 margin_left = 140.0
 margin_right = 280.0
 
-[node name="control3" parent="ui/books_scroll/books_hbox" index="2" instance=ExtResource( 9 )]
+[node name="control3" parent="ui/books_scroll/books_hbox" index="2" instance=ExtResource( 5 )]
 
 margin_left = 280.0
 margin_right = 420.0
 
-[node name="control4" parent="ui/books_scroll/books_hbox" index="3" instance=ExtResource( 9 )]
+[node name="control4" parent="ui/books_scroll/books_hbox" index="3" instance=ExtResource( 5 )]
 
 margin_left = 420.0
 margin_right = 560.0
 
-[node name="control5" parent="ui/books_scroll/books_hbox" index="4" instance=ExtResource( 9 )]
+[node name="control5" parent="ui/books_scroll/books_hbox" index="4" instance=ExtResource( 5 )]
 
 margin_left = 560.0
 margin_right = 700.0
 
-[node name="control6" parent="ui/books_scroll/books_hbox" index="5" instance=ExtResource( 9 )]
+[node name="control6" parent="ui/books_scroll/books_hbox" index="5" instance=ExtResource( 5 )]
 
 margin_left = 700.0
 margin_right = 840.0
@@ -330,7 +268,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 10 )
+texture_normal = ExtResource( 9 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]

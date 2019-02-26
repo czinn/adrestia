@@ -32,9 +32,11 @@ func _ready():
 	back_button.connect('pressed', self, 'on_back_button_pressed')
 	get_tree().set_auto_accept_quit(false)
 	for i in range(selected_books_hbox.get_child_count()):
-		var button = selected_books_hbox.get_child(i)
-		button.connect('pressed', self, 'on_top_book_down', [i, button])
-		button.connect('button_down', self, 'on_remove_book_down', [i, button])
+		var slot = selected_books_hbox.get_child(i)
+		slot.button.texture_normal = book_placeholder_texture
+		slot.label.text = ''
+		slot.button.connect('pressed', self, 'on_top_book_down', [i, slot.button])
+		slot.button.connect('button_down', self, 'on_remove_book_down', [i, slot.button])
 	spell_button_list.immediately_show_tooltip = true
 
 func _notification(what):
@@ -62,10 +64,11 @@ func on_drop(drag_image):
 		return
 	emit_signal('chose_book', i, book)
 	chosen_books[i] = book
-	var chosen_book_icon = selected_books_hbox.get_child(i)
-	yield(g.tween(drag_image, chosen_book_icon.get_global_position(), 0.3), 'done')
+	var chosen_slot = selected_books_hbox.get_child(i)
+	yield(g.tween(drag_image, chosen_slot.button.get_global_position(), 0.3), 'done')
+	chosen_slot.label.text = book.get_name()
 	drag_image.queue_free()
-	selected_books_hbox.get_child(i).texture_normal = g.get_book_texture(book.get_id())
+	selected_books_hbox.get_child(i).button.texture_normal = g.get_book_texture(book.get_id())
 
 func on_book_down(book_button):
 	if chosen_books.find(book_button.book) >= 0:
@@ -93,6 +96,7 @@ func on_remove_book_down_lift():
 	match g.drag_drop.payload:
 		[var i, var button]:
 			button.texture_normal = book_placeholder_texture
+			selected_books_hbox.get_child(i).label.text = ''
 
 func on_remove_book_down_drop(image):
 	match g.drag_drop.payload:
