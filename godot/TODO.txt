@@ -67,10 +67,10 @@
 - [x] Confirmation dialog: Highlight "yes" button
   - jim: parenthesized "no" button. It's aesthetic. Trust
 - [x] Book select: Label books even after they're selected
-- [ ] Tutorial: Explain spell learning mechanic more clearly
-- [ ] Distinguish very clearly between unlearned spells and unaffordable ones
+- [x] Tutorial: Explain spell learning mechanic more clearly
+- [x] Distinguish very clearly between unlearned spells and unaffordable ones
   -- lock icon vs. simple grey out?
-- [ ] Game: Instead of separate spell learning up-arrows, learn spell by
+- [x] Game: Instead of separate spell learning up-arrows, learn spell by
   tapping it
 - [ ] Game: More spell labels -- label damage spells with damage amount,
   shields with shield amount, and spells in general with their type
