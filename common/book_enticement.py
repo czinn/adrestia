@@ -22,8 +22,8 @@ book = Book('enticement', 'Book of Enticement', [
 	),
 
 	Spell('drain', 'Mana Drain',
-		'Your opponent loses 1 mana regeneration per turn for the rest of the game.',
+		'Your opponent loses 1 mana regeneration.',
 		tech=4, level=4, cost=7,
-		effects=[Effect(EK_sticky, ET_special, self=False, sticky=StickyInvoker('mana_drain', duration_game))],
+		effects=[Effect(EK_mana_regen, ET_special, amount=-1)],
 	),
 ])
