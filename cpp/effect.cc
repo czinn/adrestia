@@ -38,7 +38,7 @@ bool Effect::operator==(const Effect &other) const {
 		&& this->effect_type == other.effect_type
 		&& this->amount == other.amount
 		&& (this->kind != EK_STICKY || this->sticky_invoker == other.sticky_invoker)
-		&& *this->on_hit == *other.on_hit
+		&& ((this->on_hit == other.on_hit) || (this->on_hit && other.on_hit && *this->on_hit == *other.on_hit))
 		);
 }
 
