@@ -8,6 +8,7 @@
 
 #include "selector.h"
 #include "effect.h"
+#include "effect_type.h"
 #include "json.h"
 
 using json = nlohmann::json;
@@ -28,6 +29,7 @@ class Spell {
 		bool is_counterspell() const;
 		bool is_tech_spell() const;
 		const Selector &get_counterspell_selector() const;
+    bool has_type(EffectType effect_type) const;
 
 		friend void from_json(const json &j, Spell &spell);
 		friend void to_json(json &j, const Spell &spell);

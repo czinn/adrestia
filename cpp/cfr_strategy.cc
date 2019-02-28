@@ -53,9 +53,12 @@ std::vector<double> cfr_state_vector(const GameState &g) {
 
 std::uniform_real_distribution<double> dis(0.0, 1.0);
 
-CfrStrategy::CfrStrategy(const GameRules &rules)
+CfrStrategy::CfrStrategy(const GameRules &rules) : CfrStrategy(rules, 100) {}
+
+CfrStrategy::CfrStrategy(const GameRules &rules, int iterations)
 		: gen(std::chrono::high_resolution_clock::now().time_since_epoch().count())
-		, model(nullptr) {
+		, model(nullptr)
+    , iterations(iterations) {
 	for (size_t i = 0; i < 2; i++) {
 		int multiplier = i == 0 ? 1 : -1;
 		weights.push_back(25 * 5 * multiplier); // health
@@ -177,7 +180,7 @@ GameAction CfrStrategy::get_action(const GameView &view) {
 	// Iterations!
 	std::unordered_map<size_t, Node> regret_map;
 	std::unordered_map<size_t, double> score_map;
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < iterations; i++) {
 		// Choose the determinization
 		// For now, don't do self-determinizations.
 		size_t op = 1 - view.view_player_id;

@@ -5,3 +5,4 @@ test_client
 *.o
 *.os
 server_main
+autofill

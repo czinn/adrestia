@@ -117,6 +117,11 @@ void _process_effect_queue(
 						{"effect", effect_instance}
 					});
 				}
+        if (effect_instance.effect.get_on_hit() != nullptr) {
+          append_to_effect_queue(next_effect_queue,
+              EffectInstance(target_player_id, effect_instance.spell,
+                *effect_instance.effect.get_on_hit()));
+        }
 			}
 		}
 		std::swap(effect_queue, next_effect_queue);
@@ -228,9 +233,11 @@ bool _simulate(
 			// Check for counterspells.
 			if (spell_idx < actions[1 - player_id].size()) {
 				const auto &other_spell = state.rules.get_spell(actions[1 - player_id][spell_idx]);
-				if (!spell.is_tech_spell() &&
-						other_spell.is_counterspell() &&
-						other_spell.get_counterspell_selector().selects_spell(spell)) {
+        bool is_countered = 
+          !spell.is_tech_spell() &&
+          other_spell.is_counterspell() &&
+          other_spell.get_counterspell_selector().selects_spell(spell);
+				if (is_countered || (spell.get_id() == "tricks_3" && !other_spell.has_type(ET_SHIELD))) {
 					if (emit_events) {
 						events_out.emplace_back(json{
 							{"type", "spell_countered"},
@@ -346,6 +353,8 @@ void GameState::apply_event(const json &event) {
 								));
 				}
 				break;
+      case EK_ID:
+        break;
 		}
 	} else if (type == "fire_spell") {
 		if (event.at("success").get<bool>()) {
@@ -390,7 +399,7 @@ void GameState::apply_event(const json &event) {
 bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	// TODO: Return code or list of codes for why action isn't valid.
 	if (action.size() > rules.get_spell_cap()) {
-		std::cout << "too many actions" << std::endl;
+		//std::cout << "too many actions" << std::endl;
 		return false;
 	}
 	const Player &player = players[player_id];
@@ -402,24 +411,23 @@ bool GameState::is_valid_action(size_t player_id, GameAction action) const {
 	for (const auto &spell_id : action) {
 		auto [spell, book_idx] = player.find_spell(spell_id);
 		if (spell == nullptr) {
-			std::cout << "spell doesn't exist" << std::endl;
 			return false;
 		}
 		if (player.tech[book_idx] + (turn_tech == book_idx ? 1 : 0) < spell->get_tech()) {
-			std::cout << "not enough tech" << std::endl;
+			//std::cout << "not enough tech" << std::endl;
 			return false;
 		}
 		if (spell->is_tech_spell() && turn_tech != -1) {
-			std::cout << "already cast tech" << std::endl;
+			//std::cout << "already cast tech" << std::endl;
 			return false;
 		}
 		if (player.level() + (turn_tech != -1 ? 1 : 0) < spell->get_level()) {
-			std::cout << "not enough level" << std::endl;
+			//std::cout << "not enough level" << std::endl;
 			return false;
 		}
 		mp_left -= spell->get_cost();
 		if (mp_left < 0) {
-			std::cout << "not enough mana" << std::endl;
+			//std::cout << "not enough mana" << std::endl;
 			return false;
 		}
 		if (spell->is_tech_spell()) {

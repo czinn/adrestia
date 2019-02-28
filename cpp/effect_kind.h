@@ -18,6 +18,8 @@ enum EffectKind {
 	EK_REGEN = 3,
 	// Adds a sticky to the target.
 	EK_STICKY = 4,
+  // Does nothing
+  EK_ID = 5,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EffectKind, {
@@ -26,4 +28,5 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EffectKind, {
 	{ EK_MANA, "mana" },
 	{ EK_REGEN, "mana_regen" },
 	{ EK_STICKY, "sticky" },
+	{ EK_ID, "id" },
 });

@@ -11,6 +11,7 @@ std::vector<double> cfr_state_vector(const GameState &g);
 class CfrStrategy : public Strategy {
  public:
 	CfrStrategy(const GameRules &);
+	CfrStrategy(const GameRules &, int iterations);
 	CfrStrategy(std::vector<double> weights);
 	CfrStrategy(fdeep::model *model);
 	virtual ~CfrStrategy();
@@ -28,4 +29,5 @@ class CfrStrategy : public Strategy {
 	std::mt19937 gen;
 	std::vector<double> weights;
 	fdeep::model *model;
+  int iterations;
 };

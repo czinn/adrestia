@@ -38,5 +38,6 @@ class EffectInstance {
 		int amount;
 		const StickyInvoker &sticky_invoker;
 		const Spell &spell;
+    const Effect &effect;
 		size_t target_player;
 };

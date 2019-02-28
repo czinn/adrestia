@@ -14,6 +14,9 @@ using json = nlohmann::json;
 class Effect {
 	public:
 		Effect();
+    ~Effect();
+    Effect(const Effect &);
+    Effect& operator=(Effect other);
 		bool operator==(const Effect &) const;
 
 		EffectKind get_kind() const;
@@ -21,6 +24,7 @@ class Effect {
 		EffectType get_effect_type() const;
 		int get_amount() const;
 		const StickyInvoker &get_sticky_invoker() const;
+		const Effect *get_on_hit() const;
 
 		friend void from_json(const json &j, Effect &effect);
 		friend void to_json(json &j, const Effect &effect);
@@ -37,4 +41,6 @@ class Effect {
 		int amount;
 		// The Sticky that this Effect creates, if any.
 		StickyInvoker sticky_invoker;
+    // The on-hit effect, if any.
+    Effect *on_hit;
 };

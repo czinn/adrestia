@@ -48,12 +48,13 @@
 				"self": {"type": "boolean"},
 				"effect_type": {"$ref": "#/definitions/effect_type"},
 				"amount": {"type": "integer"},
-				"sticky": {"$ref": "#/definitions/sticky_invoker"}
+				"sticky": {"$ref": "#/definitions/sticky_invoker"},
+        "on_hit": {"$ref": "#/definitions/effect"}
 			},
 			"additionalProperties": false,
 			"required": ["kind", "self", "effect_type"]
 		},
-		"effect_kind": {"enum": ["health", "tech", "mana", "mana_regen", "sticky"]},
+		"effect_kind": {"enum": ["health", "tech", "mana", "mana_regen", "sticky", "id"]},
 		"effect_type": {"enum": ["attack", "shield", "special", "poison", "constant", "counter", "tech", "heal"]},
 		"sticky": {
 			"type": "object",

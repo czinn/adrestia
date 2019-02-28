@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wall -MMD -std=c++17 -Ifdeep-include -Ifplus-include -I. -O2
-OBJECTS = $(patsubst %.cc,%.o,$(filter-out main.cc, $(wildcard *.cc)))
+OBJECTS = $(patsubst %.cc,%.o,$(filter-out main.cc, $(wildcard *.cc))) ../server/versioning.o
 
 MAIN_EXEC = main
 MAIN_OBJS = ${OBJECTS} main.o
