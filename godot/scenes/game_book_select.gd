@@ -20,9 +20,13 @@ onready var back_button = $ui/back_button
 var chosen_books = [null, null, null]
 var book_buttons = {}
 
+# Constant ordering of books for rainbow
+const book_ids = ['bloodlust', 'conjuration', 'contrition', 'refinement', 'regulation', 'tricks', 'enticement']
+
 func _ready():
 	g.clear_children(books_hbox)
-	for book in g.get_rules().get_books().values():
+	for book_id in book_ids:
+		var book = g.get_rules().get_book(book_id)
 		var book_button = book_button_scene.instance()
 		books_hbox.add_child(book_button)
 		book_button.book = book
