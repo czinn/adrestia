@@ -255,8 +255,15 @@ bool _simulate(
 					emit_events ?
 					caster.pipe_effect(effect_instance, false, events_out) :
 					caster.pipe_effect(effect_instance, false);
-				append_to_effect_queue(next_effect_queue, generated_effects);
 				append_to_effect_queue(effect_queue, effect_instance);
+        // Only recur one level deep because if we're recurring more than that
+        // much, it could be a problem (and should never happen)
+        for (auto &generated_effect : generated_effects) {
+          emit_events ?
+          caster.pipe_effect(generated_effect, false, events_out) :
+          caster.pipe_effect(generated_effect, false);
+          append_to_effect_queue(next_effect_queue, generated_effect);
+        }
 			}
 			events_out.emplace_back(json{
 				{"type", "spell_hit"},
@@ -278,7 +285,12 @@ bool _simulate(
 			emit_events ?
 			players[player_id].pipe_turn(events_out) :
 			players[player_id].pipe_turn();
-		append_to_effect_queue(effect_queue, generated_effects);
+    for (auto &generated_effect : generated_effects) {
+      emit_events ?
+      players[player_id].pipe_effect(generated_effect, false, events_out) :
+      players[player_id].pipe_effect(generated_effect, false);
+      append_to_effect_queue(effect_queue, generated_effect);
+    }
 	}
 
 	// Process effects created by god.
