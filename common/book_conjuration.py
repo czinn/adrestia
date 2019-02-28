@@ -1,7 +1,7 @@
 from rules_schema import *
 
-book = Book('conjuration', 'Book of Conjuration', [
-  spell_tech(name='Learn Conjuration', text='Increase Conjuration by 1.'),
+book = Book('conjuration', 'Book of Flame', [
+  spell_tech(name='Learn Flame', text='Increase Flame by 1.'),
 
   Spell('1', 'Heat Haze',
     'Block 13 damage from current spell only.',
