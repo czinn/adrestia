@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <chrono>
+#include <fstream>
 #include "../json.h"
 #include "../game_state.h"
 #include "../game_rules.h"
@@ -15,9 +16,13 @@ std::mt19937 gen(std::chrono::high_resolution_clock::now().time_since_epoch().co
 
 int main(int argc, char *argv[]) {
 	GameRules rules("rules.json");
+
+  std::ofstream outfile;
+  outfile.open("games.json", std::ios_base::app);
+
 	std::vector<Strategy*> strategies;
-	strategies.push_back(new CfrStrategy(rules));
-	strategies.push_back(new CfrStrategy(rules));
+	strategies.push_back(new CfrStrategy(rules, 100));
+	strategies.push_back(new CfrStrategy(rules, 100));
 
 	// Randomize book selection
 	std::vector<std::vector<std::string>> book_choices(2);
@@ -57,6 +62,10 @@ int main(int argc, char *argv[]) {
 		for (const auto &vec : state_vectors) {
 			std::cout << "[" << json(vec) << "," << value << "]" << std::endl;
 		}
+
+    json game_json = game;
+    game_json["winners"] = game.winners();
+    outfile << game_json << std::endl;
 	}
 
 	for (int i = 0; i < strategies.size(); i++) {
