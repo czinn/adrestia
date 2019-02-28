@@ -1,27 +1,27 @@
 from rules_schema import *
 
-book = Book('regulation', 'Book of Regulation', [
-  spell_tech(name='Learn Regulation', text='Increase Regulation by 1.'),
+book = Book('regulation', 'Book of Frost', [
+  spell_tech(name='Learn Frost', text='Increase Frost by 1.'),
 
-  Spell('1', 'Barrier',
+  Spell('1', 'Frost Shield',
     'Block 7 damage this turn.',
     tech=1, level=1, cost=1,
     effects=[effect_shield(7)],
   ),
 
-  Spell('2', 'Fortress',
+  Spell('2', 'Iceberg',
     'Block 12 damage. Lasts two turns.',
     tech=2, level=2, cost=2,
     effects=[effect_shield(12, duration=duration_turns(2))],
   ),
 
-  Spell('3', 'Iron Sentry',
+  Spell('3', 'Hailstorm',
     'Deal 3 damage per turn for the rest of the game.',
     tech=3, level=3, cost=3,
     effects=[Effect(EK_sticky, ET_special, self=True, sticky=StickyInvoker('turret', duration_game))],
   ),
 
-  Spell('4', 'Turtle Shell',
+  Spell('4', 'Permafrost',
     'Block 5 damage. Increase mana regeneration by 1.',
     tech=4, level=4, cost=4,
     effects=[effect_shield(5), effect_mana_regen(1)],

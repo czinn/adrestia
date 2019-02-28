@@ -48,7 +48,7 @@
      inkscape:window-y="0"
      inkscape:window-x="0"
      inkscape:window-height="1052"
-     inkscape:window-width="1344"
+     inkscape:window-width="1152"
      fit-margin-bottom="0"
      fit-margin-right="0"
      fit-margin-left="0"
@@ -56,9 +56,9 @@
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="12.488558"
-     inkscape:cx="61.621207"
-     inkscape:zoom="5.6568542"
+     inkscape:cy="82.147643"
+     inkscape:cx="89.217937"
+     inkscape:zoom="2.8284271"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -73,7 +73,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -122,19 +122,19 @@
        r="5.378799" />
     <path
        style="fill:#e2f8ff;fill-opacity:1;stroke:#32d2ff;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       d="m 69.592594,127.292 -3.973142,3.42758 1.89222,3.64912 z"
+       d="m 69.141041,130.38213 -4.379678,2.89009 1.408917,3.86154 z"
        id="path838"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
     <path
        style="fill:#e2f8ff;fill-opacity:1;stroke:#32d2ff;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       d="m 72.103444,130.73777 -1.286801,7.26316 3.986841,-0.48531 z"
+       d="m 72.384077,133.07638 -1.286801,7.26316 3.986841,-0.48531 z"
        id="path838-6"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
     <path
        style="fill:#e2f8ff;fill-opacity:1;stroke:#32d2ff;stroke-width:2.64583302;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       d="m 73.278161,125.37689 3.372532,6.4696 0.315656,-4.77677 z"
+       d="m 74.460199,129.38675 4.948378,5.36128 -0.945676,-4.69286 z"
        id="path838-0"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />

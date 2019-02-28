@@ -3,7 +3,7 @@ from rules_schema import *
 book = Book('conjuration', 'Book of Conjuration', [
   spell_tech(name='Learn Conjuration', text='Increase Conjuration by 1.'),
 
-  Spell('1', 'Mirage',
+  Spell('1', 'Heat Haze',
     'Block 13 damage from current spell only.',
     tech=1, level=1, cost=1,
     effects=[effect_shield(13, duration=duration_steps(1))],

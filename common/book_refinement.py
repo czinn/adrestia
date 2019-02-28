@@ -1,7 +1,7 @@
 from rules_schema import *
 
-book = Book('refinement', 'Book of Refinement', [
-  spell_tech(name='Learn Refinement', text='Increase Refinement by 1.'),
+book = Book('refinement', 'Book of Nature', [
+  spell_tech(name='Learn Nature', text='Increase Nature by 1.'),
 
   Spell('1', 'Vine Shield',
     'Block 5 damage this turn.',
