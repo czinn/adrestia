@@ -4,6 +4,8 @@ signal finished
 
 onready var timer = $timer
 onready var label = $label
+onready var bang = $bang
+onready var animation_player = $animation_player
 
 var seconds = 60 setget set_seconds
 
@@ -25,3 +27,10 @@ func on_tick():
 
 func redraw():
 	label.text = str(seconds)
+	if seconds <= 5:
+		bang.visible = true
+		if not animation_player.is_playing():
+			animation_player.play('bounce_bang')
+	else:
+		bang.visible = false
+		animation_player.stop()

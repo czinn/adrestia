@@ -270,10 +270,12 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
 [node name="countdown_timer" parent="ui" index="11" instance=ExtResource( 10 )]
 
+anchor_top = 0.5
+anchor_bottom = 0.5
 margin_left = 16.0
-margin_top = 329.0
+margin_top = -151.0
 margin_right = 80.0
-margin_bottom = 393.0
+margin_bottom = -87.0
 
 [node name="spell_select" parent="ui" index="12" instance=ExtResource( 11 )]
 
