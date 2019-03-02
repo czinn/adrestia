@@ -38,7 +38,7 @@ func reconnect(update_message):
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 
 func get_time_limit():
-	return 30
+	return 60
 
 func get_view():
 	if view != null:

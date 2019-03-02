@@ -26,25 +26,25 @@ using json = nlohmann::json;
 adrestia_networking::PushActiveGames::PushActiveGames() {}
 
 void forfeit_for_inactive_opponents(const Logger& logger, const std::string& uuid) {
-	adrestia_database::Db db(logger);
-	auto active_games_with_inactive_opponent = db.query(R"sql(
-		SELECT adrestia_games.game_uid, user_uid
-		FROM adrestia_games
+  adrestia_database::Db db(logger);
+  auto active_games_with_inactive_opponent = db.query(R"sql(
+    SELECT adrestia_games.game_uid, user_uid
+    FROM adrestia_games
       INNER JOIN adrestia_players ON adrestia_games.game_uid = adrestia_players.game_uid
-		WHERE activity_state = 0
-			AND NOW() - last_move_time > interval '1 minute'
-	)sql")();
+    WHERE activity_state = 0
+      AND NOW() - last_move_time > interval '120 seconds'
+  )sql")();
 
-	for (const auto &row : active_games_with_inactive_opponent) {
-		string game_uid = row["game_uid"].as<string>();
-		string user_uid = row["user_uid"].as<string>();
-		if (user_uid == uuid) {
-			continue; // This shouldn't happen since this player just sent a message
-		}
+  for (const auto &row : active_games_with_inactive_opponent) {
+    string game_uid = row["game_uid"].as<string>();
+    string user_uid = row["user_uid"].as<string>();
+    if (user_uid == uuid) {
+      continue; // This shouldn't happen since this player just sent a message
+    }
 
-		pqxx::connection conn = adrestia_database::establish_connection();
-		adrestia_database::conclude_game_in_database(logger, conn, game_uid, user_uid, -1);
-	}
+    pqxx::connection conn = adrestia_database::establish_connection();
+    adrestia_database::conclude_game_in_database(logger, conn, game_uid, user_uid, -1);
+  }
 }
 
 std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logger, const string& uuid) {
@@ -68,12 +68,12 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
    *                        completed games. If the game is a new game and has
    *                        rules that aren't the most recent rules, the game's
    *                        rules ("game_rules") will be included in the first update.
-	 *                        If the player has already made a move for the
-	 *                        current turn, it will be included as "player_move".
+   *                        If the player has already made a move for the
+   *                        current turn, it will be included as "player_move".
    */
 
-	// End any inactive games before we look for updates
-	forfeit_for_inactive_opponents(logger, uuid);
+  // End any inactive games before we look for updates
+  forfeit_for_inactive_opponents(logger, uuid);
 
   // Check for games
   adrestia_database::Db db(logger);

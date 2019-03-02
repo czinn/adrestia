@@ -23,7 +23,7 @@ func _init(g_):
 	ai.init_cfr_strategy(rules)
 
 func get_time_limit():
-	return 30
+	return 60
 
 func get_view():
 	if left_game: return null
