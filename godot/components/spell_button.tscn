@@ -131,7 +131,7 @@ group = null
 texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Material", "Mouse", "Rect", "Textures" ]
+_sections_unfolded = [ "Material", "Mouse", "Rect", "Size Flags", "Textures" ]
 
 [node name="glow_texture" type="TextureRect" parent="vbox/texture_button" index="0"]
 

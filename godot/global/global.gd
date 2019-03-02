@@ -194,6 +194,11 @@ func event_is_pressed(event):
 		and event.button_index == BUTTON_LEFT \
 		and event.pressed
 
+func event_is_release(event):
+	return event is InputEventMouseButton \
+		and event.button_index == BUTTON_LEFT \
+		and not event.pressed
+
 func tween(thing, to_pos, time):
 	var tw = Tweener.new(get_node('/root'))
 	tw.tween_to(thing, to_pos, time)

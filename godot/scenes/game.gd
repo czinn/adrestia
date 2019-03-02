@@ -25,6 +25,7 @@ var player_id
 var state
 var events = []
 var animate_events = true
+var can_cast_spells = true  # for tutorial.
 
 enum UiState {
 	CHOOSING_SPELLS,
@@ -75,6 +76,7 @@ func on_back_button_pressed():
 		g.scene_loader.goto_scene('title', true)
 
 func on_spell_enqueue(spell):
+	if not can_cast_spells: return
 	if ui_state != CHOOSING_SPELLS:
 		return
 	if not player_has_unlocked_spell(spell) and player_can_unlock_spell(spell):

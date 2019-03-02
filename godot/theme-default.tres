@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=12 format=2]
+[gd_resource type="Theme" load_steps=14 format=2]
 
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=1]
 [ext_resource path="res://9patch-default.stylebox" type="StyleBox" id=2]
@@ -7,12 +7,63 @@
 [ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=5]
 [ext_resource path="res://fonts/Amaranth-Regular.ttf" type="DynamicFontData" id=6]
 
-[sub_resource type="StyleBoxEmpty" id=1]
+[sub_resource type="StyleBoxFlat" id=6]
 
 content_margin_left = -1.0
 content_margin_right = -1.0
 content_margin_top = -1.0
 content_margin_bottom = -1.0
+bg_color = Color( 0, 0, 0, 1 )
+draw_center = true
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color( 0.8, 0.8, 0.8, 1 )
+border_blend = false
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 8
+expand_margin_left = 0.0
+expand_margin_right = 0.0
+expand_margin_top = 0.0
+expand_margin_bottom = 0.0
+shadow_color = Color( 0, 0, 0, 0.6 )
+shadow_size = 0
+anti_aliasing = true
+anti_aliasing_size = 1
+_sections_unfolded = [ "Corner Radius" ]
+
+[sub_resource type="StyleBoxFlat" id=7]
+
+content_margin_left = -1.0
+content_margin_right = -1.0
+content_margin_top = 5.0
+content_margin_bottom = -1.0
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+draw_center = true
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color( 0.8, 0.8, 0.8, 1 )
+border_blend = false
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+corner_detail = 8
+expand_margin_left = 0.0
+expand_margin_right = 0.0
+expand_margin_top = 0.0
+expand_margin_bottom = 0.0
+shadow_color = Color( 0, 0, 0, 0.6 )
+shadow_size = 0
+anti_aliasing = true
+anti_aliasing_size = 1
+_sections_unfolded = [ "Anti Aliasing", "Border Width", "Content Margin" ]
 
 [sub_resource type="StyleBoxFlat" id=2]
 
@@ -101,6 +152,13 @@ anti_aliasing = true
 anti_aliasing_size = 1
 _sections_unfolded = [ "Border", "Border Width", "Content Margin", "Expand Margin" ]
 
+[sub_resource type="StyleBoxEmpty" id=1]
+
+content_margin_left = -1.0
+content_margin_right = -1.0
+content_margin_top = -1.0
+content_margin_bottom = -1.0
+
 [sub_resource type="DynamicFont" id=5]
 
 size = 24
@@ -116,10 +174,10 @@ HScrollBar/icons/decrement = null
 HScrollBar/icons/decrement_highlight = null
 HScrollBar/icons/increment = null
 HScrollBar/icons/increment_highlight = null
-HScrollBar/styles/grabber = null
+HScrollBar/styles/grabber = SubResource( 6 )
 HScrollBar/styles/grabber_highlight = null
 HScrollBar/styles/grabber_pressed = null
-HScrollBar/styles/scroll = SubResource( 1 )
+HScrollBar/styles/scroll = SubResource( 7 )
 HScrollBar/styles/scroll_focus = null
 Label/colors/font_color = Color( 0, 0, 0, 1 )
 Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
@@ -178,5 +236,5 @@ VScrollBar/styles/grabber_highlight = null
 VScrollBar/styles/grabber_pressed = null
 VScrollBar/styles/scroll = SubResource( 1 )
 VScrollBar/styles/scroll_focus = null
-_sections_unfolded = [ "HScrollBar/icons", "HScrollBar/styles", "LineEdit", "LineEdit/colors", "LineEdit/constants", "LineEdit/fonts", "LineEdit/styles", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
+_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "LineEdit/colors", "LineEdit/constants", "LineEdit/fonts", "LineEdit/styles", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
 

@@ -5,7 +5,7 @@
 [ext_resource path="res://art-built/book/conjuration.png" type="Texture" id=3]
 [ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=4]
 
-[node name="control" type="Control" index="0"]
+[node name="control" type="Control"]
 
 anchor_left = 0.0
 anchor_top = 0.0

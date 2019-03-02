@@ -8,9 +8,10 @@ var update_callback = null
 
 var turn = 0
 var scripted_actions = [
-	['conjuration_tech', 'conjuration_attack_1'],
-	['conjuration_tech', 'conjuration_attack_1', 'conjuration_attack_1'],
-	['conjuration_attack_1'],
+	['bloodlust_tech', 'bloodlust_1'],
+	['bloodlust_tech', 'bloodlust_1', 'bloodlust_1'],
+	['bloodlust_1', 'bloodlust_1'],
+	['bloodlust_1'],
 ]
 
 # Public
@@ -56,7 +57,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	state = g.GameState.new()
-	state.init(g.get_rules(), [selected_book_ids, ['conjuration']])
+	state.init(g.get_rules(), [selected_book_ids, ['bloodlust']])
 	if started_callback != null:
 		started_callback.call_func()
 
