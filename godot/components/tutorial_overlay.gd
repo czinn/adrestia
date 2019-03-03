@@ -30,7 +30,7 @@ func close_blocker():
 
 var force_click_rect = null
 func blocker_input(event):
-	if OS.get_ticks_msec() - open_time < 500:
+	if OS.get_ticks_msec() - open_time < 000:  # TODO
 		return
 	if g.event_is_pressed(event):
 		close_blocker()
@@ -241,11 +241,10 @@ func play_tutorial():
 	game_root.animate_events = false
 	yield(show_tooltip(spell_animation_area,
 		'Your spells happen at the same time as your opponent\'s.\n[i]Tap to continue[/i]'), 'completed')
-	var enemy_spells_hbox = game_root.get_node('ui/enemy_spell_list/hbox')
+	yield(show_tooltip(spell_animation_area,
+		'Your enemy tried to damage you with [b]Razor Wind[/b], but you will block it just in time with your [b]Frost Shield[/b].'), 'completed')
 	game_root.animate_events = true
-	show_tooltip(spell_animation_area, 'Your enemy tried to damage you with [b]Razor Wind[/b], but you blocked it just in time!')
 	yield(game_root, 'turn_animation_finished')
-	close_blocker()
 	finished_first_turn = true
 
 	# Turn 2
@@ -282,10 +281,11 @@ func play_tutorial():
 	end_turn_button.emit_signal('pressed')
 
 	# Turn 2 animation
-	show_tooltip(spell_animation_area,
-		'Nicely done. The first [b]Razor Wind[/b] is blocked by your [b]Frost Shield[/b], while the second one is blocked by your [b]Iceberg[/b].')
+	game_root.animate_events = false
+	yield(show_tooltip(spell_animation_area,
+		'Nicely done. Your [b]Frost Shield[/b] will block the first [b]Razor Wind[/b], while your [b]Iceberg[/b] will block the second one.'), 'completed')
 	yield(game_root, 'turn_animation_finished')
-	close_blocker()
+	game_root.animate_events = true
 
 	# Turn 3
 	var sticky_display = game_root.get_node('ui/my_stickies/grid').get_child(0)
@@ -315,10 +315,11 @@ func play_tutorial():
 	end_turn_button.emit_signal('pressed')
 
 	# Turn 3 animation
-	show_tooltip(spell_animation_area,
-		'You were protected by your [b]Iceberg[/b] from last turn, but your own [b]Razor Wind[/b]s hit the enemy! Nice!')
+	game_root.animate_events = false
+	yield(show_tooltip(spell_animation_area,
+		'You are protected by your [b]Iceberg[/b] from last turn, but your own [b]Razor Wind[/b]s will hit the enemy! Nice!'), 'completed')
 	yield(game_root, 'turn_animation_finished')
-	close_blocker()
+	game_root.animate_events = true
 
 	# Turn 4
 	yield(show_big_window(
