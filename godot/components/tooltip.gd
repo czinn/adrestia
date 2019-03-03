@@ -48,8 +48,6 @@ func redraw():
 
 	var triangle_size = triangle.rect_size
 	var desired_margin_left = x - floor(triangle_size.x / 2)
-	print('whatis %f' % [desired_margin_left])
-	print('babydont %f' % [get_viewport_rect().size.x])
 	triangle.margin_left = min(get_viewport_rect().size.x - triangle_size.x - 25, max(25, desired_margin_left))
 	triangle.margin_right = triangle.margin_left + triangle_size.x
 	if point_down:
