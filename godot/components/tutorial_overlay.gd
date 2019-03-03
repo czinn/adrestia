@@ -30,7 +30,7 @@ func close_blocker():
 
 var force_click_rect = null
 func blocker_input(event):
-	if OS.get_ticks_msec() - open_time < 000: # TODO: jim: change back to 500
+	if OS.get_ticks_msec() - open_time < 500:
 		return
 	if g.event_is_pressed(event):
 		close_blocker()
@@ -130,10 +130,10 @@ func end_turn_button_pressed_override(game_root):
 
 func play_tutorial():
 	# Book Select
-
 	var selected_books_hbox = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
 	var select_root = yield(self.acquire_node(''), 'completed')
 	var play_button = yield(self.acquire_node('ui/play_button'), 'completed')
+
 	# Set up Play button override
 	g.safe_disconnect(play_button, 'pressed', select_root, 'on_play_button_pressed')
 	play_button.connect('pressed', self, 'play_button_pressed_override', [select_root])
@@ -161,24 +161,25 @@ func play_tutorial():
 	select_root.forced_book = 'bloodlust'
 	yield(show_tooltip(book_bloodlust_button, 'The [b]Book of Bloodlust[/b] is an aggressive book that focuses on dealing damage. Drag it up to select it.'), 'completed')
 	yield(select_root, 'chose_book')
-	yield(show_tooltip(books_hbox, 'Now scroll to the right until you see the [b]Book of Frost[/b].'), 'completed')
 	mouse_blocker.mouse_filter = MOUSE_FILTER_STOP
 
-	# Wait for scroll to frost book.
+	# If not already visible on screen, wait for scroll to frost book.
+	var showed_scroll_tooltip = false
 	var book_frost_last_x = 0.0
 	var still_checks = 0
 	while true:
 		var book_frost_rect = book_frost_button.get_global_rect()
-		var _min = 40
-		var _max = get_viewport_rect().size.x - book_frost_rect.size.x - 40
 		if book_frost_last_x != book_frost_rect.position.x:
 			still_checks = 0
 			book_frost_last_x = book_frost_rect.position.x
-		elif still_checks >= 2 and book_frost_last_x >= _min and book_frost_last_x <= _max:
-			break
-		else:
+		if book_frost_last_x >= 40 and book_frost_last_x <= get_viewport_rect().size.x - book_frost_rect.size.x - 40:
+			if still_checks >= 2 or not showed_scroll_tooltip:
+				break
 			still_checks += 1
-			yield(tree_poll_timer, 'timeout')
+		if not showed_scroll_tooltip:
+			yield(show_tooltip(books_hbox, 'Now scroll to the right until you see the [b]Book of Frost[/b].'), 'completed')
+			showed_scroll_tooltip = true
+		yield(tree_poll_timer, 'timeout')
 
 	select_root.forced_book = 'regulation'
 	yield(show_tooltip(book_frost_button,
@@ -201,7 +202,7 @@ func play_tutorial():
 		'Nice work! Let\'s take a look around the game screen.\n\n[i]Tap to continue[/i]'), 'completed')
 	var my_stats = yield(self.acquire_node('ui/my_avatar'), 'completed')
 	yield(show_tooltip(my_stats,
-		'This is you! You have 25 health and 3 mana. The (+3) beside your mana shows your mana regeneration; you\'ll get this much mana at the start of each turn.'), 'completed')
+		'This is you! You have 40 health and 3 mana. The (+3) beside your mana shows your mana regeneration; you\'ll get this much mana at the start of each turn.'), 'completed')
 
 	var book_btn_bloodlust = null
 	var book_btn_frost = null
@@ -225,7 +226,7 @@ func play_tutorial():
 		'Learn [b]Frost Shield[/b] by tapping on the blue lock.', true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		'Now, cast [b]Frost Shield[/b].', true), 'completed')
+		'Now, tap [b]Frost Shield[/b] to cast it.', true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	var close_book_button = spell_select.get_node('spell_panel/ninepatch/close_button')
 	yield(show_tooltip(close_book_button,

@@ -6,7 +6,7 @@ onready var texture_rect = $texture_rect
 const margin = 40
 
 func on_resize():
-	var window_size = get_global_rect().size
+	var window_size = get_viewport_rect().size
 	var texture_size = texture_rect.texture.get_size()
 
 	# Desired dimensions of the TextureRect.
@@ -37,4 +37,3 @@ func on_resize():
 
 func _ready():
 	self.on_resize()
-	get_tree().get_root().connect('size_changed', self, 'on_resize')
