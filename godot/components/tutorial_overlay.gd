@@ -30,7 +30,7 @@ func close_blocker():
 
 var force_click_rect = null
 func blocker_input(event):
-	if OS.get_ticks_msec() - open_time < 000:  # TODO
+	if OS.get_ticks_msec() - open_time < 500:
 		return
 	if g.event_is_pressed(event):
 		close_blocker()
