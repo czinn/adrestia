@@ -242,7 +242,7 @@ func play_tutorial():
 	yield(show_tooltip(spell_animation_area,
 		'Your spells happen at the same time as your opponent\'s.\n[i]Tap to continue[/i]'), 'completed')
 	yield(show_tooltip(spell_animation_area,
-		'Your enemy tried to damage you with [b]Razor Wind[/b], but you will block it just in time with your [b]Frost Shield[/b].'), 'completed')
+		'Your enemy tried to damage you with [b]Razor Wind[/b], but you will block it just in time with your [b]Frost Shield[/b].\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
 	finished_first_turn = true
@@ -283,9 +283,9 @@ func play_tutorial():
 	# Turn 2 animation
 	game_root.animate_events = false
 	yield(show_tooltip(spell_animation_area,
-		'Nicely done. Your [b]Frost Shield[/b] will block the first [b]Razor Wind[/b], while your [b]Iceberg[/b] will block the second one.'), 'completed')
-	yield(game_root, 'turn_animation_finished')
+		'Nicely done. Your [b]Frost Shield[/b] will block the first [b]Razor Wind[/b], while your [b]Iceberg[/b] will block the second one.\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
+	yield(game_root, 'turn_animation_finished')
 
 	# Turn 3
 	var sticky_display = game_root.get_node('ui/my_stickies/grid').get_child(0)
@@ -317,9 +317,9 @@ func play_tutorial():
 	# Turn 3 animation
 	game_root.animate_events = false
 	yield(show_tooltip(spell_animation_area,
-		'You are protected by your [b]Iceberg[/b] from last turn, but your own [b]Razor Wind[/b]s will hit the enemy! Nice!'), 'completed')
-	yield(game_root, 'turn_animation_finished')
+		'You are protected by your [b]Iceberg[/b] from last turn, but your own [b]Razor Wind[/b]s will hit the enemy! Nice!\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
+	yield(game_root, 'turn_animation_finished')
 
 	# Turn 4
 	yield(show_big_window(
