@@ -16,7 +16,7 @@ const Strategy = preload('res://native/strategy.gdns')
 
 const Tweener = preload('res://global/tweener.gd')
 
-signal tooltip_closed()
+signal tooltip_closed(content)
 
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
@@ -142,20 +142,26 @@ func make_spell_buttons(spells, show_stats = false, display_filter = null,
 		result.append(spell_button)
 	return result
 
-func close_tooltip():
+var tooltip_min_open_time = 0
+var tooltip_open_time = 0
+func close_tooltip(force=false):
+	if not force and OS.get_ticks_msec() - tooltip_open_time < tooltip_min_open_time:
+		return
 	if tooltip != null:
+		var content = tooltip.label.bbcode_text
 		tooltip.get_parent().remove_child(tooltip)
 		tooltip = null
-		emit_signal('tooltip_closed')
+		emit_signal('tooltip_closed', content)
 
 func summon_tooltip(target, text):
-	close_tooltip()
+	close_tooltip(true)
 	tooltip = tooltip_scene.instance()
 	tooltip.text = text
 	var pos = target.get_global_rect().position
 	var above = pos.y > 100
 	var y = pos.y if above else (pos.y + target.rect_size.y)
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
+	tooltip_open_time = OS.get_ticks_msec()
 	get_node("/root").add_child(tooltip)
 
 func summon_spell_tooltip(target, spell):
@@ -212,6 +218,7 @@ func remove_tutorial_overlay():
 	if tutorial_overlay != null && tutorial_overlay.get_parent() != null:
 		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
 	tutorial_overlay = null
+	tooltip_min_open_time = 0
 
 func remove_backend():
 	if backend != null:
