@@ -4,6 +4,7 @@
 #include <strategy.h>
 #include <random_strategy.h>
 #include <cfr_strategy.h>
+#include <monte_strategy.h>
 
 #include "macros.h"
 
@@ -16,6 +17,7 @@ namespace godot {
 
 			void init_random_strategy();
 			void init_cfr_strategy(Variant rules);
+			void init_monte_strategy(int iterations);
 			Variant get_action(Variant game_view);
 
 			INTF_NULLABLE

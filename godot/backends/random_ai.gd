@@ -20,7 +20,7 @@ func _init(g_):
 	g = g_
 	rules = g.get_default_rules()
 	ai = g.Strategy.new()
-	ai.init_cfr_strategy(rules)
+	ai.init_monte_strategy(10000)
 
 func get_time_limit():
 	return 60

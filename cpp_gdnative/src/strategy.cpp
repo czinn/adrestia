@@ -14,6 +14,7 @@ namespace godot {
 	void CLASSNAME::_register_methods() {
 		REGISTER_METHOD(init_random_strategy)
 		REGISTER_METHOD(init_cfr_strategy)
+		REGISTER_METHOD(init_monte_strategy)
 		REGISTER_METHOD(get_action)
 		REGISTER_NULLABLE
 	}
@@ -26,6 +27,10 @@ namespace godot {
 		auto *_rules = godot::as<GameRules>(rules);
 		set_ptr(new ::CfrStrategy(*_rules->_ptr));
 	}
+
+  void CLASSNAME::init_monte_strategy(int iterations) {
+    set_ptr(new ::MonteStrategy(iterations, true));
+  }
 
 	Variant CLASSNAME::get_action(Variant view) {
 		auto *_view = godot::as<GameView>(view);
