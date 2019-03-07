@@ -122,14 +122,13 @@ func end_turn_button_pressed_override(game_root):
 	if turn == 1 and spells != ['regulation_tech', 'regulation_1']:
 		show_big_window('For this turn, just learn [b]Frost Shield[/b] from the [b]Book of Frost[/b], then cast it.')
 	elif turn == 2 and spells != ['regulation_1', 'regulation_tech', 'regulation_2']:
-		show_big_window('For this turn:\n- Cast [b]Frost Shield[/b]\n- Then, learn [b]Iceberg[/b]\n- Finally, cast [b]Iceberg[/b].\nOrder is important!')
+		#show_big_window('For this turn:\n- Cast [b]Frost Shield[/b]\n- Then, learn [b]Iceberg[/b]\n- Finally, cast [b]Iceberg[/b].\nOrder is important!')
+		pass
 	elif turn == 3 and spells != ['bloodlust_tech', 'bloodlust_1', 'bloodlust_1']:
 		show_big_window('For this turn, learn [b]Razor Wind[/b], then cast it twice.')
 	else:
 		game_root.on_end_turn_button_pressed()
 		return
-	game_root.my_spell_list.spells = []
-	game_root.redraw()
 
 func play_tutorial():
 	g.tooltip_min_open_time = 500
