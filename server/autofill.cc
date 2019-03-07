@@ -32,8 +32,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-string SERVER_IP("142.44.184.217");
-// string SERVER_IP("127.0.0.1");
+string SERVER_IP("127.0.0.1");
 
 
 class connection_closed {};

@@ -5,9 +5,10 @@
 from collections import defaultdict
 import re
 import os
+import sys
 import psycopg2
 
-def main():
+def main(dry=True):
   schema = open('schema.sql').read()
   statements = map(str.strip, re.split(r';\n', schema))
   kinds = [
@@ -37,17 +38,14 @@ def main():
     table_name_new = table_name + '_new'
     creates.append((table_name, table_name_new, statement))
 
-  # Lock! Down! Everything!
-  print('Taking locks.')
+  # Create dummy tables if needed
   for table_name, table_name_new, statement in creates:
-    c.execute(f'''
-      LOCK TABLE {table_name} IN EXCLUSIVE MODE
-    ''')
+    c.execute(statement)
 
   # Create new tables and copy data over.
-  to_replace = set()
   print('Creating new tables.')
   for table_name, table_name_new, statement in creates:
+    print(table_name)
     statement_new = re.sub(table_name, table_name_new, statement)
     c.execute(f'''
       DROP TABLE IF EXISTS {table_name_new}
@@ -65,37 +63,34 @@ def main():
     added_columns = list(set(new_columns) - set(old_columns))
     removed_columns = list(set(old_columns) - set(new_columns))
     if added_columns or removed_columns:
-      print(table_name)
       if added_columns:
         print(f'Columns added: {added_columns}')
       if removed_columns:
         print(f'Columns removed: {removed_columns}')
-      ported_columns = ', '.join(shared_columns)
-      c.execute(f'''
-        INSERT INTO {table_name_new} ({ported_columns})
-        SELECT {ported_columns} FROM {table_name};
-      ''')
-      to_replace.add(table_name)
-    else:
-      print(f'{table_name}: Leaving alone.')
-      c.execute(f'''
-        DROP TABLE {table_name_new} CASCADE
-      ''')
+    ported_columns = ', '.join(shared_columns)
+    c.execute(f'''
+      INSERT INTO {table_name_new} ({ported_columns})
+      SELECT {ported_columns} FROM {table_name};
+    ''')
 
   # Delete original tables and rename new ones.
-  print('Deleting original tables.')
+  print('Replacing original tables.')
   for table_name, table_name_new, statement in creates:
-    if table_name not in to_replace: continue
     c.execute(f'''
       DROP TABLE IF EXISTS {table_name} CASCADE;
       ALTER TABLE {table_name_new} RENAME TO {table_name};
     ''')
-  conn.commit()
 
   print('Creating indices.')
   for statement in statements_of_kind['INDEX']:
-    print(statement)
     c.execute(statement)
 
+  if dry:
+    print('Dry run seems to have worked.')
+    print('Pass in "dewit" to change the database for real.')
+  else:
+    print('Committing.')
+    conn.commit()
+
 if __name__ == '__main__':
-  main()
+  main(dry=(len(sys.argv) < 2 or sys.argv[1] != 'dewit'))

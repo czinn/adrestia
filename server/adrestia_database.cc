@@ -142,8 +142,6 @@ GameRules adrestia_database::retrieve_game_rules(
     }
     return json::parse(search_result[0][0].as<string>());
   }
-
-  work.commit();
 }
 
 
