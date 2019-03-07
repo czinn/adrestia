@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS adrestia_accounts (
   last_login TIMESTAMPTZ,
   debug BOOLEAN NOT NULL DEFAULT FALSE,
   deactivated BOOLEAN NOT NULL DEFAULT FALSE,
+  creation_time TIMESTAMPTZ DEFAULT NOW(),
   PRIMARY KEY (uuid)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
   last_events JSON,
   winner_id SMALLINT,
   game_rules_id INTEGER REFERENCES adrestia_rules(id),
+  creation_time TIMESTAMPTZ DEFAULT NOW(),
   PRIMARY KEY (game_uid)
 );
 
