@@ -149,7 +149,6 @@ namespace adrestia_database {
       void commit();
       void abort();
     private:
-      void init();
       pqxx::connection *conn;
       pqxx::work *work;
   };

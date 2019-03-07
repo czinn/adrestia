@@ -43,7 +43,6 @@ class Babysitter {
 
     void log(const char *format, ...);
 
-    Logger logger;
     Phase phase;
     int client_socket;
     std::string read_message_buffer;

@@ -37,63 +37,26 @@ namespace adrestia_networking {
   void listen_for_connections(int port);
 
   // Server-side handlers
-  int handle_floop(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
+#define DEF_HANDLER(name)\
+  int name(\
+      const Logger& logger,\
+      const json& client_json,\
+      json& resp\
   );
 
-  int handle_establish_connection(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_register_new_account(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-  int handle_authenticate(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_abort_game(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-  int handle_change_user_name(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_matchmake_me(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_submit_move(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_get_stats(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_deactivate_account(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
+  DEF_HANDLER(handle_floop);
+  DEF_HANDLER(handle_establish_connection);
+  DEF_HANDLER(handle_register_new_account);
+  DEF_HANDLER(handle_authenticate);
+  DEF_HANDLER(handle_abort_game);
+  DEF_HANDLER(handle_change_user_name);
+  DEF_HANDLER(handle_matchmake_me);
+  DEF_HANDLER(handle_submit_move);
+  DEF_HANDLER(handle_get_stats);
+  DEF_HANDLER(handle_deactivate_account);
+  DEF_HANDLER(handle_get_user_profile);
+  DEF_HANDLER(handle_follow_user);
+  DEF_HANDLER(handle_unfollow_user);
 
   // Calls to handlers
   void create_floop_call(json& client_json);
