@@ -8,7 +8,6 @@ using json = nlohmann::json;
 
 int adrestia_networking::handle_get_user_profile(const Logger& logger, const json& client_json, json& resp) {
   logger.trace("Triggered handle_get_user_profile.");
-  logger.error("Unimplemented.");
   adrestia_database::Db db;
   return 1;
 }

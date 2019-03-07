@@ -26,6 +26,9 @@ namespace godot {
     REGISTER_METHOD(create_submit_move_call);
     REGISTER_METHOD(create_get_stats_call);
     REGISTER_METHOD(create_deactivate_account_call);
+    REGISTER_METHOD(create_get_user_profile_call);
+    REGISTER_METHOD(create_follow_user_call);
+    REGISTER_METHOD(create_unfollow_user_call);
   }
 
   String Protocol::create_floop_call() {
@@ -95,6 +98,27 @@ namespace godot {
   String Protocol::create_deactivate_account_call() {
     nlohmann::json j;
     adrestia_networking::create_deactivate_account_call(j);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_get_user_profile_call(String uuid) {
+    nlohmann::json j;
+    std::string uuid_; of_godot_variant(uuid, &uuid_);
+    adrestia_networking::create_get_user_profile_call(j, uuid_);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_follow_user_call(String uuid) {
+    nlohmann::json j;
+    std::string uuid_; of_godot_variant(uuid, &uuid_);
+    adrestia_networking::create_follow_user_call(j, uuid_);
+    return String(j.dump().c_str());
+  }
+
+  String Protocol::create_unfollow_user_call(String uuid) {
+    nlohmann::json j;
+    std::string uuid_; of_godot_variant(uuid, &uuid_);
+    adrestia_networking::create_unfollow_user_call(j, uuid_);
     return String(j.dump().c_str());
   }
 }

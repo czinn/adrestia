@@ -6,6 +6,7 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
+#const DEBUG = false
 const DEBUG = false
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
@@ -249,3 +250,12 @@ func get_stats(callback):
 
 func deactivate_account(callback):
 	return api_call_base('deactivate_account', [], callback)
+
+func get_user_profile(uuid, callback):
+	return api_call_base('get_user_profile', [uuid], callback)
+
+func follow_user(uuid, callback):
+	return api_call_base('follow_user', [uuid], callback)
+
+func unfollow_user(uuid, callback):
+	return api_call_base('unfollow_user', [uuid], callback)

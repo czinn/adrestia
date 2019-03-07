@@ -19,16 +19,16 @@ void adrestia_networking::create_floop_call(json& client_json) {
 
 void adrestia_networking::create_establish_connection_call(json& client_json, const std::string &version) {
   client_json[adrestia_networking::HANDLER_KEY] = "establish_connection";
-	client_json["client_version"] = version;
+  client_json["client_version"] = version;
 }
 
 void adrestia_networking::create_register_new_account_call(json& client_json,
   const std::string& password,
-	bool debug
+  bool debug
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "register_new_account";
   client_json["password"] = password;
-	client_json["debug"] = debug;
+  client_json["debug"] = debug;
 }
 
 
@@ -58,7 +58,7 @@ void adrestia_networking::create_change_user_name_call(json& client_json,
 
 
 void adrestia_networking::create_matchmake_me_call(json& client_json,
-	const GameRules &game_rules,
+  const GameRules &game_rules,
   const std::vector<std::string>& selected_books
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "matchmake_me";
@@ -67,8 +67,8 @@ void adrestia_networking::create_matchmake_me_call(json& client_json,
 }
 
 void adrestia_networking::create_submit_move_call(json& client_json,
-		const std::string& game_uid,
-		const std::vector<std::string>& player_move
+    const std::string& game_uid,
+    const std::vector<std::string>& player_move
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "submit_move";
   client_json["game_uid"] = game_uid;
@@ -81,4 +81,25 @@ void adrestia_networking::create_get_stats_call(json& client_json) {
 
 void adrestia_networking::create_deactivate_account_call(json& client_json) {
   client_json[adrestia_networking::HANDLER_KEY] = "deactivate_account";
+}
+
+void adrestia_networking::create_get_user_profile_call(json& client_json,
+  const std::string& uuid
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_user_profile";
+  client_json["uuid"] = uuid;
+}
+
+void adrestia_networking::create_follow_user_call(json& client_json,
+  const std::string& uuid
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "follow_user";
+  client_json["uuid"] = uuid;
+}
+
+void adrestia_networking::create_unfollow_user_call(json& client_json,
+  const std::string& uuid
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "unfollow_user";
+  client_json["uuid"] = uuid;
 }

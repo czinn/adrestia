@@ -21,5 +21,8 @@ namespace godot {
       godot::String create_submit_move_call(godot::String game_uid, godot::Variant player_move);
       godot::String create_get_stats_call();
       godot::String create_deactivate_account_call();
+      godot::String create_get_user_profile_call(godot::String uuid);
+      godot::String create_follow_user_call(godot::String uuid);
+      godot::String create_unfollow_user_call(godot::String uuid);
   };
 }

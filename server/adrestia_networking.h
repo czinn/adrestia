@@ -103,6 +103,21 @@ namespace adrestia_networking {
   void create_get_stats_call(json& client_json);
 
   void create_deactivate_account_call(json& client_json);
+
+  void create_get_user_profile_call(
+      json& client_json,
+      const std::string& uuid
+  );
+
+  void create_follow_user_call(
+      json& client_json,
+      const std::string& uuid
+  );
+
+  void create_unfollow_user_call(
+      json& client_json,
+      const std::string& uuid
+  );
 }
 
 #endif
