@@ -95,25 +95,27 @@ void Babysitter::main() {
           "Asked to access non-existent endpoint |" + endpoint + "|.";
       }
 
-      try {
-        switch (phase) {
-          case NEW:
-            phase = phase_new(endpoint, client_json, resp, handler);
-            break;
-          case ESTABLISHED:
-            phase = phase_established(endpoint, client_json, resp, handler);
-            break;
-          case AUTHENTICATED:
-            phase = phase_authenticated(endpoint, client_json, resp, handler);
-            break;
-          default:
-            logger.error("We somehow entered an invalid phase.");
+      if (handler != nullptr) {
+        try {
+          switch (phase) {
+            case NEW:
+              phase = phase_new(endpoint, client_json, resp, handler);
+              break;
+            case ESTABLISHED:
+              phase = phase_established(endpoint, client_json, resp, handler);
+              break;
+            case AUTHENTICATED:
+              phase = phase_authenticated(endpoint, client_json, resp, handler);
+              break;
+            default:
+              logger.error("We somehow entered an invalid phase.");
+          }
+        } catch (const string& s) {
+          logger.error("Error while running handler: %s", s.c_str());
+          resp[HANDLER_KEY] = "generic_error";
+          resp[CODE_KEY] = 400;
+          resp[MESSAGE_KEY] = "An error occurred.";
         }
-      } catch (const string& s) {
-        logger.error("Error while running handler: %s", s.c_str());
-        resp[HANDLER_KEY] = "generic_error";
-        resp[CODE_KEY] = 400;
-        resp[MESSAGE_KEY] = "An error occurred.";
       }
 
       string response_string = resp.dump();
