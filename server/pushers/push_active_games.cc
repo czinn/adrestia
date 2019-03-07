@@ -197,7 +197,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
   // If there is nothing to report, make an empty message and conclude.
   if (update_list.empty()) {
-    logger.debug("No new/changed games for uuid |%s|", uuid.c_str());
+    logger.trace("No new/changed games for uuid |%s|", uuid.c_str());
     return message_list;
   }
 

@@ -1,5 +1,4 @@
-#ifndef ADRESTIA_NETWORKING_INCLUDE_GUARD
-#define ADRESTIA_NETWORKING_INCLUDE_GUARD
+#pragma once
 
 #include "versioning.h"
 #include "../cpp/game_rules.h"
@@ -14,7 +13,6 @@
 // JSON
 #include "../cpp/json.h"
 using json = nlohmann::json;
-
 
 namespace adrestia_networking {
   const Version SERVER_VERSION = { 1, 0, 0 };
@@ -33,10 +31,10 @@ namespace adrestia_networking {
 
   // Server functions
   std::string read_message(int client_socket, bool& timed_out);
-  void babysit_client(int server_socket, int client_socket);
   void listen_for_connections(int port);
 
   // Server-side handlers
+  void resp_code(json& resp, int code, const std::string& message);
 #define DEF_HANDLER(name)\
   int name(\
       const Logger& logger,\
@@ -119,5 +117,3 @@ namespace adrestia_networking {
       const std::string& uuid
   );
 }
-
-#endif

@@ -6,7 +6,7 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
-#const DEBUG = false
+#const DEBUG = true
 const DEBUG = false
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const port = 16969
@@ -90,6 +90,9 @@ func _process(time):
 			if self.data_buffer[i] == 10: # newline
 				var message = self.data_buffer.subarray(0, i - 1).get_string_from_utf8()
 				var json = JSON.parse(message).result
+				if not json or not json.has(handler_key):
+					print('Networking: Got a message with no handler_key.')
+					break
 				var handler = json[handler_key]
 				if handler in handlers:
 					if json[code_key] != 200:

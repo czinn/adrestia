@@ -60,7 +60,7 @@ int adrestia_networking::handle_register_new_account(const Logger& logger, const
         INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt, last_login, debug)
         VALUES (?, ?, ?, ?, ?, NOW(), ?)
       )sql")(uuid)(default_user_name)(tag)(password_hash)(salt)(debug)();
-			db.commit();
+      db.commit();
 
       logger.info_() << "Created new account with:" << endl
           << "    uuid: |" << uuid << "|" << endl

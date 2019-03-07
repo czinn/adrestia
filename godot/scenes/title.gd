@@ -4,6 +4,7 @@ onready var g = get_node('/root/global')
 onready var online_status = $ui/online_status
 onready var play_button = $ui/play_button
 onready var settings_button = $ui/settings_button
+onready var friends_button = $ui/friends_button
 onready var animation_player = $animation_player
 
 const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
@@ -17,6 +18,7 @@ func _ready():
 	g.remove_backend();
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	settings_button.connect('pressed', self, 'on_settings_button_pressed')
+	friends_button.connect('pressed', self, 'on_friends_button_pressed')
 	if not g.loaded:
 		g.loaded = true
 		initialize()
@@ -60,6 +62,14 @@ func on_play_button_pressed():
 
 func on_settings_button_pressed():
 	g.scene_loader.goto_scene('settings')
+
+func on_friends_button_pressed():
+	print('boop')
+	g.network.get_user_profile('8d07d9da8f42348cf46443984c862c49', funcref(self, 'print_response'))
+	#g.scene_loader.goto_scene('friends')
+
+func print_response(response):
+	print(response)
 
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)
