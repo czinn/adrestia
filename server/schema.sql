@@ -21,12 +21,16 @@ CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
   selected_books VARCHAR ARRAY NOT NULL,
   PRIMARY KEY (uuid)
 );
+CREATE INDEX IF NOT EXISTS idx_adrestia_match_waiters_uuid
+  ON adrestia_match_waiters (uuid);
 
 DROP TABLE IF EXISTS adrestia_rules CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_rules (
   id SERIAL PRIMARY KEY,
   game_rules JSON
 );
+CREATE INDEX IF NOT EXISTS idx_adrestia_rules_id
+  ON adrestia_rules (id);
 
 -- Game activity states:
 --     -1: Aborted; Someone aborted and the game cannot continue.
@@ -48,6 +52,10 @@ CREATE TABLE IF NOT EXISTS adrestia_games (
   creation_time TIMESTAMPTZ DEFAULT NOW(),
   PRIMARY KEY (game_uid)
 );
+CREATE UNIQUE INDEX IF NOT EXISTS idx_adrestia_games_game_uid
+  ON adrestia_games (game_uid);
+CREATE INDEX IF NOT EXISTS idx_adrestia_games_creator_uuid
+  ON adrestia_games (creator_uuid);
 
 -- Player states:
 --     -1: Aborted; this person is not coming and the game should be terminated.
@@ -63,6 +71,10 @@ CREATE TABLE IF NOT EXISTS adrestia_players (
   last_move_time TIMESTAMPTZ,
   PRIMARY KEY (game_uid, user_uid)
 );
+CREATE INDEX IF NOT EXISTS idx_adrestia_players_game_uid
+  ON adrestia_players (game_uid);
+CREATE INDEX IF NOT EXISTS idx_adrestia_players_user_uid
+  ON adrestia_players (user_uid);
 
 DROP TABLE IF EXISTS adrestia_notifications CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_notifications (
@@ -70,3 +82,12 @@ CREATE TABLE IF NOT EXISTS adrestia_notifications (
   target_uuid VARCHAR NOT NULL, -- Account uuid or "*"
   message VARCHAR NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_adrestia_players_game_uid ON adrestia_players (game_uid);
+
+DROP TABLE IF EXISTS adrestia_follows CASCADE;
+CREATE TABLE IF NOT EXISTS adrestia_follows (
+  uuid1 VARCHAR REFERENCES adrestia_accounts(uuid),
+  uuid2 VARCHAR REFERENCES adrestia_accounts(uuid)
+);
+CREATE INDEX IF NOT EXISTS idx_adrestia_follows_uuid1 ON adrestia_follows (uuid1);
+CREATE INDEX IF NOT EXISTS idx_adrestia_follows_uuid2 ON adrestia_follows (uuid2);
