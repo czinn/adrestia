@@ -20,9 +20,7 @@ using namespace adrestia_networking;
 std::map<std::string, request_handler> handler_map;
 
 Babysitter::Babysitter(int client_socket)
-  :  client_socket(client_socket) {
-  logger.prefix = adrestia_hexy::hex_urandom(8);
-};
+  :  client_socket(client_socket) { };
 
 void Babysitter::main() {
   /* A single thread lives within this function, babysitting a client's connection.

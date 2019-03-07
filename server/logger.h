@@ -34,3 +34,5 @@ class Logger {
     void log_base(const char *format, va_list args) const;
     std::ostream &log_base_stream(std::ostream &os) const;
 };
+
+extern thread_local Logger logger;

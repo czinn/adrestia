@@ -1,10 +1,10 @@
 #include "adrestia_database.h"
+#include "logger.h"
 
 using namespace adrestia_database;
 
-DbQuery::DbQuery(std::string format, pqxx::work *work, const Logger &logger)
+DbQuery::DbQuery(std::string format, pqxx::work *work)
   : work(work)
-  , logger(logger)
 {
   // split format by ?s
   size_t cur, prev = 0;
@@ -31,9 +31,7 @@ pqxx::result DbQuery::operator()() {
   return work->exec(query);
 }
 
-Db::Db(const Logger &logger)
-  : logger(logger)
-{
+Db::Db() {
   const char *db_conn_string = getenv("DB_CONNECTION_STRING");
   if (db_conn_string == nullptr) {
     logger.error_() << "Failed to read DB_CONNECTION_STRING from env." << std::endl;
@@ -45,13 +43,16 @@ Db::Db(const Logger &logger)
   work = new pqxx::work(*conn);
 }
 
+// Dummy that discards the logger, to ease transition to thread_local logger.
+Db::Db(const Logger &logger) : Db() { }
+
 Db::~Db() {
   delete work;
   delete conn;
 }
 
 DbQuery Db::query(std::string format) {
-  return DbQuery(format, work, logger);
+  return DbQuery(format, work);
 }
 
 void Db::commit() {

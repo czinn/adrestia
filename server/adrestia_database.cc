@@ -5,6 +5,7 @@
 
 // Our related modules
 #include "adrestia_hexy.h"
+#include "logger.h"
 #include "../cpp/game_rules.h"
 #include "../cpp/game_state.h"
 
@@ -777,12 +778,11 @@ std::vector<std::string> adrestia_database::get_notifications(
   /* @brief Returns a list of messages and updates
    * latest_notification_already_sent. */
 
-  logger.trace(
-    "get_notifications called with args:\n"
-    "    uuid: |%s|\n"
-    "    latest_notification_already_sent: |%d|",
-    uuid.c_str(),
-    latest_notification_already_sent);
+  logger.trace_()
+    << "get_notifications called with args:\n"
+    << "    uuid: |" << uuid << "|\n"
+    << "    latest_notification_already_sent: |" << latest_notification_already_sent << "|"
+    << endl;
 
   std::vector<std::string> result;
 

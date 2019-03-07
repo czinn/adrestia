@@ -4,6 +4,7 @@
 #include "adrestia_networking.h"
 #include "adrestia_hexy.h"
 #include "babysitter.h"
+#include "logger.h"
 
 // Networking
 #include <sys/types.h>
@@ -32,6 +33,7 @@ using namespace std;
 using json = nlohmann::json;
 
 void babysit(int client_socket) {
+  logger.prefix = adrestia_hexy::hex_urandom(8);
 	Babysitter(client_socket).main();
 }
 
@@ -103,6 +105,10 @@ int main(int na, char* arg[]) {
 	handler_map["submit_move"] = adrestia_networking::handle_submit_move;
 	handler_map["get_stats"] = adrestia_networking::handle_get_stats;
 	handler_map["deactivate_account"] = adrestia_networking::handle_deactivate_account;
+
+	handler_map["get_user_profile"] = adrestia_networking::handle_get_user_profile;
+	handler_map["follow_user"] = adrestia_networking::handle_follow_user;
+	handler_map["unfollow_user"] = adrestia_networking::handle_unfollow_user;
 
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;

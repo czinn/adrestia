@@ -126,7 +126,7 @@ namespace adrestia_database {
    * */
   class DbQuery {
     public:
-      DbQuery(std::string format, pqxx::work *work, const Logger &logger);
+      DbQuery(std::string format, pqxx::work *work);
 
       template<typename T>
       DbQuery &operator()(const T &x) {
@@ -138,18 +138,18 @@ namespace adrestia_database {
       std::vector<std::string> format_parts;
       std::vector<std::string> quoted_parts;
       pqxx::work *work;
-      const Logger &logger;
   };
 
   class Db {
     public:
+      Db();
       Db(const Logger &logger);
       ~Db();
       DbQuery query(std::string format);
       void commit();
       void abort();
     private:
-      const Logger &logger;
+      void init();
       pqxx::connection *conn;
       pqxx::work *work;
   };
