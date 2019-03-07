@@ -5,6 +5,7 @@ using namespace adrestia_database;
 
 DbQuery::DbQuery(std::string format, pqxx::work *work)
   : work(work)
+  , has_run(false)
 {
   // split format by ?s
   size_t cur, prev = 0;
@@ -16,17 +17,32 @@ DbQuery::DbQuery(std::string format, pqxx::work *work)
   }
 }
 
+DbQuery::~DbQuery() {
+  if (!has_run) {
+    logger.warn_()
+      << "Warning: The following query was constructed but not actually run.\n"
+      << build_query()
+      << "Did you forget to call operator()?\n"
+      << std::endl;
+  }
+}
+
+std::string DbQuery::build_query() {
+  std::stringstream query_builder;
+  for (size_t i = 0; i < format_parts.size() - 1; i += 1) {
+    query_builder << format_parts[i];
+    query_builder << ((i < quoted_parts.size()) ? quoted_parts[i] : "?");
+  }
+  query_builder << format_parts.back();
+  return query_builder.str();
+}
+
 pqxx::result DbQuery::operator()() {
+  has_run = true;
   if (format_parts.size() != quoted_parts.size() + 1) {
     throw std::string("Wrong number of arguments supplied to SQL query.");
   }
-  std::stringstream query_builder;
-  for (size_t i = 0; i < quoted_parts.size(); i += 1) {
-    query_builder << format_parts[i];
-    query_builder << quoted_parts[i];
-  }
-  query_builder << format_parts.back();
-  std::string query = query_builder.str();
+  std::string query = build_query();
   logger.trace_() << query << std::endl;
   return work->exec(query);
 }
