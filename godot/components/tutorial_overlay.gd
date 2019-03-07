@@ -112,21 +112,24 @@ func play_button_pressed_override(select_root):
 	else:
 		show_big_window('You need to select the [b]Book of Bloodlust[/b] and the [b]Book of Frost[/b] for this tutorial.')
 
-var picked_wrong_spells = 0
 func end_turn_button_pressed_override(game_root):
-	if finished_first_turn:
+	var view = g.backend.get_view()
+	if view == null:
 		game_root.on_end_turn_button_pressed()
 		return
-
-	# Confirm that the player is doing the right first turn
+	var turn = view.turn_number()
 	var spells = game_root.my_spell_list.spells
-	if spells != ['regulation_tech', 'regulation_1']:
-		picked_wrong_spells += 1
-		show_big_window('For your first turn, learn [b]Frost Shield[/b] from the [b]Book of Frost[/b], then cast it.')
-		game_root.my_spell_list.spells = []
-		game_root.redraw()
+	if turn == 1 and spells != ['regulation_tech', 'regulation_1']:
+		show_big_window('For this turn, just learn [b]Frost Shield[/b] from the [b]Book of Frost[/b], then cast it.')
+	elif turn == 2 and spells != ['regulation_1', 'regulation_tech', 'regulation_2']:
+		show_big_window('For this turn:\n- Cast [b]Frost Shield[/b]\n- Then, learn [b]Iceberg[/b]\n- Finally, cast [b]Iceberg[/b].\nOrder is important!')
+	elif turn == 3 and spells != ['bloodlust_tech', 'bloodlust_1', 'bloodlust_1']:
+		show_big_window('For this turn, learn [b]Razor Wind[/b], then cast it twice.')
 	else:
 		game_root.on_end_turn_button_pressed()
+		return
+	game_root.my_spell_list.spells = []
+	game_root.redraw()
 
 func play_tutorial():
 	g.tooltip_min_open_time = 500
@@ -186,12 +189,14 @@ func play_tutorial():
 	yield(show_tooltip(book_frost_button,
 		'The [b]Book of Frost[/b] is a good book for defense. Tap it to see its spells, then drag it up to select it.', true), 'completed')
 	select_root.show_book_detail(book_frost_button.book)
-	yield(select_root, 'chose_book')
+	if not select_root.has_selected_book('regulation'):
+		yield(select_root, 'chose_book')
 	select_root.forced_book = null
 	yield(show_tooltip(play_button,
 		"Good job! The third book is yours to choose. When you're done, press the play button to fight against an AI opponent."), 'completed')
 
 	# Game
+	g.tooltip_min_open_time = 0
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
 	var game_root = yield(self.acquire_node(''), 'completed')
 	var end_turn_button = yield(self.acquire_node('ui/end_turn_button'), 'completed')
@@ -249,6 +254,7 @@ func play_tutorial():
 	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
 	finished_first_turn = true
+	close_blocker()
 
 	# Turn 2
 	yield(show_big_window(
@@ -296,6 +302,7 @@ func play_tutorial():
 		'Nicely done. Your [b]Frost Shield[/b] will block the first [b]Razor Wind[/b], while your [b]Iceberg[/b] will block the second one.\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
+	close_blocker()
 
 	# Turn 3
 	var sticky_display = game_root.get_node('ui/my_stickies/grid').get_child(0)
@@ -330,12 +337,13 @@ func play_tutorial():
 		'You are protected by your [b]Iceberg[/b] from last turn, but your own [b]Razor Wind[/b]s will hit the enemy! Nice!\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
+	close_blocker()
 
 	# Turn 4
-	yield(show_big_window(
-		"Many spells have an [b]on hit[/b] effect that triggers when they get through shields. Staying shielded can save you from a lot of pain."), 'completed')
 	yield(show_tooltip(my_stats.get_node('mana_box'),
 		'Leftover mana carries over between turns. Since you had 3 left from last turn, it plus your 3 mana regen gives you 6 now.'), 'completed')
+	yield(show_big_window(
+		"One final tip: many spells have an [b]on hit[/b] effect that triggers when they get through shields. Staying shielded can save you from a lot of pain."), 'completed')
 
 	yield(show_big_window("You're on your own now! Good luck."), 'completed')
 

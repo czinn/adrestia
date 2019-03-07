@@ -49,6 +49,13 @@ func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.call_deferred('on_back_button_pressed')
 
+# for tutorial
+func has_selected_book(book_id):
+	for book in chosen_books:
+		if book and book.get_id() == book_id:
+			return true
+	return false
+
 func show_book_detail(book):
 	emit_signal('show_book_detail', book)
 	# set spell list
