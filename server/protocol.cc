@@ -87,19 +87,19 @@ void adrestia_networking::create_get_user_profile_call(json& client_json,
   const std::string& uuid
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "get_user_profile";
-  client_json["uuid"] = uuid;
+  client_json["their_uuid"] = uuid;
 }
 
 void adrestia_networking::create_follow_user_call(json& client_json,
   const std::string& uuid
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "follow_user";
-  client_json["uuid"] = uuid;
+  client_json["their_uuid"] = uuid;
 }
 
 void adrestia_networking::create_unfollow_user_call(json& client_json,
   const std::string& uuid
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "unfollow_user";
-  client_json["uuid"] = uuid;
+  client_json["their_uuid"] = uuid;
 }

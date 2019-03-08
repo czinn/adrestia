@@ -89,5 +89,5 @@ CREATE TABLE IF NOT EXISTS adrestia_follows (
   uuid1 VARCHAR REFERENCES adrestia_accounts(uuid),
   uuid2 VARCHAR REFERENCES adrestia_accounts(uuid)
 );
-CREATE INDEX IF NOT EXISTS idx_adrestia_follows_uuid1 ON adrestia_follows (uuid1);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_adrestia_follows_uuid1_uuid2 ON adrestia_follows (uuid1, uuid2);
 CREATE INDEX IF NOT EXISTS idx_adrestia_follows_uuid2 ON adrestia_follows (uuid2);
