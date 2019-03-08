@@ -103,6 +103,12 @@ void Babysitter::main() {
               break;
             case ESTABLISHED:
               phase = phase_established(endpoint, client_json, resp, handler);
+              // Update tag if phase has changed.
+              if (phase == AUTHENTICATED) {
+                stringstream username_tag;
+                username_tag << resp["user_name"].get<string>() << " (" << resp["tag"].get<string>() << ")";
+                logger.prefix = username_tag.str();
+              }
               break;
             case AUTHENTICATED:
               phase = phase_authenticated(endpoint, client_json, resp, handler);
@@ -160,6 +166,7 @@ Babysitter::Phase Babysitter::phase_established(
     const json &client_json,
     json &resp,
     request_handler handler) {
+
   if (endpoint == "register_new_account") {
     handler(logger, client_json, resp);
     logger.trace("Moving to phase 2 via register_new_account.");

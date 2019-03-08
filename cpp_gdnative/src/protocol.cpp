@@ -8,6 +8,21 @@
 
 using namespace godot;
 
+#define IMPL_UNIT(fn) \
+  String Protocol::fn() {\
+    nlohmann::json j;\
+    adrestia_networking::create_get_stats_call(j);\
+    return String(j.dump().c_str());\
+  }
+
+#define IMPL_STRING(fn) \
+  String Protocol::fn(String a) {\
+    nlohmann::json j;\
+    std::string a_; of_godot_variant(a, &a_);\
+    adrestia_networking::fn(j, a_);\
+    return String(j.dump().c_str());\
+  }
+
 namespace godot {
   Protocol::Protocol() {
   }
@@ -29,20 +44,11 @@ namespace godot {
     REGISTER_METHOD(create_get_user_profile_call);
     REGISTER_METHOD(create_follow_user_call);
     REGISTER_METHOD(create_unfollow_user_call);
+    REGISTER_METHOD(create_get_friends_call);
   }
 
-  String Protocol::create_floop_call() {
-    nlohmann::json j;
-    adrestia_networking::create_floop_call(j);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_establish_connection_call(String version) {
-    nlohmann::json j;
-    std::string version_; of_godot_variant(version, &version_);
-    adrestia_networking::create_establish_connection_call(j, version_);
-    return String(j.dump().c_str());
-  }
+  IMPL_UNIT(create_floop_call);
+  IMPL_STRING(create_establish_connection_call);
 
   String Protocol::create_authenticate_call(String uuid, String password) {
     nlohmann::json j;
@@ -52,12 +58,7 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_abort_game_call(String game_uid) {
-    nlohmann::json j;
-    std::string game_uid_; of_godot_variant(game_uid, &game_uid_);
-    adrestia_networking::create_abort_game_call(j, game_uid_);
-    return String(j.dump().c_str());
-  }
+  IMPL_STRING(create_abort_game_call);
 
   String Protocol::create_register_new_account_call(String password, bool debug) {
     nlohmann::json j;
@@ -66,12 +67,7 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_change_user_name_call(String user_name) {
-    nlohmann::json j;
-    std::string user_name_; of_godot_variant(user_name, &user_name_);
-    adrestia_networking::create_change_user_name_call(j, user_name_);
-    return String(j.dump().c_str());
-  }
+  IMPL_STRING(create_change_user_name_call);
 
   String Protocol::create_matchmake_me_call(Variant rules, Variant selected_books) {
     nlohmann::json j;
@@ -89,36 +85,10 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_get_stats_call() {
-    nlohmann::json j;
-    adrestia_networking::create_get_stats_call(j);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_deactivate_account_call() {
-    nlohmann::json j;
-    adrestia_networking::create_deactivate_account_call(j);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_get_user_profile_call(String uuid) {
-    nlohmann::json j;
-    std::string uuid_; of_godot_variant(uuid, &uuid_);
-    adrestia_networking::create_get_user_profile_call(j, uuid_);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_follow_user_call(String uuid) {
-    nlohmann::json j;
-    std::string uuid_; of_godot_variant(uuid, &uuid_);
-    adrestia_networking::create_follow_user_call(j, uuid_);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_unfollow_user_call(String uuid) {
-    nlohmann::json j;
-    std::string uuid_; of_godot_variant(uuid, &uuid_);
-    adrestia_networking::create_unfollow_user_call(j, uuid_);
-    return String(j.dump().c_str());
-  }
+  IMPL_UNIT(create_get_stats_call);
+  IMPL_UNIT(create_deactivate_account_call);
+  IMPL_STRING(create_get_user_profile_call);
+  IMPL_STRING(create_follow_user_call);
+  IMPL_STRING(create_unfollow_user_call);
+  IMPL_UNIT(create_get_friends_call);
 }

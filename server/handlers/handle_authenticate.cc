@@ -18,7 +18,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_authenticate(const Logger& logger, const json& client_json, json& resp) {
+int adrestia_networking::handle_authenticate(const Logger& _logger, const json& client_json, json& resp) {
   /* Checks if a given account/password combination exists in the database.
    *
    * Accepts keys from client:

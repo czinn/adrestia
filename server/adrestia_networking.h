@@ -42,6 +42,12 @@ namespace adrestia_networking {
       json& resp\
   );
 
+  /* How to create a new endpoint
+   * - Add it here. Add a corresponding .cc in server/handlers/
+   * - Add a call creator below, and implement it to server/protocol.cc
+   * - Add a wrapper to cpp_gdnative/src/protocol.{h,cpp}
+   * - Wrap your wrapper in godot/global/networking.gd
+   */
   DEF_HANDLER(handle_floop);
   DEF_HANDLER(handle_establish_connection);
   DEF_HANDLER(handle_register_new_account);
@@ -55,6 +61,7 @@ namespace adrestia_networking {
   DEF_HANDLER(handle_get_user_profile);
   DEF_HANDLER(handle_follow_user);
   DEF_HANDLER(handle_unfollow_user);
+  DEF_HANDLER(handle_get_friends);
 
   // Calls to handlers
   void create_floop_call(json& client_json);
@@ -115,5 +122,9 @@ namespace adrestia_networking {
   void create_unfollow_user_call(
       json& client_json,
       const std::string& uuid
+  );
+
+  void create_get_friends_call(
+      json& client_json
   );
 }

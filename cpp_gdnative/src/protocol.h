@@ -24,5 +24,6 @@ namespace godot {
       godot::String create_get_user_profile_call(godot::String uuid);
       godot::String create_follow_user_call(godot::String uuid);
       godot::String create_unfollow_user_call(godot::String uuid);
+      godot::String create_get_friends_call();
   };
 }

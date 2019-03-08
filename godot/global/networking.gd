@@ -9,10 +9,11 @@ const Protocol = preload('res://native/protocol.gdns')
 #const DEBUG = true
 const DEBUG = false
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
+const always_register_new_account = DEBUG
+
 const port = 16969
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
-const always_register_new_account = DEBUG
 
 # jim: So the keepalive works as follows.
 # - We keep track of the when we've last sent and received data.
@@ -262,3 +263,6 @@ func follow_user(uuid, callback):
 
 func unfollow_user(uuid, callback):
 	return api_call_base('unfollow_user', [uuid], callback)
+
+func get_friends(callback):
+	return api_call_base('get_friends', [], callback)
