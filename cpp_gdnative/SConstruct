@@ -31,9 +31,9 @@ elif platform == "linux":
 
 elif platform == "windows":
     if target == "debug":
-        env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd'])
+        env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd', '/std:c++17'])
     else:
-        env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
+        env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD', '/std:c++17'])
 
     final_lib_path = final_lib_path + 'win' + str(bits) + '/'
 
