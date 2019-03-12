@@ -72,7 +72,7 @@ void Babysitter::main() {
 
       try {
         client_json = json::parse(message);
-        logger.trace_() << "Got message:\n" << client_json;
+        logger.trace_() << "Got message:\n" << client_json << endl;
         endpoint = client_json.at(HANDLER_KEY);
         handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {
@@ -107,7 +107,7 @@ void Babysitter::main() {
               // Update tag if phase has changed.
               if (phase == AUTHENTICATED) {
                 stringstream username_tag;
-                username_tag << resp["user_name"].get<string>() << " (" << resp["tag"].get<string>() << ")";
+                username_tag << resp["user_name"].get<string>() << " (" << resp["friend_code"].get<string>() << ")";
                 logger.prefix = username_tag.str();
               }
               break;

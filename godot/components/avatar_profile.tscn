@@ -6,7 +6,7 @@
 [ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=4]
 [ext_resource path="res://art-built/level-star.png" type="Texture" id=5]
 
-[node name="avatar_profile" type="Control"]
+[node name="avatar_profile" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -55,7 +55,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Mouse", "custom_fonts" ]
 
-[node name="tag_label" type="Label" parent="." index="2"]
+[node name="fc_label" type="Label" parent="." index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0

@@ -247,7 +247,7 @@ var auth_uuid
 var auth_pwd
 var first_play
 var user_name
-var tag
+var friend_code
 var multiplayer_wins
 # var rules # (declared above)
 
@@ -257,7 +257,7 @@ func save():
 		'auth_pwd': auth_pwd,
 		'first_play': first_play,
 		'user_name': user_name,
-		'tag': tag,
+		'friend_code': friend_code,
 		'rules': rules.back().as_json().result,
 		'multiplayer_wins': multiplayer_wins,
 	}
@@ -295,7 +295,7 @@ func load():
 	auth_pwd = dict_has(data, 'auth_pwd', null)
 	first_play = dict_has(data, 'first_play', true)
 	user_name = dict_has(data, 'user_name', null)
-	tag = dict_has(data, 'tag', null)
+	friend_code = dict_has(data, 'friend_code', null)
 	multiplayer_wins = dict_has(data, 'multiplayer_wins', null)
 
 	# Override rules with those from saved_data if they're newer.

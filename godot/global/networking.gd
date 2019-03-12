@@ -153,7 +153,7 @@ func gen_auth_pwd():
 func on_account_created(response):
 	g.auth_uuid = response.uuid
 	g.user_name = response.user_name
-	g.tag = response.tag
+	g.friend_code = response.friend_code
 	after_auth()
 
 func on_authenticated(response):
@@ -164,7 +164,7 @@ func on_authenticated(response):
 		register_new_account(g.auth_pwd, DEBUG, "Guest", OS.get_name(), funcref(self, 'on_account_created'))
 		return
 	g.user_name = response.user_name
-	g.tag = response.tag
+	g.friend_code = response.friend_code
 	after_auth()
 
 func on_floop(response):

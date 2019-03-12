@@ -17,6 +17,9 @@ func _notification(what):
 func on_add_friend_button_pressed():
 	g.network.get_user_profile('8d07d9da8f42348cf46443984c862c49', funcref(self, 'print_response'))
 
+func print_response(response):
+	print(response)
+
 func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)
 

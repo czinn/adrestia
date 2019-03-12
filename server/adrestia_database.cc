@@ -720,55 +720,6 @@ bool adrestia_database::submit_move_in_database(
 }
 
 
-json adrestia_database::verify_existing_account_in_database(
-  const Logger& logger,
-  pqxx::connection& psql_connection,
-  const string& uuid,
-  const string& password
-) {
-  /* @brief Returns json {'success': bool, 'user_name': string, 'tag': string } */
-
-  logger.trace(
-    "verify_existing_account_in_database called with args:\n"
-    "    uuid: |%s|\n"
-    "    password: |%s|",
-    uuid.c_str(),
-    password.c_str());
-  
-  json result;
-
-  pqxx::work work(psql_connection);
-  pqxx::result search_result = run_query(logger, work, R"sql(
-  SELECT hash_of_salt_and_password, salt, user_name, tag
-    FROM adrestia_accounts
-    WHERE uuid = %s
-  )sql", work.quote(uuid).c_str());
-
-  // Find account of given name
-  if (search_result.size() == 0) {
-    logger.trace("This uuid not found in database.");
-    result["valid"] = false;
-    return result;
-  }
-
-  pqxx::binarystring expected_hash(search_result[0]["hash_of_salt_and_password"]);
-  string salt = search_result[0]["salt"].as<string>();
-  pqxx::binarystring actual_hash(hash_password(password, salt));
-
-  if (actual_hash == expected_hash) {
-    logger.trace("This uuid and password have been verified.");
-    result["valid"] = true;
-    result["user_name"] = search_result[0]["user_name"].as<string>();
-    result["tag"] = search_result[0]["tag"].as<string>();
-    return result;
-  }
-
-  logger.trace("Received an incorrect password for this known uuid.");
-  result["valid"] = false;
-  return result;
-}
-
-
 std::vector<std::string> adrestia_database::get_notifications(
   const Logger& logger,
   pqxx::connection& psql_connection,

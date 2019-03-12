@@ -84,16 +84,6 @@ namespace adrestia_database {
     const std::vector<std::string>& player_move
   );
 
-
-  /* Returns json with keys 'valid', 'user_name', 'tag'.
-   */
-  json verify_existing_account_in_database(
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid,
-    const std::string& password
-  );
-
   /* Returns a list of messages to send to the user, and updates
    * latest_notification_already_sent to the maximum of the IDs of the messages
    * returned. */

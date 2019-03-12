@@ -34,19 +34,19 @@ func initialize():
 
 func on_connected():
 	avatar_profile.name_label.text = g.user_name
-	avatar_profile.tag_label.text = '#%s' % [g.tag]
+	avatar_profile.fc_label.text = 'FC: %s' % [g.friend_code]
 	avatar_profile.wins_label.text = 'Wins: %d' % [g.multiplayer_wins]
 	avatar_profile.online_label.text = 'Online'
 
 func on_disconnected():
 	avatar_profile.name_label.text = g.user_name
-	avatar_profile.tag_label.text = '#%s' % [g.tag]
+	avatar_profile.fc_label.text = 'FC: %s' % [g.friend_code]
 	avatar_profile.wins_label.text = 'Wins: %d' % [g.multiplayer_wins]
 	avatar_profile.online_label.text = 'Offline'
 
 func on_out_of_date():
 	avatar_profile.name_label.text = g.user_name
-	avatar_profile.tag_label.text = '#%s' % [g.tag]
+	avatar_profile.fc_label.text = 'FC: %s' % [g.friend_code]
 	avatar_profile.wins_label.text = 'Wins: %d' % [g.multiplayer_wins]
 	avatar_profile.online_label.text = 'Out-of-date client'
 
