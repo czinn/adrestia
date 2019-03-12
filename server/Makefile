@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -Wall -g -MMD -std=c++17 -O2 -I../cpp/fdeep-include -I../cpp/fplus-include -I../cpp 
 CXXFLAGS_POST = -L/usr/local/lib -L/usr/local/lib64 -lpqxx -lssl -lcrypto -lpthread
 MAINS = ./server_main.cc ./test_client.cc ./autofill.cc ../cpp/main.cc ../cpp/ai/main.cc ../cpp/cfr_train/main.cc ../cpp/tests/test.cc ../cpp/tests/game_rules_test.cc ../cpp/tests/game_state_test.cc
-OBJECTS = $(patsubst %.cc,%.o,$(filter-out $(MAINS), $(shell find . ../cpp/ -name "*.cc")))
+OBJECTS = $(patsubst %.cc,%.o,$(filter-out $(MAINS), $(shell find . ../cpp -name "*.cc")))
 
 SERVER_EXEC = server_main
 SERVER_OBJS = ${OBJECTS} server_main.o

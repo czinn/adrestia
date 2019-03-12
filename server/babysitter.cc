@@ -139,6 +139,11 @@ void Babysitter::main() {
     DELETE FROM adrestia_match_waiters
     WHERE uuid = ?
   )sql")(uuid)();
+  db.query(R"sql(
+    UPDATE adrestia_accounts
+    SET is_online = false
+    WHERE uuid = ?
+  )sql")(uuid)();
   db.commit();
 }
 

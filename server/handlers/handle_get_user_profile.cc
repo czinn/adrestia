@@ -13,7 +13,7 @@ int adrestia_networking::handle_get_user_profile(const Logger& logger, const jso
   string uuid = client_json.at("uuid");
 
   auto result = db.query(R"sql(
-    SELECT user_name, tag, last_login
+    SELECT user_name, tag, last_login, is_online
     FROM adrestia_accounts
     WHERE uuid = ?
   )sql")(uuid)();
@@ -24,11 +24,15 @@ int adrestia_networking::handle_get_user_profile(const Logger& logger, const jso
     return 0;
   }
 
-  auto row = result[0];
   resp[HANDLER_KEY] = client_json[HANDLER_KEY];
   resp_code(resp, 200, "Here is the profile.");
-  resp["user_name"] = row[0].as<string>();
-  resp["tag"] = row[1].as<string>();
-  resp["last_login"] = row[2].as<string>();
+  json profile;
+  auto row = result[0];
+  profile["uuid"] = uuid;
+  profile["user_name"] = row["user_name"].as<string>();
+  profile["tag"] = row["tag"].as<string>();
+  profile["last_login"] = row["last_login"].as<string>();
+  profile["is_online"] = row["is_online"].as<bool>();
+  resp["profile"] = profile;
   return 0;
 }

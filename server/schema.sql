@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS adrestia_accounts (
   debug BOOLEAN NOT NULL DEFAULT FALSE,
   deactivated BOOLEAN NOT NULL DEFAULT FALSE,
   creation_time TIMESTAMPTZ DEFAULT NOW(),
+  is_online BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (uuid)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
