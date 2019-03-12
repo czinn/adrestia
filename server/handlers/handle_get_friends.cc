@@ -12,21 +12,20 @@ int adrestia_networking::handle_get_friends(const Logger& logger, const json& cl
   string uuid = client_json.at("uuid");
 
   auto result = db.query(R"sql(
-    SELECT a.uuid, a.user_name, a.tag, a.last_login, a.is_online
+    SELECT a.user_name, a.friend_code, a.last_login, a.is_online
     FROM adrestia_follows f
     JOIN adrestia_accounts a
-    ON (f.uuid2 = a.uuid)
+    ON (f.uuid2 = a.friend_code)
     WHERE uuid1 = ?
   )sql")(uuid)();
 
   vector<json> friends;
   for (const auto &row : result) {
     friends.push_back({
-      {"uuid", row["uuid"].as<string>()},
       {"user_name", row["user_name"].as<string>()},
-      {"tag", row["tag"].as<string>()},
+      {"friend_code", row["friend_code"].as<string>()},
       {"last_login", row["last_login"].as<string>()},
-      {"is_online", row["is_online"].as<string>()}
+      {"is_online", row["is_online"].as<string>()},
     });
   }
 

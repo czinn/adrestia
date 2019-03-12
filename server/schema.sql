@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS adrestia_accounts (
   uuid VARCHAR NOT NULL,  -- Random hexy
   user_name VARCHAR NOT NULL,
   tag VARCHAR NOT NULL,
+  friend_code VARCHAR,
+  platform VARCHAR,
   hash_of_salt_and_password BYTEA NOT NULL,
   salt VARCHAR NOT NULL,
   last_login TIMESTAMPTZ,
@@ -15,6 +17,9 @@ CREATE TABLE IF NOT EXISTS adrestia_accounts (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_name_and_tag
   ON adrestia_accounts
   (user_name, tag);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_friend_code
+  ON adrestia_accounts
+  (friend_code);
 
 DROP TABLE IF EXISTS adrestia_match_waiters CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (

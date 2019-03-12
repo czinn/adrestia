@@ -38,7 +38,7 @@ pqxx::result run_query(const Logger& logger, pqxx::work& work, const char* query
   va_start(args, query_format);
   char *query = new char[needed];
   vsprintf(query, query_format, args);
-  logger.trace_() << query << endl;
+  logger.trace_() << "Running SQL (old way):" << query << endl;
 
   pqxx::result result;
   result = work.exec(query);

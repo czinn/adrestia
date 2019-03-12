@@ -11,7 +11,17 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <random>
 using namespace std;
+
+thread_local mt19937 rng;
+
+void adrestia_hexy::reseed() {
+	ifstream urandom("/dev/urandom", ios::in|ios::binary);
+	size_t seed;
+	urandom >> seed;
+	rng.seed(seed);
+}
 
 void adrestia_hexy::print_hexy(const char* not_hexy, int length) {
 	/* @brief Outputs to cout the hexadecimal form of bytes contained in not_hexy. */
@@ -28,42 +38,23 @@ void adrestia_hexy::print_hexy(const char* not_hexy, int length) {
 }
 
 
-string adrestia_hexy::hex_urandom(size_t number_of_characters) {
+string adrestia_hexy::hex_urandom(size_t length) {
 	/* Creates and returns random hex string of the requested length. */
-
-	char proto_output[number_of_characters + 1];
-
-	ifstream urandom("/dev/urandom", ios::in|ios::binary);
-
-	if (!urandom) {
-		cerr << "Failed to open urandom!\n";
-		throw;
+	const static char* hex_chars = "0123456789abcdef";
+	string result;
+	for (size_t i = 0; i < length; i++) {
+		result += hex_chars[rng() % 16];
 	}
+	return result;
+}
 
-	for (size_t i = 0; i < number_of_characters; i = i + 1) {
-		char next_number = 0;
 
-		urandom.read((char*)(&next_number), sizeof(char));
-		next_number &= 0x0F;  // Ensure we generate only one character at a time.
-
-		if (!urandom) {
-			cerr << "Failed to read from urandom!\n";
-			throw;
-		}
-
-		if (next_number < 10) {  // 0-10
-			proto_output[i] = (char)(next_number + 48);
-		}
-		else {  // A-F
-			proto_output[i] = (char)(next_number + 87);
-		}
+string adrestia_hexy::random_dec_string(size_t length) {
+	string result;
+	for (size_t i = 0; i < length; i++) {
+		result += rng() % 10 + '0';
 	}
-
-	proto_output[number_of_characters] = '\0';
-
-	string returnVar(proto_output);
-
-	return returnVar;
+	return result;
 }
 
 

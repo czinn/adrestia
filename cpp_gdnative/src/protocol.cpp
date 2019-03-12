@@ -60,10 +60,12 @@ namespace godot {
 
   IMPL_STRING(create_abort_game_call);
 
-  String Protocol::create_register_new_account_call(String password, bool debug) {
+  String Protocol::create_register_new_account_call(String password, bool debug, String user_name, String platform) {
     nlohmann::json j;
     std::string password_; of_godot_variant(password, &password_);
-    adrestia_networking::create_register_new_account_call(j, password_, debug);
+    std::string user_name_; of_godot_variant(user_name, &user_name_);
+    std::string platform_; of_godot_variant(platform, &platform_);
+    adrestia_networking::create_register_new_account_call(j, password_, debug, user_name_, platform_);
     return String(j.dump().c_str());
   }
 

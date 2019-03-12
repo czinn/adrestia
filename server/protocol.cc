@@ -24,11 +24,15 @@ void adrestia_networking::create_establish_connection_call(json& client_json, co
 
 void adrestia_networking::create_register_new_account_call(json& client_json,
   const std::string& password,
-  bool debug
+  bool debug,
+  const std::string& user_name,
+  const std::string& platform
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "register_new_account";
   client_json["password"] = password;
   client_json["debug"] = debug;
+  client_json["user_name"] = user_name;
+  client_json["platform"] = platform;
 }
 
 

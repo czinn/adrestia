@@ -25,6 +25,7 @@ namespace adrestia_database {
   const int TAG_LENGTH = 8;
   const int UUID_LENGTH = 32;
   const int GAME_UID_LENGTH = 32;
+  const int FRIEND_CODE_LENGTH = 8;
 
   /* Hashes the password with the given salt */
   std::string hash_password(const std::string& password, const std::string& salt);

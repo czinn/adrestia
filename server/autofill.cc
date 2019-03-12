@@ -210,7 +210,7 @@ int main(int argc, char* argv[]) {
   outbound_json.clear();
   response_json.clear();
 
-  adrestia_networking::create_register_new_account_call(outbound_json, password, true);
+  adrestia_networking::create_register_new_account_call(outbound_json, password, true, "autofill", "autofill");
   outbound_message = outbound_json.dump() + '\n';
   send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
   response_json = read_packet(my_socket_1, "register_new_account");

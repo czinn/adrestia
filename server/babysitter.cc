@@ -72,6 +72,7 @@ void Babysitter::main() {
 
       try {
         client_json = json::parse(message);
+        logger.trace_() << "Got message:\n" << client_json;
         endpoint = client_json.at(HANDLER_KEY);
         handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {

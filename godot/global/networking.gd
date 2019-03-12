@@ -140,7 +140,7 @@ func on_network_ready(response):
 			authenticate(g.auth_uuid, g.auth_pwd, funcref(self, 'on_authenticated'))
 		else:
 			gen_auth_pwd()
-			register_new_account(g.auth_pwd, DEBUG, funcref(self, 'on_account_created'))
+			register_new_account(g.auth_pwd, DEBUG, "Guest", OS.get_name(), funcref(self, 'on_account_created'))
 	else:
 		status = OUT_OF_DATE
 		emit_signal('out_of_date')
@@ -161,7 +161,7 @@ func on_authenticated(response):
 		# TODO: jim: this should not happen unless we clear the database. warn user
 		# that their account has been nuked in that case?
 		gen_auth_pwd()
-		register_new_account(g.auth_pwd, DEBUG, funcref(self, 'on_account_created'))
+		register_new_account(g.auth_pwd, DEBUG, "Guest", OS.get_name(), funcref(self, 'on_account_created'))
 		return
 	g.user_name = response.user_name
 	g.tag = response.tag
@@ -231,8 +231,8 @@ func floop(callback):
 func establish_connection(version, callback):
 	return api_call_base('establish_connection', [version], callback)
 
-func register_new_account(password, debug, callback):
-	return api_call_base('register_new_account', [password, debug], callback)
+func register_new_account(password, debug, user_name, platform, callback):
+	return api_call_base('register_new_account', [password, debug, user_name, platform], callback)
 
 func authenticate(uuid, password, callback):
 	return api_call_base('authenticate', [uuid, password], callback)
