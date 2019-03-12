@@ -5,10 +5,10 @@
 [ext_resource path="res://art-built/9patch/background-title.png" type="Texture" id=3]
 [ext_resource path="res://scripts/background.gd" type="Script" id=4]
 [ext_resource path="res://art-built/logo.png" type="Texture" id=5]
-[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
-[ext_resource path="res://art-built/button-play.png" type="Texture" id=7]
-[ext_resource path="res://art-built/button-settings.png" type="Texture" id=8]
-[ext_resource path="res://art-built/button-friends.png" type="Texture" id=9]
+[ext_resource path="res://art-built/button-play.png" type="Texture" id=6]
+[ext_resource path="res://art-built/button-settings.png" type="Texture" id=7]
+[ext_resource path="res://art-built/button-friends.png" type="Texture" id=8]
+[ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=9]
 
 [sub_resource type="Animation" id=1]
 
@@ -41,7 +41,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 __meta__ = {
@@ -93,37 +93,7 @@ expand = true
 stretch_mode = 6
 _sections_unfolded = [ "Anchor", "Margin", "Material", "Rect" ]
 
-[node name="online_status" type="RichTextLabel" parent="ui" index="2"]
-
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -196.0
-margin_top = -181.0
-margin_right = 192.0
-margin_bottom = -133.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-custom_fonts/normal_font = ExtResource( 6 )
-bbcode_enabled = false
-bbcode_text = ""
-visible_characters = -1
-percent_visible = 1.0
-meta_underlined = true
-tab_size = 4
-text = "Offline"
-scroll_active = true
-scroll_following = false
-selection_enabled = false
-override_selected_font_color = false
-_sections_unfolded = [ "custom_colors", "custom_fonts" ]
-
-[node name="play_button" type="TextureButton" parent="ui" index="3"]
+[node name="play_button" type="TextureButton" parent="ui" index="2"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -144,11 +114,11 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 7 )
+texture_normal = ExtResource( 6 )
 expand = true
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="settings_button" type="TextureButton" parent="ui" index="4"]
+[node name="settings_button" type="TextureButton" parent="ui" index="3"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -169,12 +139,12 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 8 )
+texture_normal = ExtResource( 7 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="friends_button" type="TextureButton" parent="ui" index="5"]
+[node name="friends_button" type="TextureButton" parent="ui" index="4"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -195,10 +165,17 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 9 )
+texture_normal = ExtResource( 8 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+
+[node name="avatar_profile" parent="ui" index="5" instance=ExtResource( 9 )]
+
+margin_left = 29.0
+margin_top = 316.0
+margin_right = 511.0
+margin_bottom = 463.0
 
 [node name="fade_in_rect" type="ColorRect" parent="." index="1"]
 

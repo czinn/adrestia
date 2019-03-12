@@ -1,7 +1,7 @@
 extends Node
 
 onready var g = get_node('/root/global')
-onready var online_status = $ui/online_status
+onready var avatar_profile = $ui/avatar_profile
 onready var play_button = $ui/play_button
 onready var settings_button = $ui/settings_button
 onready var friends_button = $ui/friends_button
@@ -33,13 +33,22 @@ func initialize():
 	g.load()
 
 func on_connected():
-	online_status.text = 'Online as %s' % [g.user_name]
+	avatar_profile.name_label.text = g.user_name
+	avatar_profile.tag_label.text = '#%s' % [g.tag]
+	avatar_profile.wins_label.text = 'Wins: %d' % [g.multiplayer_wins]
+	avatar_profile.online_label.text = 'Online'
 
 func on_disconnected():
-	online_status.text = 'Offline'
+	avatar_profile.name_label.text = g.user_name
+	avatar_profile.tag_label.text = '#%s' % [g.tag]
+	avatar_profile.wins_label.text = 'Wins: %d' % [g.multiplayer_wins]
+	avatar_profile.online_label.text = 'Offline'
 
 func on_out_of_date():
-	online_status.text = 'Out-of-date client.'
+	avatar_profile.name_label.text = g.user_name
+	avatar_profile.tag_label.text = '#%s' % [g.tag]
+	avatar_profile.wins_label.text = 'Wins: %d' % [g.multiplayer_wins]
+	avatar_profile.online_label.text = 'Out-of-date client'
 
 func on_push_active_games(response):
 	print(response)
@@ -65,8 +74,7 @@ func on_settings_button_pressed():
 
 func on_friends_button_pressed():
 	print('boop')
-	g.network.get_user_profile('8d07d9da8f42348cf46443984c862c49', funcref(self, 'print_response'))
-	#g.scene_loader.goto_scene('friends')
+	g.scene_loader.goto_scene('friends')
 
 func print_response(response):
 	print(response)
