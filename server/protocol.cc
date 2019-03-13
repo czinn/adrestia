@@ -88,22 +88,22 @@ void adrestia_networking::create_deactivate_account_call(json& client_json) {
 }
 
 void adrestia_networking::create_get_user_profile_call(json& client_json,
-  const std::string& uuid
+  const std::string& friend_code
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "get_user_profile";
-  client_json["their_uuid"] = uuid;
+  client_json["friend_code"] = friend_code;
 }
 
 void adrestia_networking::create_follow_user_call(json& client_json,
-  const std::string& uuid
+  const std::string& friend_code
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "follow_user";
-  client_json["their_uuid"] = uuid;
+  client_json["friend_code"] = friend_code;
 }
 
 void adrestia_networking::create_unfollow_user_call(json& client_json,
-  const std::string& uuid
+  const std::string& friend_code
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "unfollow_user";
-  client_json["their_uuid"] = uuid;
+  client_json["friend_code"] = friend_code;
 }

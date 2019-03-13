@@ -76,9 +76,6 @@ func on_friends_button_pressed():
 	print('boop')
 	g.scene_loader.goto_scene('friends')
 
-func print_response(response):
-	print(response)
-
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)
 	var tutorial_overlay = TutorialOverlay.instance()

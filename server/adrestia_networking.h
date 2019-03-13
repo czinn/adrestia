@@ -118,12 +118,12 @@ namespace adrestia_networking {
 
   void create_follow_user_call(
       json& client_json,
-      const std::string& uuid
+      const std::string& friend_code
   );
 
   void create_unfollow_user_call(
       json& client_json,
-      const std::string& uuid
+      const std::string& friend_code
   );
 
   void create_get_friends_call(

@@ -255,14 +255,14 @@ func get_stats(callback):
 func deactivate_account(callback):
 	return api_call_base('deactivate_account', [], callback)
 
-func get_user_profile(uuid, callback):
-	return api_call_base('get_user_profile', [uuid], callback)
+func get_user_profile(friend_code, callback):
+	return api_call_base('get_user_profile', [friend_code], callback)
 
-func follow_user(uuid, callback):
-	return api_call_base('follow_user', [uuid], callback)
+func follow_user(friend_code, callback):
+	return api_call_base('follow_user', [friend_code], callback)
 
-func unfollow_user(uuid, callback):
-	return api_call_base('unfollow_user', [uuid], callback)
+func unfollow_user(friend_code, callback):
+	return api_call_base('unfollow_user', [friend_code], callback)
 
 func get_friends(callback):
 	return api_call_base('get_friends', [], callback)

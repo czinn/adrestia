@@ -15,7 +15,9 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_add_friend_button_pressed():
-	g.network.get_user_profile('8d07d9da8f42348cf46443984c862c49', funcref(self, 'print_response'))
+	var friend_code = yield(g.summon_text_entry('Friend Code (FC):', ''), 'popup_closed')
+	if friend_code:
+		pass
 
 func print_response(response):
 	print(response)
