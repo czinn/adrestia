@@ -20,16 +20,16 @@ func on_add_friend_button_pressed():
 		g.network.follow_user(friend_code, funcref(self, 'on_friend_added'))
 
 func on_friend_added(response):
-	print(response)
+	pass
 
-func print_response(response):
+func on_get_friends_list(response):
 	print(response)
 
 func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)
 
 func on_connected():
-	pass
+	g.network.get_friends(funcref(self, 'on_get_friends_list'))
 
 func on_disconnected():
 	pass

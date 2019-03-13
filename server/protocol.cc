@@ -107,3 +107,7 @@ void adrestia_networking::create_unfollow_user_call(json& client_json,
   client_json[adrestia_networking::HANDLER_KEY] = "unfollow_user";
   client_json["friend_code"] = friend_code;
 }
+
+void adrestia_networking::create_get_friends_call(json& client_json) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_friends";
+}

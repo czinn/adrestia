@@ -110,6 +110,7 @@ int main(int na, char* arg[]) {
 	handler_map["get_user_profile"] = adrestia_networking::handle_get_user_profile;
 	handler_map["follow_user"] = adrestia_networking::handle_follow_user;
 	handler_map["unfollow_user"] = adrestia_networking::handle_unfollow_user;
+	handler_map["get_friends"] = adrestia_networking::handle_get_friends;
 
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;

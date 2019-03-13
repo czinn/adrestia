@@ -11,7 +11,7 @@ using namespace godot;
 #define IMPL_UNIT(fn) \
   String Protocol::fn() {\
     nlohmann::json j;\
-    adrestia_networking::create_get_stats_call(j);\
+    adrestia_networking::fn(j);\
     return String(j.dump().c_str());\
   }
 

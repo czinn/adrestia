@@ -44,6 +44,7 @@ namespace adrestia_networking {
 
   /* How to create a new endpoint
    * - Add it here. Add a corresponding .cc in server/handlers/
+   * - Add it to handler_map in server/server_main.cc
    * - Add a call creator below, and implement it to server/protocol.cc
    * - Add a wrapper to cpp_gdnative/src/protocol.{h,cpp}
    * - Wrap your wrapper in godot/global/networking.gd

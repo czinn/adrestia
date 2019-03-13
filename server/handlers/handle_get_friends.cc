@@ -15,7 +15,7 @@ int adrestia_networking::handle_get_friends(const Logger& logger, const json& cl
     SELECT a.user_name, a.friend_code, a.last_login, a.is_online
     FROM adrestia_follows f
     JOIN adrestia_accounts a
-    ON (f.uuid2 = a.friend_code)
+    ON (f.uuid2 = a.uuid)
     WHERE uuid1 = ?
   )sql")(uuid)();
 
