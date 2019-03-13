@@ -25,7 +25,7 @@ int adrestia_networking::handle_get_friends(const Logger& logger, const json& cl
       {"user_name", row["user_name"].as<string>()},
       {"friend_code", row["friend_code"].as<string>()},
       {"last_login", row["last_login"].as<string>()},
-      {"is_online", row["is_online"].as<string>()},
+      {"is_online", row["is_online"].as<bool>()},
     });
   }
 

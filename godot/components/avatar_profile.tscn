@@ -125,6 +125,7 @@ _sections_unfolded = [ "custom_fonts" ]
 
 [node name="texture_button1" type="TextureButton" parent="." index="5"]
 
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -151,6 +152,7 @@ _sections_unfolded = [ "Rect" ]
 
 [node name="texture_button2" type="TextureButton" parent="." index="6"]
 
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0

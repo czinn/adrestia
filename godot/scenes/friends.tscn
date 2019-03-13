@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scenes/friends.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
 [ext_resource path="res://art-built/9patch/background-title.png" type="Texture" id=3]
 [ext_resource path="res://scripts/background.gd" type="Script" id=4]
 [ext_resource path="res://fonts/Amaranth-Regular-60.tres" type="DynamicFont" id=5]
-[ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=6]
-[ext_resource path="res://art-built/button-back.png" type="Texture" id=7]
-[ext_resource path="res://art-built/button-add-friend.png" type="Texture" id=8]
+[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
+[ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=7]
+[ext_resource path="res://art-built/button-back.png" type="Texture" id=8]
+[ext_resource path="res://art-built/button-add-friend.png" type="Texture" id=9]
 
 [node name="root" type="Node"]
 
@@ -59,7 +60,30 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
 
-[node name="scroll_container" type="ScrollContainer" parent="ui" index="2"]
+[node name="offline_warning" type="Label" parent="ui" index="2"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 151.0
+margin_bottom = 225.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 6 )
+text = "offline"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
+
+[node name="scroll_container" type="ScrollContainer" parent="ui" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -96,29 +120,29 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="avatar_profile" parent="ui/scroll_container/v_box_container" index="0" instance=ExtResource( 6 )]
+[node name="avatar_profile" parent="ui/scroll_container/v_box_container" index="0" instance=ExtResource( 7 )]
 
 margin_right = 0.0
 
-[node name="avatar_profile2" parent="ui/scroll_container/v_box_container" index="1" instance=ExtResource( 6 )]
+[node name="avatar_profile2" parent="ui/scroll_container/v_box_container" index="1" instance=ExtResource( 7 )]
 
 margin_top = 151.0
 margin_right = 0.0
 margin_bottom = 298.0
 
-[node name="avatar_profile3" parent="ui/scroll_container/v_box_container" index="2" instance=ExtResource( 6 )]
+[node name="avatar_profile3" parent="ui/scroll_container/v_box_container" index="2" instance=ExtResource( 7 )]
 
 margin_top = 302.0
 margin_right = 0.0
 margin_bottom = 449.0
 
-[node name="avatar_profile4" parent="ui/scroll_container/v_box_container" index="3" instance=ExtResource( 6 )]
+[node name="avatar_profile4" parent="ui/scroll_container/v_box_container" index="3" instance=ExtResource( 7 )]
 
 margin_top = 453.0
 margin_right = 0.0
 margin_bottom = 600.0
 
-[node name="back_button" type="TextureButton" parent="ui" index="3"]
+[node name="back_button" type="TextureButton" parent="ui" index="4"]
 
 anchor_left = 0.5
 anchor_top = 1.0
@@ -139,12 +163,12 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 7 )
+texture_normal = ExtResource( 8 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="add_friend_button" type="TextureButton" parent="ui" index="4"]
+[node name="add_friend_button" type="TextureButton" parent="ui" index="5"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -165,7 +189,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 8 )
+texture_normal = ExtResource( 9 )
 expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
