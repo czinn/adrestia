@@ -29,6 +29,7 @@ int adrestia_networking::handle_unfollow_user(const Logger& logger, const json& 
     DELETE FROM adrestia_follows (uuid1, uuid2)
     WHERE uuid1 = ? AND uuid2 = ?
   )sql")(uuid)(uuid2)();
+  db.commit();
 
   resp[HANDLER_KEY] = client_json[HANDLER_KEY];
   resp_code(resp, 200, "Done");

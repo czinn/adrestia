@@ -24,13 +24,22 @@ int adrestia_networking::handle_follow_user(const Logger& logger, const json& cl
     return 0;
   }
 
-  string uuid2 = result[0]["friend_code"].as<string>();
-  db.query(R"sql(
-    INSERT INTO adrestia_follows (uuid1, uuid2)
-    VALUES (?, ?)
-  )sql")(uuid)(uuid2)();
+  string uuid2 = result[0]["uuid"].as<string>();
+  try {
+    db.query(R"sql(
+      INSERT INTO adrestia_follows (uuid1, uuid2)
+      VALUES (?, ?)
+    )sql")(uuid)(uuid2)();
+    db.commit();
+
+    resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+    resp_code(resp, 200, "Done");
+    return 0;
+  } catch (pqxx::integrity_constraint_violation &e) {
+    db.abort();
+  }
 
   resp[HANDLER_KEY] = client_json[HANDLER_KEY];
-  resp_code(resp, 200, "Done");
+  resp_code(resp, 500, "Error"); // probably duplicate friend
   return 0;
 }

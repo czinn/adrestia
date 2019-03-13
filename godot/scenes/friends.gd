@@ -17,7 +17,10 @@ func _notification(what):
 func on_add_friend_button_pressed():
 	var friend_code = yield(g.summon_text_entry('Friend Code (FC):', ''), 'popup_closed')
 	if friend_code:
-		pass
+		g.network.follow_user(friend_code, funcref(self, 'on_friend_added'))
+
+func on_friend_added(response):
+	print(response)
 
 func print_response(response):
 	print(response)
