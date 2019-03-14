@@ -306,6 +306,7 @@ json adrestia_database::retrieve_player_info_from_database (
    *          "player_id": The player id in the game, as integer
    *          "player_state": The player state in the game, as integer
    *          "player_move": The player move, if any, as an array. Null if null.
+   *          "opponent_friend_code": The friend code of the other player
    */
 
   logger.trace(
@@ -317,16 +318,13 @@ json adrestia_database::retrieve_player_info_from_database (
 
   pqxx::work work(psql_connection);
 
-  auto search_result = run_query(logger, work,
-                                 R"sql(
-                                   SELECT player_id, player_state, player_move
-                                     FROM adrestia_players
-                                     WHERE game_uid = %s
-                                       AND user_uid = %s
-                                 )sql",
-                                 work.quote(game_uid).c_str(),
-                                 work.quote(uuid).c_str()
-                                );
+  auto search_result =
+    run_query(logger, work, R"sql(
+      SELECT player_id, player_state, player_move
+        FROM adrestia_players
+        WHERE game_uid = %s
+          AND user_uid = %s
+    )sql", work.quote(game_uid).c_str(), work.quote(uuid).c_str());
 
   if (search_result.size() == 0) {
     string error_string = "Could not find player for uuid |" + uuid + "|, game_uid |" + game_uid + "|.";
@@ -335,6 +333,15 @@ json adrestia_database::retrieve_player_info_from_database (
   }
 
   logger.trace("Successfully found player.");
+
+  auto opponent =
+    run_query(logger, work, R"sql(
+      SELECT friend_code
+        FROM adrestia_players p
+          INNER JOIN adrestia_accounts a ON p.user_uid = a.uuid
+        WHERE game_uid = %s
+          AND user_uid != %s
+    )sql", work.quote(game_uid).c_str(), work.quote(uuid).c_str());
 
   json return_var;
   return_var["player_id"] = search_result[0][0].as<int>();
@@ -345,6 +352,7 @@ json adrestia_database::retrieve_player_info_from_database (
   else {
     return_var["player_move"] = json::parse(search_result[0][2].as<string>());
   }
+  return_var["opponent_friend_code"] = opponent[0]["friend_code"].as<string>();
 
   logger.trace("Committing transaction...");
   work.commit();

@@ -24,6 +24,8 @@ int adrestia_networking::handle_register_new_account(const Logger& logger, const
    *
    * Accepts keys from client:
    *     HANDLER_KEY: <this function>
+   *     "user_name" The user name for the account ("Guest" by default)
+   *     "platform" The user's platform
    *     "password" The password that the new account will have
    *     "debug" If present and true, the account is a debug account (exclude it from statistics)
    *

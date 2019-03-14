@@ -49,6 +49,9 @@ func get_state():
 func get_current_move():
 	return null
 
+func get_opponent():
+	return null
+
 func register_started_callback(callback_):
 	started_callback = callback_
 

@@ -6,7 +6,7 @@ signal out_of_date
 
 const Protocol = preload('res://native/protocol.gdns')
 
-const DEBUG = false
+const DEBUG = true
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const always_register_new_account = false # DEBUG
 

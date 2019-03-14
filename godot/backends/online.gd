@@ -10,6 +10,7 @@ var started_callback = null
 var update_callback = null
 var in_game = false
 var current_move = null
+var opponent = null
 
 # Public
 var rules
@@ -53,6 +54,9 @@ func get_state():
 func get_current_move():
 	return current_move
 
+func get_opponent():
+	return opponent
+
 func register_started_callback(callback_):
 	started_callback = callback_
 	if in_game:
@@ -94,9 +98,16 @@ func on_push_active_games(response):
 		print('We are now in a game: %s' % [game_uid])
 		in_game = true
 		started_callback and started_callback.call_func()
+		# Request opponent's profile from the server
+		g.network.get_user_profile(game.opponent_friend_code, funcref(self, 'on_opponent_profile'))
 
 func on_submit_move(response):
 	print('Submitted move with response: %d' % [response.api_code])
+
+func on_opponent_profile(response):
+	print(response)
+	if response.api_code == 200:
+		opponent = response.profile
 
 func submit_action(action):
 	if action == null:
