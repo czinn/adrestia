@@ -8,7 +8,6 @@
 #include "../cfr_strategy.h"
 #include "../monte_strategy.h"
 #include "../random_strategy.h"
-#include <fdeep/fdeep.hpp>
 
 using json = nlohmann::json;
 
@@ -16,9 +15,8 @@ int main() {
 	GameRules rules("rules.json");
 	GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration", "regulation"}, {"conjuration", "regulation"}});
 	std::vector<Strategy*> strategies;
-	fdeep::model model = fdeep::load_model("fdeep_model.json");
 	strategies.push_back(new CfrStrategy(rules));
-	strategies.push_back(new CfrStrategy(&model));
+	strategies.push_back(new CfrStrategy(rules));
 
 	while (game.winners().size() == 0) {
 		std::vector<GameAction> actions;
