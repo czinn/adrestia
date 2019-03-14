@@ -133,6 +133,14 @@ void Babysitter::main() {
     logger.info("Client closed the connection.");
   } catch (socket_error) {
     logger.error("Terminating due to socket error.");
+  } catch (json::exception &e) {
+    logger.error_()
+      << "Had a JSON exception" << endl
+      << e.what() << endl;
+  } catch (std::exception &e) {
+    logger.error_()
+      << "Had an unknown exception" << endl
+      << e.what() << endl;
   }
 
   adrestia_database::Db db(logger);

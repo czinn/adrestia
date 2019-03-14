@@ -57,7 +57,7 @@ int adrestia_networking::handle_authenticate(const Logger& _logger, const json& 
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 401;
     resp[adrestia_networking::MESSAGE_KEY] = "Authorization NOT OK.";
-    return 0;
+    return 1;
   }
 
   pqxx::binarystring expected_hash(result[0]["hash_of_salt_and_password"]);
