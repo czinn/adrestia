@@ -8,6 +8,7 @@ onready var friend_list = $ui/scroll_container/v_box_container
 onready var back_button = $ui/back_button
 onready var add_friend_button = $ui/add_friend_button
 onready var offline_warning = $ui/offline_warning
+onready var challenge_button = $ui/challenge_button
 
 func _ready():
 	back_button.connect('pressed', self, 'on_back_button_pressed')
@@ -40,7 +41,7 @@ func on_get_friends_list(response):
 		if friend.is_online:
 			profile.online_label.text = 'Online'
 		else:
-			profile.online_label.text = 'Last online ' + friend.last_login
+			profile.online_label.text = 'Last online ' + friend.last_login.split(' ')[0]
 
 func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)

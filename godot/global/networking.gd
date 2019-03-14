@@ -10,7 +10,7 @@ const DEBUG = true
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const always_register_new_account = false # DEBUG
 
-const port = 16942
+const port = 16969
 const handler_key = 'api_handler_name'
 const code_key = 'api_code'
 

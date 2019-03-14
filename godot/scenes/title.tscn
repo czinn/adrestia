@@ -41,7 +41,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 __meta__ = {
@@ -96,13 +96,13 @@ _sections_unfolded = [ "Anchor", "Margin", "Material", "Rect" ]
 [node name="play_button" type="TextureButton" parent="ui" index="2"]
 
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 margin_left = -196.0
-margin_top = 197.0
+margin_top = -283.0
 margin_right = 196.0
-margin_bottom = 313.0
+margin_bottom = -167.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -121,13 +121,13 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 [node name="settings_button" type="TextureButton" parent="ui" index="3"]
 
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 margin_left = -196.0
-margin_top = 331.0
+margin_top = -149.0
 margin_right = -9.0
-margin_bottom = 405.0
+margin_bottom = -75.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -147,13 +147,13 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 [node name="friends_button" type="TextureButton" parent="ui" index="4"]
 
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 margin_left = 9.0
-margin_top = 331.0
+margin_top = -149.0
 margin_right = 196.0
-margin_bottom = 405.0
+margin_bottom = -75.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -172,9 +172,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
 [node name="avatar_profile" parent="ui" index="5" instance=ExtResource( 9 )]
 
-margin_left = 29.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -241.0
 margin_top = 316.0
-margin_right = 511.0
+margin_right = 241.0
 margin_bottom = 463.0
 
 [node name="fade_in_rect" type="ColorRect" parent="." index="1"]
