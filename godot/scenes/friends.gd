@@ -27,7 +27,7 @@ func on_add_friend_button_pressed():
 		g.network.follow_user(friend_code, funcref(self, 'on_friend_added'))
 
 func on_friend_added(response):
-	pass
+	g.network.get_friends(funcref(self, 'on_get_friends_list'))
 
 func on_get_friends_list(response):
 	print(response)
