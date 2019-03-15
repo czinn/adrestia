@@ -50,43 +50,38 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
   logger.trace("Modifying uuid |%s| to have user_name |%s|...", uuid.c_str(), new_user_name.c_str());
 
   adrestia_database::Db db(logger);
-  string tag;
-  bool success = false;
   for (int i = 0; i < 1000; i += 1) {
-    tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
+    string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
+    string friend_code = adrestia_hexy::random_dec_string(adrestia_database::FRIEND_CODE_LENGTH);
     try {
       pqxx::result result = db.query(R"sql(
         UPDATE adrestia_accounts
-        SET user_name = ?, tag = ?
+        SET user_name = ?, tag = ?, friend_code = ?
         WHERE uuid = ?
-      )sql")(new_user_name)(tag)(uuid)();
+      )sql")(new_user_name)(tag)(uuid)(friend_code)();
       db.commit();
       logger.info("Successfully changed user_name in database.");
-      success = true;
-      break;
-    }
-    catch (pqxx::integrity_constraint_violation &e) {
+
+      logger.trace_()
+        << "New account info is:" << endl
+        << "    uuid: |" << uuid << "|" << endl
+        << "    user_name: |" << new_user_name << "|" << endl
+        << "    tag: |" << tag << "|" << endl;
+
+      resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+      resp[adrestia_networking::CODE_KEY] = 200;
+      resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
+      resp["tag"] = tag;
+      resp["user_name"] = new_user_name;
+      resp["friend_code"] = friend_code;
+
+      logger.trace("change_user_name concluded.");
+      return 0;
+    } catch (pqxx::integrity_constraint_violation &e) {
       db.abort();
     }
   }
 
-  if (!success) {
-    logger.error("Failed to update the user_name!");
-    throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + new_user_name + "|!");
-  }
-
-  logger.trace_()
-    << "New account info is:" << endl
-    << "    uuid: |" << uuid << "|" << endl
-    << "    user_name: |" << new_user_name << "|" << endl
-    << "    tag: |" << tag << "|" << endl;
-
-  resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-  resp[adrestia_networking::CODE_KEY] = 200;
-  resp[adrestia_networking::MESSAGE_KEY] = "Modification complete.";
-  resp["tag"] = tag;
-  resp["user_name"] = new_user_name;
-
-  logger.trace("change_user_name concluded.");
-  return 0;
+  logger.error("Failed to update the user_name!");
+  throw string("Failed to update user name of uuid |" + uuid + "| to user_name |" + new_user_name + "|!");
 }

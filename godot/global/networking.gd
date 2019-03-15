@@ -201,7 +201,7 @@ func on_challenge(message):
 		g.summon_notification('You have a duel request from %s.' % [message.user_name], true, funcref(self, 'on_challenge_pressed'))
 	else:
 		# TODO: jim: Should instead prevent sending duel requests to people already in games.
-		g.summon_notification("You got a duel request from %s, but you can't accept it because you're in a game.", true)
+		g.summon_notification("You got a duel request from %s, but you can't accept it because you're in a game." % [message.user_name], true)
 
 # TODO: jim: Find better way to pass this from [on_challenge] than using this variable.
 var latest_duel_message
