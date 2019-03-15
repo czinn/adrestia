@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<!-- lol no I actually made most of this by hand -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="52.878136"
+   height="48.417843"
+   viewBox="0 0 52.878136 48.417843"
+   version="1.1"
+   id="svg1718"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   sodipodi:docname="challenge-button.svg">
+  <defs
+     id="defs1712" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.9195959"
+     inkscape:cx="17.984127"
+     inkscape:cy="12.896939"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1052"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false" />
+  <metadata
+     id="metadata1715">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(7.0787252,6.0381701)">
+    <path
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#545454;stroke-width:10;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="M 29.300606,1.0315911 27.57795,2.8440911 19.325997,11.525732 11.39631,3.2190911 9.669747,1.4104974 6.0525595,4.8616689 7.779122,6.6702629 15.876778,15.154638 8.187325,23.244482 5.654122,20.738622 3.8767782,18.98081 l -3.515625,3.554688 1.7773438,1.757812 2.6035156,2.576172 -3.0273437,3.183594 -1.7226563,1.810546 3.625,3.445313 1.7207032,-1.8125 2.9589842,-3.111328 2.546875,2.519531 1.777344,1.757813 3.517578,-3.554688 -1.779297,-1.757812 -2.617187,-2.589844 7.589843,-7.986328 7.636719,8 -2.603515,2.576172 -1.777344,1.757812 3.515625,3.554688 1.777343,-1.757813 2.541016,-2.513672 2.96875,3.109375 1.726563,1.808594 3.615234,-3.451172 -1.724609,-1.808594 -3.03125,-3.175781 2.609375,-2.580078 1.777343,-1.757812 -3.515625,-3.554688 -1.777343,1.757812 -2.546875,2.517579 -7.742188,-8.109375 8.421875,-8.8593751 1.720703,-1.810547 z"
+       id="path844"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

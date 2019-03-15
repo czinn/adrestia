@@ -36,12 +36,17 @@ func on_get_friends_list(response):
 		friend_list.add_child(profile)
 		profile.name_label.text = friend.user_name
 		profile.fc_label.text = 'FC: ' + friend.friend_code
+		profile.buttons.visible = true
+		profile.challenge_button.connect('pressed', self, 'on_challenge_friend', [friend])
 		print(friend.is_online)
 		print(typeof(friend.is_online))
 		if friend.is_online:
 			profile.online_label.text = 'Online'
 		else:
 			profile.online_label.text = 'Last online ' + friend.last_login.split(' ')[0]
+
+func on_challenge_friend(friend):
+	print('Challenging friend %s' % [friend.friend_code])
 
 func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)

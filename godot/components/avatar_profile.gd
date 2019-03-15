@@ -7,6 +7,8 @@ onready var name_label = $name_label
 onready var fc_label = $fc_label
 onready var wins_label = $wins_label
 onready var online_label = $online_label
+onready var buttons = $buttons
+onready var challenge_button = $buttons/challenge
 
 func _ready():
 	name_label.text = ''

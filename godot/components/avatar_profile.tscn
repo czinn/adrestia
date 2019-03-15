@@ -4,7 +4,7 @@
 [ext_resource path="res://components/avatar_profile.gd" type="Script" id=2]
 [ext_resource path="res://components/avatar.tscn" type="PackedScene" id=3]
 [ext_resource path="res://fonts/Amaranth-Regular-15.tres" type="DynamicFont" id=4]
-[ext_resource path="res://art-built/level-star.png" type="Texture" id=5]
+[ext_resource path="res://art-built/challenge-button.png" type="Texture" id=5]
 
 [node name="avatar_profile" type="Control" index="0"]
 
@@ -123,44 +123,31 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "custom_fonts" ]
 
-[node name="challenge_button" type="TextureButton" parent="." index="5"]
+[node name="buttons" type="Control" parent="." index="5"]
 
-visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 411.0
-margin_top = 7.0
-margin_right = 454.0
-margin_bottom = 49.0
+margin_right = 40.0
+margin_bottom = 40.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-texture_normal = ExtResource( 5 )
-expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Rect" ]
 
-[node name="texture_button2" type="TextureButton" parent="." index="6"]
+[node name="challenge" type="TextureButton" parent="buttons" index="0"]
 
-visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 411.0
-margin_top = 75.0
-margin_right = 454.0
-margin_bottom = 117.0
+margin_left = 416.0
+margin_top = 11.0
+margin_right = 469.0
+margin_bottom = 60.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
