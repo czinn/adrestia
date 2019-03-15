@@ -45,6 +45,7 @@ namespace godot {
     REGISTER_METHOD(create_follow_user_call);
     REGISTER_METHOD(create_unfollow_user_call);
     REGISTER_METHOD(create_get_friends_call);
+    REGISTER_METHOD(create_send_challenge_call);
   }
 
   IMPL_UNIT(create_floop_call);
@@ -94,4 +95,5 @@ namespace godot {
   IMPL_STRING(create_follow_user_call);
   IMPL_STRING(create_unfollow_user_call);
   IMPL_UNIT(create_get_friends_call);
+  IMPL_STRING(create_send_challenge_call);
 }

@@ -29,12 +29,19 @@ std::vector<json> adrestia_networking::PushChallenges::push(const Logger& logger
   std::vector<json> result;
   for (const auto &row : query_result) {
     result.push_back({
-      { HANDLER_KEY, "challenges" },
+      { HANDLER_KEY, "push_challenge" },
       { CODE_KEY, 200 },
       { MESSAGE_KEY, "New challenge" },
       { "user_name", row[0].as<string>() },
       { "friend_code", row[1].as<string>() },
     });
   }
+
+  db.query(R"sql(
+    DELETE FROM challenges
+    WHERE receiver_uuid = ?
+  )sql")(uuid)();
+  db.commit();
+
   return result;
 }

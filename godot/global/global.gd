@@ -185,8 +185,8 @@ func summon_confirm(text):
 	get_node("/root").add_child(confirm)
 	return confirm
 
-func summon_notification(text):
-	scene_loader.notification.push_notification(text)
+func summon_notification(text, sticky=false, on_click=null):
+	scene_loader.notification.push_notification(text, sticky, on_click)
 
 func summon_text_entry(text, default_text):
 	var popup = text_entry_popup_scene.instance()

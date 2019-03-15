@@ -89,23 +89,39 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
   logger.trace("Selected books all seem okay. Matchmaking in database.");
 
   std::string target_friend_code = client_json.value("target_friend_code", "");
+  std::string target_uuid = "";
+  if (target_friend_code != "") {
+    auto result = db.query(R"sql(
+      SELECT uuid FROM adrestia_accounts WHERE friend_code = ?
+    )sql")(target_friend_code)();
+    if (result.size() > 0) {
+      target_uuid = result[0][0].as<string>();
+    } else {
+      logger.warn_() << "No uuid for friend code " << target_friend_code << endl;
+      resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+      resp[CODE_KEY] = 400;
+      resp[MESSAGE_KEY] = "Bad friend code";
+    }
+  }
+
   auto query_result =
-    (target_friend_code == "")
+    (target_uuid == "")
     ? db.query(R"sql(
       SELECT uuid, selected_books
       FROM adrestia_match_waiters
-      WHERE uuid != ? AND target_uuid = ''
+      WHERE target_uuid = ''
       LIMIT 1
       FOR UPDATE
-    )sql")(uuid)()
+    )sql")()
     : db.query(R"sql(
-      SELECT mw.uuid, mw.selected_books
-      FROM adrestia_match_waiters mw
-      JOIN adrestia_accounts a ON mw.uuid = a.uuid
-      WHERE a.friend_code = ? AND mw.target_uuid = ?
+      SELECT uuid, selected_books
+      FROM adrestia_match_waiters
+      WHERE uuid = ? AND target_uuid = ?
       LIMIT 1
       FOR UPDATE
-    )sql")(target_friend_code)(uuid)();
+    )sql")(target_uuid)(uuid)();
+    // intentionally swapped order of uuid and target_uuid; we're looking for
+    // our-target-who-has-also-targeted-us
 
   if (query_result.size() > 0) {
     string waiting_uuid = query_result[0]["uuid"].as<string>();
@@ -162,10 +178,11 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
   logger.info("No possible matches are waiting. We shall become a waiter.");
 
   db.query(R"sql(
-    INSERT INTO adrestia_match_waiters (uuid, selected_books)
-    VALUES (?, ?)
+    INSERT INTO adrestia_match_waiters (uuid, selected_books, target_uuid)
+    VALUES (?, ?, ?)
     ON CONFLICT (uuid) DO UPDATE SET selected_books = ?
-  )sql")(uuid)(selected_books)(selected_books)();
+  )sql")(uuid)(selected_books)(target_uuid)
+    (selected_books)();
 
   logger.trace("Committing transaction.");
   db.commit();

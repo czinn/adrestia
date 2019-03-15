@@ -78,7 +78,7 @@ void Babysitter::main() {
 
       try {
         client_json = json::parse(message);
-        logger.trace_() << "Got message:\n" << client_json << endl;
+        logger.debug_() << "Got message:\n" << client_json << endl;
         endpoint = client_json.at(HANDLER_KEY);
         handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {
@@ -153,6 +153,10 @@ void Babysitter::main() {
   db.query(R"sql(
     DELETE FROM adrestia_match_waiters
     WHERE uuid = ?
+  )sql")(uuid)();
+  db.query(R"sql(
+    DELETE FROM challenges
+    WHERE sender_uuid = ?
   )sql")(uuid)();
   db.query(R"sql(
     UPDATE adrestia_accounts

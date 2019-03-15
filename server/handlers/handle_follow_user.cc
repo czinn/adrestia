@@ -13,7 +13,7 @@ int adrestia_networking::handle_follow_user(const Logger& logger, const json& cl
   string friend_code = client_json.at("friend_code");
 
   auto result = db.query(R"sql(
-    SELECT uuid
+    SELECT user_name, uuid
     FROM adrestia_accounts
     WHERE friend_code = ?
   )sql")(friend_code)();
@@ -34,6 +34,7 @@ int adrestia_networking::handle_follow_user(const Logger& logger, const json& cl
 
     resp[HANDLER_KEY] = client_json[HANDLER_KEY];
     resp_code(resp, 200, "Done");
+    resp["user_name"] = result[0]["user_name"].as<string>();
     return 0;
   } catch (pqxx::integrity_constraint_violation &e) {
     db.abort();

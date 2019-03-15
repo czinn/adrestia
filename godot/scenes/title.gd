@@ -73,7 +73,6 @@ func on_settings_button_pressed():
 	g.scene_loader.goto_scene('settings')
 
 func on_friends_button_pressed():
-	print('boop')
 	g.scene_loader.goto_scene('friends')
 
 func on_tutorial_button_pressed():

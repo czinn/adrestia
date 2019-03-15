@@ -61,6 +61,7 @@ namespace adrestia_networking {
   DEF_HANDLER(handle_follow_user);
   DEF_HANDLER(handle_unfollow_user);
   DEF_HANDLER(handle_get_friends);
+  DEF_HANDLER(handle_send_challenge);
 
   // Calls to handlers
   void create_floop_call(json& client_json);
@@ -128,5 +129,10 @@ namespace adrestia_networking {
 
   void create_get_friends_call(
       json& client_json
+  );
+
+  void create_send_challenge_call(
+      json& client_json,
+      const std::string& friend_code
   );
 }

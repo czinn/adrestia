@@ -11,6 +11,7 @@ var update_callback = null
 var in_game = false
 var current_move = null
 var opponent = null
+var friend_code = null
 
 # Public
 var rules
@@ -20,8 +21,9 @@ func _notification(what):
 	if what == NOTIFICATION_PREDELETE:
 		g.network.disconnect('disconnected', self, 'disconnected')
 
-func _init(g_):
+func _init(g_, friend_code_=null):
 	g = g_
+	friend_code = friend_code_
 	rules = g.get_default_rules()
 	g.network.connect('disconnected', self, 'disconnected')
 
@@ -71,7 +73,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
-	g.network.matchmake_me(g.get_rules(), selected_book_ids, '', funcref(self, 'on_enter_matchmake_queue'))
+	g.network.matchmake_me(g.get_rules(), selected_book_ids, friend_code if friend_code else '', funcref(self, 'on_enter_matchmake_queue'))
 
 func on_enter_matchmake_queue(response):
 	print('We have entered the matchmaking queue:')

@@ -4,6 +4,7 @@ signal connected
 signal disconnected
 signal out_of_date
 
+const OnlineBackend = preload('res://backends/online.gd')
 const Protocol = preload('res://native/protocol.gdns')
 
 const DEBUG = true
@@ -51,6 +52,7 @@ func _ready():
 	connect_timer.set_wait_time(retry_sec)
 	connect_timer.connect('timeout', self, 'reconnect')
 	handlers['push_notifications'] = funcref(self, 'on_notification')
+	handlers['push_challenge'] = funcref(self, 'on_challenge')
 	add_child(connect_timer)
 	self.protocol = Protocol.new()
 	self.peer = StreamPeerTCP.new()
@@ -169,9 +171,6 @@ func on_authenticated(response):
 func on_floop(response):
 	pass
 
-func on_notification(response):
-	g.summon_notification(response.message)
-
 func after_auth():
 	g.save()
 	status = ONLINE
@@ -191,6 +190,28 @@ func register_handlers(obj, on_connected, on_disconnected, on_out_of_date):
 		obj.call(on_out_of_date)
 	else:
 		obj.call(on_disconnected)
+
+func on_notification(response):
+	g.summon_notification(response.message)
+
+# TODO: jim: Find a better place to put this.
+func on_challenge(message):
+	if g.backend == null:
+		latest_duel_message = message
+		g.summon_notification('You have a duel request from %s.' % [message.user_name], true, funcref(self, 'on_challenge_pressed'))
+	else:
+		# TODO: jim: Should instead prevent sending duel requests to people already in games.
+		g.summon_notification("You got a duel request from %s, but you can't accept it because you're in a game.", true)
+
+# TODO: jim: Find better way to pass this from [on_challenge] than using this variable.
+var latest_duel_message
+func on_challenge_pressed():
+	var message = latest_duel_message
+	if g.backend == null:
+		var confirmed = yield(g.summon_confirm('Accept duel request from %s?' % [message.user_name]), 'popup_closed')
+		if confirmed:
+			g.backend = OnlineBackend.new(g, message.friend_code)
+			g.scene_loader.goto_scene('game_book_select')
 
 func print_response(response):
 	print(response)
@@ -265,3 +286,6 @@ func unfollow_user(friend_code, callback):
 
 func get_friends(callback):
 	return api_call_base('get_friends', [], callback)
+
+func send_challenge(friend_code, callback):
+	return api_call_base('send_challenge', [friend_code], callback)

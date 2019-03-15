@@ -10,7 +10,7 @@
 [ext_resource path="res://art-built/button-back.png" type="Texture" id=8]
 [ext_resource path="res://art-built/button-add-friend.png" type="Texture" id=9]
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -60,7 +60,28 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
 
-[node name="offline_warning" type="Label" parent="ui" index="2"]
+[node name="fc_label" type="Label" parent="ui" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 125.0
+margin_bottom = 199.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Your Friend Code: 31415926"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "custom_colors" ]
+
+[node name="offline_warning" type="Label" parent="ui" index="3"]
 
 visible = false
 anchor_left = 0.0
@@ -83,14 +104,14 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
 
-[node name="scroll_container" type="ScrollContainer" parent="ui" index="3"]
+[node name="scroll_container" type="ScrollContainer" parent="ui" index="4"]
 
 anchor_left = 0.5
 anchor_top = 0.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -244.0
-margin_top = 157.0
+margin_top = 172.0
 margin_right = 242.0
 margin_bottom = -276.0
 rect_pivot_offset = Vector2( 0, 0 )
@@ -142,7 +163,7 @@ margin_top = 453.0
 margin_right = 0.0
 margin_bottom = 600.0
 
-[node name="back_button" type="TextureButton" parent="ui" index="4"]
+[node name="back_button" type="TextureButton" parent="ui" index="5"]
 
 anchor_left = 0.5
 anchor_top = 1.0
@@ -168,7 +189,7 @@ expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="add_friend_button" type="TextureButton" parent="ui" index="5"]
+[node name="add_friend_button" type="TextureButton" parent="ui" index="6"]
 
 anchor_left = 0.5
 anchor_top = 1.0

@@ -25,5 +25,6 @@ namespace godot {
       godot::String create_follow_user_call(godot::String friend_code);
       godot::String create_unfollow_user_call(godot::String friend_code);
       godot::String create_get_friends_call();
+      godot::String create_send_challenge_call(godot::String friend_code);
   };
 }
