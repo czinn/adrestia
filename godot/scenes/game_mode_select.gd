@@ -54,13 +54,14 @@ func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)
 
 func on_get_stats(response):
-	g.multiplayer_wins = response.wins if response.has('wins') else ''
+	if response.has('wins'): g.multiplayer_wins = response.wins
 	g.save()
 	redraw()
 
 func redraw():
 	if g.multiplayer_wins == null:
-		wins_label.visible = false
+		wins_label.text = "Could not connect"
+		wins_label.visible = true
 	else:
 		wins_label.text = "Wins: " + str(g.multiplayer_wins)
 		wins_label.visible = true

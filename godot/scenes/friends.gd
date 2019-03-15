@@ -17,6 +17,10 @@ func _ready():
 	add_friend_button.connect('pressed', self, 'on_add_friend_button_pressed')
 	g.clear_children(friend_list)
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
+	if g.friend_code:
+		fc_label.text = 'Your Friend Code: %s' % [g.friend_code]
+	else:
+		fc_label.text = ''
 	offline_warning.visible = false
 
 func _notification(what):

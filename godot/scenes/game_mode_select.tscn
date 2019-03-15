@@ -10,7 +10,7 @@
 [ext_resource path="res://art-built/button-tutorial.png" type="Texture" id=8]
 [ext_resource path="res://art-built/button-back-small.png" type="Texture" id=9]
 
-[node name="game_mode_select" type="Node"]
+[node name="game_mode_select" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -71,7 +71,7 @@ anchor_left = 1.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_left = -231.0
+margin_left = -369.0
 margin_top = 7.0
 margin_right = -31.0
 margin_bottom = 57.0

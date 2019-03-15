@@ -35,7 +35,8 @@ void Babysitter::main() {
    *     CODE_KEY: 400
    *     MESSAGE_KEY: <A message describing the problem>
    */
-	adrestia_hexy::reseed();
+  adrestia_hexy::reseed();
+  logger.prefix = adrestia_hexy::hex_urandom(8);
   logger.info("Starting sequence.");
   phase = NEW;
   uuid = "";
@@ -80,7 +81,7 @@ void Babysitter::main() {
         client_json = json::parse(message);
         endpoint = client_json.at(HANDLER_KEY);
         if (endpoint != "floop") {
-          logger.debug_() << "Got message:\n" << client_json << endl;
+          logger.debug_() << "Got message: " << client_json << endl;
         }
         handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {

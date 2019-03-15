@@ -34,7 +34,6 @@ using namespace std;
 using json = nlohmann::json;
 
 void babysit(int client_socket) {
-	logger.prefix = adrestia_hexy::hex_urandom(8);
 	Babysitter(client_socket).main();
 }
 
