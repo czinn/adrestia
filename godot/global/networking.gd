@@ -242,8 +242,8 @@ func abort_game(game_uid, callback):
 func change_user_name(user_name, callback):
 	return api_call_base('change_user_name', [user_name], callback)
 
-func matchmake_me(rules, books, callback):
-	return api_call_base('matchmake_me', [rules, books], callback)
+func matchmake_me(rules, books, target_friend_code, callback):
+	return api_call_base('matchmake_me', [rules, books, target_friend_code], callback)
 
 func submit_move(game_uid, player_move, callback):
 	return api_call_base('submit_move', [game_uid, player_move], callback)

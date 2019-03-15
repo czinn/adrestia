@@ -15,6 +15,7 @@
 // System modules
 #include <iostream>
 using namespace std;
+using namespace adrestia_networking;
 
 // JSON
 #include "../../cpp/json.h"
@@ -35,8 +36,6 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
    *                  "Incompatible rules" if old rules
    *     (Optional) "game_uid": The game_uid of the game that was made. If no game made, this will not be in the
    *                            response.
-   *
-   * Should always return 0.
    */
 
   string uuid = client_json.at("uuid");
@@ -49,9 +48,9 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
   logger.trace("Comparing client rules with server rules...");
   if (!(game_rules == client_rules)) {
     logger.trace("Incompative rules");
-    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-    resp[adrestia_networking::CODE_KEY] = 409;
-    resp[adrestia_networking::MESSAGE_KEY] = "Incompative rules";
+    resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+    resp[CODE_KEY] = 400;
+    resp[MESSAGE_KEY] = "Incompative rules";
     return 0;
   }
 
@@ -59,9 +58,9 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
   logger.trace("Checking number of books...");
   if (selected_books.size() == 0 || selected_books.size() > 3) {
     logger.trace("Incorrect number of selected books: |%zu|", selected_books.size());
-    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-    resp[adrestia_networking::CODE_KEY] = 400;
-    resp[adrestia_networking::MESSAGE_KEY] = "Incorrect number of books (got |" + to_string(selected_books.size()) + "|, expected |3|)";
+    resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+    resp[CODE_KEY] = 400;
+    resp[MESSAGE_KEY] = "Bad number of books";
     return 0;
   }
   logger.trace("Got good number of books.");
@@ -81,23 +80,22 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
 
   if (bad_book != "") {
     logger.info("Got invalid requested book |%s|", bad_book.c_str());
-    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-    resp[adrestia_networking::CODE_KEY] = 400;
-    resp[adrestia_networking::MESSAGE_KEY] = "Invalid book: |" + bad_book + "|";
+    resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+    resp[CODE_KEY] = 400;
+    resp[MESSAGE_KEY] = "Bad book: " + bad_book;
     return 0;
   }
 
-  logger.trace("Selected books all seem okay.");
+  logger.trace("Selected books all seem okay. Matchmaking in database.");
 
-  logger.trace("Matchmaking in database.");
-
-  auto query_result = db.query(R"sql(
-    SELECT uuid, selected_books
-    FROM adrestia_match_waiters
-    WHERE uuid != ?
-    LIMIT 1
-    FOR UPDATE
-  )sql")(uuid)();
+  query_result =
+    db.query(R"sql(
+      SELECT uuid, selected_books
+      FROM adrestia_match_waiters
+      WHERE uuid != ?
+      LIMIT 1
+      FOR UPDATE
+    )sql")(uuid)();
 
   if (query_result.size() > 0) {
     string waiting_uuid = query_result[0]["uuid"].as<string>();
@@ -141,14 +139,13 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
 
     logger.debug("Removing waiting uuid |%s|", waiting_uuid.c_str());
     db.query("DELETE FROM adrestia_match_waiters WHERE uuid = ?")(waiting_uuid)();
-
     db.commit();
 
     logger.info_() << "A new game has been made (game_id |" << game_uid << "|)!" << endl;
     resp["game_uid"] = game_uid;
-    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-    resp[adrestia_networking::CODE_KEY] = 201;
-    resp[adrestia_networking::MESSAGE_KEY] = "You are now in a game!";
+    resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+    resp[CODE_KEY] = 201;
+    resp[MESSAGE_KEY] = "You are now in a game!";
     return 0;
   }
 
@@ -164,8 +161,8 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
   db.commit();
 
   logger.info_() << "UUID |" << uuid << "| is now on the waiting list." << endl;
-  resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
-  resp[adrestia_networking::CODE_KEY] = 200;
-  resp[adrestia_networking::MESSAGE_KEY] = "You have been put on the wait list.";
+  resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+  resp[CODE_KEY] = 200;
+  resp[MESSAGE_KEY] = "You have been put on the wait list.";
   return 0;
 }

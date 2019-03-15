@@ -67,7 +67,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
-	g.network.matchmake_me(g.get_rules(), selected_book_ids, funcref(self, 'on_enter_matchmake_queue'))
+	g.network.matchmake_me(g.get_rules(), selected_book_ids, '', funcref(self, 'on_enter_matchmake_queue'))
 
 func on_enter_matchmake_queue(response):
 	print('We have entered the matchmaking queue:')

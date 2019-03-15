@@ -99,7 +99,8 @@ namespace adrestia_networking {
   void create_matchmake_me_call(
       json& client_json,
       const GameRules &rules,
-      const std::vector<std::string>& selected_books
+      const std::vector<std::string>& selected_books,
+      const std::string target_friend_code // empty string: none
   );
 
   void create_submit_move_call(

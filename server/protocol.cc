@@ -63,11 +63,13 @@ void adrestia_networking::create_change_user_name_call(json& client_json,
 
 void adrestia_networking::create_matchmake_me_call(json& client_json,
   const GameRules &game_rules,
-  const std::vector<std::string>& selected_books
+  const std::vector<std::string>& selected_books,
+  const std::string target_friend_code
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "matchmake_me";
   client_json["game_rules"] = json(game_rules);
   client_json["selected_books"] = selected_books;
+  client_json["target_friend_code"] = target_friend_code;
 }
 
 void adrestia_networking::create_submit_move_call(json& client_json,
