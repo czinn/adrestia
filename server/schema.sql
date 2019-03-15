@@ -101,7 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_adrestia_follows_uuid2 ON adrestia_follows (uuid2
 
 DROP TABLE IF EXISTS challenges CASCADE;
 CREATE TABLE IF NOT EXISTS challenges (
-  challenger_uuid VARCHAR REFERENCES adrestia_accounts(uuid),
+  sender_uuid VARCHAR REFERENCES adrestia_accounts(uuid),
   receiver_uuid VARCHAR REFERENCES adrestia_accounts(uuid)
 );
 CREATE INDEX IF NOT EXISTS idx_challenges_receiver_uuid ON challenges (receiver_uuid);

@@ -82,7 +82,8 @@ int adrestia_networking::handle_register_new_account(const Logger& logger, const
 
       logger.trace("register_new_account concluded.");
       return 0;
-    } catch (pqxx::integrity_constraint_violation &) {
+    } catch (pqxx::integrity_constraint_violation &e) {
+      logger.warn_() << e.what() << endl;
       continue;
     }
   }

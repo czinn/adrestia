@@ -3,6 +3,8 @@
 // Us
 #include "adrestia_hexy.h"
 
+#include "logger.h"
+
 // Crypto modules
 #include <openssl/evp.h>
 
@@ -19,7 +21,7 @@ thread_local mt19937 rng;
 void adrestia_hexy::reseed() {
 	ifstream urandom("/dev/urandom", ios::in|ios::binary);
 	size_t seed;
-	urandom >> seed;
+	urandom.read(reinterpret_cast<char*>(&seed), sizeof(seed));
 	rng.seed(seed);
 }
 

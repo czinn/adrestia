@@ -10,6 +10,10 @@
 #include "adrestia_networking.h"
 #include "adrestia_database.h"
 
+#include "pushers/push_active_games.h"
+#include "pushers/push_notifications.h"
+#include "pushers/push_challenges.h"
+
 #ifdef __APPLE__
 #define MSG_NOSIGNAL 0
 #endif
@@ -31,6 +35,7 @@ void Babysitter::main() {
    *     CODE_KEY: 400
    *     MESSAGE_KEY: <A message describing the problem>
    */
+	adrestia_hexy::reseed();
   logger.info("Starting sequence.");
   phase = NEW;
   uuid = "";
@@ -38,7 +43,8 @@ void Babysitter::main() {
   // Create pushers
   PushActiveGames push_active_games;
   PushNotifications push_notifications;
-  std::vector<Pusher*> pushers = { &push_active_games, &push_notifications };
+  PushChallenges push_challenges;
+  std::vector<Pusher*> pushers = { &push_active_games, &push_notifications, &push_challenges };
 
   try {
     while (true) {
