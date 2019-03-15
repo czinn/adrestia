@@ -3,6 +3,7 @@
 // Us
 #include "adrestia_networking.h"
 #include "adrestia_hexy.h"
+#include "adrestia_database.h"
 #include "babysitter.h"
 #include "logger.h"
 
@@ -116,6 +117,15 @@ int main(int na, char* arg[]) {
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;
 	if (server_port_env) {
 		port = atoi(server_port_env);
+	}
+
+	// clear out ephemeral tables where left over bits may mess things up
+	logger.prefix = "main";
+	{
+		adrestia_database::Db db;
+		db.query("DELETE FROM adrestia_match_waiters")();
+		db.query("DELETE FROM challenges")();
+		db.commit();
 	}
 
 	cout << "Listening for connections on port " << port << "." << endl;

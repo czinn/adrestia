@@ -78,8 +78,10 @@ void Babysitter::main() {
 
       try {
         client_json = json::parse(message);
-        logger.debug_() << "Got message:\n" << client_json << endl;
         endpoint = client_json.at(HANDLER_KEY);
+        if (endpoint != "floop") {
+          logger.debug_() << "Got message:\n" << client_json << endl;
+        }
         handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {
         // Not parsable to json
