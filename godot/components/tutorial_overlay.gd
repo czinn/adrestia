@@ -78,6 +78,40 @@ func acquire_node(path):
 	desire_path = null
 	return node
 
+# Spotlight tweening
+var old_spotlight_pos
+var old_spotlight_size
+var new_spotlight_pos
+var new_spotlight_size
+var tween_start_time
+var tween_end_time
+
+func _process(delta):
+	if tween_start_time == null:
+		set_process(false)
+		return
+	var cur_time = float(OS.get_ticks_msec())
+	var completion = pow(min(1.0, (cur_time - tween_start_time) / (tween_end_time - tween_start_time)), 0.3)
+	var spotlight_pos  = new_spotlight_pos  * completion + old_spotlight_pos  * (1.0 - completion)
+	var spotlight_size = new_spotlight_size * completion + old_spotlight_size * (1.0 - completion)
+	mouse_blocker.material.set_shader_param('radius', 10.0);
+	mouse_blocker.material.set_shader_param('position', spotlight_pos);
+	mouse_blocker.material.set_shader_param('size', spotlight_size);
+	if completion >= 1.0:
+		tween_start_time = null
+		set_process(false)
+
+func tween_spotlight_to(pos, size):
+	tween_start_time = float(OS.get_ticks_msec())
+	tween_end_time = float(OS.get_ticks_msec()) + 350.0
+	old_spotlight_pos = new_spotlight_pos
+	if not old_spotlight_pos: old_spotlight_pos = get_viewport_rect().size / 2.0
+	old_spotlight_size = new_spotlight_size
+	if not old_spotlight_size: old_spotlight_size = get_viewport_rect().size
+	new_spotlight_pos = pos
+	new_spotlight_size = size
+	set_process(true)
+
 func show_big_window(text):
 	open_time = OS.get_ticks_msec()
 	big_text.bbcode_text = text
@@ -93,9 +127,7 @@ func show_tooltip(target, text, force=false):
 	if force:
 		force_click_rect = rect
 	g.tooltip.mouse_filter = MOUSE_FILTER_IGNORE
-	mouse_blocker.material.set_shader_param('radius', 10.0);
-	mouse_blocker.material.set_shader_param('position', rect.position + (rect.size / 2.0));
-	mouse_blocker.material.set_shader_param('size', rect.size / 2.0);
+	tween_spotlight_to(rect.position + (rect.size / 2.0), rect.size / 2.0)
 	mouse_blocker.visible = true
 	yield(self, 'popup_closed')
 
