@@ -30,6 +30,8 @@ namespace adrestia_database {
   /* Hashes the password with the given salt */
   std::string hash_password(const std::string& password, const std::string& salt);
 
+  std::vector<std::string> sql_array_to_vector(const std::string& sql_array);
+
   /* Marks the target uuid as winning/losing the target game */
   void conclude_game_in_database(
     const Logger& logger,
@@ -61,16 +63,6 @@ namespace adrestia_database {
     const std::string& game_uid,
     GameRules &game_rules,
     std::vector<json> &last_events
-  );
-
-  /* Adds the user to the waiting list if there are no compatible waiters;
-   *     otherwise, matches the user to a waiter.
-   */
-  json matchmake_in_database(
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid,
-    const std::vector<std::string>& selected_books
   );
 
   /* Submits the move for a turn in the game, updating the game if all players
@@ -125,6 +117,20 @@ namespace adrestia_database {
         quoted_parts.push_back(work->quote(x));
         return *this;
       }
+
+      // Quote vectors as SQL arrays.
+      template<typename V>
+      DbQuery &operator()(const std::vector<V> &vec) {
+        std::string result = "ARRAY[";
+        for (size_t i = 0; i < vec.size(); i += 1) {
+          if (i > 0) result += ',';
+          result += work->quote(vec[i]);
+        }
+        result += ']';
+        quoted_parts.push_back(result);
+        return *this;
+      }
+
       pqxx::result operator()();
     private:
       std::vector<std::string> format_parts;
@@ -142,6 +148,7 @@ namespace adrestia_database {
       DbQuery query(std::string format);
       void commit();
       void abort();
+      GameRules retrieve_game_rules(int id);
     private:
       pqxx::connection *conn;
       pqxx::work *work;

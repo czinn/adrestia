@@ -1,3 +1,6 @@
+#include "../cpp/game_rules.h"
+#include "../cpp/game_state.h"
+
 #include "adrestia_database.h"
 #include "logger.h"
 
@@ -72,13 +75,26 @@ DbQuery Db::query(std::string format) {
 }
 
 void Db::commit() {
+  logger.trace("Committing transaction.");
   work->commit();
   delete work;
   work = new pqxx::work(*conn);
 }
 
 void Db::abort() {
+  logger.trace("Aborting transaction.");
   work->abort();
   delete work;
   work = new pqxx::work(*conn);
+}
+
+GameRules Db::retrieve_game_rules(int id) {
+  auto result =
+    (id == 0)
+    ? query("SELECT game_rules FROM adrestia_rules ORDER BY -id LIMIT 1")()
+    : query("SELECT game_rules FROM adrestia_rules WHERE id = ?")(id)();
+  if (result.size() == 0) {
+    throw std::string("Could not find game rules. Do they exist?");
+  }
+  return json::parse(result[0][0].as<std::string>());
 }

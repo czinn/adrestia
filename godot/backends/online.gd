@@ -90,7 +90,6 @@ func on_push_active_games(response):
 		view = g.GameView.new()
 		view.init_json(rules, game.game_view)
 		player_id = view.view_player_id
-		print('successfully created view')
 	if game.events.size() > 0 or forfeited:
 		update_callback.call_func(get_view(), game.events)
 
