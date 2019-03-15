@@ -23,9 +23,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_friend_code
 
 DROP TABLE IF EXISTS adrestia_match_waiters CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
-  uuid VARCHAR NOT NULL,  -- Random hexy
+  uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
   selected_books VARCHAR ARRAY NOT NULL,
-  target_uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
+  target_uuid VARCHAR REFERENCES adrestia_accounts(uuid) DEFAULT '' NOT NULL,
   PRIMARY KEY (uuid)
 );
 CREATE INDEX IF NOT EXISTS idx_adrestia_match_waiters_uuid

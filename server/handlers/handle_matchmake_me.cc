@@ -88,14 +88,24 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
 
   logger.trace("Selected books all seem okay. Matchmaking in database.");
 
-  query_result =
-    db.query(R"sql(
+  std::string target_friend_code = client_json.value("target_friend_code", "");
+  auto query_result =
+    (target_friend_code == "")
+    ? db.query(R"sql(
       SELECT uuid, selected_books
       FROM adrestia_match_waiters
-      WHERE uuid != ?
+      WHERE uuid != ? AND target_uuid = ''
       LIMIT 1
       FOR UPDATE
-    )sql")(uuid)();
+    )sql")(uuid)()
+    : db.query(R"sql(
+      SELECT mw.uuid, mw.selected_books
+      FROM adrestia_match_waiters mw
+      JOIN adrestia_accounts a ON mw.uuid = a.uuid
+      WHERE a.friend_code = ? AND mw.target_uuid = ?
+      LIMIT 1
+      FOR UPDATE
+    )sql")(target_friend_code)(uuid)();
 
   if (query_result.size() > 0) {
     string waiting_uuid = query_result[0]["uuid"].as<string>();

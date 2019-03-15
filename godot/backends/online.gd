@@ -25,8 +25,12 @@ func _init(g_):
 	rules = g.get_default_rules()
 	g.network.connect('disconnected', self, 'disconnected')
 
+# jim: this bandaids an awful awful bug I can't diagnose
+var already_disconnected = false
 func disconnected():
-	g.scene_loader.goto_scene('title')
+	if not already_disconnected:
+		g.scene_loader.goto_scene('title')
+	already_disconnected = true
 
 func reconnect(update_message):
 	var game = update_message.updates[0]
