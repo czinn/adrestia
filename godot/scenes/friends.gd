@@ -46,6 +46,7 @@ func on_get_friends_list(response):
 	else:
 		offline_warning.visible = false
 
+	g.clear_children(friend_list)
 	for friend in response.friends:
 		var profile = avatar_profile_scene.instance()
 		friend_list.add_child(profile)
