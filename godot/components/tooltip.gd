@@ -1,11 +1,14 @@
 extends Control
 
+signal redrawn
+
 onready var g = get_node('/root/global')
 
 onready var background = $background
 onready var ninepatch = $background/nine_patch_rect
 onready var label = $background/nine_patch_rect/rich_text_label
 onready var triangle = $background/triangle
+onready var animation_player = $animation_player
 
 # TODO: jim: I tried to make tooltips editable in the editor but couldn't
 # figure out how to make them update their appearance.
@@ -23,7 +26,7 @@ const triangle_shift = 27
 const line_height = 26
 
 func _ready():
-	redraw()
+	pass
 
 func _gui_event(event):
 	if g.event_is_pressed(event):
@@ -31,13 +34,11 @@ func _gui_event(event):
 
 func set_text(text_):
 	text = text_
-	redraw()
 
 func set_target(x_, y_, point_down_=true):
 	x = x_
 	y = y_
 	point_down = point_down_
-	redraw()
 
 func redraw():
 	if triangle == null: return
@@ -87,3 +88,4 @@ func redraw():
 			background.margin_top = y
 			background.margin_bottom = y + height
 		get_tree() && yield(get_tree(), 'idle_frame')
+	emit_signal('redrawn')

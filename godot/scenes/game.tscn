@@ -121,7 +121,7 @@ tracks/5/keys = {
 "values": [ 80.0, 90.0, -70.0 ]
 }
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 

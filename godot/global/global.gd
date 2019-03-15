@@ -149,6 +149,11 @@ func close_tooltip(force=false):
 		return
 	if tooltip != null:
 		var content = tooltip.label.bbcode_text
+		var disappear = tooltip.animation_player.get_animation('disappear')
+		disappear.track_set_key_value(1, 0, tooltip.background.rect_position)
+		disappear.track_set_key_value(1, 1, tooltip.background.rect_position - Vector2(0.0, 20.0))
+		tooltip.animation_player.play('disappear')
+		yield(tooltip.animation_player, 'animation_finished')
 		tooltip.get_parent().remove_child(tooltip)
 		tooltip = null
 		emit_signal('tooltip_closed', content)
@@ -163,6 +168,13 @@ func summon_tooltip(target, text):
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
 	tooltip_open_time = OS.get_ticks_msec()
 	get_node("/root").add_child(tooltip)
+	tooltip.background.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	yield(tooltip.redraw(), 'completed')
+	var appear = tooltip.animation_player.get_animation('appear')
+	appear.track_set_key_value(1, 0, tooltip.background.rect_position + Vector2(0.0, 20.0))
+	appear.track_set_key_value(1, 1, tooltip.background.rect_position)
+	tooltip.animation_player.play('appear')
+	tooltip.visible = true
 
 func summon_spell_tooltip(target, spell):
 	summon_tooltip(target, "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()])

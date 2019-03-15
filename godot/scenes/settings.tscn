@@ -11,7 +11,7 @@
 [ext_resource path="res://art-built/button-change-name.png" type="Texture" id=9]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=10]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 

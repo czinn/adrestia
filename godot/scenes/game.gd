@@ -184,6 +184,8 @@ func redraw():
 	enemy_avatar.redraw(them)
 	if g.backend.get_opponent() != null:
 		enemy_name.text = g.backend.get_opponent().user_name
+	else:
+		enemy_name.text = ''
 	enemy_stickies.redraw(them.stickies)
 	my_mana_bar.redraw(me, mp_left)
 	my_avatar.redraw(me, mp_left)
