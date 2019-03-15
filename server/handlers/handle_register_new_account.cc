@@ -61,8 +61,8 @@ int adrestia_networking::handle_register_new_account(const Logger& logger, const
     try {
       adrestia_database::Db db(logger);
       db.query(R"sql(
-        INSERT INTO adrestia_accounts (uuid, user_name, tag, friend_code, platform, hash_of_salt_and_password, salt, last_login, debug)
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)
+        INSERT INTO adrestia_accounts (uuid, user_name, tag, friend_code, platform, hash_of_salt_and_password, salt, last_login, debug, is_online)
+        VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, TRUE)
       )sql")(uuid)(user_name)(tag)(friend_code)(platform)(password_hash)(salt)(debug)();
       db.commit();
 
