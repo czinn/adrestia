@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS adrestia_match_waiters CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
   uuid VARCHAR NOT NULL,  -- Random hexy
   selected_books VARCHAR ARRAY NOT NULL,
+  target_uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
   PRIMARY KEY (uuid)
 );
 CREATE INDEX IF NOT EXISTS idx_adrestia_match_waiters_uuid
