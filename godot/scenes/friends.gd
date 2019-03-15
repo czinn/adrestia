@@ -30,13 +30,18 @@ func on_add_friend_button_pressed():
 
 func on_friend_added(response):
 	if response.api_code == 200:
-		g.summon_notification("You are now following %s." % [response.user_name])
+		g.summon_notification("You are now following %s. Make sure they add you too." % [response.user_name])
 		g.network.get_friends(funcref(self, 'on_get_friends_list'))
 	else:
 		g.summon_notification("Can't find that friend code.")
 
 func on_get_friends_list(response):
-	print(response)
+	if len(response.friends) == 0:
+		offline_warning.text = "No friends! Add one?"
+		offline_warning.visible = true
+	else:
+		offline_warning.visible = false
+
 	for friend in response.friends:
 		var profile = avatar_profile_scene.instance()
 		friend_list.add_child(profile)
@@ -66,10 +71,10 @@ func on_connected():
 
 func on_disconnected():
 	g.clear_children(friend_list)
-	offline_warning.visible = true
 	offline_warning.text = "Offline"
+	offline_warning.visible = true
 
 func on_out_of_date():
 	g.clear_children(friend_list)
-	offline_warning.visible = true
 	offline_warning.text = "Client out of date"
+	offline_warning.visible = true

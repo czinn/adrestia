@@ -7,7 +7,7 @@
 [ext_resource path="res://fonts/Amaranth-Regular-60.tres" type="DynamicFont" id=5]
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
 [ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=7]
-[ext_resource path="res://art-built/button-back.png" type="Texture" id=8]
+[ext_resource path="res://art-built/button-back-small.png" type="Texture" id=8]
 [ext_resource path="res://art-built/button-add-friend.png" type="Texture" id=9]
 
 [node name="root" type="Node"]
@@ -88,8 +88,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
-margin_top = 151.0
-margin_bottom = 225.0
+margin_top = 164.0
+margin_bottom = 238.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -113,7 +113,7 @@ anchor_bottom = 1.0
 margin_left = -244.0
 margin_top = 172.0
 margin_right = 242.0
-margin_bottom = -276.0
+margin_bottom = -231.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0
@@ -165,14 +165,14 @@ margin_bottom = 600.0
 
 [node name="back_button" type="TextureButton" parent="ui" index="5"]
 
-anchor_left = 0.5
+anchor_left = 0.0
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 0.0
 anchor_bottom = 1.0
-margin_left = -195.0
-margin_top = -166.0
-margin_right = 195.0
-margin_bottom = -50.0
+margin_left = -30.0
+margin_top = -100.0
+margin_right = 151.0
+margin_bottom = -12.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -196,9 +196,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -196.0
-margin_top = -252.0
+margin_top = -208.0
 margin_right = 196.0
-margin_bottom = -178.0
+margin_bottom = -134.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
