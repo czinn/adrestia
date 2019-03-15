@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 namespace adrestia_networking {
   const Version SERVER_VERSION = { 1, 0, 0 };
-  const Version CLIENT_VERSION = { 2, 0, 0 };
+  const Version CLIENT_VERSION = { 2, 1, 0 };
   const int DEFAULT_SERVER_PORT = 18677;
   const int MESSAGE_MAX_BYTES = 32768;
 

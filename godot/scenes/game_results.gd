@@ -30,7 +30,7 @@ func _ready():
 	elif winners.has(game_history.view_player_id):
 		# Won!
 		title_label.text = 'Victory!'
-		detail_text.bbcode_text = '[center]Congraulations![/center]'
+		detail_text.bbcode_text = '[center]Congratulations![/center]'
 		winner = game_history.view_player_id
 	else:
 		# Loss
