@@ -15,6 +15,7 @@ func _ready():
 	fc_label.text = ''
 	wins_label.text = ''
 	online_label.text = ''
+	buttons.visible = false
 
 func redraw():
 	pass

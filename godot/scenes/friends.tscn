@@ -10,7 +10,7 @@
 [ext_resource path="res://art-built/button-back.png" type="Texture" id=8]
 [ext_resource path="res://art-built/button-add-friend.png" type="Texture" id=9]
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 
