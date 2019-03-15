@@ -58,7 +58,7 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
         UPDATE adrestia_accounts
         SET user_name = ?, tag = ?, friend_code = ?
         WHERE uuid = ?
-      )sql")(new_user_name)(tag)(uuid)(friend_code)();
+      )sql")(new_user_name)(tag)(friend_code)(uuid)();
       db.commit();
       logger.info("Successfully changed user_name in database.");
 

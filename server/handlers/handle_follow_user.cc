@@ -16,7 +16,8 @@ int adrestia_networking::handle_follow_user(const Logger& logger, const json& cl
     SELECT user_name, uuid
     FROM adrestia_accounts
     WHERE friend_code = ?
-  )sql")(friend_code)();
+      AND uuid != ?
+  )sql")(friend_code)(uuid)();
 
   if (result.empty()) {
     resp[HANDLER_KEY] = client_json[HANDLER_KEY];
