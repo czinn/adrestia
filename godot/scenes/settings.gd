@@ -61,7 +61,6 @@ func on_change_name_button_pressed():
 
 func on_username_changed(response):
 	g.user_name = response.user_name
-	g.friend_code = response.friend_code
 	g.summon_notification('Name changed to %s.' % [g.user_name])
 	on_connected()
 	return true

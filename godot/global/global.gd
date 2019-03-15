@@ -186,7 +186,7 @@ func summon_confirm(text):
 	return confirm
 
 func summon_notification(text):
-	scene_loader.notification.show_notification(text)
+	scene_loader.notification.push_notification(text)
 
 func summon_text_entry(text, default_text):
 	var popup = text_entry_popup_scene.instance()
