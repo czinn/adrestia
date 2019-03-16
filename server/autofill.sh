@@ -47,7 +47,6 @@ done
 num_uuids=${#uuids[@]}
 while true; do
   index=$(($RANDOM % $num_uuids))
-  name="${names[$index]}"
   uuid="${uuids[$index]}"
   ./autofill play "$uuid"
   sleep 30
