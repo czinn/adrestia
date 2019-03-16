@@ -57,7 +57,7 @@ func _process(time):
 		elif err == OK:
 			update_progress()
 		else:
-			show_error()
+			print('FAILURE: Could not load new scene')
 			loader = null
 			break
 
