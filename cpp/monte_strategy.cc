@@ -40,8 +40,8 @@ std::set<int> choose(std::mt19937 &gen, int n, int k) {
 GameAction MonteStrategy::get_action(const GameView &view) {
 	const Player &view_player = view.players[view.view_player_id];
 	// Determine which techs are possible for the opponent.
-	std::map<std::string, int> visible_tech[view.players.size()];
-	int unknown_techs[view.players.size()];
+	std::map<std::string, int>* visible_tech = new std::map<std::string, int>[view.players.size()];
+	int* unknown_techs = new int[view.players.size()];
 	for (int i = 0; i < view.players.size(); i++) {
 		unknown_techs[i] = 0;
 	}
@@ -66,9 +66,10 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 		}
 	}
 	int number_of_books = view_player.books.size();
-	std::vector<int> known_tech[view.players.size()];
-	std::vector<const Book*> known_books[view.players.size()];
-	std::vector<std::string> remaining_books[view.players.size()];
+	std::vector<int>* known_tech = new std::vector<int>[view.players.size()];
+	std::vector<const Book*>* known_books = new std::vector<const Book*>[view.players.size()];
+	std::vector<std::string>* remaining_books = new std::vector<std::string>[view.players.size()];
+
 	for (int i = 0; i < view.players.size(); i++) {
 		std::transform(
 				view.rules.get_books().begin(),
@@ -124,7 +125,8 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 		GameState g(view, tech, books);
 		// Expand (i.e. add to the tree) only one node per player per iteration.
 		std::vector<bool> expanded(view.players.size());
-		std::vector<std::pair<TreeNode*, int>> paths[view.players.size()];
+		std::vector<std::pair<TreeNode*, int> >* paths = new std::vector<std::pair<TreeNode*, int> >[view.players.size()];
+
 		int turn_number = 0;
 		// While the game isn't finished, look up states in the tree for each player and pick actions.
 		while (g.winners().size() == 0) {
@@ -192,6 +194,8 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 				node->wins[chosen_child] += is_winner;
 			}
 		}
+
+		delete[] paths;
 	}
 	// Choose child weighted by number of visits
 	size_t view_hash = get_view_hash(view);
@@ -201,8 +205,24 @@ GameAction MonteStrategy::get_action(const GameView &view) {
 	for (int i = 0; i < actions.size(); i++) {
 		chosen_visit -= node.visits[i];
 		if (chosen_visit <= 0) {
+
+			// Free heap arrays
+			delete[] visible_tech;
+			delete[] unknown_techs;
+			delete[] known_tech;
+			delete[] known_books;
+			delete[] remaining_books;
+
 			return actions[i];
 		}
 	}
+
+	// Free heap arrays
+	delete[] visible_tech;
+	delete[] unknown_techs;
+	delete[] known_tech;
+	delete[] known_books;
+	delete[] remaining_books;
+
 	return actions[0]; // Should not be reached
 }

@@ -1,0 +1,30 @@
+[general]
+
+singleton=false
+load_once=true
+symbol_prefix="godot_"
+reloadable=true
+
+[entry]
+
+Android.armeabi-v7a="res://native/android/armeabi-v7a/libadrestia.so"
+Android.arm64-v8a="res://native/android/arm64-v8a/libadrestia.so"
+Android.x86="res://native/android/x86/libadrestia.so"
+Android.x86_64="res://native/android/x86_64/libadrestia.so"
+OSX.64="res://native/osx/libadrestia.dylib"
+UWP.64="res://native/win64/libadrestia.dll"
+Windows.64="res://native/win64/libadrestia.dll"
+Windows.32="res://native/win64/libadrestia.dll"
+X11.64="res://native/x11/libadrestia.so"
+
+[dependencies]
+
+Android.armeabi-v7a=[ "res://native/android/armeabi-v7a/libc++_shared.so" ]
+Android.arm64-v8a=[ "res://native/android/arm64-v8a/libc++_shared.so" ]
+Android.x86=[ "res://native/android/x86/libc++_shared.so" ]
+Android.x86_64=[ "res://native/android/x86_64/libc++_shared.so" ]
+OSX.64=[  ]
+UWP.64=[  ]
+Windows.64=[  ]
+Windows.32=[  ]
+X11.64=[  ]
