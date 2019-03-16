@@ -21,6 +21,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_friend_code
   ON adrestia_accounts
   (friend_code);
 
+DROP TABLE IF EXISTS account_ips CASCADE;
+CREATE TABLE IF NOT EXISTS account_ips (
+  uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
+  ip VARCHAR NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_account_ips_uuid_and_ip ON account_ips (uuid, ip);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_account_ip ON account_ips (ip);
+
 DROP TABLE IF EXISTS adrestia_match_waiters CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
   uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
