@@ -159,6 +159,11 @@ int socket_to_target(const char* IP, int port) {
   return my_socket;
 }
 
+void usage() {
+  cerr << "Usage: autofill create [username] or autofill play [uuid]" << endl;
+  exit(1);
+}
+
 int main(int argc, char* argv[]) {  
   std::mt19937 gen(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
@@ -167,10 +172,11 @@ int main(int argc, char* argv[]) {
   string my_tag;
   string version = version_to_string(adrestia_networking::CLIENT_VERSION);
   string password("signal-expect-surprise-quickly");
-  string desired_user_name("Steve");
-  if (argc >= 2) {
-    desired_user_name = std::string(argv[1]);
+  if (argc < 3) {
+    usage();
   }
+  string command(argv[1]);
+  string user(argv[2]);
 
   json outbound_json;
   json response_json;
@@ -193,7 +199,6 @@ int main(int argc, char* argv[]) {
   outbound_json.clear();
   response_json.clear();
 
-  cout << "Connecting as " << desired_user_name << endl;
   adrestia_networking::create_establish_connection_call(outbound_json, version);
   outbound_message = outbound_json.dump() + '\n';
   send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -209,78 +214,24 @@ int main(int argc, char* argv[]) {
   }
   GameRules rules;
   rules = response_json["game_rules"];
-
-  // Create account
   outbound_json.clear();
   response_json.clear();
 
-  adrestia_networking::create_register_new_account_call(
-      outbound_json,
-      password,
-      true,
-      desired_user_name,
-      "autofill"
-  );
-  outbound_message = outbound_json.dump() + '\n';
-  send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-  response_json = read_packet(my_socket_1, "register_new_account");
-  if (response_json[adrestia_networking::CODE_KEY] != 201) {
-    cerr << "Failed to register new account." << endl;
-    cerr << "register_new_account says:" << endl;
-    cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
-    cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
-    cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
-    close(my_socket_1);
-    return 0;
-  }
-  else {
-    my_uuid = response_json["uuid"];
-    my_user_name = response_json["user_name"];
-    my_tag = response_json["tag"];
-  }
-
-  // Select random books
-  vector<string> selected_books;
-  for (const auto &[id, book] : rules.get_books()) {
-    if (selected_books.size() < 3) {
-      selected_books.push_back(id);
-    } else {
-      int index = gen() % 3;
-      if (index < 3) {
-        selected_books[index] = id;
-      }
-    }
-  }
-
-  // Matchmake
-  outbound_json.clear();
-  response_json.clear();
-
-  adrestia_networking::create_matchmake_me_call(outbound_json, rules, selected_books, "");
-  outbound_message = outbound_json.dump() + '\n';
-  send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-  response_json = read_packet(my_socket_1, "matchmake_me");
-  if (response_json[adrestia_networking::CODE_KEY] == 200) {
-    cout << "No players waiting. Disconnecting." << endl;
-    close(my_socket_1);
-    return 0;
-  } else if (response_json[adrestia_networking::CODE_KEY] != 201) {
-    cout << "Failed to make a match." << endl;
-    cerr << "matchmake_me says:" << endl;
-    cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
-    cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
-    cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
-    close(my_socket_1);
-    return 0;
-  }
-
-  CfrStrategy strategy(rules, 10001);
-
-  while (true) {
-    response_json = read_packet(my_socket_1, "push_active_games");
-    if (response_json[adrestia_networking::CODE_KEY] != 200) {
-      cerr << "Recieved error instead of game update." << endl;
-      cerr << "Received instead:" << endl;
+  if (command == "create") {
+    // Create account
+    adrestia_networking::create_register_new_account_call(
+        outbound_json,
+        password,
+        true,
+        user,
+        "autofill"
+    );
+    outbound_message = outbound_json.dump() + '\n';
+    send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+    response_json = read_packet(my_socket_1, "register_new_account");
+    if (response_json[adrestia_networking::CODE_KEY] != 201) {
+      cerr << "Failed to register new account." << endl;
+      cerr << "register_new_account says:" << endl;
       cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
       cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
       cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
@@ -288,30 +239,112 @@ int main(int argc, char* argv[]) {
       return 0;
     }
 
-    json game = response_json["updates"][0];
-
-    if (game.find("game_state") != game.end()) {
-      // Game is over
-      break;
-    }
-
-    GameView view(rules, game["game_view"]);
-
-    // Compute and submit a move
-    GameAction action = strategy.get_action(view);
-    cout << json(action) << endl;
-    outbound_json.clear();
-    adrestia_networking::create_submit_move_call(outbound_json, game["game_uid"], action);
+    my_uuid = response_json["uuid"];
+    my_user_name = response_json["user_name"];
+    my_tag = response_json["tag"];
+    cout << "Created account with username " << my_user_name << endl;
+    cout << "UUID: " << my_uuid << endl;
+    close(my_socket_1);
+    return 0;
+  } else if (command == "play") {
+    // Log in to account
+    
+    adrestia_networking::create_authenticate_call(
+        outbound_json,
+        user,
+        password
+    );
     outbound_message = outbound_json.dump() + '\n';
     send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
-    response_json = read_packet(my_socket_1, "submit_move");
+    response_json = read_packet(my_socket_1, "authenticate");
     if (response_json[adrestia_networking::CODE_KEY] != 200) {
-      cerr << "Server rejected a legal move." << endl;
-      cerr << json(response_json) << endl;
+      cerr << "Failed to log into account." << endl;
+      cerr << "authenticate says:" << endl;
+      cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+      cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+      cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+      close(my_socket_1);
+      return 0;
     }
+
+    cout << "Playing as " << response_json["user_name"] << endl;
+
+    // Select random books
+    vector<string> selected_books;
+    for (const auto &[id, book] : rules.get_books()) {
+      if (selected_books.size() < 3) {
+        selected_books.push_back(id);
+      } else {
+        int index = gen() % 3;
+        if (index < 3) {
+          selected_books[index] = id;
+        }
+      }
+    }
+
+    // Matchmake
+    outbound_json.clear();
+    response_json.clear();
+
+    adrestia_networking::create_matchmake_me_call(outbound_json, rules, selected_books, "");
+    outbound_message = outbound_json.dump() + '\n';
+    send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+    response_json = read_packet(my_socket_1, "matchmake_me");
+    if (response_json[adrestia_networking::CODE_KEY] == 200) {
+      cout << "No players waiting. Disconnecting." << endl;
+      close(my_socket_1);
+      return 0;
+    } else if (response_json[adrestia_networking::CODE_KEY] != 201) {
+      cout << "Failed to make a match." << endl;
+      cerr << "matchmake_me says:" << endl;
+      cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+      cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+      cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+      close(my_socket_1);
+      return 0;
+    }
+
+    CfrStrategy strategy(rules, 10001);
+
+    while (true) {
+      response_json = read_packet(my_socket_1, "push_active_games");
+      if (response_json[adrestia_networking::CODE_KEY] != 200) {
+        cerr << "Recieved error instead of game update." << endl;
+        cerr << "Received instead:" << endl;
+        cerr << "    HANDLER: |" << response_json[adrestia_networking::HANDLER_KEY] << "|" << endl;
+        cerr << "    CODE: |" << response_json[adrestia_networking::CODE_KEY] << "|" << endl;
+        cerr << "    MESSAGE: |" << response_json[adrestia_networking::MESSAGE_KEY] << "|" << endl;
+        close(my_socket_1);
+        return 0;
+      }
+
+      json game = response_json["updates"][0];
+
+      if (game.find("game_state") != game.end()) {
+        // Game is over
+        break;
+      }
+
+      GameView view(rules, game["game_view"]);
+
+      // Compute and submit a move
+      GameAction action = strategy.get_action(view);
+      cout << json(action) << endl;
+      outbound_json.clear();
+      adrestia_networking::create_submit_move_call(outbound_json, game["game_uid"], action);
+      outbound_message = outbound_json.dump() + '\n';
+      send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
+      response_json = read_packet(my_socket_1, "submit_move");
+      if (response_json[adrestia_networking::CODE_KEY] != 200) {
+        cerr << "Server rejected a legal move." << endl;
+        cerr << json(response_json) << endl;
+      }
+    }
+
+    close(my_socket_1);
+
+    return 0;
+  } else {
+    usage();
   }
-
-  close(my_socket_1);
-
-  return 0;
 }
