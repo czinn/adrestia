@@ -33,10 +33,10 @@ namespace godot {
 	FORWARD_AUTO_GETTER(get_stacks)
 	FORWARD_AUTO_GETTER(get_effects)
 	FORWARD_AUTO_GETTER(get_trigger_inbound)
-	bool Sticky::triggers_for_effect(EffectInstance *effect, bool inbound) const {
+	bool Sticky::triggers_for_effect(EffectInstance *effect, bool inbound) {
 		return _ptr->triggers_for_effect(*effect->_ptr, inbound);
 	}
-	bool Sticky::triggers_for_spell(Spell *spell) const {
+	bool Sticky::triggers_for_spell(Spell *spell) {
 		return _ptr->triggers_for_spell(*spell->_ptr);
 	}
 	FORWARD_AUTO_GETTER(triggers_at_end_of_turn)

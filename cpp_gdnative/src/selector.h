@@ -9,19 +9,15 @@ namespace godot {
 	class Spell;
 	class EffectInstance;
 
-	class Selector : public godot::GodotScript<Reference>, public Forwarder<::Selector, Selector> {
-			GODOT_CLASS(Selector)
-		private:
-			godot::Ref<godot::NativeScript> Spell_;
-			godot::Ref<godot::NativeScript> EffectInstance_;
+	class Selector : public Reference, public Forwarder<::Selector, Selector> {
+			GODOT_CLASS(Selector, Reference)
 		public:
-			Selector();
 			static const char *resource_path;
 			static void _register_methods();
 
-			Variant is_valid() const;
-			bool selects_spell(Spell *spell) const;
-			bool selects_effect(EffectInstance *effect) const;
+			Variant is_valid();
+			bool selects_spell(Spell *spell);
+			bool selects_effect(EffectInstance *effect);
 
 			INTF_NULLABLE
 			INTF_JSONABLE

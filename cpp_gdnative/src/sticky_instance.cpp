@@ -30,15 +30,15 @@ namespace godot {
 	}
 
 	Variant StickyInstance::apply_to_effect(int player_id, EffectInstance *effect) {
-		return to_godot_variant(_ptr->apply_to_effect(player_id, *effect->_ptr), owner);
+		return to_godot_variant(_ptr->apply_to_effect(player_id, *effect->_ptr), this);
 	}
 
 	Variant StickyInstance::apply_to_spell(int player_id, Spell *spell) {
-		return to_godot_variant(_ptr->apply_to_spell(player_id, *spell->_ptr), owner);
+		return to_godot_variant(_ptr->apply_to_spell(player_id, *spell->_ptr), this);
 	}
 
 	Variant StickyInstance::apply_to_turn(int player_id) {
-		return to_godot_variant(_ptr->apply_to_turn(player_id), owner);
+		return to_godot_variant(_ptr->apply_to_turn(player_id), this);
 	}
 
 	IMPL_SETGET(int, amount)

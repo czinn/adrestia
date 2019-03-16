@@ -9,16 +9,16 @@ namespace godot {
 	class EffectInstance;
 	class Spell;
 
-	class Player : public godot::GodotScript<Reference>, public Forwarder<::Player, Player> {
-			GODOT_CLASS(Player)
+	class Player : public Reference, public Forwarder<::Player, Player> {
+			GODOT_CLASS(Player, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 			
 			// TODO: charles: Implement find_spell if needed
 			
-			int find_book_idx(String book_id) const;
-			Variant level() const;
+			int find_book_idx(String book_id);
+			Variant level();
 			Variant pipe_effect(EffectInstance *effect, bool inbound);
 			Variant pipe_spell(Spell *spell);
 			Variant pipe_turn();

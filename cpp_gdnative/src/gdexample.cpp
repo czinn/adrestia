@@ -18,5 +18,5 @@ void gdexample::_process(float delta) {
   Vector2 new_position = Vector2(
       10.0 + (10.0 * sin(time_passed * 2.0)),
       10.0 + (10.0 * cos(time_passed * 1.5)));
-  owner->set_position(new_position);
+  set_position(new_position);
 }

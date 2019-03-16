@@ -6,15 +6,15 @@
 #include "macros.h"
 
 namespace godot {
-	class Duration : public godot::GodotScript<Reference>, public Forwarder<::Duration, Duration> {
-			GODOT_CLASS(Duration)
+	class Duration : public Reference, public Forwarder<::Duration, Duration> {
+			GODOT_CLASS(Duration, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			Variant is_active() const;
-			Variant get_unit() const;
-			Variant get_value() const;
+			Variant is_active();
+			Variant get_unit();
+			Variant get_value();
 
 			void subtract_step();
 			void subtract_turn();

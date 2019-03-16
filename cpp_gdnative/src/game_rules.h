@@ -10,20 +10,20 @@ namespace godot {
 	class Spell;
 	class Sticky;
 
-	class GameRules : public godot::GodotScript<Reference>, public Forwarder<::GameRules, GameRules> {
-			GODOT_CLASS(GameRules)
+	class GameRules : public Reference, public Forwarder<::GameRules, GameRules> {
+			GODOT_CLASS(GameRules, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			Variant get_version() const;
-			Variant get_sticky(String id) const;
-			Variant get_spell(String id) const;
-			Variant get_book(String id) const;
-			Variant get_books() const;
-			Variant get_mana_cap() const;
-			Variant get_initial_health() const;
-			Variant get_initial_mana_regen() const;
+			Variant get_version();
+			Variant get_sticky(String id);
+			Variant get_spell(String id);
+			Variant get_book(String id);
+			Variant get_books();
+			Variant get_mana_cap();
+			Variant get_initial_health();
+			Variant get_initial_mana_regen();
 
 			INTF_NULLABLE
 			INTF_JSONABLE

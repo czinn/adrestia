@@ -6,17 +6,17 @@
 #include "macros.h"
 
 namespace godot {
-	class Effect : public godot::GodotScript<Reference>, public Forwarder<::Effect, Effect> {
-			GODOT_CLASS(Effect)
+	class Effect : public Reference, public Forwarder<::Effect, Effect> {
+			GODOT_CLASS(Effect, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			Variant get_kind() const;
-			Variant get_targets_self() const;
-			Variant get_effect_type() const;
-			Variant get_amount() const;
-			Variant get_sticky_invoker() const;
+			Variant get_kind();
+			Variant get_targets_self();
+			Variant get_effect_type();
+			Variant get_amount();
+			Variant get_sticky_invoker();
 
 			INTF_NULLABLE
 			INTF_JSONABLE

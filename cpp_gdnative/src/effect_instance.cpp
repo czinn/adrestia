@@ -25,7 +25,7 @@ namespace godot {
 		REGISTER_TO_JSONABLE
 	}
 
-	void EffectInstance::apply(GameRules *rules, Player *player) const {
+	void EffectInstance::apply(GameRules *rules, Player *player) {
 		_ptr->apply(*rules->_ptr, *player->_ptr);
 	}
 

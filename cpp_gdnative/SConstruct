@@ -37,9 +37,9 @@ elif platform == "windows":
 
     final_lib_path = final_lib_path + 'win' + str(bits) + '/'
 
-env.Append(CPPPATH=['.', '../cpp', '../cpp/fdeep-include', '../cpp/fplus-include', 'src/', "godot_headers/", 'godot-cpp/include/', 'godot-cpp/include/core/'])
+env.Append(CPPPATH=['.', '../cpp', '../cpp/fdeep-include', '../cpp/fplus-include', 'src/', "godot_headers/", 'godot-cpp/include', 'godot-cpp/include/gen/', 'godot-cpp/include/core/'])
 env.Append(LIBPATH="godot-cpp/bin")
-env.Append(LIBS=["godot-cpp.%s.%s" % (platform, bits)])
+env.Append(LIBS=["libgodot-cpp.%s.%s.%s" % (platform, target, bits)])
 
 sources = []
 add_sources(sources, "src")

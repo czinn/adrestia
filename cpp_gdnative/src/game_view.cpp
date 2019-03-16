@@ -23,17 +23,15 @@ namespace godot {
 		REGISTER_TO_JSONABLE
 	}
 
-	void CLASSNAME::init(Variant game_state, int view_player_id) {
-		auto *_state = godot::as<GameState>(game_state);
-		set_ptr(new ::GameView(*_state->_ptr, view_player_id));
-		_deps = _state->_deps;
+	void CLASSNAME::init(GameState *game_state, int view_player_id) {
+		set_ptr(new ::GameView(*game_state->_ptr, view_player_id));
+		_deps = game_state->_deps;
 	}
 
-	void CLASSNAME::init_json(Variant rules, Variant json) {
+	void CLASSNAME::init_json(GameRules *rules, Variant json) {
 		nlohmann::json j;
-		auto *_rules = godot::as<GameRules>(rules);
 		of_godot_variant(json, &j);
-		set_ptr(new ::GameView(*_rules->_ptr, j));
+		set_ptr(new ::GameView(*rules->_ptr, j));
 	}
 
 	FORWARD_AUTO_GETTER(turn_number)

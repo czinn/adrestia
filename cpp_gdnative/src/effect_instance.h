@@ -9,13 +9,13 @@ namespace godot {
 	class GameRules;
 	class Player;
 
-	class EffectInstance : public godot::GodotScript<Reference>, public Forwarder<::EffectInstance, EffectInstance> {
-			GODOT_CLASS(EffectInstance)
+	class EffectInstance : public Reference, public Forwarder<::EffectInstance, EffectInstance> {
+			GODOT_CLASS(EffectInstance, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			void apply(GameRules *rules, Player *player) const;
+			void apply(GameRules *rules, Player *player);
 
 			INTF_SETGET(int, kind)
 			INTF_SETGET(bool, targets_self)

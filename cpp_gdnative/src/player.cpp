@@ -33,22 +33,22 @@ namespace godot {
 		REGISTER_TO_JSONABLE
 	}
 
-	int Player::find_book_idx(String book_id) const {
+	int Player::find_book_idx(String book_id) {
 		return _ptr->find_book_idx(std::string(book_id.ascii().get_data()));
 	}
 
 	FORWARD_AUTO_GETTER(level)
 
 	Variant Player::pipe_effect(EffectInstance *effect, bool inbound) {
-		return to_godot_variant(_ptr->pipe_effect(*effect->_ptr, inbound), owner);
+		return to_godot_variant(_ptr->pipe_effect(*effect->_ptr, inbound), this);
 	}
 
 	Variant Player::pipe_spell(Spell *spell) {
-		return to_godot_variant(_ptr->pipe_spell(*spell->_ptr), owner);
+		return to_godot_variant(_ptr->pipe_spell(*spell->_ptr), this);
 	}
 
 	Variant Player::pipe_turn() {
-		return to_godot_variant(_ptr->pipe_turn(), owner);
+		return to_godot_variant(_ptr->pipe_turn(), this);
 	}
 
 	FORWARD_VOID(subtract_step)

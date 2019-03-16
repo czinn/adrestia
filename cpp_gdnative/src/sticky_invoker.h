@@ -8,16 +8,15 @@
 namespace godot {
 	class Duration;
 
-	class StickyInvoker : public godot::GodotScript<Reference>,
-			public Forwarder<::StickyInvoker, StickyInvoker> {
-			GODOT_CLASS(StickyInvoker)
+	class StickyInvoker : public Reference, public Forwarder<::StickyInvoker, StickyInvoker> {
+			GODOT_CLASS(StickyInvoker, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			Variant get_sticky_id() const;
-			Variant get_amount() const;
-			Variant get_duration() const;
+			Variant get_sticky_id();
+			Variant get_amount();
+			Variant get_duration();
 
 			INTF_NULLABLE
 			INTF_JSONABLE

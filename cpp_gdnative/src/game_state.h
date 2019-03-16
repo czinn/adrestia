@@ -7,24 +7,26 @@
 #include "macros.h"
 
 namespace godot {
-	class GameState : public godot::GodotScript<Reference>, public Forwarder<::GameState, GameState> {
-			GODOT_CLASS(GameState)
+	class GameRules;
+	class GameView;
+	class GameState : public Reference, public Forwarder<::GameState, GameState> {
+			GODOT_CLASS(GameState, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			void init(Variant rules, Variant player_books);
-			void init_json(Variant rules, Variant json);
-			void clone(Variant state);
+			void init(GameRules *rules, Variant player_books);
+			void init_json(GameRules *rules, Variant json);
+			void clone(GameState *state);
 			// Returns a game state not suitable for simulation, but suitable for apply_event
-			void of_game_view(Variant view);
+			void of_game_view(GameView *view);
 			bool simulate(Variant actions);
 			Variant simulate_events(Variant actions);
 			void apply_event(Variant event);
 
-			bool is_valid_action(int player_id, Variant action) const;
-			Variant turn_number() const;
-			Variant winners() const;
+			bool is_valid_action(int player_id, Variant action);
+			Variant turn_number();
+			Variant winners();
 
 			INTF_SETGET(Variant, history)
 			INTF_SETGET(Variant, players)

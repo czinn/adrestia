@@ -11,9 +11,9 @@ namespace godot {
 	class Duration;
 	class GameRules;
 
-	class StickyInstance : public godot::GodotScript<Reference>,
+	class StickyInstance : public Reference,
 			public Forwarder<::StickyInstance, StickyInstance> {
-			GODOT_CLASS(StickyInstance)
+			GODOT_CLASS(StickyInstance, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();

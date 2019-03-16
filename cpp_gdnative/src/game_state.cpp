@@ -29,9 +29,8 @@ namespace godot {
 		REGISTER_TO_JSONABLE
 	}
 
-	void CLASSNAME::init(Variant rules, Variant player_books) {
+	void CLASSNAME::init(godot::GameRules *rules, Variant player_books) {
 		Array a = player_books;
-		auto *_rules = godot::as<GameRules>(rules);
 		std::vector<std::vector<std::string>> _books;
 		of_godot_variant(player_books, &_books);
 
@@ -41,31 +40,28 @@ namespace godot {
 		// jim: answer: yes it is fucking important, thanks past jim. done now
 		// TODO: this is still a bit flaky, so let's keep all rules alive forever
 		// anyway. take a look at this later
-		set_ptr(new ::GameState(*_rules->_ptr, _books));
-		_deps.push_back(godot::Ref<godot::Reference>(_rules));
+		set_ptr(new ::GameState(*rules->_ptr, _books));
+		_deps.push_back(godot::Ref<godot::Reference>(rules));
 	}
 
-	void CLASSNAME::init_json(Variant rules, Variant json) {
+	void CLASSNAME::init_json(GameRules *rules, Variant json) {
 		nlohmann::json j;
-		auto *_rules = godot::as<GameRules>(rules);
 		of_godot_variant(json, &j);
-		set_ptr(new ::GameState(*_rules->_ptr, j));
-		_deps.push_back(godot::Ref<godot::Reference>(_rules));
+		set_ptr(new ::GameState(*rules->_ptr, j));
+		_deps.push_back(godot::Ref<godot::Reference>(rules));
 	}
 
-	void CLASSNAME::clone(Variant state) {
-		auto *_state = godot::as<GameState>(state);
-		set_ptr(new ::GameState(*_state->_ptr));
+	void CLASSNAME::clone(GameState *state) {
+		set_ptr(new ::GameState(*state->_ptr));
 	}
 
-	void CLASSNAME::of_game_view(Variant view) {
-		auto *_view = godot::as<GameView>(view);
-		::GameView &v = *_view->_ptr;
+	void CLASSNAME::of_game_view(GameView *view) {
+		::GameView &v = *view->_ptr;
 		size_t i = v.view_player_id;
 		set_ptr(new ::GameState(v, v.players[i].tech, v.players[i].books));
 	}
 
-	bool CLASSNAME::is_valid_action(int player_id, Variant action) const {
+	bool CLASSNAME::is_valid_action(int player_id, Variant action) {
 		::GameAction action_;
 		of_godot_variant(action, &action_);
 		return _ptr->is_valid_action(player_id, action_);
@@ -82,7 +78,7 @@ namespace godot {
 		std::vector<nlohmann::json> events_out;
 		of_godot_variant(actions, &actions_);
 		_ptr->simulate(actions_, events_out);
-		return to_godot_variant(events_out, owner);
+		return to_godot_variant(events_out, this);
 	}
 
 	void CLASSNAME::apply_event(Variant event) {

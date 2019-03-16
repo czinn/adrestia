@@ -22,14 +22,12 @@ namespace godot {
 		set_ptr(new ::RandomStrategy());
 	}
 
-	void CLASSNAME::init_cfr_strategy(Variant rules) {
-		auto *_rules = godot::as<GameRules>(rules);
-		set_ptr(new ::CfrStrategy(*_rules->_ptr));
+	void CLASSNAME::init_cfr_strategy(GameRules *rules) {
+		set_ptr(new ::CfrStrategy(*rules->_ptr));
 	}
 
-	Variant CLASSNAME::get_action(Variant view) {
-		auto *_view = godot::as<GameView>(view);
-		return to_godot_variant(_ptr->get_action(*_view->_ptr), owner);
+	Variant CLASSNAME::get_action(GameView *view) {
+		return to_godot_variant(_ptr->get_action(*view->_ptr), this);
 	}
 
 	IMPL_NULLABLE

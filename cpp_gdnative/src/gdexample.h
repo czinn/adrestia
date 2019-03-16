@@ -6,8 +6,8 @@
 // in a wavy manner.
 
 namespace godot {
-  class gdexample : public godot::GodotScript<Sprite> {
-    GODOT_CLASS(gdexample)
+  class gdexample : public Sprite {
+    GODOT_CLASS(gdexample, Reference)
    private:
     float time_passed;
    public:

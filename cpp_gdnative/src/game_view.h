@@ -6,16 +6,19 @@
 #include "macros.h"
 
 namespace godot {
-	class GameView : public godot::GodotScript<Reference>, public Forwarder<::GameView, GameView> {
-			GODOT_CLASS(GameView)
+	class GameState;
+	class GameRules;
+
+	class GameView : public Reference, public Forwarder<::GameView, GameView> {
+			GODOT_CLASS(GameView, Reference)
 		public:
 			static const char *resource_path;
 			static void _register_methods();
 
-			void init(Variant game_state, int view_player_id);
-			void init_json(Variant rules, Variant json);
-			Variant turn_number() const;
-			Variant winners() const;
+			void init(GameState *game_state, int view_player_id);
+			void init_json(GameRules *rules, Variant json);
+			Variant turn_number();
+			Variant winners();
 			INTF_SETGET(Variant, history)
 			INTF_SETGET(Variant, players)
 			INTF_SETGET(Variant, view_player_id)
