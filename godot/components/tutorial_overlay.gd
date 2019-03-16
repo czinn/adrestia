@@ -122,7 +122,7 @@ func show_big_window(text):
 
 func show_tooltip(target, text, force=false):
 	open_time = OS.get_ticks_msec()
-	g.summon_tooltip(target, text)
+	yield(g.summon_tooltip(target, text), 'completed')
 	var rect = target.get_global_rect()
 	if force:
 		force_click_rect = rect

@@ -76,12 +76,6 @@ static func child(parent, child_name):
 	# Not recursive; not owned.
 	return parent.find_node(child_name, false, false)
 
-static func map(list, f):
-	var result = []
-	for elem in list:
-		result.append(f(elem))
-	return result
-
 static func map_method(list, method):
 	var result = []
 	for elem in list:
@@ -145,21 +139,23 @@ func make_spell_buttons(spells, show_stats = false, display_filter = null,
 var tooltip_min_open_time = 0
 var tooltip_open_time = 0
 func close_tooltip(force=false):
+	yield(get_tree(), 'idle_frame')
 	if not force and OS.get_ticks_msec() - tooltip_open_time < tooltip_min_open_time:
 		return
-	if tooltip != null:
+	if tooltip:
 		var content = tooltip.label.bbcode_text
 		var disappear = tooltip.animation_player.get_animation('disappear')
 		disappear.track_set_key_value(1, 0, tooltip.background.rect_position)
 		disappear.track_set_key_value(1, 1, tooltip.background.rect_position - Vector2(0.0, 20.0))
 		tooltip.animation_player.play('disappear')
 		yield(tooltip.animation_player, 'animation_finished')
-		tooltip.get_parent().remove_child(tooltip)
-		tooltip = null
+		if tooltip:
+			tooltip.get_parent().remove_child(tooltip)
+			tooltip = null
 		emit_signal('tooltip_closed', content)
 
 func summon_tooltip(target, text):
-	close_tooltip(true)
+	yield(close_tooltip(true), 'completed')
 	tooltip = tooltip_scene.instance()
 	tooltip.text = text
 	var pos = target.get_global_rect().position
