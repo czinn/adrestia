@@ -67,7 +67,7 @@ tracks/1/keys = {
 "values": [ Vector2( 0, 100 ), Vector2( 0, 100 ) ]
 }
 
-[node name="tooltip" type="Control"]
+[node name="tooltip" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
