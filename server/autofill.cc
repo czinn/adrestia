@@ -167,7 +167,10 @@ int main(int argc, char* argv[]) {
   string my_tag;
   string version = version_to_string(adrestia_networking::CLIENT_VERSION);
   string password("signal-expect-surprise-quickly");
-  string desired_user_name1("asdf;lkj"); // TODO: generate a realistic username if usernames are displayed to users
+  string desired_user_name("Steve");
+  if (argc >= 2) {
+    desired_user_name = std::string(argv[1]);
+  }
 
   json outbound_json;
   json response_json;
@@ -190,6 +193,7 @@ int main(int argc, char* argv[]) {
   outbound_json.clear();
   response_json.clear();
 
+  cout << "Connecting as " << desired_user_name << endl;
   adrestia_networking::create_establish_connection_call(outbound_json, version);
   outbound_message = outbound_json.dump() + '\n';
   send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
@@ -210,7 +214,13 @@ int main(int argc, char* argv[]) {
   outbound_json.clear();
   response_json.clear();
 
-  adrestia_networking::create_register_new_account_call(outbound_json, password, true, "autofill", "autofill");
+  adrestia_networking::create_register_new_account_call(
+      outbound_json,
+      password,
+      true,
+      desired_user_name,
+      "autofill"
+  );
   outbound_message = outbound_json.dump() + '\n';
   send(my_socket_1, outbound_message.c_str(), outbound_message.length(), MSG_NOSIGNAL);
   response_json = read_packet(my_socket_1, "register_new_account");
