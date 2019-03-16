@@ -4,11 +4,11 @@ book = Book('contrition', 'Book of Contrition', [
   spell_tech(name='Learn Contrition', text='Increase Contrition by 1.'),
 
   Spell('1', 'Harm',
-    'Lose 3 health. Deal 7 damage.',
+    'Lose 2 health. Deal 8 damage.',
     tech=1, level=1, cost=1,
     effects=[
-      Effect(EK_health, ET_special, self=True, amount=-3),
-      effect_attack(7),
+      Effect(EK_health, ET_special, self=True, amount=-2),
+      effect_attack(8),
     ],
   ),
 

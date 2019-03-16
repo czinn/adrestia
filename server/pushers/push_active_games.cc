@@ -158,7 +158,8 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
         update_list.push_back({
             {"game_uid", current_game_uid},
             {"game_view", current_game_view},
-            {"events", events}});
+            {"events", events},
+            {"opponent_friend_code", current_player_info["opponent_friend_code"]}});
         changed_games = true;
 
         // We should also add it to the map, seeing how it is becoming known.
@@ -175,7 +176,8 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
       json update = {
         {"game_uid", current_game_uid},
         {"game_view", current_game_view},
-        {"events", events}
+        {"events", events},
+        {"opponent_friend_code", current_player_info["opponent_friend_code"]}
       };
       if (rules.get_version() != latest_rules.get_version()) {
         update["game_rules"] = rules;
@@ -197,7 +199,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
   // If there is nothing to report, make an empty message and conclude.
   if (update_list.empty()) {
-    logger.debug("No new/changed games for uuid |%s|", uuid.c_str());
+    logger.trace("No new/changed games for uuid |%s|", uuid.c_str());
     return message_list;
   }
 

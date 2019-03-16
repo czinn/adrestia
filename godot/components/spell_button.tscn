@@ -207,7 +207,7 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 [node name="timer" type="Timer" parent="." index="2"]
 
 process_mode = 1
-wait_time = 0.3
+wait_time = 0.2
 one_shot = false
 autostart = false
 

@@ -1,3 +1,6 @@
 Session.vim
 .DS_Store
 units_android
+*.o
+*.os
+*.d

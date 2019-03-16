@@ -4,9 +4,9 @@ book = Book('conjuration', 'Book of Flame', [
   spell_tech(name='Learn Flame', text='Increase Flame by 1.'),
 
   Spell('1', 'Heat Haze',
-    'Block 13 damage from current spell only.',
+    'Block 15 damage from current spell only.',
     tech=1, level=1, cost=1,
-    effects=[effect_shield(13, duration=duration_steps(1))],
+    effects=[effect_shield(15, duration=duration_steps(1))],
   ),
 
   Spell('2', 'Burning Spirit',

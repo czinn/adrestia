@@ -1,9 +1,10 @@
 extends Node
 
 onready var g = get_node('/root/global')
-onready var online_status = $ui/online_status
+onready var avatar_profile = $ui/avatar_profile
 onready var play_button = $ui/play_button
 onready var settings_button = $ui/settings_button
+onready var friends_button = $ui/friends_button
 onready var animation_player = $animation_player
 
 const TutorialOverlay = preload('res://components/tutorial_overlay.tscn')
@@ -17,6 +18,7 @@ func _ready():
 	g.remove_backend();
 	play_button.connect('pressed', self, 'on_play_button_pressed')
 	settings_button.connect('pressed', self, 'on_settings_button_pressed')
+	friends_button.connect('pressed', self, 'on_friends_button_pressed')
 	if not g.loaded:
 		g.loaded = true
 		initialize()
@@ -31,13 +33,28 @@ func initialize():
 	g.load()
 
 func on_connected():
-	online_status.text = 'Online as %s' % [g.user_name]
+	avatar_profile.name_label.text = g.user_name
+	if g.friend_code:
+		avatar_profile.fc_label.text = 'FC: %s' % [g.friend_code]
+	if g.multiplayer_wins:
+		avatar_profile.wins_label.text = 'Online wins: %d' % [g.multiplayer_wins]
+	avatar_profile.online_label.text = 'Online'
 
 func on_disconnected():
-	online_status.text = 'Offline'
+	avatar_profile.name_label.text = g.user_name
+	if g.friend_code:
+		avatar_profile.fc_label.text = 'FC: %s' % [g.friend_code]
+	if g.multiplayer_wins:
+		avatar_profile.wins_label.text = 'Online wins: %d' % [g.multiplayer_wins]
+	avatar_profile.online_label.text = 'Offline'
 
 func on_out_of_date():
-	online_status.text = 'Out-of-date client.'
+	avatar_profile.name_label.text = g.user_name
+	if g.friend_code:
+		avatar_profile.fc_label.text = 'FC: %s' % [g.friend_code]
+	if g.multiplayer_wins:
+		avatar_profile.wins_label.text = 'Online wins: %d' % [g.multiplayer_wins]
+	avatar_profile.online_label.text = 'Out-of-date client'
 
 func on_push_active_games(response):
 	print(response)
@@ -60,6 +77,9 @@ func on_play_button_pressed():
 
 func on_settings_button_pressed():
 	g.scene_loader.goto_scene('settings')
+
+func on_friends_button_pressed():
+	g.scene_loader.goto_scene('friends')
 
 func on_tutorial_button_pressed():
 	g.backend = TutorialBackend.new(g)

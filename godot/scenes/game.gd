@@ -15,6 +15,7 @@ onready var my_spell_list = $ui/my_spell_list
 onready var my_avatar = $ui/my_avatar
 onready var my_stickies = $ui/my_stickies
 onready var enemy_avatar = $ui/enemy_avatar
+onready var enemy_name = $ui/enemy_name
 onready var enemy_spell_list = $ui/enemy_spell_list
 onready var enemy_stickies = $ui/enemy_stickies
 onready var event_timer = $ui/event_timer
@@ -181,6 +182,10 @@ func redraw():
 	var them = state.players[1 - player_id]
 	var mp_left = player_mp_left()
 	enemy_avatar.redraw(them)
+	if g.backend.get_opponent() != null:
+		enemy_name.text = g.backend.get_opponent().user_name
+	else:
+		enemy_name.text = ''
 	enemy_stickies.redraw(them.stickies)
 	my_mana_bar.redraw(me, mp_left)
 	my_avatar.redraw(me, mp_left)

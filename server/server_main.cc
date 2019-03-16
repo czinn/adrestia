@@ -3,7 +3,9 @@
 // Us
 #include "adrestia_networking.h"
 #include "adrestia_hexy.h"
+#include "adrestia_database.h"
 #include "babysitter.h"
+#include "logger.h"
 
 // Networking
 #include <sys/types.h>
@@ -104,10 +106,25 @@ int main(int na, char* arg[]) {
 	handler_map["get_stats"] = adrestia_networking::handle_get_stats;
 	handler_map["deactivate_account"] = adrestia_networking::handle_deactivate_account;
 
+	handler_map["get_user_profile"] = adrestia_networking::handle_get_user_profile;
+	handler_map["follow_user"] = adrestia_networking::handle_follow_user;
+	handler_map["unfollow_user"] = adrestia_networking::handle_unfollow_user;
+	handler_map["get_friends"] = adrestia_networking::handle_get_friends;
+	handler_map["send_challenge"] = adrestia_networking::handle_send_challenge;
+
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;
 	if (server_port_env) {
 		port = atoi(server_port_env);
+	}
+
+	// clear out ephemeral tables where left over bits may mess things up
+	logger.prefix = "main";
+	{
+		adrestia_database::Db db;
+		db.query("DELETE FROM adrestia_match_waiters")();
+		db.query("DELETE FROM challenges")();
+		db.commit();
 	}
 
 	cout << "Listening for connections on port " << port << "." << endl;

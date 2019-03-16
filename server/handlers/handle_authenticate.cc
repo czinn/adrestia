@@ -18,7 +18,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_authenticate(const Logger& logger, const json& client_json, json& resp) {
+int adrestia_networking::handle_authenticate(const Logger& _logger, const json& client_json, json& resp) {
   /* Checks if a given account/password combination exists in the database.
    *
    * Accepts keys from client:
@@ -34,7 +34,7 @@ int adrestia_networking::handle_authenticate(const Logger& logger, const json& c
    * Returns 0 if authentication succeeded, 1 otherwise.
    */
 
-  logger.trace("Triggered authenticate.");
+  adrestia_database::Db db;
   string uuid = client_json.at("uuid");
   string password = client_json.at("password");
 
@@ -45,24 +45,40 @@ int adrestia_networking::handle_authenticate(const Logger& logger, const json& c
       uuid.c_str(),
       password.c_str());
   pqxx::connection psql_connection = adrestia_database::establish_connection();
-  json result = adrestia_database::verify_existing_account_in_database(logger, psql_connection, uuid, password);
 
-  resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+  auto result = db.query(R"sql(
+    SELECT hash_of_salt_and_password, salt, user_name, tag, friend_code
+    FROM adrestia_accounts
+    WHERE uuid = ?
+  )sql")(uuid)();
 
-  if (result.at("valid")) {
+  if (result.size() == 0) {
+    logger.trace("uuid not found in database.");
+    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
+    resp[adrestia_networking::CODE_KEY] = 401;
+    resp[adrestia_networking::MESSAGE_KEY] = "Authorization NOT OK.";
+    return 1;
+  }
+
+  pqxx::binarystring expected_hash(result[0]["hash_of_salt_and_password"]);
+  string salt = result[0]["salt"].as<string>();
+  pqxx::binarystring actual_hash(adrestia_database::hash_password(password, salt));
+
+  if (actual_hash == expected_hash) {
     // Update their last login time in the database
-    adrestia_database::Db db(logger);
     db.query(R"sql(
       UPDATE adrestia_accounts
-      SET last_login = NOW()
+      SET last_login = NOW(), is_online = true
       WHERE uuid = ?
     )sql")(uuid)();
     db.commit();
 
+    resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 200;
     resp[adrestia_networking::MESSAGE_KEY] = "Authorization OK.";
-    resp["user_name"] = result.at("user_name").get<string>();
-    resp["tag"] = result.at("tag").get<string>();
+    resp["user_name"] = result[0]["user_name"].as<string>();
+    resp["tag"] = result[0]["tag"].as<string>();
+    resp["friend_code"] = result[0]["friend_code"].as<string>();
     return 0;
   } else {
     resp[adrestia_networking::CODE_KEY] = 401;

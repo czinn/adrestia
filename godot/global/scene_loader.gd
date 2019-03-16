@@ -69,6 +69,7 @@ func goto_scene(scene_name, backwards=false):
 	set_process(true)
 	transition.visible = true
 	root.add_child(transition)
+	transition.on_resize()
 	playing_backwards = backwards
 	if not backwards:
 		transition.animation_player.play('slide_in')

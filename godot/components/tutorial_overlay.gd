@@ -20,6 +20,8 @@ func _ready():
 	mouse_blocker.visible = false
 
 func close_blocker():
+	if OS.get_ticks_msec() - open_time < 500:
+		return
 	if force_click_rect != null && !force_click_rect.has_point(get_viewport().get_mouse_position()):
 		return
 	force_click_rect = null
@@ -30,8 +32,6 @@ func close_blocker():
 
 var force_click_rect = null
 func blocker_input(event):
-	if OS.get_ticks_msec() - open_time < 000: # TODO: jim: change back to 500
-		return
 	if g.event_is_pressed(event):
 		close_blocker()
 
@@ -78,6 +78,40 @@ func acquire_node(path):
 	desire_path = null
 	return node
 
+# Spotlight tweening
+var old_spotlight_pos
+var old_spotlight_size
+var new_spotlight_pos
+var new_spotlight_size
+var tween_start_time
+var tween_end_time
+
+func _process(delta):
+	if tween_start_time == null:
+		set_process(false)
+		return
+	var cur_time = float(OS.get_ticks_msec())
+	var completion = pow(min(1.0, (cur_time - tween_start_time) / (tween_end_time - tween_start_time)), 0.3)
+	var spotlight_pos  = new_spotlight_pos  * completion + old_spotlight_pos  * (1.0 - completion)
+	var spotlight_size = new_spotlight_size * completion + old_spotlight_size * (1.0 - completion)
+	mouse_blocker.material.set_shader_param('radius', 10.0);
+	mouse_blocker.material.set_shader_param('position', spotlight_pos);
+	mouse_blocker.material.set_shader_param('size', spotlight_size);
+	if completion >= 1.0:
+		tween_start_time = null
+		set_process(false)
+
+func tween_spotlight_to(pos, size):
+	tween_start_time = float(OS.get_ticks_msec())
+	tween_end_time = float(OS.get_ticks_msec()) + 350.0
+	old_spotlight_pos = new_spotlight_pos
+	if not old_spotlight_pos: old_spotlight_pos = get_viewport_rect().size / 2.0
+	old_spotlight_size = new_spotlight_size
+	if not old_spotlight_size: old_spotlight_size = get_viewport_rect().size
+	new_spotlight_pos = pos
+	new_spotlight_size = size
+	set_process(true)
+
 func show_big_window(text):
 	open_time = OS.get_ticks_msec()
 	big_text.bbcode_text = text
@@ -93,9 +127,7 @@ func show_tooltip(target, text, force=false):
 	if force:
 		force_click_rect = rect
 	g.tooltip.mouse_filter = MOUSE_FILTER_IGNORE
-	mouse_blocker.material.set_shader_param('radius', 10.0);
-	mouse_blocker.material.set_shader_param('position', rect.position + (rect.size / 2.0));
-	mouse_blocker.material.set_shader_param('size', rect.size / 2.0);
+	tween_spotlight_to(rect.position + (rect.size / 2.0), rect.size / 2.0)
 	mouse_blocker.visible = true
 	yield(self, 'popup_closed')
 
@@ -110,86 +142,92 @@ func play_button_pressed_override(select_root):
 	if has_bloodlust and has_regulation:
 		select_root.on_play_button_pressed()
 	else:
-		show_big_window('You need to select the [b]Book of Bloodlust[/b] and the [b]Book of Frost[/b] for this tutorial.')
+		show_big_window('You need to select the [color=#DC0000][b]Book of Bloodlust[/b][/color] and the [color=#2AA696][b]Book of Frost[/b][/color] for this tutorial.')
 
-var picked_wrong_spells = 0
 func end_turn_button_pressed_override(game_root):
-	if finished_first_turn:
+	var view = g.backend.get_view()
+	if view == null:
+		game_root.on_end_turn_button_pressed()
+		return
+	var turn = view.turn_number()
+	var spells = game_root.my_spell_list.spells
+	if turn == 1 and spells != ['regulation_tech', 'regulation_1']:
+		show_big_window('For this turn, just learn [color=#00ADBA][b]Frost Shield[/b][/color] from the [color=#2AA696][b]Book of Frost[/b][/color], then cast it.')
+	elif turn == 2 and spells != ['regulation_1', 'regulation_tech', 'regulation_2']:
+		#show_big_window('For this turn:\n- Cast [b]Frost Shield[/b]\n- Then, learn [color=#05ACB8][b]Iceberg[/b][/color]\n- Finally, cast [color=#05ACB8][b]Iceberg[/b][/color].\nOrder is important!')
+		pass
+	elif turn == 3 and spells != ['bloodlust_tech', 'bloodlust_1', 'bloodlust_1']:
+		show_big_window('For this turn, learn [color=#FF4C2B][b]Razor Wind[/b][/color], then cast it twice.')
+	else:
 		game_root.on_end_turn_button_pressed()
 		return
 
-	# Confirm that the player is doing the right first turn
-	var spells = game_root.my_spell_list.spells
-	if spells != ['regulation_tech', 'regulation_1']:
-		picked_wrong_spells += 1
-		show_big_window('For your first turn, learn [b]Frost Shield[/b] from the [b]Book of Frost[/b], then cast it.')
-		game_root.my_spell_list.spells = []
-		game_root.redraw()
-	else:
-		game_root.on_end_turn_button_pressed()
-
 func play_tutorial():
+	g.tooltip_min_open_time = 500
 	# Book Select
-
 	var selected_books_hbox = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
 	var select_root = yield(self.acquire_node(''), 'completed')
 	var play_button = yield(self.acquire_node('ui/play_button'), 'completed')
+
 	# Set up Play button override
 	g.safe_disconnect(play_button, 'pressed', select_root, 'on_play_button_pressed')
 	play_button.connect('pressed', self, 'play_button_pressed_override', [select_root])
 
 	# Show information
-	yield(show_big_window("[b]Welcome to Adrestia![/b]\n\nYour objective is to use your spells and your wit to defeat your enemy."), 'completed')
+	yield(show_big_window("[b]Welcome to [color=#F74F01]Adrestia[/color]![/b]\n\nYour objective is to use your spells and your wit to defeat your enemy."), 'completed')
 	var books_hbox = yield(self.acquire_node('ui/books_scroll/books_hbox'), 'completed')
 	var book_bloodlust_button = books_hbox.get_child(0)
 	var book_frost_button = books_hbox.get_child(4)
-	yield(show_tooltip(book_bloodlust_button.get_child(0), 'Tap the [b]Book of Bloodlust[/b] to see what spells it contains.', true), 'completed')
+	yield(show_tooltip(book_bloodlust_button.get_child(0), 'Tap the [color=#DC0000][b]Book of Bloodlust[/b][/color] to see what spells it contains.', true), 'completed')
 	select_root.show_book_detail(book_bloodlust_button.book)
 
 	var spell_preview = yield(self.acquire_node('ui/spell_button_list'), 'completed')
 	yield(show_tooltip(spell_preview, 'Each book has four spells.'), 'completed')
 	var spell_button = spell_preview.get_child(1).get_child(1)
-	yield(show_tooltip(spell_button, 'Tap the [b]Frenzy[/b] spell to see what it does.', true), 'completed')
+	yield(show_tooltip(spell_button, 'Tap the [color=#DC0000][b]Frenzy[/b][/color] spell to see what it does.', true), 'completed')
 	spell_button.on_long_press()
 	yield(g, 'tooltip_closed')
 	var mana_indicator = spell_button.get_node('cost/mp_icon')
 	yield(show_tooltip(mana_indicator, "The spell's mana cost is shown in this corner."), 'completed')
 
 	var book_slots = yield(self.acquire_node('ui/selected_books_hbox'), 'completed')
-	yield(show_big_window("For this tutorial, we will use two books:\nthe [b]Book of Bloodlust[/b] and the [b]Book of Frost[/b]."), 'completed')
+	yield(show_big_window("For this tutorial, we will use two books:\nthe [color=#DC0000][b]Book of Bloodlust[/b][/color] and the [color=#2AA696][b]Book of Frost[/b][/color]."), 'completed')
 	mouse_blocker.mouse_filter = MOUSE_FILTER_IGNORE
 	select_root.forced_book = 'bloodlust'
-	yield(show_tooltip(book_bloodlust_button, 'The [b]Book of Bloodlust[/b] is an aggressive book that focuses on dealing damage. Drag it up to select it.'), 'completed')
+	yield(show_tooltip(book_bloodlust_button, 'The [color=#DC0000][b]Book of Bloodlust[/b][/color] is an aggressive book that focuses on dealing damage. Drag it up to select it.'), 'completed')
 	yield(select_root, 'chose_book')
-	yield(show_tooltip(books_hbox, 'Now scroll to the right until you see the [b]Book of Frost[/b].'), 'completed')
-	mouse_blocker.mouse_filter = MOUSE_FILTER_STOP
 
-	# Wait for scroll to frost book.
+	# If not already visible on screen, wait for scroll to frost book.
+	var showed_scroll_tooltip = false
 	var book_frost_last_x = 0.0
 	var still_checks = 0
 	while true:
 		var book_frost_rect = book_frost_button.get_global_rect()
-		var _min = 40
-		var _max = get_viewport_rect().size.x - book_frost_rect.size.x - 40
 		if book_frost_last_x != book_frost_rect.position.x:
 			still_checks = 0
 			book_frost_last_x = book_frost_rect.position.x
-		elif still_checks >= 2 and book_frost_last_x >= _min and book_frost_last_x <= _max:
-			break
-		else:
+		if book_frost_last_x >= 40 and book_frost_last_x <= get_viewport_rect().size.x - book_frost_rect.size.x - 40:
+			if still_checks >= 2 or not showed_scroll_tooltip:
+				break
 			still_checks += 1
-			yield(tree_poll_timer, 'timeout')
+		if not showed_scroll_tooltip:
+			yield(show_tooltip(books_hbox, 'Now scroll to the right until you see the [color=#2AA696][b]Book of Frost[/b][/color].'), 'completed')
+			showed_scroll_tooltip = true
+		yield(tree_poll_timer, 'timeout')
+	mouse_blocker.mouse_filter = MOUSE_FILTER_STOP
 
 	select_root.forced_book = 'regulation'
 	yield(show_tooltip(book_frost_button,
-		'The [b]Book of Frost[/b] is a good book for defense. Tap it to see its spells, then drag it up to select it.', true), 'completed')
+		'The [color=#2AA696][b]Book of Frost[/b][/color] is a good book for defense. Tap it to see its spells, then drag it up to select it.', true), 'completed')
 	select_root.show_book_detail(book_frost_button.book)
-	yield(select_root, 'chose_book')
+	if not select_root.has_selected_book('regulation'):
+		yield(select_root, 'chose_book')
 	select_root.forced_book = null
 	yield(show_tooltip(play_button,
-		"Good job! The third book is yours to choose. When you're done, press the play button to fight against an AI opponent."), 'completed')
+		"Good job! The third book is yours to choose. When you're done, press the [b]Done[/b] button to fight against an AI opponent."), 'completed')
 
 	# Game
+	g.tooltip_min_open_time = 0
 	var spell_select = yield(self.acquire_node('ui/spell_select'), 'completed')
 	var game_root = yield(self.acquire_node(''), 'completed')
 	var end_turn_button = yield(self.acquire_node('ui/end_turn_button'), 'completed')
@@ -201,18 +239,20 @@ func play_tutorial():
 		'Nice work! Let\'s take a look around the game screen.\n\n[i]Tap to continue[/i]'), 'completed')
 	var my_stats = yield(self.acquire_node('ui/my_avatar'), 'completed')
 	yield(show_tooltip(my_stats,
-		'This is you! You have 25 health and 3 mana. The (+3) beside your mana shows your mana regeneration; you\'ll get this much mana at the start of each turn.'), 'completed')
+		'This is you! You have [color=#FF054B][b]40[/b][/color] health and [color=#458BFF][b]3[/b][/color] mana. The [color=#458BFF][b]+3[/b][/color] beside your mana shows your mana regeneration; you\'ll get this much mana at the start of each turn.'), 'completed')
 
 	var book_btn_bloodlust = null
 	var book_btn_frost = null
+	var book_btn_frost_i = null
 	for i in range(len(spell_select.books)):
 		if spell_select.books[i].get_id() == 'bloodlust':
 			book_btn_bloodlust = spell_select.get_node('book_buttons').get_child(i)
 		if spell_select.books[i].get_id() == 'regulation':
 			book_btn_frost = spell_select.get_node('book_buttons').get_child(i)
+			book_btn_frost_i = i
 
 	# Turn 1
-	yield(show_tooltip(book_btn_frost, 'Tap the [b]Book of Frost[/b] to open it up.', true), 'completed')
+	yield(show_tooltip(book_btn_frost, 'Tap the [color=#2AA696][b]Book of Frost[/b][/color] to open it up.', true), 'completed')
 	book_btn_frost.get_node('book').emit_signal('pressed')
 	var spell_select_animator = spell_select.get_node('animation_player')
 	yield(spell_select_animator, 'animation_finished')
@@ -222,17 +262,17 @@ func play_tutorial():
 	yield(show_tooltip(buy_spell_buttons,
 		'You learn spells from left to right, and only one per turn.'), 'completed')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		'Learn [b]Frost Shield[/b] by tapping on the blue lock.', true), 'completed')
+		'Learn [color=#00ADBA][b]Frost Shield[/b][/color] by tapping on the blue lock.', true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		'Now, cast [b]Frost Shield[/b].', true), 'completed')
+		'Now, tap [color=#00ADBA][b]Frost Shield[/b][/color] to cast it.', true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	var close_book_button = spell_select.get_node('spell_panel/ninepatch/close_button')
 	yield(show_tooltip(close_book_button,
 		'Close the book...', true), 'completed')
 	close_book_button.emit_signal('pressed')
 	yield(show_tooltip(end_turn_button,
-		'Use the Commit button to commit to your spell selection and cast your spells. Tap it now.', true), 'completed')
+		'Use the [b]Commit[/b] button to commit to your spell selection and cast your spells. Tap it now.', true), 'completed')
 	end_turn_button.emit_signal('pressed')
 
 	# Turn 1 animation
@@ -240,49 +280,58 @@ func play_tutorial():
 	game_root.animate_events = false
 	yield(show_tooltip(spell_animation_area,
 		'Your spells happen at the same time as your opponent\'s.\n[i]Tap to continue[/i]'), 'completed')
-	var enemy_spells_hbox = game_root.get_node('ui/enemy_spell_list/hbox')
+	yield(show_tooltip(spell_animation_area,
+		'Your enemy tried to damage you with [color=#FF4C2B][b]Razor Wind[/b][/color], but you will block it just in time with your [color=#00ADBA][b]Frost Shield[/b][/color].\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
-	show_tooltip(spell_animation_area, 'Your enemy tried to damage you with [b]Razor Wind[/b], but you blocked it just in time!')
 	yield(game_root, 'turn_animation_finished')
-	close_blocker()
 	finished_first_turn = true
+	close_blocker()
 
 	# Turn 2
 	yield(show_big_window(
-		"A second [b]Razor Wind[/b] would have broken through your shield. Let's get a stronger defense."), 'completed')
+		"A second [color=#FF4C2B][b]Razor Wind[/b][/color] would have broken through your shield. Let's get a stronger defense."), 'completed')
 	yield(show_tooltip(book_btn_frost,
-		'Open up the [b]Book of Frost[/b] again.', true), 'completed')
+		'Open up the [color=#2AA696][b]Book of Frost[/b][/color] again.', true), 'completed')
 	book_btn_frost.get_node('book').emit_signal('pressed')
 	yield(spell_select_animator, 'animation_finished')
 	mouse_blocker.mouse_filter = MOUSE_FILTER_IGNORE
 	game_root.can_cast_spells = false
 	show_tooltip(buy_spell_buttons.get_child(1),
-		"Let's see what [b]Iceberg[/b] does. Long-press the spell to see its description.")
+		"Let's see what [color=#05ACB8][b]Iceberg[/b][/color] does. Long-press the spell to see its description.", true)
 	yield(g, 'tooltip_closed') # for the tutorial tooltip
-	yield(g, 'tooltip_closed') # for the spell detail view
 	mouse_blocker.mouse_filter = MOUSE_FILTER_STOP
+	while true:
+		# for the spell detail view
+		var content = yield(g, 'tooltip_closed')
+		if 'Iceberg' in content:
+			break
+		else:
+			spell_select.on_open_book(book_btn_frost_i, spell_select.books[book_btn_frost_i])
+			show_big_window('Long-press the [color=#05ACB8][b]Iceberg[/b][/color] spell.')
 	game_root.can_cast_spells = true
 	yield(show_tooltip(buy_spell_buttons.get_child(1),
-		"[b]Iceberg[/b] is a powerful shield. But let's not learn it yet."), 'completed')
+		"[color=#05ACB8][b]Iceberg[/b][/color] is a powerful shield. But let's not learn it yet."), 'completed')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		"You can get attacked while learning a spell. Let's cast [b]Frost Shield[/b] first, just in case.", true), 'completed')
+		"You can get attacked while learning a spell. Let's cast [color=#00ADBA][b]Frost Shield[/b][/color] first, just in case.", true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	yield(show_tooltip(buy_spell_buttons.get_child(1),
-		"Since [b]Iceberg[/b] lasts for two turns, you can use it to defend yourself next turn. Tap the blue lock to learn it.", true), 'completed')
+		"Since [color=#05ACB8][b]Iceberg[/b][/color] lasts for two turns, you can use it to defend yourself next turn. Tap the blue lock to learn it.", true), 'completed')
 	buy_spell_buttons.get_child(1).emit_signal('pressed')
 	yield(show_tooltip(buy_spell_buttons.get_child(1),
-		"Tap [b]Iceberg[/b] to cast it.", true), 'completed')
+		"Tap [color=#05ACB8][b]Iceberg[/b][/color] to cast it.", true), 'completed')
 	buy_spell_buttons.get_child(1).emit_signal('pressed')
 	yield(show_tooltip(close_book_button,
 		'Close the book...', true), 'completed')
 	close_book_button.emit_signal('pressed')
 	yield(show_tooltip(end_turn_button,
-		'Tap commit to advance the turn.', true), 'completed')
+		'Tap [b]Commit[/b] to advance the turn.', true), 'completed')
 	end_turn_button.emit_signal('pressed')
 
 	# Turn 2 animation
-	show_tooltip(spell_animation_area,
-		'Nicely done. The first [b]Razor Wind[/b] is blocked by your [b]Frost Shield[/b], while the second one is blocked by your [b]Iceberg[/b].')
+	game_root.animate_events = false
+	yield(show_tooltip(spell_animation_area,
+		'Nicely done. Your [color=#00ADBA][b]Frost Shield[/b][/color] will block the first [color=#FF4C2B][b]Razor Wind[/b][/color], while your [color=#05ACB8][b]Iceberg[/b][/color] will block the second one.\n[i]Tap to continue[/i]'), 'completed')
+	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
 	close_blocker()
 
@@ -294,17 +343,17 @@ func play_tutorial():
 	g.summon_sticky_tooltip(sticky_display, sticky_display.sticky)
 	yield(g, 'tooltip_closed')
 	yield(show_tooltip(book_btn_bloodlust,
-		'With a strong shield already up, we can focus on the attack. Open up the [b]Book of Bloodlust[/b].', true), 'completed')
+		'With a strong shield already up, we can focus on the attack. Open up the [color=#DC0000][b]Book of Bloodlust[/b][/color].', true), 'completed')
 	book_btn_bloodlust.get_node('book').emit_signal('pressed')
 	yield(spell_select_animator, 'animation_finished')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		"[b]Razor Wind[/b] is the same spell your opponent tried to damage you with. Learn it now."), 'completed')
+		"[color=#FF4C2B][b]Razor Wind[/b][/color] is the same spell your opponent tried to damage you with. Learn it now.", true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		"Tap [b]Razor Wind[/b] to cast it."), 'completed')
+		"Tap [color=#FF4C2B][b]Razor Wind[/b][/color] to cast it.", true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	yield(show_tooltip(buy_spell_buttons.get_child(0),
-		"Let’s bring the pain! Cast [b]Razor Wind[/b] again."), 'completed')
+		"Let’s bring the pain! Cast [color=#FF4C2B][b]Razor Wind[/b][/color] again.", true), 'completed')
 	buy_spell_buttons.get_child(0).emit_signal('pressed')
 	yield(show_tooltip(close_book_button,
 		'Though you still have mana, you can only cast three spells at a time. Close the book.', true), 'completed')
@@ -314,16 +363,18 @@ func play_tutorial():
 	end_turn_button.emit_signal('pressed')
 
 	# Turn 3 animation
-	show_tooltip(spell_animation_area,
-		'You were protected by your [b]Iceberg[/b] from last turn, but your own [b]Razor Wind[/b]s hit the enemy! Nice!')
+	game_root.animate_events = false
+	yield(show_tooltip(spell_animation_area,
+		'You are protected by your [color=#05ACB8][b]Iceberg[/b][/color] from last turn, but your own [color=#FF4C2B][b]Razor Wind[/b][/color]s will hit the enemy! Nice!\n[i]Tap to continue[/i]'), 'completed')
+	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
 	close_blocker()
 
 	# Turn 4
-	yield(show_big_window(
-		"Many spells have an [b]on hit[/b] effect that triggers when they get through shields. Staying shielded can save you from a lot of pain."), 'completed')
 	yield(show_tooltip(my_stats.get_node('mana_box'),
 		'Leftover mana carries over between turns. Since you had 3 left from last turn, it plus your 3 mana regen gives you 6 now.'), 'completed')
+	yield(show_big_window(
+		"One final tip: many spells have an [b]on hit[/b] effect that triggers when they get through shields. Staying shielded can save you from a lot of pain."), 'completed')
 
 	yield(show_big_window("You're on your own now! Good luck."), 'completed')
 

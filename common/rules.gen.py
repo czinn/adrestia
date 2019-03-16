@@ -16,7 +16,7 @@ from book_regulation import book as book_regulation
 from book_regulation import old_book as book_regulation_old
 from book_tricks import book as book_tricks
 
-version = [2, 0, 0]
+version = [2, 1, 0]
 library: List[Book] = [
   book_conjuration, # Wild Wild West
   book_regulation, # The Turtle

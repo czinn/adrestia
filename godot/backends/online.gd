@@ -10,6 +10,8 @@ var started_callback = null
 var update_callback = null
 var in_game = false
 var current_move = null
+var opponent = null
+var friend_code = null
 
 # Public
 var rules
@@ -19,13 +21,18 @@ func _notification(what):
 	if what == NOTIFICATION_PREDELETE:
 		g.network.disconnect('disconnected', self, 'disconnected')
 
-func _init(g_):
+func _init(g_, friend_code_=null):
 	g = g_
+	friend_code = friend_code_
 	rules = g.get_default_rules()
 	g.network.connect('disconnected', self, 'disconnected')
 
+# jim: this bandaids an awful awful bug I can't diagnose
+var already_disconnected = false
 func disconnected():
-	g.scene_loader.goto_scene('title')
+	if not already_disconnected:
+		g.scene_loader.goto_scene('title')
+	already_disconnected = true
 
 func reconnect(update_message):
 	var game = update_message.updates[0]
@@ -53,6 +60,9 @@ func get_state():
 func get_current_move():
 	return current_move
 
+func get_opponent():
+	return opponent
+
 func register_started_callback(callback_):
 	started_callback = callback_
 	if in_game:
@@ -63,7 +73,7 @@ func register_update_callback(callback_):
 
 func submit_books(selected_book_ids):
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
-	g.network.matchmake_me(g.get_rules(), selected_book_ids, funcref(self, 'on_enter_matchmake_queue'))
+	g.network.matchmake_me(g.get_rules(), selected_book_ids, friend_code if friend_code else '', funcref(self, 'on_enter_matchmake_queue'))
 
 func on_enter_matchmake_queue(response):
 	print('We have entered the matchmaking queue:')
@@ -86,7 +96,6 @@ func on_push_active_games(response):
 		view = g.GameView.new()
 		view.init_json(rules, game.game_view)
 		player_id = view.view_player_id
-		print('successfully created view')
 	if game.events.size() > 0 or forfeited:
 		update_callback.call_func(get_view(), game.events)
 
@@ -94,9 +103,16 @@ func on_push_active_games(response):
 		print('We are now in a game: %s' % [game_uid])
 		in_game = true
 		started_callback and started_callback.call_func()
+		# Request opponent's profile from the server
+		g.network.get_user_profile(game.opponent_friend_code, funcref(self, 'on_opponent_profile'))
 
 func on_submit_move(response):
 	print('Submitted move with response: %d' % [response.api_code])
+
+func on_opponent_profile(response):
+	print(response)
+	if response.api_code == 200:
+		opponent = response.profile
 
 func submit_action(action):
 	if action == null:

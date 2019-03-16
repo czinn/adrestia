@@ -16,7 +16,7 @@ const Strategy = preload('res://native/strategy.gdns')
 
 const Tweener = preload('res://global/tweener.gd')
 
-signal tooltip_closed()
+signal tooltip_closed(content)
 
 onready var tooltip_scene = preload('res://components/tooltip.tscn')
 onready var spell_button_scene = preload('res://components/spell_button.tscn')
@@ -142,21 +142,39 @@ func make_spell_buttons(spells, show_stats = false, display_filter = null,
 		result.append(spell_button)
 	return result
 
-func close_tooltip():
+var tooltip_min_open_time = 0
+var tooltip_open_time = 0
+func close_tooltip(force=false):
+	if not force and OS.get_ticks_msec() - tooltip_open_time < tooltip_min_open_time:
+		return
 	if tooltip != null:
+		var content = tooltip.label.bbcode_text
+		var disappear = tooltip.animation_player.get_animation('disappear')
+		disappear.track_set_key_value(1, 0, tooltip.background.rect_position)
+		disappear.track_set_key_value(1, 1, tooltip.background.rect_position - Vector2(0.0, 20.0))
+		tooltip.animation_player.play('disappear')
+		yield(tooltip.animation_player, 'animation_finished')
 		tooltip.get_parent().remove_child(tooltip)
 		tooltip = null
-		emit_signal('tooltip_closed')
+		emit_signal('tooltip_closed', content)
 
 func summon_tooltip(target, text):
-	close_tooltip()
+	close_tooltip(true)
 	tooltip = tooltip_scene.instance()
 	tooltip.text = text
 	var pos = target.get_global_rect().position
 	var above = pos.y > 100
 	var y = pos.y if above else (pos.y + target.rect_size.y)
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
+	tooltip_open_time = OS.get_ticks_msec()
 	get_node("/root").add_child(tooltip)
+	tooltip.background.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	yield(tooltip.redraw(), 'completed')
+	var appear = tooltip.animation_player.get_animation('appear')
+	appear.track_set_key_value(1, 0, tooltip.background.rect_position + Vector2(0.0, 20.0))
+	appear.track_set_key_value(1, 1, tooltip.background.rect_position)
+	tooltip.animation_player.play('appear')
+	tooltip.visible = true
 
 func summon_spell_tooltip(target, spell):
 	summon_tooltip(target, "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()])
@@ -179,8 +197,8 @@ func summon_confirm(text):
 	get_node("/root").add_child(confirm)
 	return confirm
 
-func summon_notification(text):
-	scene_loader.notification.show_notification(text)
+func summon_notification(text, sticky=false, on_click=null):
+	scene_loader.notification.push_notification(text, sticky, on_click)
 
 func summon_text_entry(text, default_text):
 	var popup = text_entry_popup_scene.instance()
@@ -212,6 +230,7 @@ func remove_tutorial_overlay():
 	if tutorial_overlay != null && tutorial_overlay.get_parent() != null:
 		tutorial_overlay.get_parent().remove_child(tutorial_overlay)
 	tutorial_overlay = null
+	tooltip_min_open_time = 0
 
 func remove_backend():
 	if backend != null:
@@ -240,7 +259,7 @@ var auth_uuid
 var auth_pwd
 var first_play
 var user_name
-var tag
+var friend_code
 var multiplayer_wins
 # var rules # (declared above)
 
@@ -250,7 +269,7 @@ func save():
 		'auth_pwd': auth_pwd,
 		'first_play': first_play,
 		'user_name': user_name,
-		'tag': tag,
+		'friend_code': friend_code,
 		'rules': rules.back().as_json().result,
 		'multiplayer_wins': multiplayer_wins,
 	}
@@ -288,7 +307,7 @@ func load():
 	auth_pwd = dict_has(data, 'auth_pwd', null)
 	first_play = dict_has(data, 'first_play', true)
 	user_name = dict_has(data, 'user_name', null)
-	tag = dict_has(data, 'tag', null)
+	friend_code = dict_has(data, 'friend_code', null)
 	multiplayer_wins = dict_has(data, 'multiplayer_wins', null)
 
 	# Override rules with those from saved_data if they're newer.

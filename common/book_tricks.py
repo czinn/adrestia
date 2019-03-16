@@ -11,10 +11,10 @@ book = Book('tricks', 'Book of Deception', [
   ),
 
   Spell('2', 'Gom Jabbar',
-    'Deal 3 damage. On hit: deal an additional 9 damage.',
+    'Deal 2 damage. On hit: deal an additional 9 damage.',
     tech=2, level=2, cost=2,
     effects=[
-      Effect(EK_health, ET_attack, amount=-3,
+      Effect(EK_health, ET_attack, amount=-2,
           on_hit=Effect(EK_health, ET_special, self=True, amount=-9))
     ],
   ),
