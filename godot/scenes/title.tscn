@@ -42,7 +42,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[node name="root" type="Node"]
+[node name="root" type="Node" index="0"]
 
 script = ExtResource( 1 )
 __meta__ = {
@@ -101,9 +101,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -195.0
-margin_top = -359.0
-margin_right = 197.0
-margin_bottom = -243.0
+margin_top = -369.0
+margin_right = 195.0
+margin_bottom = -253.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -126,9 +126,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -195.0
-margin_top = -233.0
-margin_right = 197.0
-margin_bottom = -159.0
+margin_top = -241.0
+margin_right = 195.0
+margin_bottom = -167.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -142,7 +142,7 @@ shortcut = null
 group = null
 texture_normal = ExtResource( 7 )
 expand = true
-_sections_unfolded = [ "Anchor", "Textures" ]
+_sections_unfolded = [ "Anchor", "Margin", "Textures" ]
 
 [node name="settings_button" type="TextureButton" parent="ui" index="4"]
 
@@ -150,7 +150,7 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -196.0
+margin_left = -195.0
 margin_top = -149.0
 margin_right = -9.0
 margin_bottom = -75.0
@@ -178,7 +178,7 @@ anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = 9.0
 margin_top = -149.0
-margin_right = 196.0
+margin_right = 195.0
 margin_bottom = -75.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
