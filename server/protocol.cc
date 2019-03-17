@@ -124,3 +124,12 @@ void adrestia_networking::create_send_challenge_call(json& client_json,
 void adrestia_networking::create_get_match_history_call(json& client_json) {
   client_json[adrestia_networking::HANDLER_KEY] = "get_match_history";
 }
+
+void adrestia_networking::create_submit_single_player_game_call(json& client_json,
+    const std::string& rules_version,
+    const json& game_state
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "submit_single_player_game";
+  client_json["rules_version"] = rules_version;
+  client_json["game_state"] = game_state;
+}

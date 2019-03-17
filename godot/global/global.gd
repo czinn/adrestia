@@ -262,6 +262,7 @@ var first_play
 var user_name
 var friend_code
 var multiplayer_wins
+var unsubmitted_games
 # var rules # (declared above)
 
 func save():
@@ -273,6 +274,7 @@ func save():
 		'friend_code': friend_code,
 		'rules': rules.back().as_json().result,
 		'multiplayer_wins': multiplayer_wins,
+		'unsubmitted_games': unsubmitted_games
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -310,6 +312,7 @@ func load():
 	user_name = dict_has(data, 'user_name', null)
 	friend_code = dict_has(data, 'friend_code', null)
 	multiplayer_wins = dict_has(data, 'multiplayer_wins', null)
+	unsubmitted_games = dict_has(data, 'unsubmitted_games', [])
 
 	# Override rules with those from saved_data if they're newer.
 	var rules_json = dict_has(data, 'rules', null)

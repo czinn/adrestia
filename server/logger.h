@@ -31,7 +31,7 @@ class Logger {
     };
 
     std::string prefix;
-    Level min_level = INFO;
+    Level min_level = TRACE;
     bool color = true;
 
     void trace(const char *format, ...) const;
