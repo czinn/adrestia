@@ -14,7 +14,7 @@ class socket_error {};
 extern std::map<std::string, adrestia_networking::request_handler> handler_map;
 
 class Babysitter {
-  static const long long DISCONNECT_TIMEOUT_MS = 10000;
+  static const long long DISCONNECT_TIMEOUT_MS = 120000;
 
   enum Phase {
     NEW = 0,           // Must establish

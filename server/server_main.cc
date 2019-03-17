@@ -129,6 +129,7 @@ int main(int na, char* arg[]) {
 		adrestia_database::Db db;
 		db.query("DELETE FROM adrestia_match_waiters")();
 		db.query("DELETE FROM challenges")();
+		db.query("UPDATE adrestia_accounts SET is_online=FALSE")();
 		db.commit();
 	}
 
