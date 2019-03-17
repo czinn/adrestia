@@ -87,5 +87,5 @@ func redraw():
 		else:
 			background.margin_top = y
 			background.margin_bottom = y + height
-		get_tree() && yield(get_tree(), 'idle_frame')
+		if is_inside_tree(): yield(get_tree(), 'idle_frame')
 	emit_signal('redrawn')

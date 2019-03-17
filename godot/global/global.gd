@@ -171,6 +171,9 @@ func summon_tooltip(target, text):
 	get_node("/root").add_child(tooltip)
 	tooltip.background.modulate = Color(1.0, 1.0, 1.0, 0.0)
 	yield(tooltip.redraw(), 'completed')
+	# tooltip may have been dismissed before finish redraw
+	if not tooltip:
+		return
 	var appear = tooltip.animation_player.get_animation('appear')
 	appear.track_set_key_value(1, 0, tooltip.background.rect_position + Vector2(0.0, 20.0))
 	appear.track_set_key_value(1, 1, tooltip.background.rect_position)
