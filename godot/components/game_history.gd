@@ -2,9 +2,11 @@ extends Control
 
 onready var g = get_node('/root/global')
 
-var history = [] setget set_history
-var health_history = [] setget set_health_history
+var state = null setget set_state
 var view_player_id = 0 setget set_view_player_id
+
+var history = []
+var health_history = []
 
 onready var vbox = $scroll_container/vbox
 onready var template_row = $template_row
@@ -13,17 +15,32 @@ func _ready():
 	template_row.visible = false
 	redraw()
 
-func set_history(history_):
-	history = history_
-	redraw()
-
-func set_health_history(health_history_):
-	health_history = health_history_
+func set_state(state_):
+	state = state_
+	history = state.history
+	health_history = compute_health_history()
 	redraw()
 
 func set_view_player_id(view_player_id_):
 	view_player_id = view_player_id_
 	redraw()
+
+func compute_health_history():
+	var rules = g.get_rules() # TODO: handle multiple versions of rules here
+	var books = []
+	for player in state.players:
+		var player_books = []
+		for book in player.books:
+			player_books.append(book.get_id())
+		books.append(player_books)
+	var state = g.GameState.new()
+	state.init(rules, books)
+	var health_history = []
+	health_history.append([state.players[0].hp, state.players[1].hp])
+	for turn in history:
+		state.simulate(turn)
+		health_history.append([state.players[0].hp, state.players[1].hp])
+	return health_history
 
 func health_helper(health_node, index, player):
 	if index >= len(health_history):
@@ -50,8 +67,8 @@ func redraw():
 		var enemy_health = g.child(turn, 'enemy_health')
 		health_helper(my_health, index, view_player_id)
 		health_helper(enemy_health, index, 1 - view_player_id)
-		my_spell_list.spells = history[index][view_player_id]
-		enemy_spell_list.spells = history[index][1 - view_player_id]
+		my_spell_list.spells = state.history[index][view_player_id]
+		enemy_spell_list.spells = state.history[index][1 - view_player_id]
 		turn_label.text = 'Turn ' + str(index + 1)
 		turn.visible = true
 		vbox.add_child(turn)
