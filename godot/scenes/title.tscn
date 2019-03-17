@@ -42,7 +42,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[node name="root" type="Node" index="0"]
+[node name="root" type="Node"]
 
 script = ExtResource( 1 )
 __meta__ = {
@@ -101,9 +101,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 margin_left = -195.0
-margin_top = -369.0
+margin_top = -375.0
 margin_right = 195.0
-margin_bottom = -253.0
+margin_bottom = -259.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2

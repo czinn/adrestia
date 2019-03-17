@@ -147,17 +147,18 @@ var tooltip_open_time = 0
 func close_tooltip(force=false):
 	if not force and OS.get_ticks_msec() - tooltip_open_time < tooltip_min_open_time:
 		return
-	if tooltip != null:
-		var content = tooltip.label.bbcode_text
-		#var disappear = tooltip.animation_player.get_animation('disappear')
-		#disappear.track_set_key_value(1, 0, tooltip.background.rect_position)
-		#disappear.track_set_key_value(1, 1, tooltip.background.rect_position - Vector2(0.0, 20.0))
-		#tooltip.animation_player.play('disappear')
-		#yield(tooltip.animation_player, 'animation_finished')
-		if tooltip != null:
-			tooltip.get_parent().remove_child(tooltip)
-			tooltip = null
-			emit_signal('tooltip_closed', content)
+	var old_tooltip = tooltip
+	tooltip = null
+	if old_tooltip != null:
+		var content = old_tooltip.label.bbcode_text
+		emit_signal('tooltip_closed', content)
+		var disappear = old_tooltip.animation_player.get_animation('disappear')
+		disappear.track_set_key_value(1, 0, old_tooltip.background.rect_position)
+		disappear.track_set_key_value(1, 1, old_tooltip.background.rect_position - Vector2(0.0, 20.0))
+		old_tooltip.animation_player.play('disappear')
+		yield(old_tooltip.animation_player, 'animation_finished')
+		if old_tooltip != null:
+			old_tooltip.get_parent().remove_child(old_tooltip)
 
 func summon_tooltip(target, text):
 	close_tooltip(true)
@@ -178,7 +179,7 @@ func summon_tooltip(target, text):
 	appear.track_set_key_value(1, 0, tooltip.background.rect_position + Vector2(0.0, 20.0))
 	appear.track_set_key_value(1, 1, tooltip.background.rect_position)
 	tooltip.animation_player.play('appear')
-	tooltip.visible = true
+	yield(tooltip.animation_player, 'animation_finished')
 
 func summon_spell_tooltip(target, spell):
 	summon_tooltip(target, "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()])
