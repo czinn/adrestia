@@ -313,7 +313,6 @@ func play_tutorial():
 		else:
 			spell_select.on_open_book(book_btn_frost_i, spell_select.books[book_btn_frost_i])
 			should_long_press_button_override()
-	buy_spell_buttons.get_child(1).texture_button.disconnect('pressed', self, 'should_long_press_button_override')
 	game_root.can_cast_spells = true
 	yield(show_tooltip(buy_spell_buttons.get_child(1),
 		"[color=#05ACB8][b]Iceberg[/b][/color] is a powerful shield. But let's not learn it yet."), 'completed')
