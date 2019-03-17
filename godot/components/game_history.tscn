@@ -7,7 +7,7 @@
 [ext_resource path="res://fonts/Amaranth-Bold-24.tres" type="DynamicFont" id=5]
 [ext_resource path="res://art-built/health-heart.png" type="Texture" id=6]
 
-[node name="game_history" type="Control"]
+[node name="game_history" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -50,11 +50,11 @@ _sections_unfolded = [ "Anchor", "Margin", "Patch Margin" ]
 anchor_left = 0.5
 anchor_top = 0.0
 anchor_right = 0.5
-anchor_bottom = 0.0
+anchor_bottom = 1.0
 margin_left = -270.0
 margin_top = 5.0
 margin_right = 270.0
-margin_bottom = 495.0
+margin_bottom = -5.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = true
 mouse_filter = 0

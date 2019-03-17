@@ -8,6 +8,7 @@ var view_player_id = 0 setget set_view_player_id
 var history = []
 var health_history = []
 
+onready var scroll_container = $scroll_container
 onready var vbox = $scroll_container/vbox
 onready var template_row = $template_row
 
