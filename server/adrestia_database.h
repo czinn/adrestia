@@ -107,6 +107,10 @@ namespace adrestia_database {
    *
    * RAII ensures that stuff is cleaned up.
    * */
+  extern thread_local std::vector<pqxx::connection*> connection_pool;
+
+  void empty_connection_pool();
+
   class DbQuery {
     public:
       DbQuery(std::string format, pqxx::work *work);

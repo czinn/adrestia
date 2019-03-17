@@ -24,7 +24,7 @@ const code_key = 'api_code'
 
 const timeout_ms = 10000
 const floop_interval_ms = 2000
-const retry_sec = 5.0
+const retry_sec = 3.0
 
 onready var g = get_node('/root/global')
 
@@ -74,7 +74,7 @@ func _process(time):
 		print('Connecting...')
 		establish_connection(g.version_to_string(g.app_version), funcref(self, 'on_network_ready'))
 
-	if OS.get_ticks_msec() - last_send_ms > 2000:
+	if OS.get_ticks_msec() - last_send_ms > floop_interval_ms:
 		floop(funcref(self, 'on_floop'))
 
 	var bytes = self.peer.get_available_bytes()

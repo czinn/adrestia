@@ -175,8 +175,6 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
     return 0;
   }
 
-  logger.info("No possible matches are waiting. We shall become a waiter.");
-
   db.query(R"sql(
     INSERT INTO adrestia_match_waiters (uuid, selected_books, target_uuid)
     VALUES (?, ?, ?)
@@ -187,7 +185,7 @@ int adrestia_networking::handle_matchmake_me(const Logger& logger, const json& c
   logger.trace("Committing transaction.");
   db.commit();
 
-  logger.info_() << "UUID |" << uuid << "| is now on the waiting list." << endl;
+  logger.info_() << "Joined the matchmaking queue." << endl;
   resp[HANDLER_KEY] = client_json[HANDLER_KEY];
   resp[CODE_KEY] = 200;
   resp[MESSAGE_KEY] = "You have been put on the wait list.";
