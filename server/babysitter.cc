@@ -85,8 +85,8 @@ void Babysitter::main() {
         if (current_time_ms - last_data_ms > DISCONNECT_TIMEOUT_MS) {
           logger.warn_()
             << "Received no data for " << DISCONNECT_TIMEOUT_MS
-            << "ms. Assuming disconnected." << endl;
-          break;
+            << "ms. They're probably disconnected?" << endl;
+          return;
         }
         continue;
       }
