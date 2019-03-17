@@ -20,6 +20,7 @@ int adrestia_networking::handle_get_match_history(const Logger& logger, const js
     WHERE p1.user_uid = ?
       AND p2.user_uid != ?
       AND g.activity_state != 0
+      AND NOT EXISTS (SELECT r.id FROM adrestia_rules r WHERE r.id > g.game_rules_id)
     ORDER BY g.creation_time DESC
     LIMIT 10
   )sql")(uuid)(uuid)();
