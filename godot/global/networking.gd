@@ -287,5 +287,8 @@ func unfollow_user(friend_code, callback):
 func get_friends(callback):
 	return api_call_base('get_friends', [], callback)
 
+func get_match_history(callback):
+	return api_call_base('get_match_history', [], callback)
+
 func send_challenge(friend_code, callback):
 	return api_call_base('send_challenge', [friend_code], callback)

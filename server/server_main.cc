@@ -112,6 +112,8 @@ int main(int na, char* arg[]) {
 	handler_map["get_friends"] = adrestia_networking::handle_get_friends;
 	handler_map["send_challenge"] = adrestia_networking::handle_send_challenge;
 
+	handler_map["get_match_history"] = adrestia_networking::handle_get_match_history;
+
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;
 	if (server_port_env) {
