@@ -5,5 +5,6 @@ source .env
 set +o allexport
 
 out_file="$(date +%F-%T).sql"
-sudo -u postgres pg_dump $DB_NAME > $out_file
+# -O: No owner information; whoever does the backup owns everything.
+sudo -u postgres pg_dump -O $DB_NAME > $out_file
 echo "Dumped database '$DB_NAME' to $out_file"
