@@ -23,8 +23,9 @@ using namespace adrestia_networking;
 
 std::map<std::string, request_handler> handler_map;
 
-Babysitter::Babysitter(int client_socket)
-  :  client_socket(client_socket) { };
+Babysitter::Babysitter(int client_socket, string ip)
+  : client_socket(client_socket)
+  , ip(ip) { };
 
 void Babysitter::main() {
   /* A single thread lives within this function, babysitting a client's connection.
@@ -118,6 +119,13 @@ void Babysitter::main() {
                 stringstream username_tag;
                 username_tag << resp["user_name"].get<string>() << " (" << resp["friend_code"].get<string>() << ")";
                 logger.prefix = username_tag.str();
+                adrestia_database::Db db;
+                db.query(R"sql(
+                  INSERT INTO account_ips (uuid, ip)
+                  VALUES (?, ?)
+                  ON CONFLICT (uuid, ip) DO NOTHING
+                )sql")(resp["uuid"].get<string>())(ip)();
+                db.commit();
               }
               break;
             case AUTHENTICATED:

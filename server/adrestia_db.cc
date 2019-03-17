@@ -46,7 +46,7 @@ pqxx::result DbQuery::operator()() {
     throw std::string("Wrong number of arguments supplied to SQL query.");
   }
   std::string query = build_query();
-  logger.trace_() << "Running SQL:" << query << std::endl;
+  logger.trace_() << "Running SQL: " << query << std::endl;
   return work->exec(query);
 }
 

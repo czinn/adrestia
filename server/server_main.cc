@@ -33,8 +33,8 @@ using namespace std;
 #include "../cpp/json.h"
 using json = nlohmann::json;
 
-void babysit(int client_socket) {
-	Babysitter(client_socket).main();
+void babysit(int client_socket, string ip) {
+	Babysitter(client_socket, ip).main();
 }
 
 void adrestia_networking::listen_for_connections(int port) {
@@ -76,6 +76,9 @@ void adrestia_networking::listen_for_connections(int port) {
 		client_address_sizeof = sizeof(client_address);
 		client_socket = accept(server_socket, (sockaddr*) &client_address, &client_address_sizeof);
 
+		char ip[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, &client_address.sin_addr, ip, INET_ADDRSTRLEN);
+
 		// Configure our timeouts and keepalives
 		// TODO: KEEPALIVE
 		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(timeval)) < 0) {
@@ -87,7 +90,7 @@ void adrestia_networking::listen_for_connections(int port) {
 			return;
 		}
 
-		babysitters.emplace_back(babysit, client_socket);
+		babysitters.emplace_back(babysit, client_socket, string(ip));
 	}
 }
 

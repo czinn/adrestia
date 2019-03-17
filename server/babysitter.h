@@ -20,7 +20,7 @@ class Babysitter {
     AUTHENTICATED = 2, // You're in!
   };
   public:
-    Babysitter(int client_socket);
+    Babysitter(int client_socket, std::string ip);
 
     void main();
     Phase phase_new(
@@ -45,6 +45,7 @@ class Babysitter {
 
     Phase phase;
     int client_socket;
+    std::string ip;
     std::string read_message_buffer;
     std::string uuid; // The uuid of the client we are babysitting.
 };
