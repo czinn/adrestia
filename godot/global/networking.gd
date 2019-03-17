@@ -172,9 +172,12 @@ func on_floop(response):
 	pass
 
 func after_auth():
-	g.save()
 	status = ONLINE
 	print('Connected!')
+	for unsubmitted_game in g.unsubmitted_games:
+		submit_single_player_game(unsubmitted_game[0], unsubmitted_game[1], funcref(self, 'discard'))
+	g.unsubmitted_games = []
+	g.save()
 	emit_signal('connected')
 
 func is_online():
@@ -292,3 +295,6 @@ func get_match_history(callback):
 
 func send_challenge(friend_code, callback):
 	return api_call_base('send_challenge', [friend_code], callback)
+
+func submit_single_player_game(version, state, callback):
+	return api_call_base('submit_single_player_game', [version, state], callback)

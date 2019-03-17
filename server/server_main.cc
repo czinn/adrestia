@@ -116,6 +116,7 @@ int main(int na, char* arg[]) {
 	handler_map["send_challenge"] = adrestia_networking::handle_send_challenge;
 
 	handler_map["get_match_history"] = adrestia_networking::handle_get_match_history;
+	handler_map["submit_single_player_game"] = adrestia_networking::handle_submit_single_player_game;
 
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;

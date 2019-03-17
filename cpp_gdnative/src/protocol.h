@@ -27,5 +27,6 @@ namespace godot {
       godot::String create_get_friends_call();
       godot::String create_send_challenge_call(godot::String friend_code);
       godot::String create_get_match_history_call();
+      godot::String create_submit_single_player_game_call(godot::String rules_version, godot::Variant game_state);
   };
 }
