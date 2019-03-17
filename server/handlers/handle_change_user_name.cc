@@ -19,7 +19,7 @@ using namespace std;
 using json = nlohmann::json;
 
 
-int adrestia_networking::handle_change_user_name(const Logger& logger, const json& client_json, json& resp) {
+int adrestia_networking::handle_change_user_name(const Logger& _logger, const json& client_json, json& resp) {
   /* Changes the user name associated with the given uuid to the new requested user name.
    *     By necessity, creates a new tag to go with this user_name.
    *
@@ -60,7 +60,12 @@ int adrestia_networking::handle_change_user_name(const Logger& logger, const jso
         WHERE uuid = ?
       )sql")(new_user_name)(tag)(friend_code)(uuid)();
       db.commit();
-      logger.info("Successfully changed user_name in database.");
+      logger.info_() << "Changed user_name to " << new_user_name << endl;
+
+      // update logger prefix
+      stringstream username_fc;
+      username_fc << new_user_name << " (" << friend_code << ")";
+      logger.prefix = username_fc.str();
 
       logger.trace_()
         << "New account info is:" << endl

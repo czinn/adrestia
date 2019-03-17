@@ -6,6 +6,15 @@
 
 using namespace adrestia_database;
 
+thread_local std::vector<pqxx::connection*> adrestia_database::connection_pool;
+
+void adrestia_database::empty_connection_pool() {
+  while (!connection_pool.empty()) {
+    pqxx::connection *conn = connection_pool.back(); connection_pool.pop_back();
+    delete conn;
+  }
+}
+
 DbQuery::DbQuery(std::string format, pqxx::work *work)
   : work(work)
   , has_run(false)
@@ -46,19 +55,20 @@ pqxx::result DbQuery::operator()() {
     throw std::string("Wrong number of arguments supplied to SQL query.");
   }
   std::string query = build_query();
-  logger.trace_() << "Running SQL:" << query << std::endl;
+  logger.trace_() << "Running SQL: " << query << std::endl;
   return work->exec(query);
 }
 
 Db::Db() {
-  const char *db_conn_string = getenv("DB_CONNECTION_STRING");
-  if (db_conn_string == nullptr) {
-    logger.error_() << "Failed to read DB_CONNECTION_STRING from env." << std::endl;
-    throw std::string("Failed to read DB_CONNECTION_STRING from env.");
+  if (connection_pool.empty()) {
+    const char *db_conn_string = getenv("DB_CONNECTION_STRING");
+    if (db_conn_string == nullptr) {
+      logger.error_() << "Failed to read DB_CONNECTION_STRING from env." << std::endl;
+      throw std::string("Failed to read DB_CONNECTION_STRING from env.");
+    }
+    connection_pool.push_back(new pqxx::connection(db_conn_string));
   }
-
-  // TODO: jim: Take from a pool
-  conn = new pqxx::connection(db_conn_string);
+  conn = connection_pool.back(); connection_pool.pop_back();
   work = new pqxx::work(*conn);
 }
 
@@ -67,7 +77,7 @@ Db::Db(const Logger &logger) : Db() { }
 
 Db::~Db() {
   delete work;
-  delete conn;
+  connection_pool.push_back(conn);
 }
 
 DbQuery Db::query(std::string format) {
