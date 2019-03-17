@@ -3,6 +3,7 @@ extends Node
 onready var g = get_node('/root/global')
 onready var avatar_profile = $ui/avatar_profile
 onready var play_button = $ui/play_button
+onready var match_history_button = $ui/match_history_button
 onready var settings_button = $ui/settings_button
 onready var friends_button = $ui/friends_button
 onready var animation_player = $animation_player
@@ -17,6 +18,7 @@ func _ready():
 	g.remove_tutorial_overlay()
 	g.remove_backend();
 	play_button.connect('pressed', self, 'on_play_button_pressed')
+	match_history_button.connect('pressed', self, 'on_match_history_button_pressed')
 	settings_button.connect('pressed', self, 'on_settings_button_pressed')
 	friends_button.connect('pressed', self, 'on_friends_button_pressed')
 	if not g.loaded:
@@ -74,6 +76,9 @@ func on_play_button_pressed():
 			on_tutorial_button_pressed()
 			return
 	g.scene_loader.goto_scene('game_mode_select')
+
+func on_match_history_button_pressed():
+	g.scene_loader.goto_scene('match_history')
 
 func on_settings_button_pressed():
 	g.scene_loader.goto_scene('settings')

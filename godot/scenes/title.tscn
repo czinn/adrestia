@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scenes/title.gd" type="Script" id=1]
 [ext_resource path="res://theme-default.tres" type="Theme" id=2]
@@ -6,9 +6,10 @@
 [ext_resource path="res://scripts/background.gd" type="Script" id=4]
 [ext_resource path="res://art-built/logo.png" type="Texture" id=5]
 [ext_resource path="res://art-built/button-play.png" type="Texture" id=6]
-[ext_resource path="res://art-built/button-settings.png" type="Texture" id=7]
-[ext_resource path="res://art-built/button-friends.png" type="Texture" id=8]
-[ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=9]
+[ext_resource path="res://art-built/button-match-history.png" type="Texture" id=7]
+[ext_resource path="res://art-built/button-settings.png" type="Texture" id=8]
+[ext_resource path="res://art-built/button-friends.png" type="Texture" id=9]
+[ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=10]
 
 [sub_resource type="Animation" id=1]
 
@@ -99,10 +100,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -196.0
-margin_top = -283.0
-margin_right = 196.0
-margin_bottom = -167.0
+margin_left = -195.0
+margin_top = -369.0
+margin_right = 195.0
+margin_bottom = -253.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -118,16 +119,16 @@ texture_normal = ExtResource( 6 )
 expand = true
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="settings_button" type="TextureButton" parent="ui" index="3"]
+[node name="match_history_button" type="TextureButton" parent="ui" index="3"]
 
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -196.0
-margin_top = -149.0
-margin_right = -9.0
-margin_bottom = -75.0
+margin_left = -195.0
+margin_top = -241.0
+margin_right = 195.0
+margin_bottom = -167.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -141,18 +142,17 @@ shortcut = null
 group = null
 texture_normal = ExtResource( 7 )
 expand = true
-stretch_mode = 5
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+_sections_unfolded = [ "Anchor", "Margin", "Textures" ]
 
-[node name="friends_button" type="TextureButton" parent="ui" index="4"]
+[node name="settings_button" type="TextureButton" parent="ui" index="4"]
 
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = 9.0
+margin_left = -195.0
 margin_top = -149.0
-margin_right = 196.0
+margin_right = -9.0
 margin_bottom = -75.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -170,7 +170,33 @@ expand = true
 stretch_mode = 5
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="avatar_profile" parent="ui" index="5" instance=ExtResource( 9 )]
+[node name="friends_button" type="TextureButton" parent="ui" index="5"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 9.0
+margin_top = -149.0
+margin_right = 195.0
+margin_bottom = -75.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 9 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+
+[node name="avatar_profile" parent="ui" index="6" instance=ExtResource( 10 )]
 
 anchor_left = 0.5
 anchor_right = 0.5

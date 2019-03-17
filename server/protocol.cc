@@ -120,3 +120,7 @@ void adrestia_networking::create_send_challenge_call(json& client_json,
   client_json[adrestia_networking::HANDLER_KEY] = "send_challenge";
   client_json["friend_code"] = friend_code;
 }
+
+void adrestia_networking::create_get_match_history_call(json& client_json) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_match_history";
+}

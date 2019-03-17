@@ -14,9 +14,7 @@ func _ready():
 	var final_state = g.backend.get_state()
 	var winners = g.backend.get_state().winners()
 	game_history.view_player_id = g.backend.get_view().view_player_id
-	game_history.history = final_state.history
-	game_history.health_history = \
-		compute_health_history(g.backend.rules, final_state.players, final_state.history)
+	game_history.state = final_state
 
 	if winners.size() == 2:
 		# Tie
@@ -37,22 +35,6 @@ func _ready():
 		title_label.text = 'Defeat.'
 		detail_text.bbcode_text = '[center]Better luck next time.[/center]'
 		winner = 1 - game_history.view_player_id
-
-func compute_health_history(rules, players, history):
-	var books = []
-	for player in players:
-		var player_books = []
-		for book in player.books:
-			player_books.append(book.get_id())
-		books.append(player_books)
-	var state = g.GameState.new()
-	state.init(rules, books)
-	var health_history = []
-	health_history.append([state.players[0].hp, state.players[1].hp])
-	for turn in history:
-		state.simulate(turn)
-		health_history.append([state.players[0].hp, state.players[1].hp])
-	return health_history
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:

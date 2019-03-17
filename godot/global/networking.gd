@@ -7,7 +7,7 @@ signal out_of_date
 const OnlineBackend = preload('res://backends/online.gd')
 const Protocol = preload('res://native/protocol.gdns')
 
-const DEBUG = false
+const DEBUG = true
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
 const always_register_new_account = false
 
@@ -286,6 +286,9 @@ func unfollow_user(friend_code, callback):
 
 func get_friends(callback):
 	return api_call_base('get_friends', [], callback)
+
+func get_match_history(callback):
+	return api_call_base('get_match_history', [], callback)
 
 func send_challenge(friend_code, callback):
 	return api_call_base('send_challenge', [friend_code], callback)
