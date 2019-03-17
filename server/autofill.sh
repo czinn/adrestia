@@ -48,6 +48,8 @@ num_uuids=${#uuids[@]}
 while true; do
   index=$(($RANDOM % $num_uuids))
   uuid="${uuids[$index]}"
-  ./autofill play "$uuid"
-  sleep 30
+  for i in {1..10}; do
+    ./autofill play "$uuid"
+    sleep 80
+  done
 done
