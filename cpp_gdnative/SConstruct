@@ -1,16 +1,17 @@
 #!python
-import os
+import os, platform
 
-target = ARGUMENTS.get("target", "debug")
-platform = ARGUMENTS.get("platform", "windows")
-bits = ARGUMENTS.get("bits", 64)
+target = ARGUMENTS.get('target', 'debug')
+target_platform = ARGUMENTS.get('platform', 'windows')
+host_platform = platform.system()
+target_arch = ARGUMENTS.get('arch', '64')
 
 final_lib_path = 'bin/'
 
 # This makes sure to keep the session environment variables on windows, 
 # that way you can run scons in a vs 2017 prompt and it will find all the required tools
 env = Environment()
-if platform == "windows":
+if target_platform == 'windows':
     env = Environment(ENV = os.environ)
 
 def add_sources(sources, directory):
@@ -18,31 +19,34 @@ def add_sources(sources, directory):
         if file.endswith('.cpp') or file.endswith('.cc'):
             sources.append(directory + '/' + file)
 
-if platform == "osx":
+if target_platform == 'osx':
     env.Append(CCFLAGS = ['-g','-Os', '-arch', 'x86_64', '-std=c++17'])
     env.Append(LINKFLAGS = ['-arch', 'x86_64'])
-
     final_lib_path += 'osx/'
 
-elif platform == "linux":
-    env.Append(CCFLAGS = ['-fPIC', '-g','-Os', '-std=c++17'])
-
+elif target_platform == 'linux':
+    env.Append(CCFLAGS = ['-fPIC', '-g', '-Os', '-std=c++17'])
     final_lib_path += 'x11/'
 
-elif platform == "windows":
-    if target == "debug":
-        env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd', '/std:c++17'])
+elif target_platform == 'windows':
+    if host_platform == 'Windows':
+        if target == 'debug':
+            env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd', '/std:c++17'])
+        else:
+            env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD', '/std:c++17'])
     else:
-        env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD', '/std:c++17'])
+        env['CXX'] = 'x86_64-w64-mingw32-g++'
+        env.Append(CCFLAGS = [ '-g', '-Os', '-std=c++17', '-Wwrite-strings' ])
+        env.Append(LINKFLAGS = [ '--static', '-Wl,--no-undefined', '-static-libgcc', '-static-libstdc++' ])
 
-    final_lib_path = final_lib_path + 'win' + str(bits) + '/'
+    final_lib_path = final_lib_path + 'win' + target_arch + '/'
 
-env.Append(CPPPATH=['.', '../cpp', '../cpp/fdeep-include', '../cpp/fplus-include', 'src/', "godot_headers/", 'godot-cpp/include/', 'godot-cpp/include/core/'])
-env.Append(LIBPATH="godot-cpp/bin")
-env.Append(LIBS=["godot-cpp.%s.%s" % (platform, bits)])
+env.Append(CPPPATH=['.', '../cpp', '../cpp/fdeep-include', '../cpp/fplus-include', 'src/', 'godot_headers/', 'godot-cpp/include/', 'godot-cpp/include/core/'])
+env.Append(LIBPATH='godot-cpp/bin')
+env.Append(LIBS=['godot-cpp.%s.%s' % (target_platform, target_arch)])
 
 sources = []
-add_sources(sources, "src")
+add_sources(sources, 'src')
 add_sources(sources, '../cpp')
 sources.append('../server/protocol.cc')
 sources.append('../server/versioning.cc')
