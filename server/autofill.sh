@@ -50,6 +50,6 @@ while true; do
   uuid="${uuids[$index]}"
   for i in {1..10}; do
     ./autofill play "$uuid"
-    sleep 80
+    sleep 30
   done
 done
