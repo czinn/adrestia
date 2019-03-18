@@ -24,6 +24,8 @@ int adrestia_networking::handle_register_new_account(const Logger& logger, const
    *
    * Accepts keys from client:
    *     HANDLER_KEY: <this function>
+   *     "user_name" The user name for the account ("Guest" by default)
+   *     "platform" The user's platform
    *     "password" The password that the new account will have
    *     "debug" If present and true, the account is a debug account (exclude it from statistics)
    *
@@ -40,43 +42,48 @@ int adrestia_networking::handle_register_new_account(const Logger& logger, const
 
   logger.trace("Triggered register_new_account.");
   string password = client_json.at("password");
+  string platform = client_json.value("platform", "");
 
   const string default_user_name = "Guest";
+  string user_name = client_json.value("user_name", default_user_name);
+
   string salt = adrestia_hexy::hex_urandom(adrestia_database::SALT_LENGTH);
   pqxx::binarystring password_hash(adrestia_database::hash_password(password, salt));
 
-  string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
-  string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
   bool debug = client_json.find("debug") != client_json.end() && client_json.at("debug").get<bool>();
 
   // Keep making up ids/tags until we get a successful insertion.
   for (int i = 0; i < 1000; i += 1) {
     string uuid = adrestia_hexy::hex_urandom(adrestia_database::UUID_LENGTH);
     string tag = adrestia_hexy::hex_urandom(adrestia_database::TAG_LENGTH);
+    string friend_code = adrestia_hexy::random_dec_string(adrestia_database::FRIEND_CODE_LENGTH);
 
     try {
       adrestia_database::Db db(logger);
       db.query(R"sql(
-        INSERT INTO adrestia_accounts (uuid, user_name, tag, hash_of_salt_and_password, salt, last_login, debug)
-        VALUES (?, ?, ?, ?, ?, NOW(), ?)
-      )sql")(uuid)(default_user_name)(tag)(password_hash)(salt)(debug)();
-			db.commit();
+        INSERT INTO adrestia_accounts (uuid, user_name, tag, friend_code, platform, hash_of_salt_and_password, salt, last_login, debug, is_online)
+        VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, TRUE)
+      )sql")(uuid)(user_name)(tag)(friend_code)(platform)(password_hash)(salt)(debug)();
+      db.commit();
 
       logger.info_() << "Created new account with:" << endl
           << "    uuid: |" << uuid << "|" << endl
-          << "    user_name: |" << default_user_name << "|" << endl
-          << "    tag: |" << tag << "|" << endl;
+          << "    user_name: |" << user_name << "|" << endl
+          << "    tag: |" << tag << "|" << endl
+          << "    friend_code: |" << friend_code << "|" << endl;
 
       resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
       resp[adrestia_networking::CODE_KEY] = 201;
       resp[adrestia_networking::MESSAGE_KEY] = "Created new account.";
       resp["uuid"] = uuid;
-      resp["user_name"] = default_user_name;
+      resp["user_name"] = user_name;
       resp["tag"] = tag;
+      resp["friend_code"] = friend_code;
 
       logger.trace("register_new_account concluded.");
       return 0;
-    } catch (pqxx::integrity_constraint_violation &) {
+    } catch (pqxx::integrity_constraint_violation &e) {
+      logger.warn_() << e.what() << endl;
       continue;
     }
   }

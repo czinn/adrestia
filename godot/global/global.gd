@@ -147,11 +147,18 @@ var tooltip_open_time = 0
 func close_tooltip(force=false):
 	if not force and OS.get_ticks_msec() - tooltip_open_time < tooltip_min_open_time:
 		return
-	if tooltip != null:
-		var content = tooltip.label.bbcode_text
-		tooltip.get_parent().remove_child(tooltip)
-		tooltip = null
+	var old_tooltip = tooltip
+	tooltip = null
+	if old_tooltip != null:
+		var content = old_tooltip.label.bbcode_text
 		emit_signal('tooltip_closed', content)
+		var disappear = old_tooltip.animation_player.get_animation('disappear')
+		disappear.track_set_key_value(1, 0, old_tooltip.background.rect_position)
+		disappear.track_set_key_value(1, 1, old_tooltip.background.rect_position - Vector2(0.0, 20.0))
+		old_tooltip.animation_player.play('disappear')
+		yield(old_tooltip.animation_player, 'animation_finished')
+		if old_tooltip != null:
+			old_tooltip.get_parent().remove_child(old_tooltip)
 
 func summon_tooltip(target, text):
 	close_tooltip(true)
@@ -163,6 +170,16 @@ func summon_tooltip(target, text):
 	tooltip.set_target(pos.x + target.rect_size.x / 2, y, above)
 	tooltip_open_time = OS.get_ticks_msec()
 	get_node("/root").add_child(tooltip)
+	tooltip.background.modulate = Color(1.0, 1.0, 1.0, 0.0)
+	yield(tooltip.redraw(), 'completed')
+	# tooltip may have been dismissed before finish redraw
+	if not tooltip:
+		return
+	var appear = tooltip.animation_player.get_animation('appear')
+	appear.track_set_key_value(1, 0, tooltip.background.rect_position + Vector2(0.0, 20.0))
+	appear.track_set_key_value(1, 1, tooltip.background.rect_position)
+	tooltip.animation_player.play('appear')
+	yield(tooltip.animation_player, 'animation_finished')
 
 func summon_spell_tooltip(target, spell):
 	summon_tooltip(target, "[b]%s[/b]\n%s" % [spell.get_name(), spell.get_text()])
@@ -185,8 +202,8 @@ func summon_confirm(text):
 	get_node("/root").add_child(confirm)
 	return confirm
 
-func summon_notification(text):
-	scene_loader.notification.show_notification(text)
+func summon_notification(text, sticky=false, on_click=null):
+	scene_loader.notification.push_notification(text, sticky, on_click)
 
 func summon_text_entry(text, default_text):
 	var popup = text_entry_popup_scene.instance()
@@ -247,8 +264,9 @@ var auth_uuid
 var auth_pwd
 var first_play
 var user_name
-var tag
+var friend_code
 var multiplayer_wins
+var unsubmitted_games
 # var rules # (declared above)
 
 func save():
@@ -257,9 +275,10 @@ func save():
 		'auth_pwd': auth_pwd,
 		'first_play': first_play,
 		'user_name': user_name,
-		'tag': tag,
+		'friend_code': friend_code,
 		'rules': rules.back().as_json().result,
 		'multiplayer_wins': multiplayer_wins,
+		'unsubmitted_games': unsubmitted_games
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -295,8 +314,9 @@ func load():
 	auth_pwd = dict_has(data, 'auth_pwd', null)
 	first_play = dict_has(data, 'first_play', true)
 	user_name = dict_has(data, 'user_name', null)
-	tag = dict_has(data, 'tag', null)
+	friend_code = dict_has(data, 'friend_code', null)
 	multiplayer_wins = dict_has(data, 'multiplayer_wins', null)
+	unsubmitted_games = dict_has(data, 'unsubmitted_games', [])
 
 	# Override rules with those from saved_data if they're newer.
 	var rules_json = dict_has(data, 'rules', null)

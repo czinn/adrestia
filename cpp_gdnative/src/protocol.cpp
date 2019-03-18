@@ -1,12 +1,28 @@
 #include "protocol.h"
 
 #include "game_rules.h"
+#include "game_state.h"
 
 #include "../../server/adrestia_networking.h"
 
 #define CLASSNAME Protocol
 
 using namespace godot;
+
+#define IMPL_UNIT(fn) \
+  String Protocol::fn() {\
+    nlohmann::json j;\
+    adrestia_networking::fn(j);\
+    return String(j.dump().c_str());\
+  }
+
+#define IMPL_STRING(fn) \
+  String Protocol::fn(String a) {\
+    nlohmann::json j;\
+    std::string a_; of_godot_variant(a, &a_);\
+    adrestia_networking::fn(j, a_);\
+    return String(j.dump().c_str());\
+  }
 
 namespace godot {
   Protocol::Protocol() {
@@ -26,20 +42,17 @@ namespace godot {
     REGISTER_METHOD(create_submit_move_call);
     REGISTER_METHOD(create_get_stats_call);
     REGISTER_METHOD(create_deactivate_account_call);
+    REGISTER_METHOD(create_get_user_profile_call);
+    REGISTER_METHOD(create_follow_user_call);
+    REGISTER_METHOD(create_unfollow_user_call);
+    REGISTER_METHOD(create_get_friends_call);
+    REGISTER_METHOD(create_send_challenge_call);
+    REGISTER_METHOD(create_get_match_history_call);
+    REGISTER_METHOD(create_submit_single_player_game_call);
   }
 
-  String Protocol::create_floop_call() {
-    nlohmann::json j;
-    adrestia_networking::create_floop_call(j);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_establish_connection_call(String version) {
-    nlohmann::json j;
-    std::string version_; of_godot_variant(version, &version_);
-    adrestia_networking::create_establish_connection_call(j, version_);
-    return String(j.dump().c_str());
-  }
+  IMPL_UNIT(create_floop_call);
+  IMPL_STRING(create_establish_connection_call);
 
   String Protocol::create_authenticate_call(String uuid, String password) {
     nlohmann::json j;
@@ -49,32 +62,25 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_abort_game_call(String game_uid) {
-    nlohmann::json j;
-    std::string game_uid_; of_godot_variant(game_uid, &game_uid_);
-    adrestia_networking::create_abort_game_call(j, game_uid_);
-    return String(j.dump().c_str());
-  }
+  IMPL_STRING(create_abort_game_call);
 
-  String Protocol::create_register_new_account_call(String password, bool debug) {
+  String Protocol::create_register_new_account_call(String password, bool debug, String user_name, String platform) {
     nlohmann::json j;
     std::string password_; of_godot_variant(password, &password_);
-    adrestia_networking::create_register_new_account_call(j, password_, debug);
-    return String(j.dump().c_str());
-  }
-
-  String Protocol::create_change_user_name_call(String user_name) {
-    nlohmann::json j;
     std::string user_name_; of_godot_variant(user_name, &user_name_);
-    adrestia_networking::create_change_user_name_call(j, user_name_);
+    std::string platform_; of_godot_variant(platform, &platform_);
+    adrestia_networking::create_register_new_account_call(j, password_, debug, user_name_, platform_);
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_matchmake_me_call(Variant rules, Variant selected_books) {
+  IMPL_STRING(create_change_user_name_call);
+
+  String Protocol::create_matchmake_me_call(Variant rules, Variant selected_books, String target_friend_code) {
     nlohmann::json j;
     std::vector<std::string> selected_books_; of_godot_variant(selected_books, &selected_books_);
     auto *_rules = godot::as<GameRules>(rules);
-    adrestia_networking::create_matchmake_me_call(j, *_rules->_ptr, selected_books_);
+    std::string target_friend_code_; of_godot_variant(target_friend_code, &target_friend_code_);
+    adrestia_networking::create_matchmake_me_call(j, *_rules->_ptr, selected_books_, target_friend_code_);
     return String(j.dump().c_str());
   }
 
@@ -86,15 +92,21 @@ namespace godot {
     return String(j.dump().c_str());
   }
 
-  String Protocol::create_get_stats_call() {
-    nlohmann::json j;
-    adrestia_networking::create_get_stats_call(j);
-    return String(j.dump().c_str());
-  }
+  IMPL_UNIT(create_get_stats_call);
+  IMPL_UNIT(create_deactivate_account_call);
+  IMPL_STRING(create_get_user_profile_call);
+  IMPL_STRING(create_follow_user_call);
+  IMPL_STRING(create_unfollow_user_call);
+  IMPL_UNIT(create_get_friends_call);
+  IMPL_STRING(create_send_challenge_call);
+  IMPL_UNIT(create_get_match_history_call);
 
-  String Protocol::create_deactivate_account_call() {
+  String Protocol::create_submit_single_player_game_call(String rules_version, Variant game_state) {
     nlohmann::json j;
-    adrestia_networking::create_deactivate_account_call(j);
+    std::string version_; of_godot_variant(rules_version, &version_);
+    nlohmann::json state;
+		of_godot_variant(game_state, &state);
+    adrestia_networking::create_submit_single_player_game_call(j, version_, state);
     return String(j.dump().c_str());
   }
 }

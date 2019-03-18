@@ -4,9 +4,9 @@ book = Book('bloodlust', 'Book of Bloodlust', [
   spell_tech(name='Learn Bloodlust', text='Increase Bloodlust by 1.'),
 
   Spell('1', 'Razor Wind',
-    'Deal 4 damage.',
+    'Deal 5 damage.',
     tech=1, level=1, cost=1,
-    effects=[effect_attack(4)],
+    effects=[effect_attack(5)],
   ),
 
   Spell('2', 'Frenzy',

@@ -32,14 +32,14 @@ Effect::~Effect() {
 }
 
 bool Effect::operator==(const Effect &other) const {
-	return
-		(  this->kind == other.kind
-		&& this->targets_self == other.targets_self
-		&& this->effect_type == other.effect_type
-		&& this->amount == other.amount
-		&& (this->kind != EK_STICKY || this->sticky_invoker == other.sticky_invoker)
-		&& ((this->on_hit == other.on_hit) || (this->on_hit && other.on_hit && *this->on_hit == *other.on_hit))
-		);
+  return
+    (  this->kind == other.kind
+    && this->targets_self == other.targets_self
+    && this->effect_type == other.effect_type
+    && this->amount == other.amount
+    && (this->kind != EK_STICKY || this->sticky_invoker == other.sticky_invoker)
+    && ((this->on_hit == other.on_hit) || (this->on_hit && other.on_hit && *this->on_hit == *other.on_hit))
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ const Effect *Effect::get_on_hit() const { return on_hit; }
 // SERIALIZATION
 //------------------------------------------------------------------------------
 void from_json(const json &j, Effect &effect) {
-	effect.kind = j.at("kind");
-	effect.targets_self = j.at("self");
-	effect.effect_type = j.at("effect_type");
-	effect.amount = j.find("amount") != j.end() ? j.at("amount").get<int>() : 0;
-	if (j.find("sticky") != j.end()) {
-		effect.sticky_invoker = j.at("sticky");
-	}
+  effect.kind = j.at("kind");
+  effect.targets_self = j.at("self");
+  effect.effect_type = j.at("effect_type");
+  effect.amount = j.find("amount") != j.end() ? j.at("amount").get<int>() : 0;
+  if (j.find("sticky") != j.end()) {
+    effect.sticky_invoker = j.at("sticky");
+  }
   if (j.find("on_hit") != j.end()) {
     effect.on_hit = new Effect();
     *effect.on_hit = j.at("on_hit");
@@ -70,15 +70,15 @@ void from_json(const json &j, Effect &effect) {
 }
 
 void to_json(json &j, const Effect &effect) {
-	j["kind"] = effect.kind;
-	j["self"] = effect.targets_self;
-	j["effect_type"] = effect.effect_type;
-	if (effect.amount != 0) {
-		j["amount"] = effect.amount;
-	}
-	if (effect.kind == EK_STICKY) {
-		j["sticky"] = effect.sticky_invoker;
-	}
+  j["kind"] = effect.kind;
+  j["self"] = effect.targets_self;
+  j["effect_type"] = effect.effect_type;
+  if (effect.amount != 0) {
+    j["amount"] = effect.amount;
+  }
+  if (effect.kind == EK_STICKY) {
+    j["sticky"] = effect.sticky_invoker;
+  }
   if (effect.on_hit != nullptr) {
     j["on_hit"] = *effect.on_hit;
   }

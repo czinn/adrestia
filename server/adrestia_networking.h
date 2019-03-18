@@ -1,10 +1,7 @@
-#ifndef ADRESTIA_NETWORKING_INCLUDE_GUARD
-#define ADRESTIA_NETWORKING_INCLUDE_GUARD
+#pragma once
 
 #include "versioning.h"
 #include "../cpp/game_rules.h"
-#include "pushers/push_active_games.h"
-#include "pushers/push_notifications.h"
 #include "logger.h"
 
 // System modules
@@ -15,10 +12,9 @@
 #include "../cpp/json.h"
 using json = nlohmann::json;
 
-
 namespace adrestia_networking {
   const Version SERVER_VERSION = { 1, 0, 0 };
-  const Version CLIENT_VERSION = { 2, 0, 0 };
+  const Version CLIENT_VERSION = { 2, 1, 4 };
   const int DEFAULT_SERVER_PORT = 18677;
   const int MESSAGE_MAX_BYTES = 32768;
 
@@ -33,67 +29,41 @@ namespace adrestia_networking {
 
   // Server functions
   std::string read_message(int client_socket, bool& timed_out);
-  void babysit_client(int server_socket, int client_socket);
   void listen_for_connections(int port);
 
   // Server-side handlers
-  int handle_floop(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
+  void resp_code(json& resp, int code, const std::string& message);
+#define DEF_HANDLER(name)\
+  int name(\
+      const Logger& logger,\
+      const json& client_json,\
+      json& resp\
   );
 
-  int handle_establish_connection(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_register_new_account(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-  int handle_authenticate(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_abort_game(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-  int handle_change_user_name(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_matchmake_me(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_submit_move(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_get_stats(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
-
-  int handle_deactivate_account(
-      const Logger& logger,
-      const json& client_json,
-      json& resp
-  );
+  /* How to create a new endpoint
+   * - Add it here. Add a corresponding .cc in server/handlers/
+   * - Add it to handler_map in server/server_main.cc
+   * - Add a call creator below, and implement it to server/protocol.cc
+   * - Add a wrapper to cpp_gdnative/src/protocol.{h,cpp}
+   * - Wrap your wrapper in godot/global/networking.gd
+   */
+  DEF_HANDLER(handle_floop);
+  DEF_HANDLER(handle_establish_connection);
+  DEF_HANDLER(handle_register_new_account);
+  DEF_HANDLER(handle_authenticate);
+  DEF_HANDLER(handle_abort_game);
+  DEF_HANDLER(handle_change_user_name);
+  DEF_HANDLER(handle_matchmake_me);
+  DEF_HANDLER(handle_submit_move);
+  DEF_HANDLER(handle_get_stats);
+  DEF_HANDLER(handle_deactivate_account);
+  DEF_HANDLER(handle_get_user_profile);
+  DEF_HANDLER(handle_follow_user);
+  DEF_HANDLER(handle_unfollow_user);
+  DEF_HANDLER(handle_get_friends);
+  DEF_HANDLER(handle_send_challenge);
+  DEF_HANDLER(handle_get_match_history);
+  DEF_HANDLER(handle_submit_single_player_game);
 
   // Calls to handlers
   void create_floop_call(json& client_json);
@@ -106,7 +76,9 @@ namespace adrestia_networking {
   void create_register_new_account_call(
       json& client_json,
       const std::string& password,
-      bool debug
+      bool debug,
+      const std::string& user_name,
+      const std::string& platform
   );
 
   void create_authenticate_call(
@@ -128,7 +100,8 @@ namespace adrestia_networking {
   void create_matchmake_me_call(
       json& client_json,
       const GameRules &rules,
-      const std::vector<std::string>& selected_books
+      const std::vector<std::string>& selected_books,
+      const std::string target_friend_code // empty string: none
   );
 
   void create_submit_move_call(
@@ -140,6 +113,38 @@ namespace adrestia_networking {
   void create_get_stats_call(json& client_json);
 
   void create_deactivate_account_call(json& client_json);
-}
 
-#endif
+  void create_get_user_profile_call(
+      json& client_json,
+      const std::string& uuid
+  );
+
+  void create_follow_user_call(
+      json& client_json,
+      const std::string& friend_code
+  );
+
+  void create_unfollow_user_call(
+      json& client_json,
+      const std::string& friend_code
+  );
+
+  void create_get_friends_call(
+      json& client_json
+  );
+
+  void create_send_challenge_call(
+      json& client_json,
+      const std::string& friend_code
+  );
+
+  void create_get_match_history_call(
+      json& client_json
+  );
+
+  void create_submit_single_player_game_call(
+      json& client_json,
+      const std::string& rules_version,
+      const json& game_state
+  );
+}

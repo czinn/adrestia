@@ -71,7 +71,7 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
 }
 
-[node name="control" type="Control"]
+[node name="control" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -207,7 +207,7 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 [node name="timer" type="Timer" parent="." index="2"]
 
 process_mode = 1
-wait_time = 0.3
+wait_time = 0.2
 one_shot = false
 autostart = false
 

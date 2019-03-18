@@ -196,6 +196,7 @@ LineEdit/fonts/font = ExtResource( 1 )
 LineEdit/styles/focus = ExtResource( 2 )
 LineEdit/styles/normal = ExtResource( 2 )
 LineEdit/styles/read_only = null
+Panel/icons/ = null
 RichTextLabel/colors/default_color = Color( 0, 0, 0, 1 )
 RichTextLabel/colors/font_color_selected = Color( 0.490196, 0.490196, 0.490196, 1 )
 RichTextLabel/colors/selection_color = Color( 0.1, 0.1, 1, 0.8 )

@@ -45,6 +45,9 @@ func get_state():
 func get_current_move():
 	return null
 
+func get_opponent():
+	return null
+
 func register_started_callback(callback_):
 	started_callback = callback_
 
@@ -92,6 +95,15 @@ func submit_action(action):
 	var ai_action = ai.get_action(view)
 
 	var events = state.simulate_events([action, ai_action])
+
+	if state.winners().size() > 0:
+		var version = g.version_to_string(g.app_version)
+		var state_json = state.as_json().result
+		if g.network.status == g.network.ONLINE:
+			g.network.submit_single_player_game(version, state_json, funcref(g.network, 'print_response'))
+		else:
+			g.unsubmitted_games.push_back([version, state_json])
+			g.save()
 
 	if update_callback != null:
 		update_callback.call_func(get_view(), events)

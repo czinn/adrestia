@@ -1,0 +1,217 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://scenes/friends.gd" type="Script" id=1]
+[ext_resource path="res://theme-default.tres" type="Theme" id=2]
+[ext_resource path="res://art-built/9patch/background-title.png" type="Texture" id=3]
+[ext_resource path="res://scripts/background.gd" type="Script" id=4]
+[ext_resource path="res://fonts/Amaranth-Regular-60.tres" type="DynamicFont" id=5]
+[ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
+[ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=7]
+[ext_resource path="res://art-built/button-back-small.png" type="Texture" id=8]
+[ext_resource path="res://art-built/button-add-friend.png" type="Texture" id=9]
+
+[node name="root" type="Node"]
+
+script = ExtResource( 1 )
+
+[node name="ui" type="Control" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+theme = ExtResource( 2 )
+_sections_unfolded = [ "Theme" ]
+
+[node name="bg" type="Sprite" parent="ui" index="0"]
+
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 540, 960 )
+script = ExtResource( 4 )
+_sections_unfolded = [ "Animation", "Offset", "Region", "Transform" ]
+
+[node name="title_label" type="Label" parent="ui" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 50.0
+margin_bottom = 124.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+text = "Friends"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
+
+[node name="fc_label" type="Label" parent="ui" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 125.0
+margin_bottom = 199.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Your Friend Code: 31415926"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "custom_colors" ]
+
+[node name="offline_warning" type="Label" parent="ui" index="3"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_top = 164.0
+margin_bottom = 238.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 6 )
+text = "offline"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "custom_colors", "custom_fonts" ]
+
+[node name="scroll_container" type="ScrollContainer" parent="ui" index="4"]
+
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -244.0
+margin_top = 172.0
+margin_right = 242.0
+margin_bottom = -231.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+scroll_horizontal_enabled = true
+scroll_horizontal = 0
+scroll_vertical_enabled = true
+scroll_vertical = 0
+scroll_deadzone = 0
+
+[node name="v_box_container" type="VBoxContainer" parent="ui/scroll_container" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_bottom = 481.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 20
+alignment = 0
+_sections_unfolded = [ "custom_constants" ]
+
+[node name="avatar_profile" parent="ui/scroll_container/v_box_container" index="0" instance=ExtResource( 7 )]
+
+margin_right = 0.0
+_sections_unfolded = [ "Mouse", "Rect", "Theme", "Visibility" ]
+
+[node name="avatar_profile2" parent="ui/scroll_container/v_box_container" index="1" instance=ExtResource( 7 )]
+
+margin_top = 167.0
+margin_right = 0.0
+margin_bottom = 314.0
+_sections_unfolded = [ "Mouse", "Rect", "Theme", "Visibility" ]
+
+[node name="avatar_profile3" parent="ui/scroll_container/v_box_container" index="2" instance=ExtResource( 7 )]
+
+margin_top = 334.0
+margin_right = 0.0
+margin_bottom = 481.0
+_sections_unfolded = [ "Mouse", "Rect", "Theme", "Visibility" ]
+
+[node name="back_button" type="TextureButton" parent="ui" index="5"]
+
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+margin_left = -30.0
+margin_top = -100.0
+margin_right = 151.0
+margin_bottom = -12.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 8 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+
+[node name="add_friend_button" type="TextureButton" parent="ui" index="6"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -196.0
+margin_top = -208.0
+margin_right = 196.0
+margin_bottom = -134.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+texture_normal = ExtResource( 9 )
+expand = true
+stretch_mode = 5
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
+
+

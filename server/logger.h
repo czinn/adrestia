@@ -4,6 +4,22 @@
 #include <string>
 #include <cstdarg>
 
+/* Adrestia's logger. Each thread has their own instance, which lets each
+ * thread define its own [prefix] (printed before every log message).
+ *
+ * TRACE (grey): Feel free to print anything reasonable. We currently print
+ * some function entry/exits, raw data received from users, and SQL queries.
+ * DEBUG (white): Print things that could conceivably be used to debug stuff
+ * when things go wrong.
+ * INFO (blue): Print things that we would be interested in seeing. Examples:
+ * New users, users coming online, new matches being played/finished, users
+ * changing their name
+ * WARN (yellow): Print strange conditions that may have resulted from bad
+ * input data.
+ * ERROR (red): Print failures that should absolutely not happen and that
+ * demand further attention.
+ */
+
 class Logger {
   public:
     enum Level {
@@ -34,3 +50,5 @@ class Logger {
     void log_base(const char *format, va_list args) const;
     std::ostream &log_base_stream(std::ostream &os) const;
 };
+
+extern thread_local Logger logger;

@@ -14,13 +14,16 @@ class socket_error {};
 extern std::map<std::string, adrestia_networking::request_handler> handler_map;
 
 class Babysitter {
+  static const long long DISCONNECT_TIMEOUT_MS = 120000;
+
   enum Phase {
     NEW = 0,           // Must establish
     ESTABLISHED = 1,   // Must authenticate or register
     AUTHENTICATED = 2, // You're in!
   };
   public:
-    Babysitter(int client_socket);
+    Babysitter(int client_socket, std::string ip);
+    ~Babysitter();
 
     void main();
     Phase phase_new(
@@ -43,9 +46,10 @@ class Babysitter {
 
     void log(const char *format, ...);
 
-    Logger logger;
     Phase phase;
+    long long last_data_ms;
     int client_socket;
+    std::string ip;
     std::string read_message_buffer;
     std::string uuid; // The uuid of the client we are babysitting.
 };

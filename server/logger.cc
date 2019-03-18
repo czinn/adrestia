@@ -95,3 +95,5 @@ std::ostream &Logger::error_() const {
   if (min_level > ERROR) return null_ostream;
   return log_base_stream(cout << (color ? RED : ""));
 }
+
+thread_local Logger logger;

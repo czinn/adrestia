@@ -19,16 +19,20 @@ void adrestia_networking::create_floop_call(json& client_json) {
 
 void adrestia_networking::create_establish_connection_call(json& client_json, const std::string &version) {
   client_json[adrestia_networking::HANDLER_KEY] = "establish_connection";
-	client_json["client_version"] = version;
+  client_json["client_version"] = version;
 }
 
 void adrestia_networking::create_register_new_account_call(json& client_json,
   const std::string& password,
-	bool debug
+  bool debug,
+  const std::string& user_name,
+  const std::string& platform
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "register_new_account";
   client_json["password"] = password;
-	client_json["debug"] = debug;
+  client_json["debug"] = debug;
+  client_json["user_name"] = user_name;
+  client_json["platform"] = platform;
 }
 
 
@@ -58,17 +62,19 @@ void adrestia_networking::create_change_user_name_call(json& client_json,
 
 
 void adrestia_networking::create_matchmake_me_call(json& client_json,
-	const GameRules &game_rules,
-  const std::vector<std::string>& selected_books
+  const GameRules &game_rules,
+  const std::vector<std::string>& selected_books,
+  const std::string target_friend_code
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "matchmake_me";
   client_json["game_rules"] = json(game_rules);
   client_json["selected_books"] = selected_books;
+  client_json["target_friend_code"] = target_friend_code;
 }
 
 void adrestia_networking::create_submit_move_call(json& client_json,
-		const std::string& game_uid,
-		const std::vector<std::string>& player_move
+    const std::string& game_uid,
+    const std::vector<std::string>& player_move
 ) {
   client_json[adrestia_networking::HANDLER_KEY] = "submit_move";
   client_json["game_uid"] = game_uid;
@@ -81,4 +87,49 @@ void adrestia_networking::create_get_stats_call(json& client_json) {
 
 void adrestia_networking::create_deactivate_account_call(json& client_json) {
   client_json[adrestia_networking::HANDLER_KEY] = "deactivate_account";
+}
+
+void adrestia_networking::create_get_user_profile_call(json& client_json,
+  const std::string& friend_code
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_user_profile";
+  client_json["friend_code"] = friend_code;
+}
+
+void adrestia_networking::create_follow_user_call(json& client_json,
+  const std::string& friend_code
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "follow_user";
+  client_json["friend_code"] = friend_code;
+}
+
+void adrestia_networking::create_unfollow_user_call(json& client_json,
+  const std::string& friend_code
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "unfollow_user";
+  client_json["friend_code"] = friend_code;
+}
+
+void adrestia_networking::create_get_friends_call(json& client_json) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_friends";
+}
+
+void adrestia_networking::create_send_challenge_call(json& client_json,
+  const std::string& friend_code
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "send_challenge";
+  client_json["friend_code"] = friend_code;
+}
+
+void adrestia_networking::create_get_match_history_call(json& client_json) {
+  client_json[adrestia_networking::HANDLER_KEY] = "get_match_history";
+}
+
+void adrestia_networking::create_submit_single_player_game_call(json& client_json,
+    const std::string& rules_version,
+    const json& game_state
+) {
+  client_json[adrestia_networking::HANDLER_KEY] = "submit_single_player_game";
+  client_json["rules_version"] = rules_version;
+  client_json["game_state"] = game_state;
 }

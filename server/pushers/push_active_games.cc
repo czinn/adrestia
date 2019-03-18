@@ -25,8 +25,8 @@ using json = nlohmann::json;
 
 adrestia_networking::PushActiveGames::PushActiveGames() {}
 
-void forfeit_for_inactive_opponents(const Logger& logger, const std::string& uuid) {
-  adrestia_database::Db db(logger);
+void forfeit_for_inactive_opponents(const std::string& uuid) {
+  adrestia_database::Db db;
   auto active_games_with_inactive_opponent = db.query(R"sql(
     SELECT adrestia_games.game_uid, user_uid
     FROM adrestia_games
@@ -47,10 +47,10 @@ void forfeit_for_inactive_opponents(const Logger& logger, const std::string& uui
   }
 }
 
-std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logger, const string& uuid) {
+std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &_logger, const string& uuid) {
   /* @brief Returns a list of messages for any new/changed games associated with the given uuid.
    *
-   * @param logger: Logger.
+   * @param logger: Vestigial limb.
    * @param uuid: The uuid for which games will be checked.
    *
    * @sideeffect: games_I_am_aware of will be updated to contain all things that have already been pushed to the
@@ -73,10 +73,10 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
    */
 
   // End any inactive games before we look for updates
-  forfeit_for_inactive_opponents(logger, uuid);
+  forfeit_for_inactive_opponents(uuid);
 
   // Check for games
-  adrestia_database::Db db(logger);
+  adrestia_database::Db db;
   auto active_games_result = db.query(R"sql(
     SELECT adrestia_games.game_uid, player_state
     FROM adrestia_games
@@ -114,7 +114,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
   set<string> active_game_uids_set(active_game_uids.begin(), active_game_uids.end());
   for (const string &current_game_uid : active_game_uids_I_am_aware_of) {
     if (active_game_uids_set.count(current_game_uid) == 0) {
-      logger.info("Previously active game |%s| has become deactivated and should be reported.", current_game_uid.c_str());
+      logger.info("Game |%s| has finished.", current_game_uid.c_str());
       vector<json> events;
       json current_game_state =
         adrestia_database::retrieve_gamestate_from_database(
@@ -152,13 +152,14 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
     try {
       if (current_game_state != games_I_am_aware_of.at(current_game_uid)) {
-        logger.info("Changed gamestate for game with game_uid |%s|", current_game_uid.c_str());
+        logger.debug("Game |%s| has updated.", current_game_uid.c_str());
 
         // The game state of this game has changed! We should record it.
         update_list.push_back({
             {"game_uid", current_game_uid},
             {"game_view", current_game_view},
-            {"events", events}});
+            {"events", events},
+            {"opponent_friend_code", current_player_info["opponent_friend_code"]}});
         changed_games = true;
 
         // We should also add it to the map, seeing how it is becoming known.
@@ -169,13 +170,14 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
       }
     }
     catch (out_of_range& oor) {
-      logger.info("New active game with game_uid |%s|", current_game_uid.c_str());
+      logger.info("Game |%s| is new.", current_game_uid.c_str());
 
       // This game_uid was active, but it is not a known game uid.
       json update = {
         {"game_uid", current_game_uid},
         {"game_view", current_game_view},
-        {"events", events}
+        {"events", events},
+        {"opponent_friend_code", current_player_info["opponent_friend_code"]}
       };
       if (rules.get_version() != latest_rules.get_version()) {
         update["game_rules"] = rules;
@@ -197,7 +199,7 @@ std::vector<json> adrestia_networking::PushActiveGames::push(const Logger &logge
 
   // If there is nothing to report, make an empty message and conclude.
   if (update_list.empty()) {
-    logger.debug("No new/changed games for uuid |%s|", uuid.c_str());
+    logger.trace("No new/changed games for uuid |%s|", uuid.c_str());
     return message_list;
   }
 

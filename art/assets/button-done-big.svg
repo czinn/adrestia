@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="104.18744mm"
+   height="31.162436mm"
+   viewBox="0 0 104.18744 31.162436"
+   version="1.1"
+   id="svg1718"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   sodipodi:docname="button-done-big.svg">
+  <defs
+     id="defs1712" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="199.34812"
+     inkscape:cy="19.050394"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1052"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false"
+     showguides="false" />
+  <metadata
+     id="metadata1715">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(42.7028,-117.94533)">
+    <rect
+       style="opacity:1;vector-effect:none;fill:#fcfcfc;fill-opacity:1;stroke:#000205;stroke-width:2.64600015;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       id="rect1367"
+       width="101.54161"
+       height="28.516603"
+       x="-41.379883"
+       y="119.26824"
+       ry="2.1166668"
+       rx="2.1166668" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2150-4-6-27"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1"
+       transform="matrix(0.45294181,0,0,0.45294181,-59.141308,102.13676)"><flowRegion
+         id="flowRegion2152-2-5-09"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1"><rect
+           id="rect2154-0-7-36"
+           width="182.93185"
+           height="49.4174"
+           x="30.304577"
+           y="44.68692"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.27055204;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara2156-1-4-06"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40.50066757px;font-family:Amaranth;-inkscape-font-specification:Amaranth;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.60378957;stroke-opacity:1">Done</flowPara></flowRoot>  </g>
+</svg>

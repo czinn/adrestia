@@ -22,16 +22,20 @@ func on_back_button_pressed():
 	g.scene_loader.goto_scene('title', true)
 
 func on_connected():
-	online_status.text = 'Online as %s [%s]' % [g.user_name, g.tag]
+	online_status.text = 'Online as %s' % [g.user_name]
+	pass
 
 func on_disconnected():
 	if g.user_name != null:
-		online_status.text = 'Offline as %s [%s]' % [g.user_name, g.tag]
+		online_status.text = 'Offline as %s' % [g.user_name]
+		pass
 	else:
 		online_status.text = 'Offline'
+		pass
 
 func on_out_of_date():
 	online_status.text = 'Out of date client. Update the app to play online!'
+	pass
 
 func on_reset_account_button_pressed():
 	if not g.network.is_online():
@@ -56,8 +60,8 @@ func on_change_name_button_pressed():
 		g.summon_notification('Name unchanged.')
 
 func on_username_changed(response):
-	g.tag = response.tag
 	g.user_name = response.user_name
+	g.friend_code = response.friend_code
 	g.summon_notification('Name changed to %s.' % [g.user_name])
 	on_connected()
 	return true

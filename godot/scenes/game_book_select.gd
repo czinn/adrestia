@@ -89,6 +89,7 @@ func on_drop(drag_image):
 func on_book_down(book_button):
 	if chosen_books.find(book_button.book) >= 0:
 		return
+	show_book_detail(book_button.book)
 	g.drag_drop.set_dead_zone(20, null, null, null)
 	g.drag_drop.on_lift = funcref(self, 'on_lift')
 	g.drag_drop.on_drop = funcref(self, 'on_drop')

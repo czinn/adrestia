@@ -25,9 +25,12 @@ namespace adrestia_database {
   const int TAG_LENGTH = 8;
   const int UUID_LENGTH = 32;
   const int GAME_UID_LENGTH = 32;
+  const int FRIEND_CODE_LENGTH = 8;
 
   /* Hashes the password with the given salt */
   std::string hash_password(const std::string& password, const std::string& salt);
+
+  std::vector<std::string> sql_array_to_vector(const std::string& sql_array);
 
   /* Marks the target uuid as winning/losing the target game */
   void conclude_game_in_database(
@@ -62,16 +65,6 @@ namespace adrestia_database {
     std::vector<json> &last_events
   );
 
-  /* Adds the user to the waiting list if there are no compatible waiters;
-   *     otherwise, matches the user to a waiter.
-   */
-  json matchmake_in_database(
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid,
-    const std::vector<std::string>& selected_books
-  );
-
   /* Submits the move for a turn in the game, updating the game if all players
    * have submitted a move.
    */
@@ -81,16 +74,6 @@ namespace adrestia_database {
     const std::string& uuid,
     const std::string& game_uid,
     const std::vector<std::string>& player_move
-  );
-
-
-  /* Returns json with keys 'valid', 'user_name', 'tag'.
-   */
-  json verify_existing_account_in_database(
-    const Logger& logger,
-    pqxx::connection& psql_connection,
-    const std::string& uuid,
-    const std::string& password
   );
 
   /* Returns a list of messages to send to the user, and updates
@@ -124,32 +107,53 @@ namespace adrestia_database {
    *
    * RAII ensures that stuff is cleaned up.
    * */
+  extern thread_local std::vector<pqxx::connection*> connection_pool;
+
+  void empty_connection_pool();
+
   class DbQuery {
     public:
-      DbQuery(std::string format, pqxx::work *work, const Logger &logger);
+      DbQuery(std::string format, pqxx::work *work);
+      ~DbQuery();
 
       template<typename T>
       DbQuery &operator()(const T &x) {
         quoted_parts.push_back(work->quote(x));
         return *this;
       }
+
+      // Quote vectors as SQL arrays.
+      template<typename V>
+      DbQuery &operator()(const std::vector<V> &vec) {
+        std::string result = "ARRAY[";
+        for (size_t i = 0; i < vec.size(); i += 1) {
+          if (i > 0) result += ',';
+          result += work->quote(vec[i]);
+        }
+        result += ']';
+        quoted_parts.push_back(result);
+        return *this;
+      }
+
       pqxx::result operator()();
     private:
       std::vector<std::string> format_parts;
       std::vector<std::string> quoted_parts;
+      std::string build_query();
       pqxx::work *work;
-      const Logger &logger;
+      bool has_run;
   };
 
   class Db {
     public:
+      Db();
       Db(const Logger &logger);
       ~Db();
       DbQuery query(std::string format);
       void commit();
       void abort();
+      GameRules retrieve_game_rules(int id);
     private:
-      const Logger &logger;
       pqxx::connection *conn;
       pqxx::work *work;
   };

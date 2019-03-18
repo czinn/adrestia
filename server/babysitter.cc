@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstdio>
+#include <chrono>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,19 +11,30 @@
 #include "adrestia_networking.h"
 #include "adrestia_database.h"
 
+#include "pushers/push_active_games.h"
+#include "pushers/push_notifications.h"
+#include "pushers/push_challenges.h"
+
 #ifdef __APPLE__
 #define MSG_NOSIGNAL 0
 #endif
 
 using namespace std;
+using namespace std::chrono;
 using namespace adrestia_networking;
 
 std::map<std::string, request_handler> handler_map;
 
-Babysitter::Babysitter(int client_socket)
-  :  client_socket(client_socket) {
-  logger.prefix = adrestia_hexy::hex_urandom(8);
+Babysitter::Babysitter(int client_socket, string ip)
+: client_socket(client_socket)
+, ip(ip) {
+  last_data_ms =
+    duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 };
+
+Babysitter::~Babysitter() {
+  adrestia_database::empty_connection_pool();
+}
 
 void Babysitter::main() {
   /* A single thread lives within this function, babysitting a client's connection.
@@ -33,14 +45,17 @@ void Babysitter::main() {
    *     CODE_KEY: 400
    *     MESSAGE_KEY: <A message describing the problem>
    */
-  logger.info("Starting sequence.");
+  adrestia_hexy::reseed();
+  logger.prefix = ip;
+  logger.info("Connected.");
   phase = NEW;
   uuid = "";
 
   // Create pushers
   PushActiveGames push_active_games;
   PushNotifications push_notifications;
-  std::vector<Pusher*> pushers = { &push_active_games, &push_notifications };
+  PushChallenges push_challenges;
+  std::vector<Pusher*> pushers = { &push_active_games, &push_notifications, &push_challenges };
 
   try {
     while (true) {
@@ -51,7 +66,7 @@ void Babysitter::main() {
         for (auto pusher : pushers) {
           for (auto message_json : pusher->push(logger, uuid)) {
             // We should push the json to the client.
-            logger.info("Pushing notification to client.");
+            logger.debug("Pushing notification to client.");
             string message_json_string = message_json.dump();
             message_json_string += '\n';
             send(client_socket, message_json_string.c_str(), message_json_string.length(), MSG_NOSIGNAL);
@@ -63,9 +78,19 @@ void Babysitter::main() {
       bool timed_out = false;
       string message = read_message(timed_out);
 
+      long long current_time_ms =
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+
       if (timed_out) {
+        if (current_time_ms - last_data_ms > DISCONNECT_TIMEOUT_MS) {
+          logger.warn_()
+            << "Received no data for " << DISCONNECT_TIMEOUT_MS
+            << "ms. They're probably disconnected?" << endl;
+          return;
+        }
         continue;
       }
+      last_data_ms = current_time_ms;
 
       json client_json;
       json resp;
@@ -75,6 +100,14 @@ void Babysitter::main() {
       try {
         client_json = json::parse(message);
         endpoint = client_json.at(HANDLER_KEY);
+        if (endpoint != "floop") {
+          if (message.length() < 200) {
+            logger.debug_() << "Got message: " << message << endl;
+          } else {
+            logger.debug_() << "Got message: " << message.substr(0, 197) << "... (full message in trace)" << endl;
+            logger.trace_() << message << endl;
+          }
+        }
         handler = handler_map.at(endpoint);
       } catch (json::parse_error& e) {
         // Not parsable to json
@@ -97,25 +130,41 @@ void Babysitter::main() {
           "Asked to access non-existent endpoint |" + endpoint + "|.";
       }
 
-      try {
-        switch (phase) {
-          case NEW:
-            phase = phase_new(endpoint, client_json, resp, handler);
-            break;
-          case ESTABLISHED:
-            phase = phase_established(endpoint, client_json, resp, handler);
-            break;
-          case AUTHENTICATED:
-            phase = phase_authenticated(endpoint, client_json, resp, handler);
-            break;
-          default:
-            logger.error("We somehow entered an invalid phase.");
+      if (handler != nullptr) {
+        try {
+          switch (phase) {
+            case NEW:
+              phase = phase_new(endpoint, client_json, resp, handler);
+              break;
+            case ESTABLISHED:
+              phase = phase_established(endpoint, client_json, resp, handler);
+              // Update tag if phase has changed.
+              if (phase == AUTHENTICATED) {
+                stringstream username_fc;
+                username_fc << resp["user_name"].get<string>() << " (" << resp["friend_code"].get<string>() << ")";
+                logger.info_() << "Authenticated as " << username_fc.str() << endl;
+                logger.prefix = username_fc.str();
+                adrestia_database::Db db;
+                db.query(R"sql(
+                  INSERT INTO account_ips (uuid, ip)
+                  VALUES (?, ?)
+                  ON CONFLICT (uuid, ip) DO NOTHING
+                )sql")(resp["uuid"].get<string>())(ip)();
+                db.commit();
+              }
+              break;
+            case AUTHENTICATED:
+              phase = phase_authenticated(endpoint, client_json, resp, handler);
+              break;
+            default:
+              logger.error("We somehow entered an invalid phase.");
+          }
+        } catch (const string& s) {
+          logger.error("Error while running handler: %s", s.c_str());
+          resp[HANDLER_KEY] = "generic_error";
+          resp[CODE_KEY] = 400;
+          resp[MESSAGE_KEY] = "An error occurred.";
         }
-      } catch (const string& s) {
-        logger.error("Error while running handler: %s", s.c_str());
-        resp[HANDLER_KEY] = "generic_error";
-        resp[CODE_KEY] = 400;
-        resp[MESSAGE_KEY] = "An error occurred.";
       }
 
       string response_string = resp.dump();
@@ -126,11 +175,28 @@ void Babysitter::main() {
     logger.info("Client closed the connection.");
   } catch (socket_error) {
     logger.error("Terminating due to socket error.");
+  } catch (json::exception &e) {
+    logger.error_()
+      << "Had a JSON exception" << endl
+      << e.what() << endl;
+  } catch (std::exception &e) {
+    logger.error_()
+      << "Had an unknown exception" << endl
+      << e.what() << endl;
   }
 
   adrestia_database::Db db(logger);
   db.query(R"sql(
     DELETE FROM adrestia_match_waiters
+    WHERE uuid = ?
+  )sql")(uuid)();
+  db.query(R"sql(
+    DELETE FROM challenges
+    WHERE sender_uuid = ?
+  )sql")(uuid)();
+  db.query(R"sql(
+    UPDATE adrestia_accounts
+    SET is_online = false
     WHERE uuid = ?
   )sql")(uuid)();
   db.commit();
@@ -160,6 +226,7 @@ Babysitter::Phase Babysitter::phase_established(
     const json &client_json,
     json &resp,
     request_handler handler) {
+
   if (endpoint == "register_new_account") {
     handler(logger, client_json, resp);
     logger.trace("Moving to phase 2 via register_new_account.");
@@ -199,8 +266,9 @@ Babysitter::Phase Babysitter::phase_authenticated(
 }
 
 string Babysitter::read_message(bool &timed_out) {
-  /* @brief Extracts the message currently waiting on the from the client's socket.
-   *        Assumes message is terminated with a \n (if it is not, MESSAGE_MAX_BYTES will be read.
+  /* Extracts the message currently waiting on the from the client's socket.
+   * Assumes message is terminated with a \n (if it is not, MESSAGE_MAX_BYTES
+   * will be read.)
    */
   // TODO: Timeouts
   char buffer[MESSAGE_MAX_BYTES];
