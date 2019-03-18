@@ -21,11 +21,21 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_friend_code
   ON adrestia_accounts
   (friend_code);
 
+-- Keeps track of all the IPs an account has ever logged in from, for user
+-- uniqueness checking.
+DROP TABLE IF EXISTS account_ips CASCADE;
+CREATE TABLE IF NOT EXISTS account_ips (
+  uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
+  ip VARCHAR NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_account_ips_uuid_and_ip ON account_ips (uuid, ip);
+CREATE INDEX IF NOT EXISTS idx_account_ip ON account_ips (ip);
+
 DROP TABLE IF EXISTS adrestia_match_waiters CASCADE;
 CREATE TABLE IF NOT EXISTS adrestia_match_waiters (
   uuid VARCHAR REFERENCES adrestia_accounts(uuid) NOT NULL,
   selected_books VARCHAR ARRAY NOT NULL,
-  target_uuid VARCHAR REFERENCES adrestia_accounts(uuid) DEFAULT '' NOT NULL,
+  target_uuid VARCHAR DEFAULT '' NOT NULL,
   PRIMARY KEY (uuid)
 );
 CREATE INDEX IF NOT EXISTS idx_adrestia_match_waiters_uuid
@@ -63,6 +73,16 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_adrestia_games_game_uid
   ON adrestia_games (game_uid);
 CREATE INDEX IF NOT EXISTS idx_adrestia_games_creator_uuid
   ON adrestia_games (creator_uuid);
+
+-- Single-player game records
+DROP TABLE IF EXISTS adrestia_single_player_games CASCADE;
+CREATE TABLE IF NOT EXISTS adrestia_single_player_games (
+  id SERIAL PRIMARY KEY,
+  user_uid VARCHAR REFERENCES adrestia_accounts(uuid),
+  game_state JSON,
+  game_rules_id INTEGER REFERENCES adrestia_rules(id),
+  creation_time TIMESTAMPTZ DEFAULT NOW()
+);
 
 -- Player states:
 --     -1: Aborted; this person is not coming and the game should be terminated.

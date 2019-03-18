@@ -1,6 +1,7 @@
 #include "protocol.h"
 
 #include "game_rules.h"
+#include "game_state.h"
 
 #include "../../server/adrestia_networking.h"
 
@@ -46,6 +47,8 @@ namespace godot {
     REGISTER_METHOD(create_unfollow_user_call);
     REGISTER_METHOD(create_get_friends_call);
     REGISTER_METHOD(create_send_challenge_call);
+    REGISTER_METHOD(create_get_match_history_call);
+    REGISTER_METHOD(create_submit_single_player_game_call);
   }
 
   IMPL_UNIT(create_floop_call);
@@ -96,4 +99,14 @@ namespace godot {
   IMPL_STRING(create_unfollow_user_call);
   IMPL_UNIT(create_get_friends_call);
   IMPL_STRING(create_send_challenge_call);
+  IMPL_UNIT(create_get_match_history_call);
+
+  String Protocol::create_submit_single_player_game_call(String rules_version, Variant game_state) {
+    nlohmann::json j;
+    std::string version_; of_godot_variant(rules_version, &version_);
+    nlohmann::json state;
+		of_godot_variant(game_state, &state);
+    adrestia_networking::create_submit_single_player_game_call(j, version_, state);
+    return String(j.dump().c_str());
+  }
 }

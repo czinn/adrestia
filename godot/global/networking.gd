@@ -9,7 +9,7 @@ const Protocol = preload('res://native/protocol.gdns')
 
 const DEBUG = true
 var host = '127.0.0.1' if DEBUG else 'adrestia.neynt.ca'
-const always_register_new_account = true
+const always_register_new_account = false
 
 const port = 16969
 const handler_key = 'api_handler_name'
@@ -24,7 +24,7 @@ const code_key = 'api_code'
 
 const timeout_ms = 10000
 const floop_interval_ms = 2000
-const retry_sec = 5.0
+const retry_sec = 3.0
 
 onready var g = get_node('/root/global')
 
@@ -74,7 +74,7 @@ func _process(time):
 		print('Connecting...')
 		establish_connection(g.version_to_string(g.app_version), funcref(self, 'on_network_ready'))
 
-	if OS.get_ticks_msec() - last_send_ms > 2000:
+	if OS.get_ticks_msec() - last_send_ms > floop_interval_ms:
 		floop(funcref(self, 'on_floop'))
 
 	var bytes = self.peer.get_available_bytes()
@@ -172,9 +172,12 @@ func on_floop(response):
 	pass
 
 func after_auth():
-	g.save()
 	status = ONLINE
 	print('Connected!')
+	for unsubmitted_game in g.unsubmitted_games:
+		submit_single_player_game(unsubmitted_game[0], unsubmitted_game[1], funcref(self, 'discard'))
+	g.unsubmitted_games = []
+	g.save()
 	emit_signal('connected')
 
 func is_online():
@@ -287,5 +290,11 @@ func unfollow_user(friend_code, callback):
 func get_friends(callback):
 	return api_call_base('get_friends', [], callback)
 
+func get_match_history(callback):
+	return api_call_base('get_match_history', [], callback)
+
 func send_challenge(friend_code, callback):
 	return api_call_base('send_challenge', [friend_code], callback)
+
+func submit_single_player_game(version, state, callback):
+	return api_call_base('submit_single_player_game', [version, state], callback)

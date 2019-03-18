@@ -33,8 +33,8 @@ using namespace std;
 #include "../cpp/json.h"
 using json = nlohmann::json;
 
-void babysit(int client_socket) {
-	Babysitter(client_socket).main();
+void babysit(int client_socket, string ip) {
+	Babysitter(client_socket, ip).main();
 }
 
 void adrestia_networking::listen_for_connections(int port) {
@@ -76,6 +76,9 @@ void adrestia_networking::listen_for_connections(int port) {
 		client_address_sizeof = sizeof(client_address);
 		client_socket = accept(server_socket, (sockaddr*) &client_address, &client_address_sizeof);
 
+		char ip[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, &client_address.sin_addr, ip, INET_ADDRSTRLEN);
+
 		// Configure our timeouts and keepalives
 		// TODO: KEEPALIVE
 		if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(timeval)) < 0) {
@@ -87,7 +90,7 @@ void adrestia_networking::listen_for_connections(int port) {
 			return;
 		}
 
-		babysitters.emplace_back(babysit, client_socket);
+		babysitters.emplace_back(babysit, client_socket, string(ip));
 	}
 }
 
@@ -112,6 +115,9 @@ int main(int na, char* arg[]) {
 	handler_map["get_friends"] = adrestia_networking::handle_get_friends;
 	handler_map["send_challenge"] = adrestia_networking::handle_send_challenge;
 
+	handler_map["get_match_history"] = adrestia_networking::handle_get_match_history;
+	handler_map["submit_single_player_game"] = adrestia_networking::handle_submit_single_player_game;
+
 	const char* server_port_env = getenv("SERVER_PORT");
 	int port = adrestia_networking::DEFAULT_SERVER_PORT;
 	if (server_port_env) {
@@ -124,6 +130,7 @@ int main(int na, char* arg[]) {
 		adrestia_database::Db db;
 		db.query("DELETE FROM adrestia_match_waiters")();
 		db.query("DELETE FROM challenges")();
+		db.query("UPDATE adrestia_accounts SET is_online=FALSE")();
 		db.commit();
 	}
 

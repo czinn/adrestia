@@ -43,7 +43,7 @@ def main(dry=True):
     c.execute(statement)
 
   # Create new tables and copy data over.
-  print('Creating new tables.')
+  print('### Creating new tables.')
   for table_name, table_name_new, statement in creates:
     print(table_name)
     statement_new = re.sub(table_name, table_name_new, statement)
@@ -74,17 +74,27 @@ def main(dry=True):
     ''')
 
   # Delete original tables and rename new ones.
-  print('Replacing original tables.')
+  print('### Replacing original tables.')
   for table_name, table_name_new, statement in creates:
     c.execute(f'''
       DROP TABLE IF EXISTS {table_name} CASCADE;
       ALTER TABLE {table_name_new} RENAME TO {table_name};
     ''')
 
-  print('Creating indices.')
+  print(f"### Creating {len(statements_of_kind['INDEX'])} indexes.")
   for statement in statements_of_kind['INDEX']:
     c.execute(statement)
 
+  # jim: MUST update if you add any more autoincrementing columns
+  print('### Syncing sequences.')
+  for tbl in ['adrestia_notifications', 'adrestia_rules']:
+    print(tbl)
+    c.execute(f'''
+      SELECT setval('{tbl}_new_id_seq', (SELECT MAX(id) FROM {tbl}));
+      ALTER SEQUENCE {tbl}_new_id_seq RENAME TO {tbl}_id_seq;
+    ''')
+
+  print('### Done')
   if dry:
     print('Dry run seems to have worked.')
     print('Pass in "dewit" to change the database for real.')

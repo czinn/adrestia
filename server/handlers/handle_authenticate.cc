@@ -76,6 +76,7 @@ int adrestia_networking::handle_authenticate(const Logger& _logger, const json& 
     resp[adrestia_networking::HANDLER_KEY] = client_json[adrestia_networking::HANDLER_KEY];
     resp[adrestia_networking::CODE_KEY] = 200;
     resp[adrestia_networking::MESSAGE_KEY] = "Authorization OK.";
+    resp["uuid"] = uuid;
     resp["user_name"] = result[0]["user_name"].as<string>();
     resp["tag"] = result[0]["tag"].as<string>();
     resp["friend_code"] = result[0]["friend_code"].as<string>();

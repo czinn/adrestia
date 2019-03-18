@@ -122,13 +122,14 @@ func show_big_window(text):
 
 func show_tooltip(target, text, force=false):
 	open_time = OS.get_ticks_msec()
-	g.summon_tooltip(target, text)
 	var rect = target.get_global_rect()
+	mouse_blocker.visible = true
 	if force:
 		force_click_rect = rect
-	g.tooltip.mouse_filter = MOUSE_FILTER_IGNORE
 	tween_spotlight_to(rect.position + (rect.size / 2.0), rect.size / 2.0)
-	mouse_blocker.visible = true
+	yield(g.summon_tooltip(target, text), 'completed')
+	if g.tooltip:
+		g.tooltip.mouse_filter = MOUSE_FILTER_IGNORE
 	yield(self, 'popup_closed')
 
 func play_button_pressed_override(select_root):
@@ -161,6 +162,9 @@ func end_turn_button_pressed_override(game_root):
 	else:
 		game_root.on_end_turn_button_pressed()
 		return
+
+func should_long_press_button_override():
+	show_big_window('Long-press the [color=#05ACB8][b]Iceberg[/b][/color] spell by holding down for a moment after you tap it.')
 
 func play_tutorial():
 	g.tooltip_min_open_time = 500
@@ -300,6 +304,7 @@ func play_tutorial():
 		"Let's see what [color=#05ACB8][b]Iceberg[/b][/color] does. Long-press the spell to see its description.", true)
 	yield(g, 'tooltip_closed') # for the tutorial tooltip
 	mouse_blocker.mouse_filter = MOUSE_FILTER_STOP
+	buy_spell_buttons.get_child(1).texture_button.connect('pressed', self, 'should_long_press_button_override')
 	while true:
 		# for the spell detail view
 		var content = yield(g, 'tooltip_closed')
@@ -307,7 +312,7 @@ func play_tutorial():
 			break
 		else:
 			spell_select.on_open_book(book_btn_frost_i, spell_select.books[book_btn_frost_i])
-			show_big_window('Long-press the [color=#05ACB8][b]Iceberg[/b][/color] spell.')
+			should_long_press_button_override()
 	game_root.can_cast_spells = true
 	yield(show_tooltip(buy_spell_buttons.get_child(1),
 		"[color=#05ACB8][b]Iceberg[/b][/color] is a powerful shield. But let's not learn it yet."), 'completed')
@@ -330,7 +335,7 @@ func play_tutorial():
 	# Turn 2 animation
 	game_root.animate_events = false
 	yield(show_tooltip(spell_animation_area,
-		'Nicely done. Your [color=#00ADBA][b]Frost Shield[/b][/color] will block the first [color=#FF4C2B][b]Razor Wind[/b][/color], while your [color=#05ACB8][b]Iceberg[/b][/color] will block the second one.\n[i]Tap to continue[/i]'), 'completed')
+		'Nicely done. Your [color=#00ADBA][b]Frost Shield[/b][/color] will block the first [color=#FF4C2B][b]Razor Wind[/b][/color] while your [color=#05ACB8][b]Iceberg[/b][/color] will block the second one.\n[i]Tap to continue[/i]'), 'completed')
 	game_root.animate_events = true
 	yield(game_root, 'turn_animation_finished')
 	close_blocker()
