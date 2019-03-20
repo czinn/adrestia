@@ -8,167 +8,56 @@
 [ext_resource path="res://fonts/Amaranth-Regular.ttf" type="DynamicFontData" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
-
-content_margin_left = -1.0
-content_margin_right = -1.0
-content_margin_top = -1.0
-content_margin_bottom = -1.0
 bg_color = Color( 0, 0, 0, 1 )
-draw_center = true
-border_width_left = 0
-border_width_top = 0
-border_width_right = 0
-border_width_bottom = 0
-border_color = Color( 0.8, 0.8, 0.8, 1 )
-border_blend = false
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
-corner_detail = 8
-expand_margin_left = 0.0
-expand_margin_right = 0.0
-expand_margin_top = 0.0
-expand_margin_bottom = 0.0
-shadow_color = Color( 0, 0, 0, 0.6 )
-shadow_size = 0
-anti_aliasing = true
-anti_aliasing_size = 1
-_sections_unfolded = [ "Corner Radius" ]
 
 [sub_resource type="StyleBoxFlat" id=2]
-
-content_margin_left = -1.0
-content_margin_right = -1.0
 content_margin_top = 5.0
-content_margin_bottom = -1.0
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
-draw_center = true
-border_width_left = 0
-border_width_top = 0
-border_width_right = 0
-border_width_bottom = 0
-border_color = Color( 0.8, 0.8, 0.8, 1 )
-border_blend = false
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-corner_detail = 8
-expand_margin_left = 0.0
-expand_margin_right = 0.0
-expand_margin_top = 0.0
-expand_margin_bottom = 0.0
-shadow_color = Color( 0, 0, 0, 0.6 )
-shadow_size = 0
-anti_aliasing = true
-anti_aliasing_size = 1
-_sections_unfolded = [ "Anti Aliasing", "Border Width", "Content Margin" ]
 
 [sub_resource type="StyleBoxFlat" id=3]
-
-content_margin_left = -1.0
-content_margin_right = -1.0
-content_margin_top = -1.0
-content_margin_bottom = -1.0
 bg_color = Color( 1, 1, 1, 1 )
-draw_center = true
-border_width_left = 0
 border_width_top = 5
-border_width_right = 0
-border_width_bottom = 0
 border_color = Color( 0, 0, 0, 1 )
-border_blend = false
 corner_radius_top_left = 5
 corner_radius_top_right = 5
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-corner_detail = 8
-expand_margin_left = 0.0
-expand_margin_right = 0.0
-expand_margin_top = 0.0
-expand_margin_bottom = 0.0
-shadow_color = Color( 0, 0, 0, 0.6 )
-shadow_size = 0
-anti_aliasing = true
-anti_aliasing_size = 1
-_sections_unfolded = [ "Border", "Border Width", "Corner Radius" ]
 
 [sub_resource type="StyleBoxFlat" id=4]
-
 content_margin_left = 15.0
 content_margin_right = 15.0
 content_margin_top = 5.0
 content_margin_bottom = 2.0
 bg_color = Color( 1, 1, 1, 1 )
-draw_center = true
-border_width_left = 0
 border_width_top = 5
-border_width_right = 0
 border_width_bottom = 5
 border_color = Color( 0.752941, 0.752941, 0.752941, 1 )
-border_blend = false
 corner_radius_top_left = 5
 corner_radius_top_right = 5
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-corner_detail = 8
-expand_margin_left = 0.0
-expand_margin_right = 0.0
-expand_margin_top = 0.0
 expand_margin_bottom = 6.0
-shadow_color = Color( 0, 0, 0, 0.6 )
-shadow_size = 0
-anti_aliasing = true
-anti_aliasing_size = 1
-_sections_unfolded = [ "Border", "Border Width", "Content Margin", "Corner Radius", "Expand Margin" ]
 
 [sub_resource type="StyleBoxFlat" id=5]
-
 content_margin_left = 15.0
 content_margin_right = 15.0
 content_margin_top = 5.0
 content_margin_bottom = 2.0
 bg_color = Color( 1, 1, 1, 1 )
-draw_center = true
-border_width_left = 0
 border_width_top = 5
-border_width_right = 0
 border_width_bottom = 5
 border_color = Color( 0, 0, 0, 1 )
-border_blend = false
 corner_radius_top_left = 5
 corner_radius_top_right = 5
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-corner_detail = 8
-expand_margin_left = 0.0
-expand_margin_right = 0.0
-expand_margin_top = 0.0
 expand_margin_bottom = 6.0
-shadow_color = Color( 0, 0, 0, 0.6 )
-shadow_size = 0
-anti_aliasing = true
-anti_aliasing_size = 1
-_sections_unfolded = [ "Border", "Border Width", "Content Margin", "Expand Margin" ]
 
 [sub_resource type="StyleBoxEmpty" id=6]
 
-content_margin_left = -1.0
-content_margin_right = -1.0
-content_margin_top = -1.0
-content_margin_bottom = -1.0
-
 [sub_resource type="DynamicFont" id=7]
-
 size = 24
-use_mipmaps = false
-use_filter = false
 font_data = ExtResource( 6 )
-_sections_unfolded = [ "Font", "Settings" ]
 
 [resource]
-
 default_font = SubResource( 7 )
 HScrollBar/icons/decrement = null
 HScrollBar/icons/decrement_highlight = null
@@ -237,5 +126,4 @@ VScrollBar/styles/grabber_highlight = null
 VScrollBar/styles/grabber_pressed = null
 VScrollBar/styles/scroll = SubResource( 6 )
 VScrollBar/styles/scroll_focus = null
-_sections_unfolded = [ "HScrollBar", "HScrollBar/icons", "HScrollBar/styles", "LineEdit/colors", "LineEdit/constants", "LineEdit/fonts", "LineEdit/styles", "RichTextLabel/colors", "RichTextLabel/fonts", "TabContainer/colors", "TabContainer/constants", "TabContainer/fonts", "TabContainer/icons", "TabContainer/styles", "VScrollBar/icons", "VScrollBar/styles" ]
 
