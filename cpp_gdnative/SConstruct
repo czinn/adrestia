@@ -19,6 +19,8 @@ def add_sources(sources, directory):
         if file.endswith('.cpp') or file.endswith('.cc'):
             sources.append(directory + '/' + file)
 
+bits = '64'
+
 if target_platform == 'osx':
     env.Append(CCFLAGS = ['-g','-Os', '-arch', 'x86_64', '-std=c++17'])
     env.Append(LINKFLAGS = ['-arch', 'x86_64'])
@@ -41,9 +43,10 @@ elif target_platform == 'windows':
 
     final_lib_path = final_lib_path + 'win' + target_arch + '/'
 
+
 env.Append(CPPPATH=['.', '../cpp', '../cpp/fdeep-include', '../cpp/fplus-include', 'src/', 'godot_headers/', 'godot-cpp/include/', 'godot-cpp/include/core/'])
 env.Append(LIBPATH='godot-cpp/bin')
-env.Append(LIBS=['godot-cpp.%s.%s' % (target_platform, target_arch)])
+env.Append(LIBS=['libgodot-cpp.%s.%s.%s' % (target_platform, target, bits)])
 
 sources = []
 add_sources(sources, 'src')

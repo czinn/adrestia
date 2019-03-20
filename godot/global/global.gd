@@ -76,12 +76,6 @@ static func child(parent, child_name):
 	# Not recursive; not owned.
 	return parent.find_node(child_name, false, false)
 
-static func map(list, f):
-	var result = []
-	for elem in list:
-		result.append(f(elem))
-	return result
-
 static func map_method(list, method):
 	var result = []
 	for elem in list:

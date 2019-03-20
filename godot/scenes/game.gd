@@ -78,7 +78,7 @@ func on_back_button_pressed():
 
 func on_spell_enqueue(spell):
 	if not can_cast_spells: return
-	if ui_state != CHOOSING_SPELLS:
+	if ui_state != UiState.CHOOSING_SPELLS:
 		return
 	if not player_has_unlocked_spell(spell) and player_can_unlock_spell(spell):
 		var book = g.backend.rules.get_book(spell.get_book())
@@ -96,7 +96,7 @@ func on_spell_enqueue(spell):
 	redraw()
 
 func on_my_spell_list_pressed(index, spell):
-	if ui_state != CHOOSING_SPELLS:
+	if ui_state != UiState.CHOOSING_SPELLS:
 		return
 	var action = my_spell_list.spells.duplicate()
 	action.remove(index)

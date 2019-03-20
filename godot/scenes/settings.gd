@@ -53,6 +53,9 @@ func on_account_deactivated(response):
 	return true
 
 func on_change_name_button_pressed():
+	if not g.network.is_online():
+		g.summon_notification('Not online.')
+		return
 	var new_name = yield(g.summon_text_entry('New name:', g.user_name), 'popup_closed')
 	if new_name and new_name != g.user_name:
 		g.network.change_user_name(new_name, funcref(self, 'on_username_changed'))

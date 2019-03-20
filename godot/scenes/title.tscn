@@ -12,11 +12,7 @@
 [ext_resource path="res://components/avatar_profile.tscn" type="PackedScene" id=10]
 
 [sub_resource type="Animation" id=1]
-
 resource_name = "fade_in"
-length = 1.0
-loop = false
-step = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("fade_in_rect:color")
 tracks/0/interp = 2
@@ -42,60 +38,36 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[node name="root" type="Node" index="0"]
-
+[node name="root" type="Node"]
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_vertical_guides_": [  ]
 }
 
-[node name="ui" type="Control" parent="." index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
+[node name="ui" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 theme = ExtResource( 2 )
-_sections_unfolded = [ "Anchor", "Margin", "Theme" ]
 
-[node name="bg" type="Sprite" parent="ui" index="0"]
-
+[node name="bg" type="Sprite" parent="ui"]
 texture = ExtResource( 3 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 0, 0, 540, 960 )
 script = ExtResource( 4 )
-_sections_unfolded = [ "Animation", "Offset", "Region", "Transform" ]
 
-[node name="logo" type="TextureRect" parent="ui" index="1"]
-
+[node name="logo" type="TextureRect" parent="ui"]
 anchor_left = 0.5
-anchor_top = 0.0
 anchor_right = 0.5
-anchor_bottom = 0.0
 margin_left = -223.0
 margin_top = 91.0
 margin_right = 223.0
 margin_bottom = 202.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 texture = ExtResource( 5 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Anchor", "Margin", "Material", "Rect" ]
 
-[node name="play_button" type="TextureButton" parent="ui" index="2"]
-
+[node name="play_button" type="TextureButton" parent="ui"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -104,23 +76,10 @@ margin_left = -195.0
 margin_top = -375.0
 margin_right = 195.0
 margin_bottom = -259.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
 texture_normal = ExtResource( 6 )
 expand = true
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="match_history_button" type="TextureButton" parent="ui" index="3"]
-
+[node name="match_history_button" type="TextureButton" parent="ui"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -129,23 +88,10 @@ margin_left = -195.0
 margin_top = -241.0
 margin_right = 195.0
 margin_bottom = -167.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
 texture_normal = ExtResource( 7 )
 expand = true
-_sections_unfolded = [ "Anchor", "Margin", "Textures" ]
 
-[node name="settings_button" type="TextureButton" parent="ui" index="4"]
-
+[node name="settings_button" type="TextureButton" parent="ui"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -154,24 +100,11 @@ margin_left = -195.0
 margin_top = -149.0
 margin_right = -9.0
 margin_bottom = -75.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
 texture_normal = ExtResource( 8 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="friends_button" type="TextureButton" parent="ui" index="5"]
-
+[node name="friends_button" type="TextureButton" parent="ui"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -180,24 +113,11 @@ margin_left = 9.0
 margin_top = -149.0
 margin_right = 195.0
 margin_bottom = -75.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
 texture_normal = ExtResource( 9 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Textures" ]
 
-[node name="avatar_profile" parent="ui" index="6" instance=ExtResource( 10 )]
-
+[node name="avatar_profile" parent="ui" instance=ExtResource( 10 )]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -241.0
@@ -205,30 +125,13 @@ margin_top = 316.0
 margin_right = 241.0
 margin_bottom = 463.0
 
-[node name="fade_in_rect" type="ColorRect" parent="." index="1"]
-
+[node name="fade_in_rect" type="ColorRect" parent="."]
 visible = false
-anchor_left = 0.0
-anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 color = Color( 1, 1, 1, 0 )
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Visibility" ]
 
-[node name="animation_player" type="AnimationPlayer" parent="." index="2"]
-
-root_node = NodePath("..")
-autoplay = ""
-playback_process_mode = 1
-playback_default_blend_time = 0.0
-playback_speed = 1.0
+[node name="animation_player" type="AnimationPlayer" parent="."]
 anims/fade_in = SubResource( 1 )
-blend_times = [  ]
-
 
