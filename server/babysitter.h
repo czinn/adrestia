@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <mutex>
 
 #include "adrestia_hexy.h"
 #include "adrestia_networking.h"
@@ -16,6 +17,11 @@ extern std::map<std::string, adrestia_networking::request_handler> handler_map;
 class Babysitter {
   static const long long DISCONNECT_TIMEOUT_MS = 120000;
 
+  // key: uuid
+  // value: pointer to the current Babysitter for that user
+  static std::map<std::string, Babysitter*> babysitter_for_uuid;
+  static std::mutex babysitter_for_uuid_lock;
+
   enum Phase {
     NEW = 0,           // Must establish
     ESTABLISHED = 1,   // Must authenticate or register
@@ -24,6 +30,8 @@ class Babysitter {
   public:
     Babysitter(int client_socket, std::string ip);
     ~Babysitter();
+
+    static void register_for_uuid(const std::string &uuid, Babysitter *babysitter);
 
     void main();
     Phase phase_new(
@@ -43,6 +51,7 @@ class Babysitter {
         adrestia_networking::request_handler handler);
 
     std::string read_message(bool &timed_out);
+    void send_message(const json &j);
 
     void log(const char *format, ...);
 
@@ -52,4 +61,5 @@ class Babysitter {
     std::string ip;
     std::string read_message_buffer;
     std::string uuid; // The uuid of the client we are babysitting.
+    bool should_die; // Another babysitter has come to replace us
 };

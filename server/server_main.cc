@@ -70,8 +70,6 @@ void adrestia_networking::listen_for_connections(int port) {
 
 	listen(server_socket, 5);
 
-	std::vector<std::thread> babysitters;
-
 	while (true) {
 		client_address_sizeof = sizeof(client_address);
 		client_socket = accept(server_socket, (sockaddr*) &client_address, &client_address_sizeof);
@@ -90,7 +88,7 @@ void adrestia_networking::listen_for_connections(int port) {
 			return;
 		}
 
-		babysitters.emplace_back(babysit, client_socket, string(ip));
+		thread(babysit, client_socket, string(ip)).detach();
 	}
 }
 

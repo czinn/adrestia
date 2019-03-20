@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdio>
 #include <chrono>
+#include <mutex>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -27,13 +28,33 @@ std::map<std::string, request_handler> handler_map;
 
 Babysitter::Babysitter(int client_socket, string ip)
 : client_socket(client_socket)
-, ip(ip) {
+, ip(ip)
+, should_die(false) {
   last_data_ms =
     duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 };
 
+std::map<std::string, Babysitter*> Babysitter::babysitter_for_uuid;
+std::mutex Babysitter::babysitter_for_uuid_lock;
+
 Babysitter::~Babysitter() {
   adrestia_database::empty_connection_pool();
+  babysitter_for_uuid_lock.lock();
+  auto current = babysitter_for_uuid.find(uuid);
+  if (current->second == this) {
+    babysitter_for_uuid.erase(current);
+  }
+  babysitter_for_uuid_lock.unlock();
+}
+
+void Babysitter::register_for_uuid(const string &uuid, Babysitter *babysitter) {
+  babysitter_for_uuid_lock.lock();
+  auto current = babysitter_for_uuid.find(uuid);
+  if (current != babysitter_for_uuid.end()) {
+    current->second->should_die = true;
+  }
+  babysitter_for_uuid[uuid] = babysitter;
+  babysitter_for_uuid_lock.unlock();
 }
 
 void Babysitter::main() {
@@ -81,12 +102,17 @@ void Babysitter::main() {
       long long current_time_ms =
         duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 
+      if (should_die) {
+        logger.warn_() << "We've been replaced. Dying." << endl;
+        return;
+      }
       if (timed_out) {
         if (current_time_ms - last_data_ms > DISCONNECT_TIMEOUT_MS) {
           logger.warn_()
-            << "Received no data for " << DISCONNECT_TIMEOUT_MS
-            << "ms. They're probably disconnected?" << endl;
-          return;
+            << "Received no data for "
+            << DISCONNECT_TIMEOUT_MS << "ms. "
+            "Disconnecting." << endl;
+          break;
         }
         continue;
       }
@@ -144,12 +170,14 @@ void Babysitter::main() {
                 username_fc << resp["user_name"].get<string>() << " (" << resp["friend_code"].get<string>() << ")";
                 logger.info_() << "Authenticated as " << username_fc.str() << endl;
                 logger.prefix = username_fc.str();
+                string uuid = resp["uuid"].get<string>();
+                register_for_uuid(uuid, this);
                 adrestia_database::Db db;
                 db.query(R"sql(
                   INSERT INTO account_ips (uuid, ip)
                   VALUES (?, ?)
                   ON CONFLICT (uuid, ip) DO NOTHING
-                )sql")(resp["uuid"].get<string>())(ip)();
+                )sql")(uuid)(ip)();
                 db.commit();
               }
               break;
@@ -167,9 +195,7 @@ void Babysitter::main() {
         }
       }
 
-      string response_string = resp.dump();
-      response_string += '\n';
-      send(client_socket, response_string.c_str(), response_string.length(), MSG_NOSIGNAL);
+      send_message(resp);
     }
   } catch (connection_closed) {
     logger.info("Client closed the connection.");
@@ -299,4 +325,9 @@ string Babysitter::read_message(bool &timed_out) {
   string message = read_message_buffer.substr(0, nl_pos);
   read_message_buffer = read_message_buffer.substr(nl_pos + 1);
   return message;
+}
+
+void Babysitter::send_message(const json &j) {
+  string response_string = j.dump() + '\n';
+  send(client_socket, response_string.c_str(), response_string.length(), MSG_NOSIGNAL);
 }
