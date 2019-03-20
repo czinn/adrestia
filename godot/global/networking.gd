@@ -37,6 +37,7 @@ var message_queues = {}
 var connect_timer
 var last_recv_ms = 0
 var last_send_ms = 0
+var old_login = false
 
 const OFFLINE = 0
 const CONNECTING = 1
@@ -53,6 +54,7 @@ func _ready():
 	connect_timer.connect('timeout', self, 'reconnect')
 	handlers['push_notifications'] = funcref(self, 'on_notification')
 	handlers['push_challenge'] = funcref(self, 'on_challenge')
+	handlers['disconnect_old_login'] = funcref(self, 'on_disconnect_old_login')
 	add_child(connect_timer)
 	self.protocol = Protocol.new()
 	self.peer = StreamPeerTCP.new()
@@ -126,6 +128,9 @@ func get_handler_name(request):
 	return JSON.parse(request).result[handler_key]
 
 func reconnect():
+	if old_login:
+		print('Not attempting to reconnect; am old login.')
+		return
 	print('Attempting to reconnect.')
 	self.peer.connect_to_host(host, port)
 	self.peer.set_no_delay(true)
@@ -205,6 +210,18 @@ func on_challenge(message):
 	else:
 		# TODO: jim: Should instead prevent sending duel requests to people already in games.
 		g.summon_notification("You got a duel request from %s, but you can't accept it because you're in a game." % [message.user_name], true)
+
+func on_disconnect_old_login(message):
+	old_login = true
+	g.summon_notification("It looks like you logged in from somewhere else.", true, funcref(self, 'renew_login'))
+
+func renew_login():
+	var confirmed = yield(g.summon_confirm('It looks like you logged in from somewhere else. Reconnect?'), 'popup_closed')
+	if confirmed:
+		old_login = false
+		reconnect()
+	else:
+		g.summon_notification('Ok. You will need to restart the app the reconnect, but feel free to play offline.')
 
 # TODO: jim: Find better way to pass this from [on_challenge] than using this variable.
 var latest_duel_message

@@ -35,6 +35,7 @@ using json = nlohmann::json;
 
 void babysit(int client_socket, string ip) {
 	Babysitter(client_socket, ip).main();
+	close(client_socket);
 }
 
 void adrestia_networking::listen_for_connections(int port) {

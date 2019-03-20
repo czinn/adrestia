@@ -102,8 +102,15 @@ void Babysitter::main() {
       long long current_time_ms =
         duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 
+      json resp;
       if (should_die) {
         logger.warn_() << "We've been replaced. Dying." << endl;
+        resp = {
+          { HANDLER_KEY, "disconnect_old_login" },
+          { CODE_KEY, 500 },
+          { MESSAGE_KEY, "You've been replaced." },
+        };
+        send_message(resp);
         return;
       }
       if (timed_out) {
@@ -119,7 +126,6 @@ void Babysitter::main() {
       last_data_ms = current_time_ms;
 
       json client_json;
-      json resp;
       string endpoint;
       request_handler handler;
 
