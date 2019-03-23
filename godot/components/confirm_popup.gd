@@ -23,10 +23,12 @@ func set_text(text_):
 	redraw()
 
 func no_button_pressed():
+	g.sound.play_sound('button')
 	get_parent().remove_child(self)
 	emit_signal('popup_closed', false)
 
 func yes_button_pressed():
+	g.sound.play_sound('button')
 	get_parent().remove_child(self)
 	emit_signal('popup_closed', true)
 

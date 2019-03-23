@@ -13,4 +13,5 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('settings', true)

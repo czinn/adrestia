@@ -19,6 +19,7 @@ func _ready():
 	line_edit.text = default_text if default_text else ''
 
 func done_button_pressed():
+	g.sound.play_sound('button')
 	get_parent().remove_child(self)
 	emit_signal('popup_closed', line_edit.text)
 

@@ -33,9 +33,11 @@ func on_get_match_history(response):
 		redraw()
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('title', true)
 
 func on_done_button_pressed():
+	g.sound.play_sound('button')
 	game_history_panel.visible = false
 
 func on_view_button_pressed(index):

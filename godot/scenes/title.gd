@@ -70,6 +70,7 @@ func on_push_active_games(response):
 	return true
 
 func on_play_button_pressed():
+	g.sound.play_sound('button')
 	if g.first_play:
 		g.first_play = false
 		g.save()
@@ -79,15 +80,19 @@ func on_play_button_pressed():
 	g.scene_loader.goto_scene('game_mode_select')
 
 func on_match_history_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('match_history')
 
 func on_settings_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('settings')
 
 func on_friends_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('friends')
 
 func on_tutorial_button_pressed():
+	g.sound.play_sound('button')
 	g.backend = TutorialBackend.new(g)
 	var tutorial_overlay = TutorialOverlay.instance()
 	get_node('/root').add_child(tutorial_overlay)

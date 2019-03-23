@@ -16,6 +16,7 @@ func on_game_started():
 	g.scene_loader.goto_scene('game')
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to cancel the game?[/center]'), 'popup_closed')
 	if confirmed:
 		g.backend.leave_game()

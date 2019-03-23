@@ -34,16 +34,19 @@ func _notification(what):
 
 func on_button_multiplayer_pressed():
 	if g.network.status == g.network.ONLINE:
+		g.sound.play_sound('button')
 		g.backend = OnlineBackend.new(g)
 		g.scene_loader.goto_scene('game_book_select')
 	else:
 		print('not online')
 
 func on_button_ai_pressed():
+	g.sound.play_sound('button')
 	g.backend = RandomAiBackend.new(g)
 	g.scene_loader.goto_scene('game_book_select')
 
 func on_button_tutorial_pressed():
+	g.sound.play_sound('button')
 	g.backend = TutorialBackend.new(g)
 	g.tutorial_overlay = TutorialOverlay.instance()
 	get_node('/root').add_child(g.tutorial_overlay)
@@ -51,6 +54,7 @@ func on_button_tutorial_pressed():
 	g.scene_loader.goto_scene('game_book_select')
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('title', true)
 
 func on_get_stats(response):

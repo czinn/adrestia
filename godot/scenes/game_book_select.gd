@@ -125,6 +125,7 @@ func on_remove_book_down_drop(image):
 			image.queue_free()
 
 func on_play_button_pressed():
+	g.sound.play_sound('button')
 	var selected_books = []
 	for book in chosen_books:
 		if book != null:
@@ -139,6 +140,7 @@ func on_play_button_pressed():
 		g.scene_loader.goto_scene('game_waiting')
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to go back?[/center]'), 'popup_closed')
 	if confirmed:
 		g.backend = null

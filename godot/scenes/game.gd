@@ -71,6 +71,7 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	var confirmed = yield(g.summon_confirm('[center]Are you sure you want to forfeit?[/center]'), 'popup_closed')
 	if confirmed:
 		g.backend.leave_game()
