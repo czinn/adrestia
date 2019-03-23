@@ -11,10 +11,7 @@
 [ext_resource path="res://art-built/spell-lock.png" type="Texture" id=9]
 
 [sub_resource type="Animation" id=1]
-
 resource_name = "countered"
-length = 1.0
-loop = false
 step = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath("spell_countered:visible")
@@ -42,9 +39,7 @@ tracks/1/keys = {
 }
 
 [sub_resource type="Animation" id=2]
-
 length = 0.5
-loop = false
 step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("vbox/texture_button/glow_texture:visible")
@@ -71,105 +66,46 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
 }
 
-[node name="control" type="Control" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="control" type="Control"]
 margin_right = 120.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 120, 120 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
-_sections_unfolded = [ "Mouse", "Rect", "Size Flags", "Theme" ]
 
-[node name="vbox" type="VBoxContainer" parent="." index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
+[node name="vbox" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = 27.0
 rect_min_size = Vector2( 120, 120 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 0
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "custom_constants" ]
 
-[node name="texture_button" type="TextureButton" parent="vbox" index="0"]
-
+[node name="texture_button" type="TextureButton" parent="vbox"]
 material = ExtResource( 3 )
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_right = 120.0
 margin_bottom = 96.0
 rect_min_size = Vector2( 120, 96 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
 mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
 texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
-_sections_unfolded = [ "Material", "Mouse", "Rect", "Size Flags", "Textures" ]
 
-[node name="glow_texture" type="TextureRect" parent="vbox/texture_button" index="0"]
-
+[node name="glow_texture" type="TextureRect" parent="vbox/texture_button"]
 visible = false
 show_behind_parent = true
 material = ExtResource( 5 )
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_right = 120.0
 margin_bottom = 96.0
 rect_min_size = Vector2( 120, 96 )
 rect_pivot_offset = Vector2( 60, 48 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Material", "Rect", "Visibility" ]
 
-[node name="label" type="Label" parent="vbox" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="label" type="Label" parent="vbox"]
 margin_top = 100.0
 margin_right = 120.0
 margin_bottom = 147.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
 size_flags_vertical = 5
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0.601562, 0.601562, 0.601562, 1 )
@@ -177,146 +113,65 @@ custom_constants/line_spacing = -3
 text = "Greater Healing"
 align = 1
 autowrap = true
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Size Flags", "custom_colors", "custom_constants", "custom_fonts" ]
 
-[node name="spell_countered" type="TextureRect" parent="." index="1"]
-
+[node name="spell_countered" type="TextureRect" parent="."]
 visible = false
 modulate = Color( 1, 1, 1, 0 )
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_right = 120.0
 margin_bottom = 96.0
 rect_min_size = Vector2( 120, 96 )
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
+mouse_filter = 2
 texture = ExtResource( 7 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="timer" type="Timer" parent="." index="2"]
-
-process_mode = 1
+[node name="timer" type="Timer" parent="."]
 wait_time = 0.2
-one_shot = false
-autostart = false
 
-[node name="cost" type="Control" parent="." index="3"]
-
-anchor_left = 0.0
-anchor_top = 0.0
+[node name="cost" type="Control" parent="."]
 anchor_right = 1.0
-anchor_bottom = 0.0
 margin_bottom = 36.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-_sections_unfolded = [ "Anchor", "Margin", "Mouse" ]
 
-[node name="mp_icon" type="TextureRect" parent="cost" index="0"]
-
+[node name="mp_icon" type="TextureRect" parent="cost"]
 anchor_left = 1.0
-anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 0.0
 margin_left = -39.0
 margin_top = 63.0
 margin_right = -1.0
 margin_bottom = 99.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 texture = ExtResource( 8 )
 expand = true
-stretch_mode = 0
-_sections_unfolded = [ "Anchor", "Margin", "Mouse", "Size Flags" ]
 
-[node name="mp_label" type="Label" parent="cost" index="1"]
-
+[node name="mp_label" type="Label" parent="cost"]
 anchor_left = 1.0
-anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 0.0
 margin_left = -39.0
 margin_top = 63.0
 margin_right = -1.0
 margin_bottom = 99.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 text = "5"
 align = 1
 valign = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect" ]
 
-[node name="unlock" type="Control" parent="." index="4"]
-
-anchor_left = 0.0
-anchor_top = 0.0
+[node name="unlock" type="Control" parent="."]
 anchor_right = 1.0
-anchor_bottom = 0.0
 margin_top = 64.0
 margin_bottom = 100.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-_sections_unfolded = [ "Anchor", "Margin", "Mouse" ]
 
-[node name="padlock" type="TextureRect" parent="unlock" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="padlock" type="TextureRect" parent="unlock"]
 margin_left = 38.0
 margin_top = -41.0
 margin_right = 88.0
 margin_bottom = 19.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 texture = ExtResource( 9 )
 expand = true
 stretch_mode = 6
-_sections_unfolded = [ "Mouse", "Rect" ]
 
-[node name="animation_player" type="AnimationPlayer" parent="." index="5"]
-
-root_node = NodePath("..")
-autoplay = ""
-playback_process_mode = 1
-playback_default_blend_time = 0.0
-playback_speed = 1.0
+[node name="animation_player" type="AnimationPlayer" parent="."]
 anims/countered = SubResource( 1 )
 anims/glow = SubResource( 2 )
-blend_times = [  ]
-
 
