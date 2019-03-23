@@ -4,6 +4,7 @@ const transition_time = 0.5
 
 var music_player
 var current_filename
+var sound_playing = {}
 
 onready var g = get_node('/root/global')
 
@@ -38,9 +39,13 @@ func set_music(music_name):
 		music_player.play()
 
 func play_sound(sound_name):
+	if sound_playing.has(sound_name):
+		return
+	sound_playing[sound_name] = true
 	var sound_player = AudioStreamPlayer.new()
 	add_child(sound_player)
 	sound_player.stream = load('res://sound/%s.wav' % [sound_name])
 	sound_player.play()
 	yield(sound_player, 'finished')
 	sound_player.queue_free()
+	sound_playing.erase(sound_name)
