@@ -9,7 +9,7 @@ onready var g = get_node('/root/global')
 
 var tech_levels = null setget set_tech_levels
 var books = null setget set_books
-var display_filter = null
+var spell_buttons = []
 var enabled_filter = null
 var unlocked_filter = null
 var unlockable_filter = null
@@ -74,11 +74,11 @@ func on_close_book():
 	animation_player.play_backwards('spell_panel_enter')
 
 func redraw_spells():
-	g.clear_children(spell_grid)
 	if current_book == null:
 		return
-	var spell_buttons = g.make_spell_buttons(current_book.get_spells(), true,
-			display_filter, enabled_filter, unlocked_filter, unlockable_filter)
+	var spells = g.filter(current_book.get_spells(), funcref(g, 'is_not_tech_spell'))
+	g.clear_children(spell_grid)
+	spell_buttons = g.make_spell_buttons(spells, true, false, enabled_filter, unlocked_filter, unlockable_filter)
 	for i in range(len(spell_buttons)):
 		var spell_button = spell_buttons[i]
 		var spell = spell_button.spell

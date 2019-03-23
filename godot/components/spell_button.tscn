@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://theme-default.tres" type="Theme" id=1]
 [ext_resource path="res://components/spell_button.gd" type="Script" id=2]
@@ -10,11 +10,39 @@
 [ext_resource path="res://art-built/mana-gem.png" type="Texture" id=8]
 [ext_resource path="res://art-built/spell-lock.png" type="Texture" id=9]
 
+[sub_resource type="Animation" id=3]
+resource_name = "appear"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ui:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 20 ), Vector2( 0, 0 ) ]
+}
+
 [sub_resource type="Animation" id=1]
 resource_name = "countered"
 step = 0.02
 tracks/0/type = "value"
-tracks/0/path = NodePath("spell_countered:visible")
+tracks/0/path = NodePath("ui/spell_countered:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -26,7 +54,7 @@ tracks/0/keys = {
 "values": [ true, false ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("spell_countered:modulate")
+tracks/1/path = NodePath("ui/spell_countered:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -42,7 +70,7 @@ tracks/1/keys = {
 length = 0.5
 step = 0.05
 tracks/0/type = "value"
-tracks/0/path = NodePath("vbox/texture_button/glow_texture:visible")
+tracks/0/path = NodePath("ui/vbox/texture_button/glow_texture:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -54,7 +82,7 @@ tracks/0/keys = {
 "values": [ true, false ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("vbox/texture_button/glow_texture:rect_scale")
+tracks/1/path = NodePath("ui/vbox/texture_button/glow_texture:rect_scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -74,13 +102,18 @@ mouse_filter = 2
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="vbox" type="VBoxContainer" parent="."]
+[node name="ui" type="Control" parent="."]
+margin_right = 120.0
+margin_bottom = 120.0
+rect_min_size = Vector2( 120, 120 )
+
+[node name="vbox" type="VBoxContainer" parent="ui"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = 27.0
 rect_min_size = Vector2( 120, 120 )
 
-[node name="texture_button" type="TextureButton" parent="vbox"]
+[node name="texture_button" type="TextureButton" parent="ui/vbox"]
 material = ExtResource( 3 )
 margin_right = 120.0
 margin_bottom = 96.0
@@ -90,7 +123,7 @@ texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 5
 
-[node name="glow_texture" type="TextureRect" parent="vbox/texture_button"]
+[node name="glow_texture" type="TextureRect" parent="ui/vbox/texture_button"]
 visible = false
 show_behind_parent = true
 material = ExtResource( 5 )
@@ -102,7 +135,7 @@ texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
 
-[node name="label" type="Label" parent="vbox"]
+[node name="label" type="Label" parent="ui/vbox"]
 margin_top = 100.0
 margin_right = 120.0
 margin_bottom = 147.0
@@ -114,7 +147,7 @@ text = "Greater Healing"
 align = 1
 autowrap = true
 
-[node name="spell_countered" type="TextureRect" parent="."]
+[node name="spell_countered" type="TextureRect" parent="ui"]
 visible = false
 modulate = Color( 1, 1, 1, 0 )
 margin_right = 120.0
@@ -125,15 +158,12 @@ texture = ExtResource( 7 )
 expand = true
 stretch_mode = 6
 
-[node name="timer" type="Timer" parent="."]
-wait_time = 0.2
-
-[node name="cost" type="Control" parent="."]
+[node name="cost" type="Control" parent="ui"]
 anchor_right = 1.0
 margin_bottom = 36.0
 mouse_filter = 2
 
-[node name="mp_icon" type="TextureRect" parent="cost"]
+[node name="mp_icon" type="TextureRect" parent="ui/cost"]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -39.0
@@ -144,7 +174,7 @@ mouse_filter = 2
 texture = ExtResource( 8 )
 expand = true
 
-[node name="mp_label" type="Label" parent="cost"]
+[node name="mp_label" type="Label" parent="ui/cost"]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -39.0
@@ -155,13 +185,13 @@ text = "5"
 align = 1
 valign = 1
 
-[node name="unlock" type="Control" parent="."]
+[node name="unlock" type="Control" parent="ui"]
 anchor_right = 1.0
 margin_top = 64.0
 margin_bottom = 100.0
 mouse_filter = 2
 
-[node name="padlock" type="TextureRect" parent="unlock"]
+[node name="padlock" type="TextureRect" parent="ui/unlock"]
 margin_left = 38.0
 margin_top = -41.0
 margin_right = 88.0
@@ -171,7 +201,11 @@ texture = ExtResource( 9 )
 expand = true
 stretch_mode = 6
 
+[node name="timer" type="Timer" parent="."]
+wait_time = 0.2
+
 [node name="animation_player" type="AnimationPlayer" parent="."]
+anims/appear = SubResource( 3 )
 anims/countered = SubResource( 1 )
 anims/glow = SubResource( 2 )
 

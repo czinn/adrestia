@@ -46,7 +46,6 @@ func _ready():
 	event_timer.connect('timeout', self, 'on_event_timer_timeout')
 	my_spell_list.spells = []
 	enemy_spell_list.immediately_show_tooltip = true
-	spell_select.display_filter = funcref(self, 'is_not_tech_spell')
 	spell_select.enabled_filter = funcref(self, 'player_can_cast')
 	spell_select.unlocked_filter = funcref(self, 'player_has_unlocked_spell')
 	spell_select.unlockable_filter = funcref(self, 'player_can_unlock_spell')
@@ -175,9 +174,6 @@ func player_can_cast(spell):
 	if spell.is_tech_spell() and player_upgraded_book_id() != null:
 		return false
 	return player_has_unlocked_spell(spell) && player_can_afford(spell)
-
-func is_not_tech_spell(spell):
-	return not spell.is_tech_spell()
 
 func redraw():
 	var me = state.players[player_id]

@@ -89,6 +89,13 @@ static func map_member(list, member):
 		result.append(elem.get(member))
 	return result
 
+static func filter(list, predicate):
+	var result = []
+	for elem in list:
+		if predicate.call_func(elem):
+			result.append(elem)
+	return result
+
 static func dispose(node):
 	node.queue_free()
 
@@ -116,26 +123,39 @@ static func get_spell_texture(spell_id):
 static func get_sticky_texture(sticky_id):
 	return get_thing_texture("stickies", sticky_id)
 
-func make_spell_buttons(spells, show_stats = false, display_filter = null,
+func make_spell_buttons(spells, show_stats = false, appear_anim = false,
 		enabled_filter = null, unlocked_filter = null, unlockable_filter = null):
 	var result = []
 	for spell_id in spells:
 		var spell = get_rules().get_spell(spell_id)
-		if display_filter != null and not display_filter.call_func(spell):
-			continue
-		var spell_button = spell_button_scene.instance()
-		spell_button.show_stats = show_stats
-		# Padlock
-		spell_button.enabled = enabled_filter == null or enabled_filter.call_func(spell)
-		if unlocked_filter != null and unlockable_filter != null:
-			spell_button.locked = not unlocked_filter.call_func(spell)
-			spell_button.unlockable = unlockable_filter.call_func(spell)
-		else:
-			spell_button.locked = false
-		# Set the spell last so that we don't redraw so many times
-		spell_button.spell = spell
-		result.append(spell_button)
+		result.append(spell_button_scene.instance())
+	update_spell_buttons(result, spells, show_stats, appear_anim, enabled_filter, unlocked_filter, unlockable_filter)
 	return result
+
+func update_spell_buttons(buttons, spells, show_stats = false, appear_anim = false,
+		enabled_filter = null, unlocked_filter = null, unlockable_filter = null):
+	var j = 0
+	for i in range(0, len(spells)):
+		var spell = get_rules().get_spell(spells[i])
+		if j >= len(buttons): break
+		var btn = buttons[j]
+		btn.appear_anim = appear_anim
+		j += 1
+		btn.show_stats = show_stats
+		# Padlock
+		btn.enabled = enabled_filter == null or enabled_filter.call_func(spell)
+		if unlocked_filter != null and unlockable_filter != null:
+			btn.locked = not unlocked_filter.call_func(spell)
+			btn.unlockable = unlockable_filter.call_func(spell)
+		else:
+			btn.locked = false
+		btn.spell = spell
+		btn.redraw()
+	if len(buttons) != j:
+		print('ERROR: Spell list updated with unequal number of spells. Had %d buttons, %d unfiltered spells' % [len(buttons), j])
+
+func is_not_tech_spell(spell_id):
+	return not get_rules().get_spell(spell_id).is_tech_spell()
 
 var tooltip_min_open_time = 0
 var tooltip_open_time = 0
