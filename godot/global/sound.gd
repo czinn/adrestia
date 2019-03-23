@@ -2,27 +2,45 @@ extends Node
 
 const transition_time = 0.5
 
-var audio_player
+var music_player
 var current_filename
+
 onready var g = get_node('/root/global')
 
 func _ready():
-	audio_player = AudioStreamPlayer.new()
-	print(audio_player.volume_db)
-	add_child(audio_player)
+	music_player = AudioStreamPlayer.new()
+	add_child(music_player)
 
-func set_music(filename):
-	if current_filename != filename:
-		current_filename = filename
+func set_music(music_name):
+	if current_filename != music_name:
+		current_filename = music_name
 		var tween = Tween.new()
 		add_child(tween)
-		tween.interpolate_method(audio_player, 'set_volume_db', 0, -30, transition_time, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		tween.interpolate_method(
+			music_player,
+			'set_volume_db',
+			music_player.volume_db,
+			music_player.volume_db - 30,
+			transition_time,
+			Tween.TRANS_LINEAR,
+			Tween.EASE_IN)
 		tween.start()
 		yield(tween, 'tween_completed')
 		tween.queue_free()
-		audio_player.stop()
-		var stream = load('res://sound/%s.ogg' % [filename])
+		music_player.stop()
+		var stream = load('res://sound/%s.ogg' % [music_name])
 		stream.loop = true
-		audio_player.stream = stream
-		audio_player.volume_db = 0.0
-		audio_player.play()
+		music_player.stream = stream
+		if music_name == 'title':
+			music_player.volume_db = -3.0
+		else:
+			music_player.volume_db = 0.0
+		music_player.play()
+
+func play_sound(sound_name):
+	var sound_player = AudioStreamPlayer.new()
+	add_child(sound_player)
+	sound_player.stream = load('res://sound/%s.wav' % [sound_name])
+	sound_player.play()
+	yield(sound_player, 'finished')
+	sound_player.queue_free()

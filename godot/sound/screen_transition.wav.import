@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/screen_transition.wav-e261c6f5e4ec1623607d720381510c8f.sample"
+
+[deps]
+
+source_file="res://sound/screen_transition.wav"
+dest_files=[ "res://.import/screen_transition.wav-e261c6f5e4ec1623607d720381510c8f.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

@@ -75,6 +75,7 @@ func goto_scene(scene_name, backwards=false):
 		transition.animation_player.play('slide_in')
 	else:
 		transition.animation_player.play_backwards('slide_out')
+	g.sound.play_sound('screen_transition')
 
 func update_progress():
 	var progress = float(loader.get_stage()) / loader.get_stage_count()
