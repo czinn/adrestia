@@ -28,6 +28,7 @@ func _notification(what):
 		self.call_deferred('on_back_button_pressed')
 
 func on_add_friend_button_pressed():
+	g.sound.play_sound('button')
 	var friend_code = yield(g.summon_text_entry('Friend Code (FC):', ''), 'popup_closed')
 	if friend_code:
 		g.network.follow_user(friend_code, funcref(self, 'on_friend_added'))
@@ -67,6 +68,7 @@ func on_challenge_friend(friend):
 		g.scene_loader.goto_scene('game_book_select')
 
 func on_back_button_pressed():
+	g.sound.play_sound('button')
 	g.scene_loader.goto_scene('title', true)
 
 func on_connected():
