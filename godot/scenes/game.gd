@@ -312,6 +312,7 @@ func on_event_timer_timeout():
 		var them = state.players[1 - player_id]
 		# Do UI effects for event
 		if event['type'] == 'fire_spell':
+			g.sound.play_sound('fire_spell')
 			var player_spell_list = my_spell_list if event['player'] == player_id else enemy_spell_list
 			player_spell_list.flash_spell(event['index'])
 			# We need to update mana here because spells cost mana
