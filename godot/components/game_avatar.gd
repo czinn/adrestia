@@ -24,6 +24,8 @@ func redraw(player, mp_left = null):
 
 	hp_label.text = str(max(0, player.hp))
 	if old_hp != null && old_hp != player.hp:
+		if player.hp < old_hp:
+			g.sound.play_sound('lose_health')
 		g.summon_delta(hp_label, player.hp - old_hp, Color(1, 0.02, 0.29))
 	old_hp = player.hp
 
