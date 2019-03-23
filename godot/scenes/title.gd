@@ -28,6 +28,7 @@ func _ready():
 		yield(animation_player, 'animation_finished')
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
+	g.sound.set_music('title')
 
 func initialize():
 	print('User data dir is %s' % [OS.get_user_data_dir()])

@@ -64,6 +64,7 @@ func _ready():
 	if g.backend.get_current_move() != null:
 		my_spell_list.spells = g.backend.get_current_move()
 		on_end_turn_button_pressed()
+	g.sound.set_music('battle')
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:

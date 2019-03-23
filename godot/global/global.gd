@@ -27,6 +27,7 @@ onready var text_entry_popup_scene = preload('res://components/text_entry_popup.
 onready var scene_loader = get_node('/root/scene_loader')
 onready var network = get_node('/root/networking')
 onready var drag_drop = get_node('/root/drag_drop')
+onready var sound = get_node('/root/sound')
 
 # Read from rules.json
 var app_version = null # e.g. [1, 0, 0]
@@ -261,6 +262,8 @@ var user_name
 var friend_code
 var multiplayer_wins
 var unsubmitted_games
+var music_muted
+var sfx_muted
 # var rules # (declared above)
 
 func save():
@@ -272,7 +275,9 @@ func save():
 		'friend_code': friend_code,
 		'rules': rules.back().as_json().result,
 		'multiplayer_wins': multiplayer_wins,
-		'unsubmitted_games': unsubmitted_games
+		'unsubmitted_games': unsubmitted_games,
+		'music_muted': music_muted,
+		'sfx_muted': sfx_muted,
 	}
 	var file = File.new()
 	file.open(save_path, File.WRITE)
@@ -311,6 +316,8 @@ func load():
 	friend_code = dict_has(data, 'friend_code', null)
 	multiplayer_wins = dict_has(data, 'multiplayer_wins', null)
 	unsubmitted_games = dict_has(data, 'unsubmitted_games', [])
+	music_muted = dict_has(data, 'music_muted', false)
+	sfx_muted = dict_has(data, 'sfx_muted', false)
 
 	# Override rules with those from saved_data if they're newer.
 	var rules_json = dict_has(data, 'rules', null)

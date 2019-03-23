@@ -26,6 +26,7 @@ global="*res://global/global.gd"
 scene_loader="*res://global/scene_loader.gd"
 networking="*res://global/networking.gd"
 drag_drop="*res://global/drag_drop.gd"
+sound="*res://global/sound.gd"
 
 [display]
 
