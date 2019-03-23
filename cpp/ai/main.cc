@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 int main() {
   GameRules rules("rules.json");
-  GameState game(rules, (std::vector<std::vector<std::string>>){{"refinement", "regulation", "conjuration"}, {"refinement", "regulation", "conjuration"}});
+  GameState game(rules, (std::vector<std::vector<std::string>>){{"conjuration"}, {"conjuration"}});
   std::vector<Strategy*> strategies;
   //fdeep::model model = fdeep::load_model("fdeep_model.json");
   strategies.push_back(new MonteStrategy(10000, true));
