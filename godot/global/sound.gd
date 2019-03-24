@@ -33,10 +33,9 @@ func set_music(music_name):
 		var stream = load('res://sound/%s.ogg' % [music_name])
 		stream.loop = true
 		music_player.stream = stream
-		if music_name == 'title':
-			music_player.volume_db = -3.0
-		else:
-			music_player.volume_db = 0.0
+		if music_name == 'title': music_player.volume_db = -3.0
+		elif music_name == 'battle': music_player.volume_db = -2.0
+		else: music_player.volume_db = 0.0
 		music_player.play()
 
 func play_sound(sound_name):
