@@ -76,12 +76,10 @@ func submit_books(selected_book_ids):
 	g.network.matchmake_me(g.get_rules(), selected_book_ids, friend_code if friend_code else '', funcref(self, 'on_enter_matchmake_queue'))
 
 func on_enter_matchmake_queue(response):
-	print('We have entered the matchmaking queue:')
-	print(response)
+	print('We have entered the matchmaking queue.')
 
 func on_push_active_games(response):
-	print('Got an update:')
-	print(response)
+	print('Got an update.')
 	var game = response.updates[0]
 	game_uid = game.game_uid
 	if game.has('game_state'):

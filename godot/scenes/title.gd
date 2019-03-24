@@ -35,6 +35,7 @@ func on_get_stats(response):
 	if response.has('wins'):
 		g.multiplayer_wins = response.wins
 		g.save()
+		on_connected()
 
 func initialize():
 	print('User data dir is %s' % [OS.get_user_data_dir()])

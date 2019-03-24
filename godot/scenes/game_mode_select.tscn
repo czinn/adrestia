@@ -8,7 +8,7 @@
 [ext_resource path="res://fonts/Amaranth-Regular-24.tres" type="DynamicFont" id=6]
 [ext_resource path="res://art-built/button-vs-ai.png" type="Texture" id=7]
 [ext_resource path="res://art-built/button-tutorial.png" type="Texture" id=8]
-[ext_resource path="res://fonts/Amaranth-Regular-60.tres" type="DynamicFont" id=9]
+[ext_resource path="res://fonts/Amaranth-Regular-36.tres" type="DynamicFont" id=9]
 [ext_resource path="res://art-built/button-back-small.png" type="Texture" id=10]
 
 [node name="game_mode_select" type="Node"]

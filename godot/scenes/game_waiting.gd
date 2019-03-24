@@ -7,8 +7,6 @@ onready var back_button = $ui/back_button
 func _ready():
 	g.backend.register_started_callback(funcref(self, 'on_game_started'))
 	back_button.connect('pressed', self, 'on_back_button_pressed')
-	if g.backend.get_view() != null:
-		on_game_started()
 
 func on_game_started():
 	g.backend.register_started_callback(null)
