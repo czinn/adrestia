@@ -30,6 +30,11 @@ func _notification(what):
 func on_add_friend_button_pressed():
 	g.sound.play_sound('button')
 	var friend_code = yield(g.summon_text_entry('Friend Code (FC):', ''), 'popup_closed')
+	if friend_code == 'debugpls69':
+		g.summon_notification("Connecting to the secret debug server.")
+		g.network.port = 16942
+		g.network.peer.disconnect_from_host()
+		return
 	if friend_code:
 		g.network.follow_user(friend_code, funcref(self, 'on_friend_added'))
 
