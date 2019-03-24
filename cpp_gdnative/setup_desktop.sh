@@ -18,7 +18,7 @@ git submodule update --init
 godot --gdnative-generate-json-api godot-cpp/godot_api.json
 
 # see https://github.com/godotengine/godot/issues/25006
-sed -i 's/typename/type_name/g' godot-cpp/godot_api.json
+sed -i.bak 's/typename/type_name/g' godot-cpp/godot_api.json && rm godot-cpp/godot_api.json
 
 # Build it! The resulting static library will be put in godot-cpp/bin/, and
 # will be named something like "libgodot-cpp.linux.64.a".
