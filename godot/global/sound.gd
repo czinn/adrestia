@@ -1,10 +1,11 @@
 extends Node
 
 const transition_time = 0.5
+const same_sound_debounce_ms = 100
 
 var music_player
 var current_filename
-var sound_playing = {}
+var sound_last_played = {}
 
 onready var g = get_node('/root/global')
 
@@ -39,13 +40,12 @@ func set_music(music_name):
 		music_player.play()
 
 func play_sound(sound_name):
-	if sound_playing.has(sound_name):
+	if sound_last_played.has(sound_name) and OS.get_ticks_msec() - sound_last_played[sound_name] < same_sound_debounce_ms:
 		return
-	sound_playing[sound_name] = true
+	sound_last_played[sound_name] = OS.get_ticks_msec()
 	var sound_player = AudioStreamPlayer.new()
 	add_child(sound_player)
 	sound_player.stream = load('res://sound/%s.wav' % [sound_name])
 	sound_player.play()
 	yield(sound_player, 'finished')
 	sound_player.queue_free()
-	sound_playing.erase(sound_name)
