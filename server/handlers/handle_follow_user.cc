@@ -16,8 +16,7 @@ int adrestia_networking::handle_follow_user(const Logger& logger, const json& cl
     SELECT user_name, uuid
     FROM adrestia_accounts
     WHERE friend_code = ?
-      AND uuid != ?
-  )sql")(friend_code)(uuid)();
+  )sql")(friend_code)();
 
   if (result.empty()) {
     resp[HANDLER_KEY] = client_json[HANDLER_KEY];
@@ -26,6 +25,12 @@ int adrestia_networking::handle_follow_user(const Logger& logger, const json& cl
   }
 
   string uuid2 = result[0]["uuid"].as<string>();
+  if (uuid == uuid2) {
+    resp[HANDLER_KEY] = client_json[HANDLER_KEY];
+    resp_code(resp, 400, "Can't add yourself");
+    return 0;
+  }
+
   try {
     db.query(R"sql(
       INSERT INTO adrestia_follows (uuid1, uuid2)

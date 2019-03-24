@@ -37,6 +37,8 @@ func on_friend_added(response):
 	if response.api_code == 200:
 		g.summon_notification("You are now following %s. Make sure they add you too." % [response.user_name])
 		g.network.get_friends(funcref(self, 'on_get_friends_list'))
+	elif response.api_code == 400:
+		g.summon_notification("You can't add yourself as a friend!")
 	else:
 		g.summon_notification("Can't find that friend code.")
 
