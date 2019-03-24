@@ -9,20 +9,24 @@ where a.debug = false
   and json_array_length(game_state -> 'history') >= 2;
 
 -- Average game length among multiplayer games with at least two turns
+with
+  turns_and_durations as (
+    select
+      max(json_array_length(game_state -> 'history')) as turns,
+      max(last_move_time) - min(g.creation_time) as duration
+    from adrestia_accounts a
+      inner join adrestia_players p on a.uuid = p.user_uid
+      inner join adrestia_games g on p.game_uid = g.game_uid
+    where a.debug = false
+      and json_array_length(game_state -> 'history') >= 2
+      and last_move_time is not null
+    group by g.game_uid
+  )
 select
   avg(turns) as average_multiplayer_turns,
   avg(duration) as average_multiplayer_duration
-from
-select
-  max(json_array_length(game_state -> 'history')) as turns,
-  max(last_move_time) - min(g.creation_time) as duration
-from adrestia_accounts a
-  inner join adrestia_players p on a.uuid = p.user_uid
-  inner join adrestia_games g on p.game_uid = g.game_uid
-where a.debug = false
-  and json_array_length(game_state -> 'history') >= 2
-  and last_move_time != null
-group by g.game_uid;
+from turns_and_durations
+where duration > interval '0 seconds';
 
 -- Average single-player game length
 select avg(json_array_length(game_state -> 'history')) as average_singleplayer_turns
