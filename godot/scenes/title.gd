@@ -28,6 +28,13 @@ func _ready():
 	g.sound.set_music('title')
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
+	g.network.get_stats(funcref(self, 'on_get_stats'))
+
+# TODO: jim: Retrieve your own profile in a more principled way
+func on_get_stats(response):
+	if response.has('wins'):
+		g.multiplayer_wins = response.wins
+		g.save()
 
 func initialize():
 	print('User data dir is %s' % [OS.get_user_data_dir()])
