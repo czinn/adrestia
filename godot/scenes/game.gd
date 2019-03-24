@@ -196,6 +196,7 @@ func redraw():
 func on_end_turn_button_pressed():
 	if ui_state != UiState.CHOOSING_SPELLS:
 		return
+	g.sound.play_sound('button')
 	spell_select.on_close_book()
 	var action = my_spell_list.spells
 

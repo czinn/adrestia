@@ -21,11 +21,11 @@ func _ready():
 	match_history_button.connect('pressed', self, 'on_match_history_button_pressed')
 	settings_button.connect('pressed', self, 'on_settings_button_pressed')
 	friends_button.connect('pressed', self, 'on_friends_button_pressed')
-	g.sound.set_music('title')
 	if not g.loaded:
 		g.loaded = true
 		initialize()
 		animation_player.play('fade_in')
+	g.sound.set_music('title')
 	g.network.register_handler('push_active_games', funcref(self, 'on_push_active_games'))
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
 

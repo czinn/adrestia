@@ -6,17 +6,32 @@ onready var reset_account_button = $ui/reset_account_button
 onready var change_name_button = $ui/change_name_button
 onready var credits_button = $ui/credits_button
 onready var back_button = $ui/back_button
+onready var checkbox_music = $ui/checkbox_music
+onready var checkbox_sound = $ui/checkbox_sound
 
 func _ready():
 	credits_button.connect('pressed', self, 'on_credits_button_pressed')
 	back_button.connect('pressed', self, 'on_back_button_pressed')
 	reset_account_button.connect('pressed', self, 'on_reset_account_button_pressed')
 	change_name_button.connect('pressed', self, 'on_change_name_button_pressed')
+	checkbox_music.pressed = not g.music_muted
+	checkbox_sound.pressed = not g.sfx_muted
+	checkbox_music.connect('pressed', self, 'on_music_toggled')
+	checkbox_sound.connect('pressed', self, 'on_sound_toggled')
 	g.network.register_handlers(self, 'on_connected', 'on_disconnected', 'on_out_of_date')
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.call_deferred('on_back_button_pressed')
+
+func on_music_toggled():
+	g.music_muted = not checkbox_music.pressed
+	g.sound.on_music_toggled()
+	g.save()
+
+func on_sound_toggled():
+	g.sfx_muted = not checkbox_sound.pressed
+	g.save()
 
 func on_credits_button_pressed():
 	g.sound.play_sound('button')
