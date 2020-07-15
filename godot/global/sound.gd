@@ -37,6 +37,7 @@ func set_music(music_name, force=false):
 		music_player.stream = stream
 		if music_name == 'title': music_player.volume_db = -3.0
 		elif music_name == 'battle': music_player.volume_db = -2.0
+		elif music_name == 'sad': music_player.volume_db = -2.0
 		else: music_player.volume_db = 0.0
 		music_player.play()
 
